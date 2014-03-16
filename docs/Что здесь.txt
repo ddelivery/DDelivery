@@ -1,1 +1,10 @@
-В базе даных представлена база городов, с кодом КЛАДР, для работыс системой DDelivery используется ID из базы.
+Геолокатор
+http://ddelivery.creatiff.com.ua/daemon/daemon.js?_action=geoip&ip=188.162.64.72
+
+companies - 5,4,6 (опционально, если ничего нет выбираются все)
+cities - 1,2,3 идентификаторы городов точки которых показывать  (опционально)"
+
+http://ddelivery.creatiff.com.ua/daemon/daemon.js?_action=delivery_points&cities=4,6&companies=4,25
+
+
+stage.ddelivery.ru/apidoc/#!/ddelivery
