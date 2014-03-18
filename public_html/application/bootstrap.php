@@ -16,7 +16,7 @@ function autoloadClasses( $className ) {
     }
     else
     {
-    	throw Exception("Class ddelivery not found");
+    	throw Exception("Class ddelivery not founded");
     }
 }
 
