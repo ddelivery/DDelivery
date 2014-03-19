@@ -14,14 +14,16 @@
  * @author  mrozk <mrozk2012@gmail.com>
  */
 
+
 define("DDELIVERY_DS", "/");
+header('Content-type: text/plain; charset=utf-8');
 
 /**
- * Для поиска недостающих классов
+ * Для поиска недостающих классов, сканируем
+ * на содержание пакетов в названиях классов
  *
  * @param   string  $className  Название класса
  *
- * @throws DDeliveryException
  *
  */
 function autoloadClasses( $className ) {
@@ -39,7 +41,7 @@ function autoloadClasses( $className ) {
     }
     else 
     {
-    	$classPath = $className;
+    	$classPath = DDELIVERY_DS . $className;
     }
 	
     $base = realpath(dirname(__FILE__) . DDELIVERY_DS ) ;
@@ -52,7 +54,7 @@ function autoloadClasses( $className ) {
     }
     else
     {	
-    	throw new DDeliveryException('Class' . $className . ' not found');
+    	die('Error loading libs');
     }
 }
 

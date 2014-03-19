@@ -28,6 +28,11 @@ class DDeliverySDK {
      * @var string
      */
     private $serverUrl;
+    /**
+     * url до сервера NodeJs
+     * @var string
+     */
+    private $jsDeamon;
 
     /**
      * @param string $apiKey ключ полученный для магазина
@@ -41,14 +46,29 @@ class DDeliverySDK {
         }else{
             $this->serverUrl = 'http://cabinet.ddelivery.ru/api/v1/';
         }
+        
+        $this->jsDeamon = 'http://dev.ddelivery.ru/daemon/daemon.js';
+        
     }
-
+	
     public function __destruct()
     {
         if($this->curl)
             curl_close($this->curl);
     }
-
+    
+    /**
+     * Получить id города по ip
+     * @param string $ip ip адрес клиента
+     */
+    public function getCityByIp( $ip )
+    {	
+    	$params = array(
+    			'_action' => 'geoip',
+    			'ip' => $ip
+    			);
+    	return $this->request('geoip', $params, true);
+    }
     /**
      * Работать в с одним подключением: kep-active
      * @param bool $on
@@ -62,9 +82,12 @@ class DDeliverySDK {
      * Выолняет запрос к серверу ddelivery
      * @param string $action
      * @param string[] $params
+     * @param string $specificUrl если необходимо обратится к 
+     * не к стандартному url
+     * 
      * @return DDeliverySDKResponse
      */
-    protected function request($action, $params = array())
+    protected function request($action, $params = array(), $useJsDeamon = false)
     {
         if(!$this->keepActive || !$this->curl) {
             $this->curl = curl_init();
@@ -73,8 +96,15 @@ class DDeliverySDK {
             curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, 1);
 
         }
-
-        $url = $this->serverUrl . urlencode($this->apiKey) .'/' . urlencode($action) . '.json?';
+		if( $useJsDeamon )
+        {
+            $url = $this->jsDeamon . '?';
+		}
+		else 
+		{
+			$url = $this->serverUrl . urlencode($this->apiKey) .'/' . urlencode($action) . '.json?';
+		}
+        
         foreach($params as $key => $value) {
             $url .= '&'.urlencode($key).'='.urlencode($value);
         }
@@ -84,7 +114,7 @@ class DDeliverySDK {
         curl_setopt($this->curl, CURLOPT_URL, $url);
 
         $result = curl_exec($this->curl);
-
+		//print_r($result);
         if(!$this->keepActive){
             curl_close($this->curl);
             unset($this->curl);
