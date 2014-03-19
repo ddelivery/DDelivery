@@ -94,16 +94,15 @@ class DDeliverySDK {
             curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($this->curl, CURLOPT_HEADER, 0);
             curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, 1);
-
         }
-		if( $useJsDeamon )
+        if( $useJsDeamon )
         {
             $url = $this->jsDeamon . '?';
-		}
-		else 
-		{
-			$url = $this->serverUrl . urlencode($this->apiKey) .'/' . urlencode($action) . '.json?';
-		}
+        }
+        else 
+        {
+            $url = $this->serverUrl . urlencode($this->apiKey) .'/' . urlencode($action) . '.json?';
+        }
         
         foreach($params as $key => $value) {
             $url .= '&'.urlencode($key).'='.urlencode($value);
