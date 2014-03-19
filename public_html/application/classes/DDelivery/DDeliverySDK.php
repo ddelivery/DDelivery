@@ -4,7 +4,8 @@
  * Date: 18.03.14
  * Time: 22:48
  */
-
+		 
+namespace DDelivery;
 
 class DDeliverySDK {
     /**
