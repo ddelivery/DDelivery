@@ -5,6 +5,8 @@
  * Time: 23:12
  */
 
+namespace DDelivery;
+
 class DDeliverySDKResponse {
     /**
      * Возвращает true при успехе
