@@ -25,7 +25,6 @@ define("DDELIVERY_DS", "/");
  *
  */
 function autoloadClasses( $className ) {
-	
 	$classPath = '';
 	
     if( (strpos($className, '\\')) > 0 )
@@ -33,13 +32,13 @@ function autoloadClasses( $className ) {
         $pathPieces = explode('\\', $className);
         for ($i = 0; $i < count($pathPieces); $i++)
         {
-        	$classPath .= ( DDELIVERY_DS . $pathPieces[$i] );
+            $classPath .= ( DDELIVERY_DS . $pathPieces[$i] );
         }
     	          		
     }
     else 
     {
-    	$classPath = $className;
+        $classPath = $className;
     }
 	
     $base = realpath(dirname(__FILE__) . DDELIVERY_DS ) ;
