@@ -54,7 +54,7 @@ function autoloadClasses( $className ) {
     }
     else
     {	
-    	die('Error loading libs');
+    	die('Error loading libs ' . $filename);
     }
 }
 
