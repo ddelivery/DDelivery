@@ -5,6 +5,8 @@
  * Time: 23:12
  */
 
+namespace DDelivery;
+
 class DDeliverySDKResponse {
     /**
      * Возвращает true при успехе
@@ -35,7 +37,10 @@ class DDeliverySDKResponse {
 
         $this->success = (bool)$jsonData['success'];
         if($this->success) {
-            $this->response = $jsonData['response'];
+        	if(array_key_exists( 'response', $jsonData ))
+        	    $this->response = $jsonData['response'];
+        	else
+        		$this->response = $jsonData['result'];
         }elseif(isset($jsonData['response']) && isset($jsonData['response']['message'])) {
             $this->errorMessage = $jsonData['response']['message'];
         }else {
