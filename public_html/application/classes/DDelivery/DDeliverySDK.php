@@ -1,12 +1,22 @@
 <?php
 /**
- * User: DnAp
- * Date: 18.03.14
- * Time: 22:48
- */
+*
+* @package    DDelivery
+*
+* @copyright  Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+*
+* @license    GNU General Public License version 2 or later; see LICENSE.txt
+*
+* @author  mrozk <mrozk2012@gmail.com>
+*/
 		 
 namespace DDelivery;
 
+/**
+ * DDelivery Sdk - API для работы с сервером DDelivery
+ *
+ * @package     DDelivery
+ */
 class DDeliverySDK {
 	
 	/**
@@ -59,8 +69,7 @@ class DDeliverySDK {
     			'cities' => $cities,
     			'companies' => $companies 
     	);
-    	
-    	return $this->request('geoip', $params, true);
+    	return $this->requestProvider->request('geoip', $params, 'get', 'node');
     }
     
     /**
@@ -73,53 +82,9 @@ class DDeliverySDK {
     			'_action' => 'geoip',
     			'ip' => $ip
     			);
-    	return $this->request('geoip', $params, true);
+    	return $this->requestProvider->request('geoip', $params, 'get', 'node');
     }
     
-	
-    
-    
-    /**
-     * Выолняет запрос к серверу ddelivery
-     * @param string $action
-     * @param string[] $params
-     * @param string $specificUrl если необходимо обратится к 
-     * не к стандартному url
-     * 
-     * @return DDeliverySDKResponse
-     */
-    protected function request($action, $params = array(), $useJsDeamon = false)
-    {
-        if(!$this->keepActive || !$this->curl) {
-            $this->curl = curl_init();
-            curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, TRUE);
-            curl_setopt($this->curl, CURLOPT_HEADER, 0);
-            curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, 1);
-        }
-        if( $useJsDeamon )
-        {
-            $url = $this->jsDeamon . '?';
-        }
-        else 
-        {
-            $url = $this->serverUrl . urlencode($this->apiKey) .'/' . urlencode($action) . '.json?';
-        }
-        
-        foreach($params as $key => $value) {
-            $url .= '&'.urlencode($key).'='.urlencode($value);
-        }
-
-        curl_setopt($this->curl, CURLOPT_URL, $url);
-
-        $result = curl_exec($this->curl);
-		//print_r($result);
-        if(!$this->keepActive){
-            curl_close($this->curl);
-            unset($this->curl);
-        }
-
-        return new DDeliverySDKResponse($result);
-    }
 
     /**
      * Расчитать цену самовывоза
@@ -173,7 +138,7 @@ class DDeliverySDK {
             'dimension_side3' => $dimensionSide3,
             'weight' => $weight,
         );
-
+		
         if($declaredPrice !== null)
             $params['declared_price']  = $declaredPrice;
 
@@ -189,7 +154,6 @@ class DDeliverySDK {
      * @return DDeliverySDKResponse
      */
     public function deliveryPoints() {
-    	
         return $this->requestProvider->request('delivery_points') ;
     }
 

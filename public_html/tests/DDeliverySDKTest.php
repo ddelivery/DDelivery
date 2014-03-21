@@ -24,6 +24,8 @@ class DDeliverySDKTest extends PHPUnit_Framework_TestCase
     {
         $result = $this->fixture->getCityByIp('188.162.64.72');
         $this->assertTrue($result->success);
+        echo count($result->response);
+        //$this->assertCount(6,  $result->response);
     }
 	
 }
