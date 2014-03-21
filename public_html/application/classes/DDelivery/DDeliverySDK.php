@@ -8,53 +8,59 @@
 namespace DDelivery;
 
 class DDeliverySDK {
-    /**
-     * @var string
-     */
-    private $apiKey;
-    /**
-     *
-     * @var bool
-     */
-    private $keepActive = true;
-
-    /**
-     * Curl resource
-     * @var resource
-     */
-    private $curl;
-    /**
-     * url до сервера
-     * @var string
-     */
-    private $serverUrl;
-    /**
-     * url до сервера NodeJs
-     * @var string
-     */
-    private $jsDeamon;
-
-    /**
-     * @param string $apiKey ключ полученный для магазина
-     * @param bool $testMode тестовый шлюз
-     */
+	
+	/**
+	 * творит запросы
+	 * @var RequestProvider
+	 */
+	private $requestProvider;
+	/**
+	 * сервер по умолчанию
+	 * @var string
+	 */
+	private $server;
+	
+	/**
+	 * @param string $apiKey ключ полученный для магазина
+	 * @param bool $testMode тестовый шлюз
+	 */
     public function __construct($apiKey, $testMode = false)
     {
-        $this->apiKey = (string)$apiKey;
         if($testMode){
-            $this->serverUrl = 'http://stage.ddelivery.ru/api/v1/';
+            $this->server = 'stage';
         }else{
-            $this->serverUrl = 'http://cabinet.ddelivery.ru/api/v1/';
+            $this->server = 'dev';
         }
         
-        $this->jsDeamon = 'http://dev.ddelivery.ru/daemon/daemon.js';
-        
+        $this->requestProvider = new RequestProvider( $apiKey, $this->server );
+        $this->requestProvider->setKeepActive( true );
     }
 	
-    public function __destruct()
+    
+    function sendCurierOrder( $order )
+    {   
+    	$params = array();
+    	try 
+    	{
+    		$params = $order->pack();
+    	}
+    	catch (Order\DDeliveryOrderException $e)
+    	{
+    		echo $e->getMessage();
+    	}
+        
+        return $this->request('order_create', $params);
+    }
+    
+    function getSelfDeliveryPoints( $cities, $companies = '' )
     {
-        if($this->curl)
-            curl_close($this->curl);
+    	$params = array(
+    			'_action' => 'delivery_points',
+    			'cities' => $cities,
+    			'companies' => $companies 
+    	);
+    	
+    	return $this->request('geoip', $params, true);
     }
     
     /**
@@ -69,15 +75,10 @@ class DDeliverySDK {
     			);
     	return $this->request('geoip', $params, true);
     }
-    /**
-     * Работать в с одним подключением: kep-active
-     * @param bool $on
-     */
-    public function setKeepActive($on)
-    {
-        $this->keepActive = (bool)$on;
-    }
-
+    
+	
+    
+    
     /**
      * Выолняет запрос к серверу ddelivery
      * @param string $action
@@ -107,8 +108,6 @@ class DDeliverySDK {
         foreach($params as $key => $value) {
             $url .= '&'.urlencode($key).'='.urlencode($value);
         }
-
-        //echo $url.'<br>';
 
         curl_setopt($this->curl, CURLOPT_URL, $url);
 
@@ -190,7 +189,8 @@ class DDeliverySDK {
      * @return DDeliverySDKResponse
      */
     public function deliveryPoints() {
-        return $this->request('delivery_points');
+    	
+        return $this->requestProvider->request('delivery_points') ;
     }
 
 
