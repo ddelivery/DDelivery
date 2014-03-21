@@ -81,6 +81,10 @@ class DDeliverySDKResponse {
     	{
     		return 'points';
     	}
+    	elseif ( array_key_exists( 'options', $jsonData ) )
+    	{
+    		return 'options';
+    	}
     	else if( array_key_exists( 'result', $jsonData ) )
     	{
     		return 'result';

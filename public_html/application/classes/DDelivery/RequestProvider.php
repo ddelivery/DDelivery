@@ -103,7 +103,8 @@ class RequestProvider
 	    
 	    $response = new DDeliverySDKResponse( $result );
 	    
-	    if(!$this->keepActive){
+	    if(!$this->keepActive)
+	    {
 	    	curl_close($this->curl[$server]);
 	    	unset($this->curl[$server]);
 	    }
@@ -135,7 +136,7 @@ class RequestProvider
 		$urlSyfix = '';
 		 
 		foreach($params as $key => $value) {
-			$urlSyfix .= '&'.urlencode($key).'='.urlencode($value);
+			$urlSyfix .= urlencode($key).'='.urlencode($value) . '&';
 		}
 		
 		return $urlSyfix;

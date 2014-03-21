@@ -24,10 +24,15 @@ class DDeliverySDKTest extends PHPUnit_Framework_TestCase
     {
         $result = $this->fixture->getCityByIp('188.162.64.72');
         $this->assertTrue($result->success);
-        echo count($result->response);
-        //$this->assertCount(6,  $result->response);
+        $this->assertEquals(151185, $result->response['city_id']);
     }
-	
+    
+    public function testGetSelfDeliveryPoints()
+    {
+    	$result = $this->fixture->getSelfDeliveryPoints( '4,6', '4,25' );
+    	$this->assertTrue($result->success);
+    }
+    	
 }
 
 ?>

@@ -47,7 +47,7 @@ class DDeliverySDK {
     }
 	
     
-    function sendCurierOrder( $order )
+    function sendSelfOrder( $order )
     {   
     	$params = array();
     	try 
@@ -59,9 +59,14 @@ class DDeliverySDK {
     		echo $e->getMessage();
     	}
         
-        return $this->request('order_create', $params);
+        //return $this->requestProvider->request('order_create', $params, 'post');
     }
     
+    /**
+     * Получить список точек для самовывоза
+     * @param mixed $cities список id городов через запятую
+     * @param mixed $cities список id компаний через запятую
+     */
     function getSelfDeliveryPoints( $cities, $companies = '' )
     {
     	$params = array(
@@ -114,7 +119,7 @@ class DDeliverySDK {
         if($paymentPrice !== null)
             $params['payment_price']  = $paymentPrice;
 
-        return $this->request('calculator', $params);
+        return $this->requestProvider->request( 'calculator', $params );
     }
 
     /**
@@ -147,7 +152,23 @@ class DDeliverySDK {
 
         return $this->request('calculator', $params);
     }
-
+	
+    
+    /**
+     * Получить список пунктов самовывоза
+     * @return DDeliverySDKResponse
+     */
+    public function getAutoCompleteCity( $q ) {
+    	
+    	$params = array(
+    			'_action' => 'autocomplete',
+    			'q' => $q
+    	);
+    	
+    	return $this->requestProvider->request('autocomplete', $params,
+    											'get', 'node') ;
+    }
+    
 
     /**
      * Получить список пунктов самовывоза
