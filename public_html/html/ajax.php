@@ -5,4 +5,7 @@
  * Time: 23:51
  */
 
-echo json_encode([]);
+echo json_encode(['html'=>file_get_contents(__DIR__.'/popup-map.php')]);
+
+
+
