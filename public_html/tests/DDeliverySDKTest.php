@@ -6,7 +6,7 @@ class DDeliverySDKTest extends PHPUnit_Framework_TestCase
 	
     protected function setUp()
     {
-        $this->fixture = new DDelivery \ DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
+        $this->fixture = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
     }
 	
     protected function tearDown()
@@ -30,6 +30,24 @@ class DDeliverySDKTest extends PHPUnit_Framework_TestCase
     public function testGetSelfDeliveryPoints()
     {
     	$result = $this->fixture->getSelfDeliveryPoints( '4,6', '4,25' );
+    	$this->assertTrue($result->success);
+    }
+    
+    public function testCalculatorPickup()
+    {
+    	$result = $this->fixture->calculatorPickup( 1, 10, 10, 10, 1, 0 );
+    	$this->assertTrue($result->success);
+    }
+    
+    public function testCalculatorCurier()
+    {
+    	$result = $this->fixture->calculatorCourier( 151185, 10, 10, 10, 1, 0 );
+    	$this->assertTrue($result->success);
+    }
+    
+    public function testGetAutoCpmpleteCity()
+    {
+    	$result = $this->fixture->getAutoCompleteCity('Иваново');
     	$this->assertTrue($result->success);
     }
     	

@@ -1,7 +1,7 @@
 <?php
 /**
  *
-* Исключения DDelivery.Order
+* Исключения DDelivery.Sdk
 *
 * @package    DDelivery
 *
@@ -11,6 +11,6 @@
 *
 * @author  mrozk <mrozk2012@gmail.com>
 */
-namespace DDelivery\Order;
+namespace DDelivery\Point;
 
-class DDeliveryOrderException extends \Exception{}
+class DDeliveryPointException extends \Exception{}

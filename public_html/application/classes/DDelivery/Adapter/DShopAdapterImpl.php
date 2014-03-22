@@ -1,6 +1,9 @@
 <?php 
 
-namespace DDelivery
+namespace DDelivery\Adapter;
 
-
+class DShopAdapterImpl extends DShopAdapter
+{
+	
+}
 ?>

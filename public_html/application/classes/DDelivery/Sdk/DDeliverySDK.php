@@ -47,7 +47,7 @@ class DDeliverySDK {
     }
 	
     
-    function sendSelfOrder( $order )
+    public function sendSelfOrder( $order )
     {   
     	$params = array();
     	try 
@@ -62,12 +62,47 @@ class DDeliverySDK {
         //return $this->requestProvider->request('order_create', $params, 'post');
     }
     
+    /*
+    
+    public function getDeliveryInfoForPoint( $pointID )
+    {	
+    	$dimensionSide1 = 10;
+    	$dimensionSide2 = 10;
+    	$dimensionSide3 = 10;
+    	$weight = 1;
+    	
+        return $this->calculatorPickup(  $pointID, $dimensionSide1, 
+                                         $dimensionSide2, $dimensionSide3, $weight );
+        
+    }
+    
+    public function getPointsInstance( $pointsResponse )
+    {	
+    	$points = array();
+    	
+    	if( count( $pointsResponse ) )
+    	{
+    		foreach ($pointsResponse as $p)
+    		{
+    			$point = new \DDelivery\Point\DDeliveryPointSelf( $p );
+    			
+    			$deliveryInfo = $this->getDeliveryInfoForPoint( $point->get('_id') );
+    			
+    			$point->setDeliveryInfo( $deliveryInfo );
+    			
+    			$points[] = $point;
+    		}
+    	}
+    	
+    	return $points;
+    }
+    */
     /**
      * Получить список точек для самовывоза
      * @param mixed $cities список id городов через запятую
      * @param mixed $cities список id компаний через запятую
      */
-    function getSelfDeliveryPoints( $cities, $companies = '' )
+    public function getSelfDeliveryPoints( $cities, $companies = '' )
     {
     	$params = array(
     			'_action' => 'delivery_points',
@@ -75,6 +110,9 @@ class DDeliverySDK {
     			'companies' => $companies 
     	);
     	return $this->requestProvider->request('geoip', $params, 'get', 'node');
+    	//$points = $this->getPointsInstance( $pointsResponse->response );
+
+    	//return $points;
     }
     
     /**
@@ -102,7 +140,9 @@ class DDeliverySDK {
      * @param float|null $paymentPrice Наложенный платеж (руб)
      * @return DDeliverySDKResponse
      */
-    public function calculatorPickup($deliveryPoint, $dimensionSide1, $dimensionSide2, $dimensionSide3, $weight, $declaredPrice = null, $paymentPrice = null)
+    public function calculatorPickup( $deliveryPoint, $dimensionSide1, 
+                                      $dimensionSide2, $dimensionSide3, $weight, 
+                                      $declaredPrice, $paymentPrice = null )
     {
         $params = array(
             'type' => 1,
@@ -111,14 +151,12 @@ class DDeliverySDK {
             'dimension_side2' => $dimensionSide2,
             'dimension_side3' => $dimensionSide3,
             'weight' => $weight,
+        	'declared_price' => $declaredPrice
         );
-
-        if($declaredPrice !== null)
-            $params['declared_price']  = $declaredPrice;
 
         if($paymentPrice !== null)
             $params['payment_price']  = $paymentPrice;
-
+		
         return $this->requestProvider->request( 'calculator', $params );
     }
 
@@ -133,7 +171,9 @@ class DDeliverySDK {
      * @param float|null $paymentPrice Наложенный платеж (руб)
      * @return DDeliverySDKResponse
      */
-    public function calculatorCourier($cityTo, $dimensionSide1, $dimensionSide2, $dimensionSide3, $weight, $declaredPrice = null, $paymentPrice = null)
+    public function calculatorCourier($cityTo, $dimensionSide1, 
+                                      $dimensionSide2, $dimensionSide3, 
+    		                          $weight, $declaredPrice, $paymentPrice = null)
     {
         $params = array(
             'type' => 2,
@@ -142,15 +182,13 @@ class DDeliverySDK {
             'dimension_side2' => $dimensionSide2,
             'dimension_side3' => $dimensionSide3,
             'weight' => $weight,
+        	'declared_price' => $declaredPrice
         );
 		
-        if($declaredPrice !== null)
-            $params['declared_price']  = $declaredPrice;
-
         if($paymentPrice !== null)
             $params['payment_price']  = $paymentPrice;
 
-        return $this->request('calculator', $params);
+        return $this->requestProvider->request('calculator', $params);
     }
 	
     

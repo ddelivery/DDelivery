@@ -18,6 +18,10 @@ abstract  class DDeliveryOrder
 	
 	protected  $allowParams = array();
 	
+	private $productList;
+	
+	
+	
 	public function __construct( $initParams = array() )
 	{
 		if(is_array($initParams))
