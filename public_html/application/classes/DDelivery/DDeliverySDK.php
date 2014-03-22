@@ -1,60 +1,80 @@
 <?php
 /**
- * User: DnAp
- * Date: 18.03.14
- * Time: 22:48
- */
+*
+* @package    DDelivery
+*
+* @copyright  Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+*
+* @license    GNU General Public License version 2 or later; see LICENSE.txt
+*
+* @author  mrozk <mrozk2012@gmail.com>
+*/
 		 
 namespace DDelivery;
 
+/**
+ * DDelivery Sdk - API для работы с сервером DDelivery
+ *
+ * @package     DDelivery
+ */
 class DDeliverySDK {
-    /**
-     * @var string
-     */
-    private $apiKey;
-    /**
-     *
-     * @var bool
-     */
-    private $keepActive = true;
-
-    /**
-     * Curl resource
-     * @var resource
-     */
-    private $curl;
-    /**
-     * url до сервера
-     * @var string
-     */
-    private $serverUrl;
-    /**
-     * url до сервера NodeJs
-     * @var string
-     */
-    private $jsDeamon;
-
-    /**
-     * @param string $apiKey ключ полученный для магазина
-     * @param bool $testMode тестовый шлюз
-     */
+	
+	/**
+	 * творит запросы
+	 * @var RequestProvider
+	 */
+	private $requestProvider;
+	/**
+	 * сервер по умолчанию
+	 * @var string
+	 */
+	private $server;
+	
+	/**
+	 * @param string $apiKey ключ полученный для магазина
+	 * @param bool $testMode тестовый шлюз
+	 */
     public function __construct($apiKey, $testMode = false)
     {
-        $this->apiKey = (string)$apiKey;
         if($testMode){
-            $this->serverUrl = 'http://stage.ddelivery.ru/api/v1/';
+            $this->server = 'stage';
         }else{
-            $this->serverUrl = 'http://cabinet.ddelivery.ru/api/v1/';
+            $this->server = 'dev';
         }
         
-        $this->jsDeamon = 'http://dev.ddelivery.ru/daemon/daemon.js';
-        
+        $this->requestProvider = new RequestProvider( $apiKey, $this->server );
+        $this->requestProvider->setKeepActive( true );
     }
 	
-    public function __destruct()
+    
+    function sendSelfOrder( $order )
+    {   
+    	$params = array();
+    	try 
+    	{
+    		$params = $order->pack();
+    	}
+    	catch (Order\DDeliveryOrderException $e)
+    	{
+    		echo $e->getMessage();
+    	}
+        
+        //return $this->requestProvider->request('order_create', $params, 'post');
+    }
+    
+    /**
+     * Получить список точек для самовывоза
+     * @param mixed $cities список id городов через запятую
+     * @param mixed $cities список id компаний через запятую
+     */
+    function getSelfDeliveryPoints( $cities, $companies = '' )
     {
-        if($this->curl)
-            curl_close($this->curl);
+    	$params = array(
+    			'_action' => 'delivery_points',
+    			'cities' => $cities,
+    			'companies' => $companies 
+    	);
+    	return $this->requestProvider->request('geoip', $params, 'get', 'node');
     }
     
     /**
@@ -67,60 +87,9 @@ class DDeliverySDK {
     			'_action' => 'geoip',
     			'ip' => $ip
     			);
-    	return $this->request('geoip', $params, true);
+    	return $this->requestProvider->request('geoip', $params, 'get', 'node');
     }
-    /**
-     * Работать в с одним подключением: kep-active
-     * @param bool $on
-     */
-    public function setKeepActive($on)
-    {
-        $this->keepActive = (bool)$on;
-    }
-
-    /**
-     * Выолняет запрос к серверу ddelivery
-     * @param string $action
-     * @param string[] $params
-     * @param string $specificUrl если необходимо обратится к 
-     * не к стандартному url
-     * 
-     * @return DDeliverySDKResponse
-     */
-    protected function request($action, $params = array(), $useJsDeamon = false)
-    {
-        if(!$this->keepActive || !$this->curl) {
-            $this->curl = curl_init();
-            curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, TRUE);
-            curl_setopt($this->curl, CURLOPT_HEADER, 0);
-            curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, 1);
-        }
-        if( $useJsDeamon )
-        {
-            $url = $this->jsDeamon . '?';
-        }
-        else 
-        {
-            $url = $this->serverUrl . urlencode($this->apiKey) .'/' . urlencode($action) . '.json?';
-        }
-        
-        foreach($params as $key => $value) {
-            $url .= '&'.urlencode($key).'='.urlencode($value);
-        }
-
-        //echo $url.'<br>';
-
-        curl_setopt($this->curl, CURLOPT_URL, $url);
-
-        $result = curl_exec($this->curl);
-		//print_r($result);
-        if(!$this->keepActive){
-            curl_close($this->curl);
-            unset($this->curl);
-        }
-
-        return new DDeliverySDKResponse($result);
-    }
+    
 
     /**
      * Расчитать цену самовывоза
@@ -150,7 +119,7 @@ class DDeliverySDK {
         if($paymentPrice !== null)
             $params['payment_price']  = $paymentPrice;
 
-        return $this->request('calculator', $params);
+        return $this->requestProvider->request( 'calculator', $params );
     }
 
     /**
@@ -174,7 +143,7 @@ class DDeliverySDK {
             'dimension_side3' => $dimensionSide3,
             'weight' => $weight,
         );
-
+		
         if($declaredPrice !== null)
             $params['declared_price']  = $declaredPrice;
 
@@ -183,14 +152,30 @@ class DDeliverySDK {
 
         return $this->request('calculator', $params);
     }
-
+	
+    
+    /**
+     * Получить список пунктов самовывоза
+     * @return DDeliverySDKResponse
+     */
+    public function getAutoCompleteCity( $q ) {
+    	
+    	$params = array(
+    			'_action' => 'autocomplete',
+    			'q' => $q
+    	);
+    	
+    	return $this->requestProvider->request('autocomplete', $params,
+    											'get', 'node') ;
+    }
+    
 
     /**
      * Получить список пунктов самовывоза
      * @return DDeliverySDKResponse
      */
     public function deliveryPoints() {
-        return $this->request('delivery_points');
+        return $this->requestProvider->request('delivery_points') ;
     }
 
 

@@ -27,7 +27,6 @@ header('Content-type: text/plain; charset=utf-8');
  *
  */
 function autoloadClasses( $className ) {
-	
 	$classPath = '';
 	
     if( (strpos($className, '\\')) > 0 )
@@ -35,7 +34,7 @@ function autoloadClasses( $className ) {
         $pathPieces = explode('\\', $className);
         for ($i = 0; $i < count($pathPieces); $i++)
         {
-        	$classPath .= ( DDELIVERY_DS . $pathPieces[$i] );
+            $classPath .= ( DDELIVERY_DS . $pathPieces[$i] );
         }
     	          		
     }
@@ -54,7 +53,7 @@ function autoloadClasses( $className ) {
     }
     else
     {	
-    	die('Error loading libs');
+    	die('Error loading libs ' . $filename);
     }
 }
 
