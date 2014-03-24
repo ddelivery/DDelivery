@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 
 
 require_once 'application/bootstrap.php';
-$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
+//$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
 //$result = $DDeliverySDK->getSelfDeliveryPoints('4,6', '4,25');
 //$result = $DDeliverySDK->deliveryPoints();
 // $result = $DDeliverySDK->getCityByIp('188.162.64.72');
@@ -21,6 +21,8 @@ $DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d
 	$order->set('type');
 	$result = $DDeliverySDK->sendSelfOrder($order);
 */
-$result = $DDeliverySDK->getAutoCompleteCity('Иваново');
+
+$DDeliveryUI = new DDelivery\DDeliveryUI();
+$result = $DDeliveryUI->getSelfPointsForCity( '4,6' );
 
 print_r($result);
