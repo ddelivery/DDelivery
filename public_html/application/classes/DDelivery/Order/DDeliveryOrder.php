@@ -11,17 +11,67 @@
  */
 namespace DDelivery\Order;
 
-
-abstract  class DDeliveryOrder
+use DDelivery\Adapter\DShopAdapterImpl;
+/**
+ * DDeliveryOrder - заказ DDelivery
+ *
+ * @package     DDelivery.Order
+ */
+class DDeliveryOrder
 {
 	private $params = array( 'id' => 0 );
+
+	private $type;
 	
 	protected  $allowParams = array();
 	
-	private $productList;
+	/**
+	 * сервер по умолчанию
+	 * @var array DDeliveryProduct
+	 */
+	private $productList = array();
+	
+	/**
+	 * Адаптер CMS магазина
+	 * @var DShopAdapterImpl
+	 */
+	private $shop;
+	
+	/**
+	 * точка для
+	 * @var DDeliveryPoint
+	 */
+	private $point;
+	
+	private $user;
+	
+	/**
+	 * @param DShopAdapterImpl $shop
+	 */
+	public function __construct( $shop )
+	{
+		$this->shop =  $shop;
+		
+		$products = $this->shop->getProductsFromCart();
+		
+		if( count($products) > 0)
+		{
+            foreach ( $products as $p )
+            {
+            	$this->productList = new DDeliveryProduct( $p['id'], $p['width'],
+            			                                   $p['height'], $p['length'], 
+            			                                   $p['weight'], $p['price'] );
+            }
+		}
+		else 
+		{
+			throw new DDeliveryOrderException("Корзина пуста");
+		}
+		
+	}
 	
 	
-	
+	/*
 	public function __construct( $initParams = array() )
 	{
 		if(is_array($initParams))
@@ -65,4 +115,5 @@ abstract  class DDeliveryOrder
 		}
 		return null;
 	}
+	*/
 }     

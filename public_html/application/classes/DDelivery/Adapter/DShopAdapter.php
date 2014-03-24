@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @package    DDelivery
+ * @package    DDelivery.Adapter
  *
  * @copyright  Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  *
@@ -10,9 +10,9 @@
  * @author  mrozk <mrozk2012@gmail.com>
  */
 
-namespace DDelivery;
+namespace DDelivery\Adapter;
 
 abstract class DShopAdapter
 {
-	
+	public abstract function getProductsFromCart();
 }

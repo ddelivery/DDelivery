@@ -25,4 +25,4 @@ require_once 'application/bootstrap.php';
 $DDeliveryUI = new DDelivery\DDeliveryUI();
 $result = $DDeliveryUI->getSelfPointsForCity( '4,6' );
 
-print_r($result);
+//print_r($result);

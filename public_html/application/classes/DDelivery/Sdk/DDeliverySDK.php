@@ -20,7 +20,7 @@ namespace DDelivery\Sdk;
 class DDeliverySDK {
 	
 	/**
-	 * творит запросы
+	 * создает запросы
 	 * @var RequestProvider
 	 */
 	private $requestProvider;
@@ -110,9 +110,7 @@ class DDeliverySDK {
     			'companies' => $companies 
     	);
     	return $this->requestProvider->request('geoip', $params, 'get', 'node');
-    	//$points = $this->getPointsInstance( $pointsResponse->response );
-
-    	//return $points;
+    	
     }
     
     /**
