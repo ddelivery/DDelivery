@@ -14,8 +14,6 @@
  * @author  mrozk <mrozk2012@gmail.com>
  */
 
-
-define("DDELIVERY_DS", "/");
 header('Content-type: text/plain; charset=utf-8');
 
 /**
@@ -34,21 +32,20 @@ function autoloadClasses( $className ) {
         $pathPieces = explode('\\', $className);
         for ($i = 0; $i < count($pathPieces); $i++)
         {
-            $classPath .= ( DDELIVERY_DS . $pathPieces[$i] );
+            $classPath .= ( '/' . $pathPieces[$i] );
         }
     	          		
     }
     else 
     {
-    	$classPath = DDELIVERY_DS . $className;
+    	$classPath = '/' . $className;
     }
 	
-    $base = realpath(dirname(__FILE__) . DDELIVERY_DS ) ;
-    $filename = $base . DDELIVERY_DS . "classes" . $classPath . ".php";
+    $base = realpath(dirname(__FILE__) . '/' ) ;
+    $filename = $base . "/classes" . $classPath . ".php";
     
     if (is_readable($filename) && file_exists($filename)) 
-    {	
-    	
+    {
         require_once $filename;
     }
     else
