@@ -10,6 +10,9 @@
 * @author  mrozk <mrozk2012@gmail.com>
 */
 namespace DDelivery;
+use DDelivery\Sdk\DDeliverySDK;
+use DDelivery\Order\DDeliveryOrder;
+use DDelivery\Adapter\DShopAdapterImpl;
 
 /**
  * DDeliveryUI - Обертка рабочих классов, для взаимодействия 

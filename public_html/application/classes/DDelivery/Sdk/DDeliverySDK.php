@@ -54,7 +54,7 @@ class DDeliverySDK {
     	{
     		$params = $order->pack();
     	}
-    	catch (Order\DDeliveryOrderException $e)
+    	catch (\DDelivery\Order\DDeliveryOrderException $e)
     	{
     		echo $e->getMessage();
     	}
