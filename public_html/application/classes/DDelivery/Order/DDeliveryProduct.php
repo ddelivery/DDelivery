@@ -37,7 +37,7 @@ class DDeliveryProduct
 	 * высота товара в м
 	 * @var float
 	 */
-	private $height;
+	private $heigth;
 	
 	/**
 	 * длина товара в м
@@ -49,13 +49,38 @@ class DDeliveryProduct
 	 * вес товара в м
 	 * @var float
 	 */
-	private $weight;
+	private $weigth;
 	
 	/**
 	 * цена товара
 	 * @var float
 	 */
 	private $price;
+	
+	
+	/**
+	 * количество единицы товара
+	 * @var int
+	 */
+	private $quantity;
+	
+	/**
+	 * Доступ к ширине еденицы товара
+	 * @var int
+	 */
+	public $widthaccess = 0;
+	
+	/**
+	 * Доступ к высоте еденицы товара
+	 * @var int
+	 */
+	public $heigthaccess = 0;
+	
+	/**
+	 * Доступ к длине еденицы товара
+	 * @var int
+	 */
+	public $lengthaccess = 0;
 	
 	
 	/**
@@ -66,15 +91,17 @@ class DDeliveryProduct
 	 * @param float $weight
 	 * @param float $price
 	 */
-    public function __construct( $id, $width, $height, $length, 
-                                 $weight, $price )
+    public function __construct( $id, $width, $heigth, $length, 
+                                 $weigth, $price, $quantity )
     {
     	$this->id = $id;
     	$this->width = $width;
-    	$this->height = $height;
+    	$this->heigth = $heigth;
     	$this->length = $length;
-    	$this->weight = $weight;
+    	$this->weigth = $weigth;
     	$this->price = $price;
+    	$this->quantity = $quantity;
+    	
     }
     
     public function getID()
@@ -87,23 +114,49 @@ class DDeliveryProduct
     	return $this->width;
     }
     
-    public function getHeight()
+    public function getHeigth()
     {
-    	return $this->height;
+    	return $this->heigth;
     }
     
-    public function getLenght()
+    public function getLength()
     {
     	return $this->length;
     }
     
-    public function getWeight()
+    public function getWeigth()
     {
-    	return $this->weight;
+    	return $this->weigth;
     }
     
     public function getPrice()
     {
     	return $this->price;
     }
+    
+    public function getQuantity()
+    {
+    	return $this->quantity;
+    }
+    /*
+    public function getWidthAccess()
+    {
+    	return $this->widthaccess;
+    }
+    
+    public function setWidthAccess()
+    {
+    	return $this->widthaccess;
+    }
+    
+    public function getHeigthAccess()
+    {
+    	return $this->widthaccess;
+    }
+    
+    public function setHeigthAccess()
+    {
+    	return $this->heigthaccess;
+    }
+    */
 }    	

@@ -22,7 +22,11 @@ require_once 'application/bootstrap.php';
 	$result = $DDeliverySDK->sendSelfOrder($order);
 */
 
-$DDeliveryUI = new DDelivery\DDeliveryUI();
-$result = $DDeliveryUI->getSelfPointsForCity( '4,6' );
+//$DDeliveryUI = new DDelivery\DDeliveryUI();
+//$result = $DDeliverySDK->getSelfPointsForCity( '4,6' );
 
 //print_r($result);
+$DDeliveryUI = new DDelivery\DDeliveryUI();
+$order = $DDeliveryUI->getOrder()->getOrderInfo();
+print_r($order);
+

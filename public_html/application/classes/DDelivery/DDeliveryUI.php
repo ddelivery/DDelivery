@@ -45,9 +45,7 @@ class DDeliveryUI
         
         $this->shop = new Adapter\DShopAdapterImpl();
         
-        $products = $this->shop->getProductsFromCart();
-        
-        $this->order = new Order\DDeliveryOrder( $products );
+        $this->order = new Order\DDeliveryOrder( $this->shop );
 
     }
     
@@ -64,7 +62,11 @@ class DDeliveryUI
     	}
     	
     }
-
+	
+    public function getOrder( )
+    {
+        return $this->order;
+    }
     
     public function getDeliveryInfoForPoint( $id )
     {

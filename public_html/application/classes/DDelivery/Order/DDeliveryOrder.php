@@ -11,7 +11,6 @@
  */
 namespace DDelivery\Order;
 
-use DDelivery\Adapter\DShopAdapterImpl;
 /**
  * DDeliveryOrder - заказ DDelivery
  *
@@ -20,7 +19,13 @@ use DDelivery\Adapter\DShopAdapterImpl;
 class DDeliveryOrder
 {
 	private $params = array( 'id' => 0 );
-
+	
+	private $dimensionSide1 = null;
+	
+	private $dimensionSide2 = null;
+	
+	private $dimensionSide3 = null;
+	
 	private $type;
 	
 	protected  $allowParams = array();
@@ -58,9 +63,10 @@ class DDeliveryOrder
 		{
             foreach ( $products as $p )
             {
-            	$this->productList = new DDeliveryProduct( $p['id'], $p['width'],
-            			                                   $p['height'], $p['length'], 
-            			                                   $p['weight'], $p['price'] );
+            	$this->productList[] = new DDeliveryProduct( $p['id'], $p['width'],
+            			                                     $p['height'], $p['length'], 
+            			                                     $p['weight'], $p['price'],
+                                                             $p['quantity'] );
             }
 		}
 		else 
@@ -69,8 +75,69 @@ class DDeliveryOrder
 		}
 		
 	}
-	
-	
+	function getOrderInfo()
+	{
+		$width = 'width';
+		$height = 'height';
+		$length = 'length';
+		$weight = 'weight';
+		
+		$width_access = $width . '_access';
+		$height_access = $height . '_access';
+		$length_access = $length . '_access';
+		$weight = $weight . '_access';
+		
+		$total_weight = 0;
+		$sum_of_min = 0;
+		$max = 0;
+		$max_key = -1;
+		
+		foreach ( $this->productList as $product )
+		{	
+			// находим 1 сторону
+			$min = $product->getWidth();
+			$alias = 'width';
+			
+			if( $min > $product->getHeigth() )
+			{
+				$min = $product->getHeigth();
+				$alias = 'height';
+			}
+			
+			if( $min > $product->getLength())
+			{
+				$min = $product->getLength();
+				$alias = 'length';
+			}
+			
+			$alias_access = $alias  . "access";
+			$product->$alias_access  =  1;
+			$sum_of_min += (($min) * $product->getQuantity());
+			// находим 1 сторону
+			
+			// находим 2 сторону
+			
+			if( $product->$width_access == 0 )
+			{
+				if( $max < $product->getWidth() )
+				{
+                    $max = $product->getWidth();
+                    
+				}
+			}
+			// находим 2 сторону
+			
+			// находим вес
+			$total_weight +=  ( $product->getQuantity() * $product->getWeigth() );
+			// находим вес
+			
+		}
+		echo $total_weight;
+	}
+	function getProducts()
+    {
+    	return $this->productList;		
+    }
 	/*
 	public function __construct( $initParams = array() )
 	{
