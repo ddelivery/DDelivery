@@ -81,36 +81,37 @@ class DDeliveryProduct
 	 * @var int
 	 */
 	public $lengthaccess = 0;
-	
-	
-	/**
-	 * @param int $id
-	 * @param float $width
-	 * @param float $height
-	 * @param float $length
-	 * @param float $weight
-	 * @param float $price
-	 */
-    public function __construct( $id, $width, $heigth, $length, 
-                                 $weigth, $price, $quantity )
+
+
+    /**
+     * @param int $id id заказа в системе и-нет магазина
+     * @param float $width длинна
+     * @param float $height высота
+     * @param float $length ширина
+     * @param float $weight вес
+     * @param float $price стоимостьв рублях
+     * @param int $quantity количество товара
+     */
+    public function __construct( $id, $width, $height, $length,
+                                 $weight, $price, $quantity )
     {
     	$this->id = $id;
     	$this->width = $width;
-    	$this->heigth = $heigth;
+    	$this->heigth = $height;
     	$this->length = $length;
-    	$this->weigth = $weigth;
+    	$this->weigth = $weight;
     	$this->price = $price;
     	$this->quantity = $quantity;
     	
     }
-    
-    
+
+
     /**
-     *
      * Получаем наибольшую сторону товара
-     *
+     * @todo Чет у мя сомнения по поводу этой штуки, а функция getCurrentMinParameterValue работает подруому
+     * @return array
      */
-    public function getCurrentMaxParametrValue()
+    public function getCurrentMaxParameterValue()
     {
     	$max = 0;
     	if( !$this->widthaccess && ( $max < $this->getWidth() ) )
@@ -119,9 +120,9 @@ class DDeliveryProduct
     		$access =  'widthaccess';
     	}
     	
-    	if( !$this->heigthaccess && ( $max < $this->getHeigth() ) )
+    	if( !$this->heigthaccess && ( $max < $this->getHeight() ) )
     	{
-    		$max = $this->getHeigth();
+    		$max = $this->getHeight();
     		$access =  'heigthaccess';
     	}
     	
@@ -133,19 +134,18 @@ class DDeliveryProduct
     	
     	return array('access' => $access, 'max' => $max ); 
     }
-    
+
     /**
-     *
      * Получаем наименьшую сторону товара
-     *
+     * @return float
      */
-    public function getCurrentMinParametrValue()
+    public function getCurrentMinParameterValue()
     {
     	$min = $this->getWidth();
     	$access =  'widthaccess';
-    	if( $min > $this->getHeigth() )
+    	if( $min > $this->getHeight() )
     	{
-    		$min = $this->getHeigth();
+    		$min = $this->getHeight();
     		$access =  'heigthaccess';
     	}
     	if( $min > $this->getLength() )
@@ -168,7 +168,7 @@ class DDeliveryProduct
     	return $this->width;
     }
     
-    public function getHeigth()
+    public function getHeight()
     {
     	return $this->heigth;
     }
@@ -178,7 +178,7 @@ class DDeliveryProduct
     	return $this->length;
     }
     
-    public function getWeigth()
+    public function getWeight()
     {
     	return $this->weigth;
     }

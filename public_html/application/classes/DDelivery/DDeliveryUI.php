@@ -10,6 +10,7 @@
 * @author  mrozk <mrozk2012@gmail.com>
 */
 namespace DDelivery;
+use DDelivery\Adapter\DShopAdapter;
 use DDelivery\Sdk\DDeliverySDK;
 use DDelivery\Order\DDeliveryOrder;
 use DDelivery\Adapter\DShopAdapterImpl;
@@ -42,9 +43,9 @@ class DDeliveryUI
      */
     private $order;
     
-    public function __construct()
+    public function __construct(DShopAdapter $dShopAdapter)
     {
-        $this->sdk = new Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
+        $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), true);
         
         $this->shop = new Adapter\DShopAdapterImpl();
         
@@ -81,7 +82,7 @@ class DDeliveryUI
     	$response = $this->sdk->calculatorPickup( $id, $this->order->dimensionSide1, 
     			                                  $this->order->dimensionSide2, $this->order->dimensionSide3, 
                                                   $this->order->weight, $declaredPrice );
-    	
+
     	if(count( $response->success) )
     	{
     		
