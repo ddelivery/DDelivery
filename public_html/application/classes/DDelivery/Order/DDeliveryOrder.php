@@ -20,11 +20,13 @@ class DDeliveryOrder
 {
 	private $params = array( 'id' => 0 );
 	
-	private $dimensionSide1 = null;
+	private $dimensionSide1 = 0;
 	
-	private $dimensionSide2 = null;
+	private $dimensionSide2 = 0;
 	
-	private $dimensionSide3 = null;
+	private $dimensionSide3 = 0;
+	
+	private $weight = 0;
 	
 	private $type;
 	
@@ -75,64 +77,62 @@ class DDeliveryOrder
 		}
 		
 	}
-	function getOrderInfo()
+	function getProductParams()
 	{
-		$width = 'width';
-		$height = 'height';
-		$length = 'length';
-		$weight = 'weight';
-		
-		$width_access = $width . '_access';
-		$height_access = $height . '_access';
-		$length_access = $length . '_access';
-		$weight = $weight . '_access';
-		
-		$total_weight = 0;
-		$sum_of_min = 0;
-		$max = 0;
-		$max_key = -1;
-		
+		// находим 1 сторону
 		foreach ( $this->productList as $product )
 		{	
-			// находим 1 сторону
-			$min = $product->getWidth();
-			$alias = 'width';
 			
-			if( $min > $product->getHeigth() )
-			{
-				$min = $product->getHeigth();
-				$alias = 'height';
-			}
+			$min = $product->getCurrentMinParametrValue();
 			
-			if( $min > $product->getLength())
-			{
-				$min = $product->getLength();
-				$alias = 'length';
-			}
+			$this->dimensionSide1 += (($min) * $product->getQuantity());
 			
-			$alias_access = $alias  . "access";
-			$product->$alias_access  =  1;
-			$sum_of_min += (($min) * $product->getQuantity());
-			// находим 1 сторону
-			
-			// находим 2 сторону
-			
-			if( $product->$width_access == 0 )
-			{
-				if( $max < $product->getWidth() )
-				{
-                    $max = $product->getWidth();
-                    
-				}
-			}
-			// находим 2 сторону
 			
 			// находим вес
-			$total_weight +=  ( $product->getQuantity() * $product->getWeigth() );
+			$this->weight +=  ( $product->getQuantity() * $product->getWeigth() );
 			// находим вес
 			
 		}
-		echo $total_weight;
+		// находим 1 сторону
+		
+		// находим 2 сторону
+		$item = array();
+		$max = 0;
+		$key = -1;
+		for( $i = 0; $i< count($this->productList); $i++ )
+		{
+			$item = $this->productList[$i]->getCurrentMaxParametrValue();
+			if( $item['max'] > $max )
+			{
+				$key = $i;
+				$max = $item['max'];
+				$access = $item['access'];
+			}
+		}
+		$this->productList[$key]->$access = 1;
+		$this->dimensionSide2 = $max;
+		// находим 2 сторону
+		
+		// находим 3 сторону
+		$item = array();
+		$max = 0;
+		$key = -1;
+		for( $i = 0; $i< count($this->productList); $i++ )
+		{
+			$item = $this->productList[$i]->getCurrentMaxParametrValue();
+			if( $item['max'] > $max )
+			{
+				$key = $i;
+				$max = $item['max'];
+				$access = $item['access'];
+			}
+		}
+		$this->productList[$key]->$access = 1;
+		$this->dimensionSide3 = $max;
+		// находим 3 сторону
+		return;
+		
+		
 	}
 	function getProducts()
     {

@@ -104,6 +104,60 @@ class DDeliveryProduct
     	
     }
     
+    
+    /**
+     *
+     * Получаем наибольшую сторону товара
+     *
+     */
+    public function getCurrentMaxParametrValue()
+    {
+    	$max = 0;
+    	if( !$this->widthaccess && ( $max < $this->getWidth() ) )
+    	{
+    		$max = $this->getWidth();
+    		$access =  'widthaccess';
+    	}
+    	
+    	if( !$this->heigthaccess && ( $max < $this->getHeigth() ) )
+    	{
+    		$max = $this->getHeigth();
+    		$access =  'heigthaccess';
+    	}
+    	
+    	if( !$this->lengthaccess && ( $max < $this->getLength() ) )
+    	{
+    		$max = $this->getLength();
+    		$access =  'lengthaccess';
+    	}
+    	
+    	return array('access' => $access, 'max' => $max ); 
+    }
+    
+    /**
+     *
+     * Получаем наименьшую сторону товара
+     *
+     */
+    public function getCurrentMinParametrValue()
+    {
+    	$min = $this->getWidth();
+    	$access =  'widthaccess';
+    	if( $min > $this->getHeigth() )
+    	{
+    		$min = $this->getHeigth();
+    		$access =  'heigthaccess';
+    	}
+    	if( $min > $this->getLength() )
+    	{
+    		$min = $this->getLength();
+    		$access =  'lengthaccess';
+    	}
+    	$this->$access = 1;
+    	
+    	return $min;
+    }
+    
     public function getID()
     {
     	return $this->id;
@@ -138,25 +192,5 @@ class DDeliveryProduct
     {
     	return $this->quantity;
     }
-    /*
-    public function getWidthAccess()
-    {
-    	return $this->widthaccess;
-    }
     
-    public function setWidthAccess()
-    {
-    	return $this->widthaccess;
-    }
-    
-    public function getHeigthAccess()
-    {
-    	return $this->widthaccess;
-    }
-    
-    public function setHeigthAccess()
-    {
-    	return $this->heigthaccess;
-    }
-    */
 }    	

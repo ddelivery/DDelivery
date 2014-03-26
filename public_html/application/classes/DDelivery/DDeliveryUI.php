@@ -49,6 +49,9 @@ class DDeliveryUI
         $this->shop = new Adapter\DShopAdapterImpl();
         
         $this->order = new Order\DDeliveryOrder( $this->shop );
+        
+        // Получаем параметры для товаров в заказе
+        $this->order->getProductParams();
 
     }
     
@@ -74,15 +77,10 @@ class DDeliveryUI
     public function getDeliveryInfoForPoint( $id )
     {
     	
-    	$dimensionSide1 = 1;
-    	$dimensionSide2 = 1;
-    	$dimensionSide3 = 1;
-    	$weight = 1;
     	$declaredPrice = 0;
-    	
-    	$response = $this->sdk->calculatorPickup( $id, $dimensionSide1, 
-    			                                 $dimensionSide2, $dimensionSide3, $weight, 
-    			                                 $declaredPrice );
+    	$response = $this->sdk->calculatorPickup( $id, $this->order->dimensionSide1, 
+    			                                  $this->order->dimensionSide2, $this->order->dimensionSide3, 
+                                                  $this->order->weight, $declaredPrice );
     	
     	if(count( $response->success) )
     	{

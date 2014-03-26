@@ -13,8 +13,6 @@ class DShopAdapterImpl extends DShopAdapter
     	$prduct_item2 = array( 'id' => 2, 'width' => 3, 'height' => 1,
     			'length' => 4, 'weight' => 1, 'price' => 200, 'quantity' => 1  );
     	
-    	
-    	
     	$products[] = $prduct_item;
     	$products[] = $prduct_item2;
     	
