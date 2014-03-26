@@ -77,7 +77,6 @@ class DDeliveryOrder
     {
         // находим 1 сторону
         foreach ($this->productList as $product) {
-
             $min = $product->getCurrentMinParameterValue();
 
             $this->dimensionSide1 += (($min) * $product->getQuantity());

@@ -33,7 +33,7 @@ class DDeliveryUI
 	
     /**
      * Адаптер магазина CMS
-     * @var DShopAdapterImpl
+     * @var DShopAdapter
      */
     private $shop;
     
@@ -47,7 +47,7 @@ class DDeliveryUI
     {
         $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), true);
         
-        $this->shop = new Adapter\DShopAdapterImpl();
+        $this->shop = $dShopAdapter;
         
         $this->order = new Order\DDeliveryOrder( $this->shop );
         
@@ -120,6 +120,17 @@ class DDeliveryUI
     		return 0;
     	}
     }
-    
-    
+
+    /**
+     * Вызывается для рендера текущей странички
+     * @param array $post
+     * @todo метод не финальный
+     */
+    public function render($post)
+    {
+        //echo json_encode(['html'=>file_get_contents(__DIR__.'/popup-map.php')]);
+        echo json_encode(['html'=>file_get_contents(__DIR__.'/../../templates/popup-form.php')]);
+    }
+
+
 }

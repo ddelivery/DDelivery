@@ -23,5 +23,15 @@ class DShopAdapterImpl extends DShopAdapter
     {
     	
     }
+
+    /**
+     * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
+     * @return string
+     */
+    public function getApiKey()
+    {
+        // TODO: Implement getApiKey() method.
+    }
+
 }
 ?>

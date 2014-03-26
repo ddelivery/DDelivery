@@ -1,15 +1,5 @@
 <div id="ddelivery"></div>
-<div id="ddelivery2" style="width: 300px; height: 300px"></div>
 <script src="//api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU"></script>
-
-<script type="text/javascript">
-    ymaps.ready(function(){
-        var map = new ymaps.Map ("ddelivery2", {
-            center: [55.76, 37.64],
-            zoom: 7
-        });
-    });
-</script>
 
 <script>
     if(typeof(DDelivery) == 'undefined')
@@ -68,6 +58,8 @@
                         center: [55.76, 37.64],
                         zoom: 7
                     });
+
+                    DDelivery.map.controls.add('zoomControl', { top: 65, left: 10 });
                 });
 
             }, 'json');
@@ -77,6 +69,14 @@
             this.utils.requireScript(this.staticPath+'js/jquery.mCustomScrollbar.concat.min.js');
             this.utils.requireScript(this.staticPath+'js/jquery.custom-radio-checkbox.js');
             this.utils.requireScript(this.staticPath+'js/start.js');
+        },
+        mapAction:{
+            showLeftPanel: function() {
+                //$('.map-popup__main__right__btn').on('click', function () {
+                jQuery('.map-popup__main__right').toggleClass('map-popup__main__right_open');
+                jQuery('.map-popup__info').toggleClass('wide');
+                //});
+            }
         },
         utils:{
             requireScript: function(url, onload) {
@@ -109,4 +109,3 @@
     };
     DDelivery.init('ddelivery', 'ajax.php', '',  {});
 </script>
-

@@ -49,7 +49,8 @@ function autoloadClasses( $className ) {
         require_once $filename;
     }
     else
-    {	
+    {
+        var_dump($className);
     	die('Error loading libs ' . $filename);
     }
 }
