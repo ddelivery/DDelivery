@@ -14,7 +14,7 @@
  * @author  mrozk <mrozk2012@gmail.com>
  */
 
-header('Content-type: text/plain; charset=utf-8');
+//header('Content-type: text/plain; charset=utf-8');
 
 /**
  * Для поиска недостающих классов, сканируем
@@ -32,16 +32,16 @@ function autoloadClasses( $className ) {
         $pathPieces = explode('\\', $className);
         for ($i = 0; $i < count($pathPieces); $i++)
         {
-            $classPath .= ( '/' . $pathPieces[$i] );
+            $classPath .= ( DIRECTORY_SEPARATOR . $pathPieces[$i] );
         }
     	          		
     }
     else 
     {
-    	$classPath = '/' . $className;
+    	$classPath = DIRECTORY_SEPARATOR . $className;
     }
 	
-    $base = realpath(dirname(__FILE__) . '/' ) ;
+    $base = __DIR__ . DIRECTORY_SEPARATOR ;
     $filename = $base . "/classes" . $classPath . ".php";
     
     if (is_readable($filename) && file_exists($filename)) 

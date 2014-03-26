@@ -1,7 +1,7 @@
 <?php
 namespace DDelivery\Point;
 
-class DDeliveryPointSelf{
+class DDeliveryPointSelf extends DDeliveryAbstractPoint{
 
     private $params = array();
 
