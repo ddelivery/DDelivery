@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 
 
 require_once 'application/bootstrap.php';
-//$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
+//$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('	', true);
 //$result = $DDeliverySDK->getSelfDeliveryPoints('4,6', '4,25');
 //$result = $DDeliverySDK->deliveryPoints();
 // $result = $DDeliverySDK->getCityByIp('188.162.64.72');
@@ -26,7 +26,19 @@ require_once 'application/bootstrap.php';
 //$result = $DDeliverySDK->getSelfPointsForCity( '4,6' );
 
 //print_r($result);
-$DDeliveryUI = new DDelivery\DDeliveryUI();
-$order = $DDeliveryUI->getOrder()->getOrderInfo();
-print_r($order);
+/*
+ * */
+
+$shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
+$DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
+
+$order = $DDeliveryUI->getCityByIp('188.162.64.72');
+echo $order['city_id'] ;
+$points = $DDeliveryUI->getCurierPointsForCity( $order['city_id'] );
+print_r($points);
+//$order = $DDeliveryUI->getOrder()->getOrderInfo();
+
+
+
+
 
