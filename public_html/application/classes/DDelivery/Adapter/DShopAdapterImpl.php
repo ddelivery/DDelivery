@@ -3,8 +3,11 @@
 namespace DDelivery\Adapter;
 
 class DShopAdapterImpl extends DShopAdapter
-{	
-	
+{
+    /**
+     * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
+     * @return string
+     */
 	public function getApiKey()
 	{
 		return '4bf43a2cd2be3538bf4e35ad8191365d'; 
@@ -29,15 +32,5 @@ class DShopAdapterImpl extends DShopAdapter
     {
     	
     }
-
-    /**
-     * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
-     * @return string
-     */
-    public function getApiKey()
-    {
-        // TODO: Implement getApiKey() method.
-    }
-
 }
 ?>

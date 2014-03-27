@@ -69,16 +69,11 @@ class DDeliveryOrder
 
         if (count($products) > 0) 
         {
-        	foreach ($products as $prod)
-        	{
-        		$this->productList[] = new DDeliveryProduct($prod['id'],$prod['width'], $prod['height'], 
-                                                            $prod['length'], $prod['weight'], $prod['price'], $prod['quantity']);
-        	}
-        	
+            $this->productList = $products;
 
         	// Получаем параметры для товаров в заказе
         	$this->getProductParams();
-            
+
         } else {
             throw new DDeliveryOrderException("Корзина пуста");
         }

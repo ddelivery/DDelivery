@@ -89,5 +89,11 @@ abstract class DShopAdapter
         return $courierPoints;
     }
 
-
+    /**
+     * Верните id города в системе DDelivery
+     * @return int
+     */
+    public function getClientCityId() {
+        return 0;
+    }
 }

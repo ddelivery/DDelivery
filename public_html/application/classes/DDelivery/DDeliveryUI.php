@@ -173,7 +173,43 @@ class DDeliveryUI
     public function render($post)
     {
         //echo json_encode(['html'=>file_get_contents(__DIR__.'/popup-map.php')]);
-        echo json_encode(['html'=>file_get_contents(__DIR__.'/../../templates/popup-form.php')]);
+        $this->selectDeliveryTypeForm();
+    }
+
+    protected function selectDeliveryTypeForm()
+    {
+        $cityId = (int)$this->shop->getClientCityId();
+        if(!$cityId){
+            $sdkResponse = $this->sdk->getCityByIp($_SERVER['REMOTE_ADDR']);
+            if($sdkResponse->success && isset($sdkResponse->response['city_id'])) {
+                $cityId = (int)$sdkResponse->response['city_id'];
+                $cityData = $sdkResponse->response;
+            }
+        }
+        // @todo когда будет метод возвращающий инфу о городе по id добавить
+        // @todo когда будет метод взять топ, забрать мск
+        if(!$cityData) {
+            $cityData = array("city_id"=>151184, "country"=>"RU", "city"=>"москва",
+                "region"=>"Москва", "region_id"=>77, "type"=>"г", "postal_code"=>"101000",
+                "area"=>"","kladr"=>"77000000000");
+        }
+        $displayCityName = $cityData['type'].'. '.$cityData['region'];
+
+        if(mb_strtolower($cityData['region']) != mb_strtolower($cityData['city'])) {
+            $displayCityName .= ', '.$cityData['city'];
+        }
+        $cityData['display_name'] = $displayCityName;
+
+        ob_start();
+
+        include(__DIR__.'/../../templates/popup-form.php');
+        $content = ob_get_contents();
+
+        ob_end_clean();
+
+        echo json_encode(array('html'=>$content));
+
+
     }
 
 
