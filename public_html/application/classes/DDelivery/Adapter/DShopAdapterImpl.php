@@ -3,7 +3,13 @@
 namespace DDelivery\Adapter;
 
 class DShopAdapterImpl extends DShopAdapter
-{
+{	
+	
+	public function getApiKey()
+	{
+		return '4bf43a2cd2be3538bf4e35ad8191365d'; 
+	}
+	
     public function getProductsFromCart()
     {
     	$products = array();

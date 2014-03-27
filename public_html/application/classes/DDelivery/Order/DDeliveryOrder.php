@@ -32,6 +32,8 @@ class DDeliveryOrder
     private $weight = 0;
 
     private $type;
+    
+   
 
     protected $allowParams = array();
 
@@ -51,7 +53,7 @@ class DDeliveryOrder
      * точка для
      * @var DDeliveryAbstractPoint
      */
-    private $point;
+    private $point = null;
 
     private $user;
 
@@ -65,15 +67,25 @@ class DDeliveryOrder
 
         $products = $this->shop->getProductsFromCart();
 
-        if (count($products) > 0) {
-            $this->productList = $products;
+        if (count($products) > 0) 
+        {
+        	foreach ($products as $prod)
+        	{
+        		$this->productList[] = new DDeliveryProduct($prod['id'],$prod['width'], $prod['height'], 
+                                                            $prod['length'], $prod['weight'], $prod['price'], $prod['quantity']);
+        	}
+        	
+
+        	// Получаем параметры для товаров в заказе
+        	$this->getProductParams();
+            
         } else {
             throw new DDeliveryOrderException("Корзина пуста");
         }
 
     }
 
-    function getProductParams()
+    public function getProductParams()
     {
         // находим 1 сторону
         foreach ($this->productList as $product) {
@@ -115,7 +127,7 @@ class DDeliveryOrder
                 $key = $i;
                 $max = $item['max'];
                 $access = $item['access'];
-            }
+            }		
         }
         $this->productList[$key]->$access = 1;
         $this->dimensionSide3 = $max;
@@ -124,10 +136,44 @@ class DDeliveryOrder
 
 
     }
-
-    function getProducts()
+    
+    public function setPoint( $point )
+    {
+        $this->point = $point;    	
+    }
+    
+    public function getPoint()
+    {
+    	if( $this->point != null)
+    	{
+    		return $this->point;
+    	}
+    	return null;
+    }
+    
+    public function getProducts()
     {
         return $this->productList;
+    }
+    
+    public function getDimensionSide1()
+    {
+    	return $this->dimensionSide1;
+    }
+    
+    public function getDimensionSide2()
+    {
+    	return $this->dimensionSide2;
+    }
+    
+    public function getDimensionSide3()
+    {
+    	return $this->dimensionSide3;
+    }
+    
+    public function getWeight()
+    {
+    	return $this->weight;
     }
     /*
     public function __construct( $initParams = array() )

@@ -62,45 +62,12 @@ class DDeliverySDK {
         //return $this->requestProvider->request('order_create', $params, 'post');
     }
     
-    /*
-    
-    public function getDeliveryInfoForPoint( $pointID )
-    {	
-    	$dimensionSide1 = 10;
-    	$dimensionSide2 = 10;
-    	$dimensionSide3 = 10;
-    	$weight = 1;
-    	
-        return $this->calculatorPickup(  $pointID, $dimensionSide1, 
-                                         $dimensionSide2, $dimensionSide3, $weight );
-        
-    }
-    
-    public function getPointsInstance( $pointsResponse )
-    {	
-    	$points = array();
-    	
-    	if( count( $pointsResponse ) )
-    	{
-    		foreach ($pointsResponse as $p)
-    		{
-    			$point = new \DDelivery\Point\DDeliveryPointSelf( $p );
-    			
-    			$deliveryInfo = $this->getDeliveryInfoForPoint( $point->get('_id') );
-    			
-    			$point->setDeliveryInfo( $deliveryInfo );
-    			
-    			$points[] = $point;
-    		}
-    	}
-    	
-    	return $points;
-    }
-    */
     /**
      * Получить список точек для самовывоза
      * @param mixed $cities список id городов через запятую
      * @param mixed $cities список id компаний через запятую
+     * 
+     * @return DDeliverySDKResponse
      */
     public function getSelfDeliveryPoints( $cities, $companies = '' )
     {
@@ -116,6 +83,8 @@ class DDeliverySDK {
     /**
      * Получить id города по ip
      * @param string $ip ip адрес клиента
+     * 
+     * @return DDeliverySDKResponse
      */
     public function getCityByIp( $ip )
     {	
@@ -136,6 +105,7 @@ class DDeliverySDK {
      * @param float $weight Вес (кг)
      * @param float|null $declaredPrice Оценочная стоимость (руб)
      * @param float|null $paymentPrice Наложенный платеж (руб)
+     * 
      * @return DDeliverySDKResponse
      */
     public function calculatorPickup( $deliveryPoint, $dimensionSide1, 

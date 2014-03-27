@@ -14,6 +14,7 @@ use DDelivery\Adapter\DShopAdapter;
 use DDelivery\Sdk\DDeliverySDK;
 use DDelivery\Order\DDeliveryOrder;
 use DDelivery\Adapter\DShopAdapterImpl;
+use DDelivery\Point\DDeliveryInfo;
 
 /**
  * DDeliveryUI - Обертка рабочих классов, для взаимодействия 
@@ -50,12 +51,15 @@ class DDeliveryUI
         $this->shop = $dShopAdapter;
         
         $this->order = new Order\DDeliveryOrder( $this->shop );
-        
-        // Получаем параметры для товаров в заказе
-        $this->order->getProductParams();
 
     }
     
+    /**
+     * Получить город по ip адресу
+     * @var string $ip
+     * 
+     * @return array;
+     */
     public function getCityByIp( $ip )
     {
     	$response = $this->sdk->getCityByIp( $ip );
@@ -69,19 +73,31 @@ class DDeliveryUI
     	}
     	
     }
-	
+    
+    /**
+     * Получить объект заказа
+     * @var string $ip
+     *
+     * @return DDeliveryOrder;
+     */
     public function getOrder( )
     {
         return $this->order;
     }
     
+    /**
+     * Получить информацию о заказе для точки
+     * @var int $id
+     *
+     * @return DDeliveryInfo;
+     */
     public function getDeliveryInfoForPoint( $id )
     {
     	
     	$declaredPrice = 0;
-    	$response = $this->sdk->calculatorPickup( $id, $this->order->dimensionSide1, 
-    			                                  $this->order->dimensionSide2, $this->order->dimensionSide3, 
-                                                  $this->order->weight, $declaredPrice );
+    	$response = $this->sdk->calculatorPickup( $id, $this->order->getDimensionSide1(), 
+    			                                  $this->order->getDimensionSide2(), $this->order->getDimensionSide3(), 
+                                                  $this->order->getWeight(), $declaredPrice );
 
     	if(count( $response->success) )
     	{
@@ -92,6 +108,34 @@ class DDeliveryUI
     	return null; 
     }
     
+    public function getCurierPointsForCity( $cityID )
+    {
+    	$response = $this->sdk->calculatorCourier( $cityID, $this->order->getDimensionSide1(),
+                                                   $this->order->getDimensionSide2(), $this->order->getDimensionSide3(),
+                                                   $this->order->getWeight(), 0 );
+    	
+    	if( $response->success )
+        {
+    		$points = array();
+    		if( count( $response->response ) )
+    		{
+    			foreach ($response->response as $p)
+    			{
+    				$point = new \DDelivery\Point\DDeliveryPointCurier();
+    				$deliveryInfo = new \DDelivery\Point\DDeliveryInfo( $p );
+    				$point->setDeliveryInfo($deliveryInfo);
+    				$points[] = $point;
+    			}
+    		}
+    		return $points;
+        }
+        else
+        {
+        	return 0;
+        }
+    	
+    	
+    }
     public function getSelfPointsForCity( $cities, $companies = '' )
     {
     	$response = $this->sdk->getSelfDeliveryPoints( $cities, $companies );

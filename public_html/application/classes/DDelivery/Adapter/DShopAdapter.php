@@ -26,7 +26,7 @@ abstract class DShopAdapter
 {
     /**
      * Возвращает товары находящиеся в корзине пользователя
-     * @return DDeliveryProduct[]
+     * @return array
      */
     public abstract function getProductsFromCart();
 
@@ -73,7 +73,7 @@ abstract class DShopAdapter
      * Если необходимо фильтрует курьеров и добавляет новых
      *
      * @param DDeliveryPointCourier[] $courierPoints
-     * @return \DDelivery\Point\DDeliveryPointCourier[]
+     * @return \DDelivery\Point\DDeliveryPointCurier[]
      */
     public function filterPointsCourier($courierPoints) {
         return $courierPoints;
