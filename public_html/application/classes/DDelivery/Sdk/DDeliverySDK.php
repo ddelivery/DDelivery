@@ -83,15 +83,15 @@ class DDeliverySDK {
     /**
      * Получить id города по ip
      * @param string $ip ip адрес клиента
-     * 
+     *
      * @return DDeliverySDKResponse
      */
     public function getCityByIp( $ip )
     {	
     	$params = array(
-    			'_action' => 'geoip',
-    			'ip' => $ip
-    			);
+            '_action' => 'geoip',
+            'ip' => $ip
+        );
     	return $this->requestProvider->request('geoip', $params, 'get', 'node');
     }
     

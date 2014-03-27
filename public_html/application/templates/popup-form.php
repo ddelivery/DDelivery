@@ -1,3 +1,4 @@
+<?/** @var array $cityData */ ?>
 <div class="map-popup">
 
     <div class="map-popup__head">
@@ -5,7 +6,7 @@
 
         <div class="delivery-place" style="width:280px;">
             <div class="delivery-place__title">
-                <input type="text" title="г. Ханты-Мансийск, обл.Ханты-Мансийский"/>
+                <input type="text" title="<?=$cityData['display_name']?>"/>
                 <span><i>&nbsp;</i></span>
             </div>
             <div class="delivery-place__drop">
@@ -75,6 +76,7 @@
                         от <strong>1</strong> дня
                     </td>
                 </tr>
+                <?/*
                 <tr>
                     <td class="col1">
                         <input type="radio" name="delivery" id="delivery3"/>
@@ -95,6 +97,7 @@
                         от <strong>1</strong> дня
                     </td>
                 </tr>
+                */?>
             </table>
         </div>
         <div class="map-popup__main__delivery__next">

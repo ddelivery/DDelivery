@@ -7,6 +7,9 @@
 
 ini_set("display_errors", "1");
 error_reporting(E_ALL);
+
+$_SERVER['REMOTE_ADDR'] = '213.180.193.3';
+
 include_once(implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', 'application', 'bootstrap.php')));
 
 use DDelivery\Adapter\DShopAdapter;

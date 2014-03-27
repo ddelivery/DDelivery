@@ -153,50 +153,6 @@
         })
     }
 })(jQuery);
-/*
- * jQuery Form Tips 1.2.6
- * By Manuel Boy (http://www.manuelboy.de)
- * Copyright (c) 2012 Manuel Boy
- * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
- */
-
-(function (a) {
-    a.fn.formtips = function (b) {
-        var c = a.extend({tippedClass: "tipped"}, b);
-        return this.each(function () {
-            var b = a(this);
-            var d = a(b).attr("type");
-            if (d != "file" && d != "checkbox" && d != "radio") {
-                a(b).bind("focus", function () {
-                    var b = a(this).attr("title");
-                    if (a(this).val() == b) {
-                        a(this).val("").removeClass(c.tippedClass)
-                    }
-                    return true
-                });
-                a(b).bind("blur", function () {
-                    var b = a(this).attr("title");
-                    if (a(this).val() == "") {
-                        a(this).val(b).addClass(c.tippedClass)
-                    }
-                    return true
-                });
-                var e = a(b).attr("title");
-                if (a(b).val() == "" || a(b).val() == a(this).attr("title")) {
-                    a(b).val(e).addClass(c.tippedClass)
-                } else {
-                    a(b).removeClass(c.tippedClass)
-                }
-                a(b).parentsUntil("form").parent().submit(function () {
-                    var d = a(b).attr("title");
-                    if (a(b).val() == d) {
-                        a(b).val("").removeClass(c.tippedClass)
-                    }
-                })
-            }
-        })
-    }
-})(jQuery);
 
 jQuery(function ($) {
     $('.phone-mask').mask("+9(999)999-999-99");
