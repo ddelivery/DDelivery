@@ -95,9 +95,40 @@ class DDeliverySDK {
     	return $this->requestProvider->request('geoip', $params, 'get', 'node');
     }
     
+    /**
+     * Расчитать цену самовывоза для компаний города
+     * @param int $deliveryCity Идентификатор города
+     * @param int $dimensionSide1 Сторона 1 (см)
+     * @param int $dimensionSide2 Сторона 2 (см)
+     * @param int $dimensionSide3 Сторона 3 (см)
+     * @param float $weight Вес (кг)
+     * @param float|null $declaredPrice Оценочная стоимость (руб)
+     * @param float|null $paymentPrice Наложенный платеж (руб)
+     *
+     * @return DDeliverySDKResponse
+     */
+    public function calculatorPickupForCity( $deliveryCity, $dimensionSide1,
+    		$dimensionSide2, $dimensionSide3, $weight,
+    		$declaredPrice, $paymentPrice = null )
+    {
+    	$params = array(
+    			'type' => 1,
+    			'city_to' => $deliveryCity,
+    			'dimension_side1' => $dimensionSide1,
+    			'dimension_side2' => $dimensionSide2,
+    			'dimension_side3' => $dimensionSide3,
+    			'weight' => $weight,
+    			'declared_price' => $declaredPrice
+    	);
+    
+    	if($paymentPrice !== null)
+    		$params['payment_price']  = $paymentPrice;
+    
+    	return $this->requestProvider->request( 'calculator', $params );
+    }
 
     /**
-     * Расчитать цену самовывоза
+     * Расчитать цену самовывоза для компании
      * @param int $deliveryPoint Идентификатор пункта выдачи
      * @param int $dimensionSide1 Сторона 1 (см)
      * @param int $dimensionSide2 Сторона 2 (см)
@@ -108,9 +139,9 @@ class DDeliverySDK {
      * 
      * @return DDeliverySDKResponse
      */
-    public function calculatorPickup( $deliveryPoint, $dimensionSide1, 
-                                      $dimensionSide2, $dimensionSide3, $weight, 
-                                      $declaredPrice, $paymentPrice = null )
+    public function calculatorPickupForCompany( $deliveryPoint, $dimensionSide1, 
+                                                $dimensionSide2, $dimensionSide3, $weight, 
+                                                $declaredPrice, $paymentPrice = null )
     {
         $params = array(
             'type' => 1,

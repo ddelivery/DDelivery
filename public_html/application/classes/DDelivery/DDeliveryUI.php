@@ -108,7 +108,7 @@ class DDeliveryUI
     	return null; 
     }
     
-    public function getCurierPointsForCity( $cityID )
+    public function getCourierPointsForCity( $cityID )
     {
     	$response = $this->sdk->calculatorCourier( $cityID, $this->order->getDimensionSide1(),
                                                    $this->order->getDimensionSide2(), $this->order->getDimensionSide3(),
@@ -121,7 +121,7 @@ class DDeliveryUI
     		{
     			foreach ($response->response as $p)
     			{
-    				$point = new \DDelivery\Point\DDeliveryPointCurier();
+    				$point = new \DDelivery\Point\DDeliveryPointCourier();
     				$deliveryInfo = new \DDelivery\Point\DDeliveryInfo( $p );
     				$point->setDeliveryInfo($deliveryInfo);
     				$points[] = $point;
@@ -136,6 +136,33 @@ class DDeliveryUI
     	
     	
     }
+    
+    public function getSelfPointsForCity( $cityID )
+    {
+    	$response = $this->sdk->calculatorPickupForCity( $cityID, $this->order->getDimensionSide1(),
+                                                         $this->order->getDimensionSide2(), 
+    			                                         $this->order->getDimensionSide3(),
+                                                         $this->order->getWeight(), 0 );
+    	if( $response->success )
+    	{
+    		$points = array();
+    		if( count( $response->response ) )
+    		{
+    			foreach ($response->response as $p)
+    			{
+    				$point = new \DDelivery\Point\DDeliveryPointSelf();
+    				$deliveryInfo = new \DDelivery\Point\DDeliveryInfo( $p );
+    				$point->setDeliveryInfo($deliveryInfo);
+    				$points[] = $point;
+    			}
+    		}
+    	}
+    	else
+    	{
+    		return 0;
+    	}
+    }
+    /*
     public function getSelfPointsForCity( $cities, $companies = '' )
     {
     	$response = $this->sdk->getSelfDeliveryPoints( $cities, $companies );
@@ -164,7 +191,7 @@ class DDeliveryUI
     		return 0;
     	}
     }
-
+	*/
     /**
      * Вызывается для рендера текущей странички
      * @param array $post
