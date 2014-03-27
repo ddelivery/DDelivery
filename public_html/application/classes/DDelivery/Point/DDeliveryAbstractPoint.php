@@ -34,6 +34,24 @@ abstract class DDeliveryAbstractPoint {
 		}
 	}
 	
+	public function apply( $initParams = array() )
+	{
+		if(is_array($initParams))
+		{
+			foreach ( $initParams as $key => $value)
+			{
+				try
+				{
+					$this->set($key, $value);
+				}
+				catch (DDeliveryPointException $e)
+				{
+					echo $e->getMessage();
+				}
+			}
+		}
+	}
+	
 	public function set( $paramName, $paramValue)
 	{
 		 

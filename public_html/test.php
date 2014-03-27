@@ -33,9 +33,12 @@ $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 
 $order = $DDeliveryUI->getCityByIp('188.162.64.72');
-echo $order['city_id'] ;
-$points = $DDeliveryUI->getSelfPointsForCity( $order['city_id'] );
-print_r($points);
+//echo $order['city_id'] ;
+///$points = $DDeliveryUI->getSelfPointsForCity( $order['city_id'] );
+//print_r($points);
+
+$DDeliveryUI->getSelfPoints( $order['city_id'] );
+
 //$order = $DDeliveryUI->getOrder()->getOrderInfo();
 
 

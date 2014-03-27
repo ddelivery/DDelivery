@@ -69,7 +69,7 @@ class DDeliverySDK {
      * 
      * @return DDeliverySDKResponse
      */
-    public function getSelfDeliveryPoints( $cities, $companies = '' )
+    public function getSelfDeliveryPoints( $companies, $cities = '' )
     {
     	$params = array(
     			'_action' => 'delivery_points',
@@ -120,7 +120,7 @@ class DDeliverySDK {
     			'weight' => $weight,
     			'declared_price' => $declaredPrice
     	);
-    
+    	
     	if($paymentPrice !== null)
     		$params['payment_price']  = $paymentPrice;
     
@@ -168,6 +168,7 @@ class DDeliverySDK {
      * @param float $weight Вес (кг)
      * @param float|null $declaredPrice Оценочная стоимость (руб)
      * @param float|null $paymentPrice Наложенный платеж (руб)
+     * 
      * @return DDeliverySDKResponse
      */
     public function calculatorCourier($cityTo, $dimensionSide1, 
@@ -193,6 +194,9 @@ class DDeliverySDK {
     
     /**
      * Получить список пунктов самовывоза
+     * 
+     * @param string $q Часть строки для поиска
+     * 
      * @return DDeliverySDKResponse
      */
     public function getAutoCompleteCity( $q ) {

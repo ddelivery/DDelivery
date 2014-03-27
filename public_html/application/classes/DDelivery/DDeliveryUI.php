@@ -15,6 +15,7 @@ use DDelivery\Sdk\DDeliverySDK;
 use DDelivery\Order\DDeliveryOrder;
 use DDelivery\Adapter\DShopAdapterImpl;
 use DDelivery\Point\DDeliveryInfo;
+use DDelivery\Point\DDeliveryAbstractPoint;
 
 /**
  * DDeliveryUI - Обертка рабочих классов, для взаимодействия 
@@ -108,6 +109,12 @@ class DDeliveryUI
     	return null; 
     }
     
+    /**
+     * Получить курьерские точки для города
+     * @var int $cityID
+     *
+     * @return array DDeliveryAbstractPoint;
+     */
     public function getCourierPointsForCity( $cityID )
     {
     	$response = $this->sdk->calculatorCourier( $cityID, $this->order->getDimensionSide1(),
@@ -137,12 +144,19 @@ class DDeliveryUI
     	
     }
     
+    /**
+     * Получить точки самовывоза для города
+     * @var int $cityID
+     *
+     * @return array DDeliveryAbstractPoint;
+     */
     public function getSelfPointsForCity( $cityID )
     {
     	$response = $this->sdk->calculatorPickupForCity( $cityID, $this->order->getDimensionSide1(),
                                                          $this->order->getDimensionSide2(), 
     			                                         $this->order->getDimensionSide3(),
                                                          $this->order->getWeight(), 0 );
+    	
     	if( $response->success )
     	{
     		$points = array();
@@ -156,42 +170,74 @@ class DDeliveryUI
     				$points[] = $point;
     			}
     		}
+    		return $points;
     	}
     	else
     	{
     		return 0;
     	}
     }
-    /*
-    public function getSelfPointsForCity( $cities, $companies = '' )
+    
+    /**
+     * Получить точки  самовывоза  для города с их 
+     * полным описанием
+     * 
+     * @var int $cityID
+     *
+     * @return array DDeliveryAbstractPoint;
+     */
+    public function getSelfPoints( $cityID )
     {
-    	$response = $this->sdk->getSelfDeliveryPoints( $cities, $companies );
+    	$points = $this->getSelfPointsForCity($cityID);
     	
-    	if( $response->success )
-    	{
-    		$points = array();
-    		if( count( $response->response ) )
+    	if( count( $points ) )
+    	{	
+    		$pointsIDs = array();
+    		
+    		foreach ($points as $item)
     		{
-    			foreach ($response->response as $p)
-    			{
-    				$point = new \DDelivery\Point\DDeliveryPointSelf( $p );
-    				
-    				$deliveryInfo = $this->getDeliveryInfoForPoint( $point->get('_id') );
-    				 
-    				$point->setDeliveryInfo( $deliveryInfo );
-    				 
-    				$points[] = $point;
-    			}
+    			$pointsIDs[] = $item->getDeliveryInfo()->get('delivery_company');
+    		}
+    		$pointStr = implode(',', $pointsIDs);
+    		
+    		$pointsInfo = $this->getSelfPointsForCompany($pointStr);
+    		foreach ($points as $item)
+    		{	
+    			$DI = $item->getDeliveryInfo();
+    			$id = $DI->get('delivery_company');
+    			$item->apply( $pointsInfo[$id] );
     		}
     		
-    		return $points;
+    	}
+    	return $points;
+    }
+    /**
+     * Получить информацию о точке самовывоза по ее ID
+     * @var int $cityID
+     *
+     * @return array;
+     */
+    public function getSelfPointsForCompany( $companyIDs )
+    {
+    	$response = $this->sdk->getSelfDeliveryPoints( $companyIDs );
+    	
+    	if( $response->success )
+    	{	
+    		$pointsInfo = array();
+    		for ($i = 0; $i< count($response->response); $i++ )
+    		{ 
+    			$pointID = $response->response[$i]['_id'];
+    			$pointsInfo[$pointID] = $response->response[$i];
+    		}
+    		
+    	    return $pointsInfo;
     	}
     	else 
     	{
     		return 0;
     	}
     }
-	*/
+	
     /**
      * Вызывается для рендера текущей странички
      * @param array $post
