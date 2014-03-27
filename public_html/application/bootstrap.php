@@ -50,8 +50,7 @@ function autoloadClasses( $className ) {
     }
     else
     {
-        var_dump($className);
-    	die('Error loading libs ' . $filename);
+        die('Error loading libs ' . $filename);
     }
 }
 
