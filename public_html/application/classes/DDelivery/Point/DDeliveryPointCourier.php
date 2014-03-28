@@ -12,6 +12,10 @@
 
 namespace DDelivery\Point;
 
-class DDeliveryPointCourier extends DDeliveryAbstractPoint {
-
-}
+/**
+ * DDeliveryPointCourier - компания 
+ * для курьерской доставки
+ * 
+ * @package  DDelivery.Point
+ */
+class DDeliveryPointCourier extends DDeliveryAbstractPoint {}

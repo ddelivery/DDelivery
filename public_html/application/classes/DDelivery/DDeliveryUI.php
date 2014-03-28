@@ -146,7 +146,7 @@ class DDeliveryUI
     }
     
     /**
-     * Получить точки самовывоза для города
+     * Получить компании самовывоза для города
      * @var int $cityID
      *
      * @return array DDeliveryAbstractPoint;
@@ -180,8 +180,8 @@ class DDeliveryUI
     }
     
     /**
-     * Получить точки  самовывоза  для города с их 
-     * полным описанием
+     * Получить компании самовывоза  для города с их 
+     * полным описанием, и координатами их филиалов
      * 
      * @var int $cityID
      *
@@ -215,8 +215,10 @@ class DDeliveryUI
     	
     }
     /**
-     * Получить информацию о точке самовывоза по ее ID
-     * @var int $cityID
+     * Получить информацию о точке самовывоза по ее ID  и по ID города
+     * 
+     * @var mixed $cityID
+     * @var int $companyIDs
      *
      * @return array;
      */
@@ -227,14 +229,6 @@ class DDeliveryUI
     	
     	if( $response->success )
     	{	
-    		/*
-    		$pointsInfo = array();
-    		for ($i = 0; $i< count($response->response); $i++ )
-    		{ 
-    			$pointID = $response->response[$i]['_id'];
-    			$pointsInfo[$pointID] = $response->response[$i];
-    		}
-    		*/
     	    return $response->response;
     	}
     	else 

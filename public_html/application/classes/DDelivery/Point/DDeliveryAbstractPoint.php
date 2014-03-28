@@ -1,61 +1,24 @@
 <?php
 /**
- * User: DnAp
- * Date: 26.03.14
- * Time: 22:26
+ * User: mrozk
+ * Date: 29.03.14
+ * Time: 00:00
  */
 
 namespace DDelivery\Point;
 
-
+/**
+ * DDeliveryAbstractPoint
+ * @package DDelivery.Point
+ */
 abstract class DDeliveryAbstractPoint {
 	
-    protected  $params = array();
-    
-    protected  $allowParams;
-	
+	/**
+	 * Информация по доставке для данной компании
+	 * @var DDeliveryInfo
+	 */
 	protected $deliveryInfo = null;
 	
-	public function __construct( $initParams = array() )
-	{
-		if(is_array($initParams))
-		{
-			foreach ( $initParams as $key => $value)
-			{
-				try
-				{
-					$this->set($key, $value);
-				}
-				catch (DDeliveryPointException $e)
-				{
-					echo $e->getMessage();
-				}
-			}
-		}
-	}
-	
-	
-	public function set( $paramName, $paramValue)
-	{
-		 
-		if( in_array($paramName, $this->allowParams) )
-		{
-			$this->params[$paramName] = $paramValue;
-		}
-		else
-		{
-			throw new DDeliveryPointException("Point param not found");
-		}
-	}
-	
-	public function get( $paramName )
-	{
-		if( array_key_exists($paramName, $this->params) )
-		{
-			return 	$this->params[$paramName];
-		}
-		return null;
-	}
 	
 	public function setDeliveryInfo( $deliveryInfo )
 	{
