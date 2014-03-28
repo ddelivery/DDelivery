@@ -64,6 +64,7 @@ class DDeliveryUI
     public function getCityByIp( $ip )
     {
     	$response = $this->sdk->getCityByIp( $ip );
+    	print_r($response);
     	if( $response->success )
     	{
     		return $response->response;
@@ -200,16 +201,18 @@ class DDeliveryUI
     		}
     		$pointStr = implode(',', $pointsIDs);
     		
-    		$pointsInfo = $this->getSelfPointsForCompany($pointStr);
+    		$pointsInfo = $this->getSelfPointsForCompany($pointStr, $cityID);
+    		
     		foreach ($points as $item)
     		{	
-    			$DI = $item->getDeliveryInfo();
-    			$id = $DI->get('delivery_company');
-    			$item->apply( $pointsInfo[$id] );
+    			$item->filterLocationInfo( $pointsInfo );
+    			
     		}
+    		print_r($points);
     		
     	}
     	return $points;
+    	
     }
     /**
      * Получить информацию о точке самовывоза по ее ID
@@ -217,20 +220,22 @@ class DDeliveryUI
      *
      * @return array;
      */
-    public function getSelfPointsForCompany( $companyIDs )
-    {
-    	$response = $this->sdk->getSelfDeliveryPoints( $companyIDs );
+    public function getSelfPointsForCompany( $companyIDs, $cityID )
+    {	
+    	
+    	$response = $this->sdk->getSelfDeliveryPoints( $companyIDs, $cityID );
     	
     	if( $response->success )
     	{	
+    		/*
     		$pointsInfo = array();
     		for ($i = 0; $i< count($response->response); $i++ )
     		{ 
     			$pointID = $response->response[$i]['_id'];
     			$pointsInfo[$pointID] = $response->response[$i];
     		}
-    		
-    	    return $pointsInfo;
+    		*/
+    	    return $response->response;
     	}
     	else 
     	{

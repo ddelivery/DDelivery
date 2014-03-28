@@ -66,11 +66,19 @@ class DDeliveryOrder
         $this->shop = $shop;
 
         $products = $this->shop->getProductsFromCart();
-
+		
+        
+        
         if (count($products) > 0) 
         {
-            $this->productList = $products;
-
+            
+        	foreach($products as $item)
+        	{
+        		$this->productList[] = new DDeliveryProduct($item['id'], $item['width'], $item['height'], 
+                                                            $item['length'], $item['weight'], 
+        	                                                $item['price'], $item['quantity']);
+        	}
+        	
         	// Получаем параметры для товаров в заказе
         	$this->getProductParams();
 

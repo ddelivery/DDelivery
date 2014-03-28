@@ -69,7 +69,7 @@ class DDeliverySDK {
      * 
      * @return DDeliverySDKResponse
      */
-    public function getSelfDeliveryPoints( $companies, $cities = '' )
+    public function getSelfDeliveryPoints( $companies, $cities  )
     {
     	$params = array(
     			'_action' => 'delivery_points',
