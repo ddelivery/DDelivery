@@ -18,7 +18,10 @@ namespace DDelivery\Sdk;
  * @package     DDelivery
  */
 class DDeliverySDK {
-	
+
+    const TYPE_SELF = 1;
+    const TYPE_COURIER = 2;
+
 	/**
 	 * создает запросы
 	 * @var RequestProvider

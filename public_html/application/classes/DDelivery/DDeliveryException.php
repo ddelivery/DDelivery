@@ -15,4 +15,4 @@
 namespace DDelivery;
 
 
-class DDeliveryException extends Exception{}
+class DDeliveryException extends \Exception{}
