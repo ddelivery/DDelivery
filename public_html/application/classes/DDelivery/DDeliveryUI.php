@@ -24,14 +24,23 @@ use DDelivery\Point\DDeliveryAbstractPoint;
  * @package  DDelivery
  */
 class DDeliveryUI
-{	
-	
-	/**
+{
+    /**
+     * Поддерживаемые способы доставки
+     * @var int[]
+     */
+    public $supportedTypes;
+    /**
+     * @var int
+     */
+    public $deliveryType = 0;
+
+    /**
 	 * Api обращения к серверу ddelivery
 	 * 
 	 * @var DDeliverySDK
 	 */
-    private $sdk;
+    public  $sdk;
 	
     /**
      * Адаптер магазина CMS
@@ -44,7 +53,10 @@ class DDeliveryUI
      * @var DDeliveryOrder
      */
     private $order;
-    
+
+    /**
+     * @param DShopAdapter $dShopAdapter
+     */
     public function __construct(DShopAdapter $dShopAdapter)
     {
         $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), true);
@@ -236,21 +248,72 @@ class DDeliveryUI
     		return 0;
     	}
     }
-	
+
     /**
      * Вызывается для рендера текущей странички
      * @param array $post
+     * @throws DDeliveryException
      * @todo метод не финальный
      */
     public function render($post)
     {
-        //echo json_encode(['html'=>file_get_contents(__DIR__.'/popup-map.php')]);
-        $this->selectDeliveryTypeForm();
+        $deliveryType = (int) (isset($post['type']) ? $post['type'] : 0);
+        $cityId = (int) (isset($post['city_id']) ? $post['city_id'] : 0);
+
+        $supportedTypes = $this->shop->getSupportedType();
+
+        if(!is_array($supportedTypes))
+            $supportedTypes = array($supportedTypes);
+
+        $this->supportedTypes = $supportedTypes;
+
+        // Проверяем поддерживаем ли мы этот тип доставки
+        if($deliveryType && !in_array($deliveryType, $supportedTypes))
+            $deliveryType = 0;
+
+        if(count($supportedTypes) > 1 && !$deliveryType) {
+            echo $this->renderDeliveryTypeForm();
+            return;
+        }
+        if(!$deliveryType)
+            $deliveryType = reset($supportedTypes);
+
+        $this->deliveryType = $deliveryType;
+
+        switch($deliveryType) {
+            case DDeliverySDK::TYPE_SELF:
+                echo $this->renderMap();
+                break;
+            case DDeliverySDK::TYPE_COURIER:
+
+                break;
+            default:
+                throw new DDeliveryException('Not support delivery type');
+                break;
+        }
     }
 
-    protected function selectDeliveryTypeForm()
+    /**
+     * Страница с картой
+     * @return string
+     */
+    protected function renderMap()
+    {
+        ob_start();
+        include(__DIR__ . '/../../templates/map.php');
+        $content = ob_get_contents();
+        ob_end_clean();
+        return json_encode(array('html'=>$content, 'js'=>''));
+    }
+
+    /**
+     * Возвращает страницу с формой выбора способа доставки
+     * @return string
+     */
+    protected function renderDeliveryTypeForm()
     {
         $cityId = (int)$this->shop->getClientCityId();
+        $cityData = false;
         if(!$cityId){
             $sdkResponse = $this->sdk->getCityByIp($_SERVER['REMOTE_ADDR']);
             if($sdkResponse->success && isset($sdkResponse->response['city_id'])) {
@@ -273,15 +336,11 @@ class DDeliveryUI
         $cityData['display_name'] = $displayCityName;
 
         ob_start();
-
-        include(__DIR__.'/../../templates/popup-form.php');
+        include(__DIR__.'/../../templates/typeForm.php');
         $content = ob_get_contents();
-
         ob_end_clean();
 
-        echo json_encode(array('html'=>$content));
-
-
+        return json_encode(array('html'=>$content, 'js'=>''));
     }
 
 

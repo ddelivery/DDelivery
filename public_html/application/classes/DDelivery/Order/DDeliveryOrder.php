@@ -65,26 +65,19 @@ class DDeliveryOrder
     {
         $this->shop = $shop;
 
+        /**
+         * Возвращает сразу массив DDeliveryProduct
+         */
         $products = $this->shop->getProductsFromCart();
-		
-        
-        
-        if (count($products) > 0) 
-        {
-            
-        	foreach($products as $item)
-        	{
-        		$this->productList[] = new DDeliveryProduct($item['id'], $item['width'], $item['height'], 
-                                                            $item['length'], $item['weight'], 
-        	                                                $item['price'], $item['quantity']);
-        	}
-        	
-        	// Получаем параметры для товаров в заказе
-        	$this->getProductParams();
 
-        } else {
+        if (count($products) == 0)
+        {
             throw new DDeliveryOrderException("Корзина пуста");
         }
+
+        // Получаем параметры для товаров в заказе
+        // Закоментил так как внутри падает
+        //$this->getProductParams();
 
     }
 

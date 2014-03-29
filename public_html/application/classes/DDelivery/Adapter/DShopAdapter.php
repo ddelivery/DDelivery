@@ -17,6 +17,7 @@ use DDelivery\Order\DDeliveryProduct;
 use DDelivery\Point\DDeliveryAbstractPoint;
 use DDelivery\Point\DDeliveryPointCourier;
 use DDelivery\Point\DDeliveryPointSelf;
+use DDelivery\Sdk\DDeliverySDK;
 
 /**
  * Class DShopAdapter
@@ -26,7 +27,7 @@ abstract class DShopAdapter
 {
     /**
      * Возвращает товары находящиеся в корзине пользователя
-     * @return array
+     * @return DDeliveryProduct[]
      */
     public abstract function getProductsFromCart();
 
@@ -66,14 +67,15 @@ abstract class DShopAdapter
      * Срабатывает когда выбрана точка доставки
      *
      * @param DDeliveryAbstractPoint $point
-     */
+
     public function onChangePoint( DDeliveryAbstractPoint $point) {}
+     */
 
     /**
      * Если необходимо фильтрует курьеров и добавляет новых
      *
      * @param DDeliveryPointCourier[] $courierPoints
-     * @return \DDelivery\Point\DDeliveryPointCurier[]
+     * @return \DDelivery\Point\DDeliveryPointCourier[]
      */
     public function filterPointsCourier($courierPoints) {
         return $courierPoints;
@@ -95,5 +97,14 @@ abstract class DShopAdapter
      */
     public function getClientCityId() {
         return 0;
+    }
+
+    /**
+     * Возвращает поддерживаемые магазином способы доставки
+     * @return array
+     */
+    public function getSupportedType()
+    {
+        return array(DDeliverySDK::TYPE_COURIER, DDeliverySDK::TYPE_SELF);
     }
 }

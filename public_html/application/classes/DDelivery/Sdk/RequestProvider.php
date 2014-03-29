@@ -40,7 +40,7 @@ class RequestProvider
 	
 	/**
 	 * Curl resource
-	 * @var resource
+	 * @var resource[]
 	 */
 	private $curl = array();
 	/**
@@ -50,7 +50,7 @@ class RequestProvider
 	private $serverUrl = array('stage' => 'http://stage.ddelivery.ru/api/v1/',
 	                           'dev' => 'http://cabinet.ddelivery.ru/api/v1/',
 	                           'node' => 'http://dev.ddelivery.ru/daemon/daemon.js');
-	
+
 	/**
 	 * @param string $apiKey ключ полученный для магазина
 	 * @param bool $testMode тестовый шлюз
@@ -95,9 +95,9 @@ class RequestProvider
 		if( empty( $server ) || !(array_key_exists($server, $this->serverUrl)) )
 			$server = $this->defaultServer;
 		
-	    $urlSyfix = $this->_setRequest($server, $params);
+	    $urlSuffix = $this->_setRequest($server, $params);
 	    
-	    $this->_setSpecificOptionsToRequest($method, $action, $server, $urlSyfix);
+	    $this->_setSpecificOptionsToRequest($method, $action, $server, $urlSuffix);
 	    
 	    $result = curl_exec($this->curl[$server]);
 	    
@@ -111,20 +111,17 @@ class RequestProvider
 	    
 	    return $response;
 	}
-	
-	/**
-	 * Выставляет общие  параметры подключения
-	 * для каждого сервера
-	 *
-	 * @param string $action
-	 * @param string $method
-	 * @param string $server
-	 *
-	 * @return DDeliverySDKResponse
-	 */
+
+    /**
+     * Выставляет общие  параметры подключения
+     * для каждого сервера
+     *
+     * @param string $server
+     * @param string[] $params
+     * @return DDeliverySDKResponse
+     */
 	private function _setRequest( $server, $params )
 	{
-		 
 		if(!$this->keepActive || !array_key_exists($server, $this->curl ) )
 		{
 			$this->curl[$server] = curl_init();
@@ -133,13 +130,13 @@ class RequestProvider
 			curl_setopt($this->curl[$server], CURLOPT_FOLLOWLOCATION, 1);
 		}
 		 
-		$urlSyfix = '';
+		$urlSuffix = '';
 		 
 		foreach($params as $key => $value) {
-			$urlSyfix .= urlencode($key).'='.urlencode($value) . '&';
+			$urlSuffix .= urlencode($key).'='.urlencode($value) . '&';
 		}
 		
-		return $urlSyfix;
+		return $urlSuffix;
 	}
 	
 	/**
@@ -149,27 +146,27 @@ class RequestProvider
 	 * @param string $action
 	 * @param string $method
 	 * @param string $server
-	 * @param string $urlSyfix
+	 * @param string $urlSuffix
 	 */
-	private function _setSpecificOptionsToRequest($method, $action, $server, $urlSyfix)
+	private function _setSpecificOptionsToRequest($method, $action, $server, $urlSuffix)
 	{
 		if( $method == 'get' && ($server == 'dev' || $server == 'stage') )
 		{
 			$url = $this->serverUrl[$server] . urlencode($this->apiKey) .'/' . urlencode($action) . '.json?';
-			$url .= $urlSyfix;
+			$url .= $urlSuffix;
 			curl_setopt($this->curl[$server], CURLOPT_URL, $url);
 		}
 		else if( $method == 'get' && $server == 'node' )
 		{
 			$url = $this->serverUrl[$server] . '?';
-			$url .= $urlSyfix;
+			$url .= $urlSuffix;
 			curl_setopt($this->curl[$server], CURLOPT_URL, $url);
 		}
 		else if($method == 'post')
 		{
 			$url = $this->serverUrl[$server] . urlencode($this->apiKey) .'/' . urlencode($action) . '.json';
 			curl_setopt($this->curl[$server], CURLOPT_POST, true);
-			curl_setopt($this->curl[$server], CURLOPT_POSTFIELDS, $urlSyfix);
+			curl_setopt($this->curl[$server], CURLOPT_POSTFIELDS, $urlSuffix);
 		}
 	}
     

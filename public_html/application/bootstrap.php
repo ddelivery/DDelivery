@@ -14,7 +14,7 @@
  * @author  mrozk <mrozk2012@gmail.com>
  */
 
-header('Content-type: text/plain; charset=utf-8');
+//header('Content-type: text/plain; charset=utf-8');
 
 /**
  * Для поиска недостающих классов, сканируем
@@ -26,7 +26,7 @@ header('Content-type: text/plain; charset=utf-8');
  */
 function autoloadClasses( $className ) {
 	$classPath = '';
-	
+
     if( (strpos($className, '\\')) > 0 )
     {
         $pathPieces = explode('\\', $className);
@@ -50,7 +50,8 @@ function autoloadClasses( $className ) {
     }
     else
     {
-        die('Error loading libs ' . $filename);
+        var_dump(debug_backtrace()[2]);
+        die('Error loading libs ' . $filename .' on '.$classPath.'.php');
     }
 }
 

@@ -77,10 +77,9 @@ class DDeliverySDK {
     	$params = array(
     			'_action' => 'delivery_points',
     			'cities' => $cities,
-    			'companies' => $companies 
+    			'companies' => $companies
     	);
     	return $this->requestProvider->request('geoip', $params, 'get', 'node');
-    	
     }
     
     /**
@@ -115,7 +114,7 @@ class DDeliverySDK {
     		$declaredPrice, $paymentPrice = null )
     {
     	$params = array(
-    			'type' => 1,
+    			'type' => self::TYPE_SELF,
     			'city_to' => $deliveryCity,
     			'dimension_side1' => $dimensionSide1,
     			'dimension_side2' => $dimensionSide2,
@@ -147,7 +146,7 @@ class DDeliverySDK {
                                                 $declaredPrice, $paymentPrice = null )
     {
         $params = array(
-            'type' => 1,
+            'type' => self::TYPE_SELF,
             'delivery_point' => $deliveryPoint,
             'dimension_side1' => $dimensionSide1,
             'dimension_side2' => $dimensionSide2,
@@ -179,7 +178,7 @@ class DDeliverySDK {
     		                          $weight, $declaredPrice, $paymentPrice = null)
     {
         $params = array(
-            'type' => 2,
+            'type' => self::TYPE_COURIER,
             'city_to' => $cityTo,
             'dimension_side1' => $dimensionSide1,
             'dimension_side2' => $dimensionSide2,

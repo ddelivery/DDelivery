@@ -14,6 +14,7 @@ include_once(implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', 'application', 'b
 
 use DDelivery\Adapter\DShopAdapter;
 use DDelivery\DDeliveryUI;
+use DDelivery\Order\DDeliveryProduct;
 
 class ShopAdapter extends DShopAdapter
 {
@@ -24,8 +25,8 @@ class ShopAdapter extends DShopAdapter
     public function getProductsFromCart()
     {
         $products = array();
-        $products[] = new \DDelivery\Order\DDeliveryProduct(1, 20, 23, 25, 10, 1000, 1);
-        $products[] = new \DDelivery\Order\DDeliveryProduct(2, 10, 13, 15, 4, 1500, 2);
+        $products[] = new DDeliveryProduct(1, 20, 23, 25, 10, 1000, 1);
+        $products[] = new DDeliveryProduct(2, 10, 13, 15, 4, 1500, 2);
         return $products;
     }
 
@@ -37,6 +38,19 @@ class ShopAdapter extends DShopAdapter
     {
         return '4bf43a2cd2be3538bf4e35ad8191365d';
     }
+
+    public function getSupportedType()
+    {
+        return \DDelivery\Sdk\DDeliverySDK::TYPE_SELF;
+    }
+
+    public function filterPointsSelf($courierPoints)
+    {
+        new \DDelivery\Point\DDeliveryPointSelf();
+        return parent::filterPointsSelf($courierPoints);
+    }
+
+
 }
 
 $shopAdapter = new ShopAdapter();

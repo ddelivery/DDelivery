@@ -1,3 +1,8 @@
+<?
+/**
+ * @var \DDelivery\DDeliveryUI $this
+ */
+?>
 <div class="map-popup">
 
     <div class="map-popup__head">
@@ -9,13 +14,6 @@
             </div>
             <div class="delivery-type__drop">
                 <ul>
-                    <li>
-                        <a href="#">
-                            <span class="name">доаставка курьером</span>
-                            <span class="price">100 <i class="icon-rub">&nbsp;</i></span>
-                            <span class="date">от <strong>1</strong> дня</span>
-                        </a>
-                    </li>
                     <li>
                         <a href="#">
                             <span class="name">Пункт выдачи</span>
