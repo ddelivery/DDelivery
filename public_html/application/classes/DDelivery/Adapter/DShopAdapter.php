@@ -54,13 +54,15 @@ abstract class DShopAdapter
     }
 
     /**
-     * @param DDeliveryOrder $order
-     * @param DDeliveryPointSelf[] $ddeliveryPointSelfList
+     * Вызывается перед отображением цены точки самовывоза, можно что-то изменить
      *
-     * @return \DDelivery\Point\DDeliveryPointSelf[]
+     * @param DDeliveryOrder $order
+     * @param DDeliveryPointSelf $ddeliveryPointSelf
+     *
+     * @return \DDelivery\Point\DDeliveryPointSelf
      */
-    public function preDisplayPoint( DDeliveryOrder $order, $ddeliveryPointSelfList) {
-        return $ddeliveryPointSelfList;
+    public function preDisplayPoint( DDeliveryOrder $order, $ddeliveryPointSelf) {
+        return $ddeliveryPointSelf;
     }
 
     /**
@@ -75,9 +77,10 @@ abstract class DShopAdapter
      * Если необходимо фильтрует курьеров и добавляет новых
      *
      * @param DDeliveryPointCourier[] $courierPoints
+     * @param \DDelivery\Order\DDeliveryOrder $order
      * @return \DDelivery\Point\DDeliveryPointCourier[]
      */
-    public function filterPointsCourier($courierPoints) {
+    public function filterPointsCourier($courierPoints, DDeliveryOrder $order) {
         return $courierPoints;
     }
 
@@ -85,9 +88,10 @@ abstract class DShopAdapter
      * Если необходимо фильтрует пункты самовывоза и добавляет новых
      *
      * @param DDeliveryPointSelf[] $courierPoints
+     * @param \DDelivery\Order\DDeliveryOrder $order
      * @return \DDelivery\Point\DDeliveryPointSelf[]
      */
-    public function filterPointsSelf($courierPoints) {
+    public function filterPointsSelf($courierPoints, DDeliveryOrder $order) {
         return $courierPoints;
     }
 

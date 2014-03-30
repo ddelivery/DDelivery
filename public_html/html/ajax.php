@@ -44,10 +44,10 @@ class ShopAdapter extends DShopAdapter
         return \DDelivery\Sdk\DDeliverySDK::TYPE_SELF;
     }
 
-    public function filterPointsSelf($courierPoints)
+    public function filterPointsSelf($courierPoints, $order)
     {
         new \DDelivery\Point\DDeliveryPointSelf();
-        return parent::filterPointsSelf($courierPoints);
+        return parent::filterPointsSelf($courierPoints, $order);
     }
 
 
