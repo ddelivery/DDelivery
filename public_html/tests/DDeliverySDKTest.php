@@ -35,7 +35,7 @@ class DDeliverySDKTest extends PHPUnit_Framework_TestCase
     
     public function testCalculatorPickup()
     {
-    	$result = $this->fixture->calculatorPickup( 1, 10, 10, 10, 1, 0 );
+    	$result = $this->fixture->calculatorPickupForCompany( 1, 10, 10, 10, 1, 0 );
     	$this->assertTrue($result->success);
     }
     

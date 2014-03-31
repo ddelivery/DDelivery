@@ -49,20 +49,34 @@ class DDeliverySDK {
         $this->requestProvider->setKeepActive( true );
     }
 	
-    
-    public function sendSelfOrder( $order )
+    /**
+     * Добавить заказ на самовывоз на обработку DDelivery
+     * 
+     * @param mixed $cities список id городов через запятую
+     * @param mixed $cities список id компаний через запятую
+     *
+     * @return DDeliverySDKResponse
+     */
+    public function addSelfOrder( $delivery_point, $dimensionSide1, $dimensionSide2, $dimensionSide3,
+                                  $confirmed, $weight, $to_name, $to_phone, $goods_description, 
+    		                      $declaredPrice, $paymentPrice )
     {   
-    	$params = array();
-    	try 
-    	{
-    		$params = $order->pack();
-    	}
-    	catch (\DDelivery\Order\DDeliveryOrderException $e)
-    	{
-    		echo $e->getMessage();
-    	}
+    	$params = array(
+    			'type' => self::TYPE_SELF,
+    			'delivery_point' => $delivery_point,
+    			'dimension_side1' => $dimensionSide1,
+    			'dimension_side2' => $dimensionSide2,
+    			'dimension_side3' => $dimensionSide3,
+    			'weight' => $weight,
+    			'confirmed' => $confirmed,
+    			'to_name' => $to_name,
+    			'to_phone' => $to_phone,
+    			'goods_description' => $goods_description,
+    			'declared_price' => $declaredPrice,
+    			'payment_price' => $paymentPrice
+    	);
         
-        //return $this->requestProvider->request('order_create', $params, 'post');
+        return $this->requestProvider->request( 'order_create', $params,'post' );
     }
     
     /**

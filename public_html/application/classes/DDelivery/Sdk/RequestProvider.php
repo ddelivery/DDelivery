@@ -22,6 +22,7 @@ namespace DDelivery\Sdk;
 class RequestProvider
 {   
 	
+	
 	/**
 	 * @var string
 	 */
@@ -50,7 +51,12 @@ class RequestProvider
 	private $serverUrl = array('stage' => 'http://stage.ddelivery.ru/api/v1/',
 	                           'dev' => 'http://cabinet.ddelivery.ru/api/v1/',
 	                           'node' => 'http://dev.ddelivery.ru/daemon/daemon.js');
-
+	/**
+	 * Количество проделанных запросов на сервер ddelivery
+	 * @var int
+	 */
+	public $countRequests = 0;
+	
 	/**
 	 * @param string $apiKey ключ полученный для магазина
 	 * @param bool $testMode тестовый шлюз
@@ -91,6 +97,8 @@ class RequestProvider
 	public function request($action, $params = array(), 
 	                        $method = 'get', $server = '')
 	{	
+		
+		$this->countRequests++;
 		
 		if( empty( $server ) || !(array_key_exists($server, $this->serverUrl)) )
 			$server = $this->defaultServer;
