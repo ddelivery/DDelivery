@@ -3,11 +3,11 @@
  * @var \DDelivery\DDeliveryUI $this
  */ ?>
 <div class="map-popup">
-
     <div class="map-popup__head">
         <p>Способы доставки в</p>
 
         <div class="delivery-place" style="width:280px;">
+            <input type="hidden" name="ddelivery_city" value="<?=$cityData['city_id']?>"/>
             <div class="delivery-place__title">
                 <input type="text" title="<?=$cityData['display_name']?>"/>
                 <span><i>&nbsp;</i></span>
@@ -16,17 +16,19 @@
                 <div class="delivery-place__drop_i">
                     <h2>Популярные города:</h2>
                     <ul>
-                        <li><a href="#"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#" class="active"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
+                        <li>
+                            <a href="#" data-id="<?=$cityData['city_id']?>" class="active">
+                                <strong><?=$cityData['type'].'. '.$cityData['region']?></strong> <?=$cityData['region']?>
+                            </a>
+                        </li>
+                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
+                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
+                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
+                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
+                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
+                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
+                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
+                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
                     </ul>
                 </div>
             </div>
@@ -42,7 +44,7 @@
                 <?if(in_array(\DDelivery\Sdk\DDeliverySDK::TYPE_SELF,  $this->supportedTypes)):?>
                     <tr>
                         <td class="col1">
-                            <input type="radio" name="deliveryType" value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_SELF?>"/>
+                            <input type="radio" name="ddeliveryType" value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_SELF?>"/>
                         </td>
                         <td class="col2">
                             <i class="icon-car">&nbsp;</i>
@@ -64,7 +66,7 @@
                 <?if(in_array(\DDelivery\Sdk\DDeliverySDK::TYPE_COURIER,  $this->supportedTypes)):?>
                     <tr>
                         <td class="col1">
-                            <input type="radio" name="deliveryType" value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_COURIER?>"/>
+                            <input type="radio" name="ddeliveryType" value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_COURIER?>"/>
                         </td>
                         <td class="col2">
                             <i class="icon-pack">&nbsp;</i>
@@ -86,7 +88,7 @@
                 <?/*
                 <tr>
                     <td class="col1">
-                        <input type="radio" name="delivery" id="delivery3"/>
+                        <input type="radio" name="ddelivery" id="delivery3"/>
                     </td>
                     <td class="col2">
                         <i class="icon-letter">&nbsp;</i>
@@ -108,7 +110,7 @@
             </table>
         </div>
         <div class="map-popup__main__delivery__next">
-            <a href="javascript:void(0)">Далее<i>&nbsp;</i></a>
+            <a href="javascript:void(0)" onclick="DDelivery.typeFormSubmit();">Далее<i>&nbsp;</i></a>
         </div>
     </div>
     <div class="map-popup__bott">
