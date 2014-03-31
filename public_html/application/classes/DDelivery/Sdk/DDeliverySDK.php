@@ -145,6 +145,7 @@ class DDeliverySDK {
                                                 $dimensionSide2, $dimensionSide3, $weight, 
                                                 $declaredPrice, $paymentPrice = null )
     {
+    	
         $params = array(
             'type' => self::TYPE_SELF,
             'delivery_point' => $deliveryPoint,

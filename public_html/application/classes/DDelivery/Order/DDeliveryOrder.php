@@ -68,23 +68,24 @@ class DDeliveryOrder
         /**
          * Возвращает сразу массив DDeliveryProduct
          */
-        $products = $this->shop->getProductsFromCart();
-
-        if (count($products) == 0)
+        $this->productList = $this->shop->getProductsFromCart();
+        
+        if (count( $this->productList ) == 0)
         {
             throw new DDeliveryOrderException("Корзина пуста");
         }
-
+        
         // Получаем параметры для товаров в заказе
         // Закоментил так как внутри падает
-        //$this->getProductParams();
-
+        $this->getProductParams();
+		
     }
 
     public function getProductParams()
     {
         // находим 1 сторону
         foreach ($this->productList as $product) {
+        	
             $min = $product->getCurrentMinParameterValue();
 
             $this->dimensionSide1 += (($min) * $product->getQuantity());
@@ -171,49 +172,5 @@ class DDeliveryOrder
     {
     	return $this->weight;
     }
-    /*
-    public function __construct( $initParams = array() )
-    {
-        if(is_array($initParams))
-        {
-            foreach ( $initParams as $key=>$value)
-            {
-                $this->set($key, $value);
-            }
-        }
-    }
-
-    public function pack()
-    {
-        foreach ($this->allowParams as $p)
-        {
-            if ( !array_key_exists( $p, $this->params ) )
-            {
-                throw new DDeliveryOrderException("Order params not full");
-            }
-        }
-        return $this->params;
-    }
-
-    public function set( $paramName, $paramValue)
-    {
-        if( array_key_exists($paramName, $this->allowParams) )
-        {
-            $this->params[$paramName] = $paramValue;
-        }
-        else
-        {
-            throw new DDeliveryOrderException("Order param not found");
-        }
-    }
-
-    public function get( $paramName )
-    {
-        if( array_key_exists($paramName, $this->params) )
-        {
-            return 	$this->params[$paramName];
-        }
-        return null;
-    }
-    */
+    
 }     

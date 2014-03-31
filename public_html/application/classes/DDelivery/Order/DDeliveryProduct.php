@@ -92,16 +92,15 @@ class DDeliveryProduct
      * @param float $price стоимостьв рублях
      * @param int $quantity количество товара
      */
-    public function __construct( $id, $width, $height, $length,
-                                 $weight, $price, $quantity )
+    public function __construct( $params = array() )
     {
-    	$this->id = $id;
-    	$this->width = $width;
-    	$this->heigth = $height;
-    	$this->length = $length;
-    	$this->weigth = $weight;
-    	$this->price = $price;
-    	$this->quantity = $quantity;
+    	$this->id =       $params['id'];
+    	$this->width =    $params['width'];
+    	$this->heigth =   $params['height'];
+    	$this->length =   $params['length'];
+    	$this->weigth =   $params['weight'];
+    	$this->price =    $params['price'];
+    	$this->quantity = $params['quantity'];
     	
     }
 
