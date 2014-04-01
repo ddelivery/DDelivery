@@ -214,6 +214,32 @@ class DDeliveryUI
     	}
     	return $deliveryInfo;
     }
+    
+    public function setOrderPoint( $point )
+    {
+    	$this->order->setPoint( $point );
+    }
+    
+    public function createSelfOrder( )
+    {
+    	$point = $this->order->getPoint();
+    	
+    	if( $point == null || !$point->get('_id')  )
+    	{
+            throw new DDeliveryException('Empty delivery point');
+    	}
+    	$delivery_point = $point->get('_id');
+    	$dimensionSide1 = $this->order->getDimensionSide1();
+    	$dimensionSide2 = $this->order->getDimensionSide2();
+    	$dimensionSide3 = $this->order->getDimensionSide3();
+    	
+    	$weight = $this->order->getWeight();
+    	
+    	$this->sdk->addSelfOrder($delivery_point, $dimensionSide1, $dimensionSide2, 
+                                 $dimensionSide3, $confirmed, $weight, $to_name, 
+                                 $to_phone, $goods_description, $declaredPrice, $paymentPrice);
+    }
+    
     /**
      * Получить компании самовывоза  для города с их 
      * полным описанием, и координатами их филиалов
@@ -245,22 +271,6 @@ class DDeliveryUI
     				$item->setDeliveryInfo( $deliveryInfo[$companyID] );
     				
     			}
-    			/*
-    			else 
-    			{	
-    				/
-    				$pointID = $item->get('_id');
-    				
-    				$deliveryItem = $this->getDeliveryInfoForPointID( $pointID );
-    				
-    				$itemId = $deliveryItem->get('delivery_company');
-    				
-    				$deliveryInfo[ $itemId ] = $deliveryItem;
-    				
-    				$item->setDeliveryInfo( $deliveryInfo[$companyID] );
-    			}
-    			*/
-    			
     		}
     	}
     	else 
@@ -275,7 +285,7 @@ class DDeliveryUI
      * Получить информацию о точке самовывоза по ее ID  и по ID города
      * 
      * @var mixed $cityID
-     * @var int $companyIDs
+     * @var mixed $companyIDs
      *
      * @return array;
      */

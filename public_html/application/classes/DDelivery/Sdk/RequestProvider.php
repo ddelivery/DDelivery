@@ -104,7 +104,7 @@ class RequestProvider
 			$server = $this->defaultServer;
 		
 	    $urlSuffix = $this->_setRequest($server, $params);
-	    
+	   
 	    $this->_setSpecificOptionsToRequest($method, $action, $server, $urlSuffix);
 	    
 	    $result = curl_exec($this->curl[$server]);
@@ -172,7 +172,10 @@ class RequestProvider
 		}
 		else if($method == 'post')
 		{
+			
 			$url = $this->serverUrl[$server] . urlencode($this->apiKey) .'/' . urlencode($action) . '.json';
+			
+			curl_setopt($this->curl[$server], CURLOPT_URL, $url);
 			curl_setopt($this->curl[$server], CURLOPT_POST, true);
 			curl_setopt($this->curl[$server], CURLOPT_POSTFIELDS, $urlSuffix);
 		}

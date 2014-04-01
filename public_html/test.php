@@ -34,19 +34,47 @@ require_once 'application/bootstrap.php';
 
 //$order = $DDeliveryUI->getCityByIp('188.162.64.72');
 //echo $order['city_id'] ;
+// point id = 50
 //city_id = 151185
-///$points = $DDeliveryUI->getSelfPointsForCity( $order['city_id'] );
-//print_r($points);
+$shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
+$DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
+$selfpoints = $DDeliveryUI->getSelfPoints( 151185 );
+
+$DDeliveryUI->setOrderPoint($selfpoints[0]);
+$DDeliveryUI->createSelfOrder();
 
 //$selfpoints = $DDeliveryUI->getSelfPoints( $order['city_id'] );
 //print_r($selfpoints);
 //print_r($selfpoints);
 //$order = $DDeliveryUI->getOrder()->getOrderInfo();
-
+/*
 $DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
 
-$response = $DDeliverySDK->addSelfOrder(50, 10, 10, 10, true, 1, 'ozy', 'ozy_phone', 'ozydescription', 0, 0);
+$response = $DDeliverySDK->addSelfOrder(50, 10, 10, 10, true, 1, 'ozy', 
+                                        '9999999999', 'ozydescription', 1000, 1000);
+print_r($response);
+*/
+/*
+$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
+
+$response = $DDeliverySDK->addSelfOrder(50, 10, 10, 10, true, 1, 'ozy',
+		'9999999999', 'ozydescription', 1000, 1000);
+
+
+$response = $DDeliverySDK->addCourierOrder(151185, 17, 
+                                           10, 10, 10, 
+                                           'xxx', true, 1, 'Пяточкин Петр Петрович', '9999999999', 
+                                           'Трос 1шт, Пробка от бутылки 2шт.', 1000, 
+                                           1000, 'Вознесенская', '1а', '42', 'ozy@retyy.er');
 
 print_r($response);
+*/
 
+/*
+$shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
+$DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
+
+$response = $DDeliveryUI->getCourierPointsForCity(151185);
+print_r($response);
+*/
 
