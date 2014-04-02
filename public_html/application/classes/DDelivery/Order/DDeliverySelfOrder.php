@@ -14,11 +14,9 @@ namespace DDelivery\Order;
 
 
 class DDeliverySelfOrder extends DDeliveryOrder
-{	
-	protected $allowParams = array('type', 'delivery_point',
-	                               'dimension_side1', 'dimension_side2',
-	                               'dimension_side3', 'weight', 'declared_price',
-	                               'payment_price', 'to_name', 'to_phone', 
-	                               'goods_description');
-	
+{
+    /**
+     * @var int
+     */
+    public $deliveryPoint;
 }

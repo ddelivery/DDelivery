@@ -19,7 +19,13 @@ namespace DDelivery\Sdk;
  */
 class DDeliverySDK {
 
+    /**
+     * Тип самовывоз
+     */
     const TYPE_SELF = 1;
+    /**
+     * Тип курьер
+     */
     const TYPE_COURIER = 2;
 
 	/**
@@ -121,7 +127,7 @@ class DDeliverySDK {
      * @return DDeliverySDKResponse
      */
     public function addSelfOrder( $delivery_point, $dimensionSide1, $dimensionSide2, $dimensionSide3,
-                                  $confirmed, $weight, $to_name, $to_phone, $goods_description, 
+                                  $confirmed = true, $weight, $to_name, $to_phone, $goods_description,
     		                      $declaredPrice, $paymentPrice )
     {   
     	$params = array(
