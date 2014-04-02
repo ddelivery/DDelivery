@@ -50,7 +50,7 @@ function autoloadClasses( $className ) {
     }
     else
     {
-        var_dump(debug_backtrace()[2]);
+        //var_dump(debug_backtrace()[2]);
         die('Error loading libs ' . $filename .' on '.$classPath.'.php');
     }
 }
