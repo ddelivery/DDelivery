@@ -104,6 +104,20 @@ abstract class DShopAdapter
     }
 
     /**
+     * Возвращает оценочную цену для товаров в послыке
+     * @param DDeliveryProduct[] $productList
+     * @return int
+     */
+    public function getDeclaredPrice($productList) {
+        $declaredPrice = 0;
+        foreach($productList as $product) {
+            $declaredPrice = $product->getPrice();
+        }
+
+        return $declaredPrice;
+    }
+
+    /**
      * Возвращает поддерживаемые магазином способы доставки
      * @return array
      */

@@ -63,25 +63,6 @@ class DDeliveryProduct
 	 * @var int
 	 */
 	private $quantity;
-	
-	/**
-	 * Доступ к ширине еденицы товара
-	 * @var int
-	 */
-	public $widthaccess = 0;
-	
-	/**
-	 * Доступ к высоте еденицы товара
-	 * @var int
-	 */
-	public $heigthaccess = 0;
-	
-	/**
-	 * Доступ к длине еденицы товара
-	 * @var int
-	 */
-	public $lengthaccess = 0;
-
 
     /**
      * @param int $id id заказа в системе и-нет магазина
@@ -101,62 +82,9 @@ class DDeliveryProduct
     	$this->weigth =   $params['weight'];
     	$this->price =    $params['price'];
     	$this->quantity = $params['quantity'];
-    	
+
     }
 
-
-    /**
-     * Получаем наибольшую сторону товара
-     * @todo Чет у мя сомнения по поводу этой штуки, а функция getCurrentMinParameterValue работает подруому
-     * @return array
-     */
-    public function getCurrentMaxParameterValue()
-    {
-    	$max = 0;
-    	if( !$this->widthaccess && ( $max < $this->getWidth() ) )
-    	{
-    		$max = $this->getWidth();
-    		$access =  'widthaccess';
-    	}
-    	
-    	if( !$this->heigthaccess && ( $max < $this->getHeight() ) )
-    	{
-    		$max = $this->getHeight();
-    		$access =  'heigthaccess';
-    	}
-    	
-    	if( !$this->lengthaccess && ( $max < $this->getLength() ) )
-    	{
-    		$max = $this->getLength();
-    		$access =  'lengthaccess';
-    	}
-    	
-    	return array('access' => $access, 'max' => $max ); 
-    }
-
-    /**
-     * Получаем наименьшую сторону товара
-     * @return float
-     */
-    public function getCurrentMinParameterValue()
-    {
-    	$min = $this->getWidth();
-    	$access =  'widthaccess';
-    	if( $min > $this->getHeight() )
-    	{
-    		$min = $this->getHeight();
-    		$access =  'heigthaccess';
-    	}
-    	if( $min > $this->getLength() )
-    	{
-    		$min = $this->getLength();
-    		$access =  'lengthaccess';
-    	}
-    	$this->$access = 1;
-    	
-    	return $min;
-    }
-    
     public function getID()
     {
     	return $this->id;

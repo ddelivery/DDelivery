@@ -34,19 +34,28 @@ $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 
 //$order = $DDeliveryUI->getCityByIp('188.162.64.72');
 //echo $order['city_id'] ;
+// point id = 50
 //city_id = 151185
+
 //$points = $DDeliveryUI->getSelfPointsForCity( $order['city_id'] );
 //print_r($points);
+
+$shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
+$DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
+$selfpoints = $DDeliveryUI->getSelfPoints( 151185 );
+
+$DDeliveryUI->setOrderPoint($selfpoints[0]);
+$DDeliveryUI->createSelfOrder();
+
 
 $selfpoints = $DDeliveryUI->getSelfPoints( $order['city_id'] );
 print_r($selfpoints);
 //print_r($selfpoints);
 //$order = $DDeliveryUI->getOrder()->getOrderInfo();
+/*
+$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
 
-//$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
 
-//$response = $DDeliverySDK->addSelfOrder(50, 10, 10, 10, true, 1, 'ozy', 'ozy_phone', 'ozydescription', 0, 0);
 
-//print_r($response);
-
+*/
 

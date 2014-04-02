@@ -21,54 +21,87 @@ use DDelivery\Point\DDeliveryAbstractPoint;
  */
 class DDeliveryOrder
 {
-    private $params = array('id' => 0);
-
-    private $dimensionSide1 = 0;
-
-    private $dimensionSide2 = 0;
-
-    private $dimensionSide3 = 0;
-
-    private $weight = 0;
-
-    private $type;
-    
-   
-
-    protected $allowParams = array();
+    /**
+     * @var int
+     */
+    protected $_id;
+    /**
+     * Тип если самовывоз - 1, если курьерка - 2
+     * @var int
+     */
+    public $type;
+    /**
+     * @var bool
+     */
+    public $confirmed = false;
 
     /**
-     * сервер по умолчанию
+     * @var int
+     */
+    protected $dimensionSide1 = 0;
+    /**
+     * @var int
+     */
+    protected $dimensionSide2 = 0;
+    /**
+     * @var int
+     */
+    protected $dimensionSide3 = 0;
+    /**
+     * @var int
+     */
+    protected $weight = 0;
+
+    /**
+     * @var float
+     */
+    public $declaredPrice;
+    /**
+     * @var float
+     */
+    public $paymentPrice;
+
+    /**
+     * @var string
+     */
+    public $toName;
+    /**
+     * @var string
+     */
+    public $toPhone;
+    /**
+     * @var string
+     */
+    public $goodsDescription;
+
+
+    /**
+     * Лист товаров
      * @var DDeliveryProduct[] DDeliveryProduct
      */
     private $productList = array();
 
     /**
-     * Адаптер CMS магазина
-     * @var DShopAdapter
-     */
-    private $shop;
-
-    /**
-     * точка для
+     * точка самовывоза или курьерская служба
      * @var DDeliveryAbstractPoint
      */
     private $point = null;
 
+    /**
+     * @var
+     */
     private $user;
 
     /**
-     * @param DShopAdapter $shop
+     * @param DDeliveryProduct[] $productList
      * @throws DDeliveryOrderException
      */
-    public function __construct($shop)
+    public function __construct($productList)
     {
-        $this->shop = $shop;
-
         /**
          * Возвращает сразу массив DDeliveryProduct
          */
-        $this->productList = $this->shop->getProductsFromCart();
+        $this->productList = $productList;
         
         if (count( $this->productList ) == 0)
         {
@@ -76,69 +109,54 @@ class DDeliveryOrder
         }
         
         // Получаем параметры для товаров в заказе
-        // Закоментил так как внутри падает
         $this->getProductParams();
 		
     }
 
     public function getProductParams()
     {
-        // находим 1 сторону
+        $items = array();
+        $this->weight = 0;
+
         foreach ($this->productList as $product) {
-        	
-            $min = $product->getCurrentMinParameterValue();
-
-            $this->dimensionSide1 += (($min) * $product->getQuantity());
-
-
-            // находим вес
             $this->weight += ($product->getQuantity() * $product->getWeight());
-            // находим вес
 
-        }
-        // находим 1 сторону
-
-        // находим 2 сторону
-        $item = array();
-        $max = 0;
-        $key = -1;
-        for ($i = 0; $i < count($this->productList); $i++) {
-            $item = $this->productList[$i]->getCurrentMaxParameterValue();
-            if ($item['max'] > $max) {
-                $key = $i;
-                $max = $item['max'];
-                $access = $item['access'];
+            $sizes =  array($product->getWidth(), $product->getHeight(), $product->getLength());
+            sort($sizes);
+            for($i=0;$i<$product->getQuantity();$i++) {
+                $items[] = $sizes;
             }
         }
-        $this->productList[$key]->$access = 1;
-        $this->dimensionSide2 = $max;
-        // находим 2 сторону
 
-        // находим 3 сторону
-        $item = array();
-        $max = 0;
-        $key = -1;
-        for ($i = 0; $i < count($this->productList); $i++) {
-            $item = $this->productList[$i]->getCurrentMaxParameterValue();
-            if ($item['max'] > $max) {
-                $key = $i;
-                $max = $item['max'];
-                $access = $item['access'];
-            }		
+        $dimensionSide1 = 0;
+        $dimensionSide2 = 0;
+        $dimensionSide3 = 0;
+        foreach($items as $item) {
+            $dimensionSide1 += $item[0];
+            if($dimensionSide2 < $item[1]) {
+                $dimensionSide2 = $item[1];
+            }
+            if($dimensionSide3 < $item[2]) {
+                $dimensionSide3 = $item[2];
+            }
         }
-        $this->productList[$key]->$access = 1;
-        $this->dimensionSide3 = $max;
-        // находим 3 сторону
-        return;
 
-
+        $this->dimensionSide1 = $dimensionSide1;
+        $this->dimensionSide2 = $dimensionSide2;
+        $this->dimensionSide3 = $dimensionSide3;
     }
-    
+
+    /**
+     * @param $point
+     */
     public function setPoint( $point )
     {
         $this->point = $point;    	
     }
-    
+
+    /**
+     * @return DDeliveryAbstractPoint|null
+     */
     public function getPoint()
     {
     	if( $this->point != null)
@@ -147,30 +165,45 @@ class DDeliveryOrder
     	}
     	return null;
     }
-    
+
+    /**
+     * @return DDeliveryProduct[]
+     */
     public function getProducts()
     {
         return $this->productList;
     }
-    
+
+    /**
+     * @return int
+     */
     public function getDimensionSide1()
     {
     	return $this->dimensionSide1;
     }
-    
+
+    /**
+     * @return int
+     */
     public function getDimensionSide2()
     {
     	return $this->dimensionSide2;
     }
-    
+
+    /**
+     * @return int
+     */
     public function getDimensionSide3()
     {
     	return $this->dimensionSide3;
     }
-    
+
+    /**
+     * @return int
+     */
     public function getWeight()
     {
     	return $this->weight;
     }
-    
+
 }     
