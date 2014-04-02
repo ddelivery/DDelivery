@@ -54,6 +54,12 @@ abstract class DShopAdapter
     }
 
     /**
+     * Возвращает путь до файла базы данных
+     * @return string
+     */
+    public abstract function getPathByDB();
+
+    /**
      * Вызывается перед отображением цены точки самовывоза, можно что-то изменить
      *
      * @param DDeliveryOrder $order
@@ -100,6 +106,9 @@ abstract class DShopAdapter
      * @return int
      */
     public function getClientCityId() {
+        if(isset($_COOKIE['ddCityId'])){
+            return $_COOKIE['ddCityId'];
+        }
         return 0;
     }
 
