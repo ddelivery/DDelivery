@@ -11,6 +11,9 @@
 */
 namespace DDelivery;
 use DDelivery\Adapter\DShopAdapter;
+use DDelivery\DataBase\City;
+use DDelivery\DataBase\SQLite;
+use DDelivery\Point\DDeliveryPointSelf;
 use DDelivery\Sdk\DDeliverySDK;
 use DDelivery\Order\DDeliveryOrder;
 use DDelivery\Adapter\DShopAdapterImpl;
@@ -62,8 +65,10 @@ class DDeliveryUI
         $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), true);
         
         $this->shop = $dShopAdapter;
-        
-        $this->order = new Order\DDeliveryOrder( $this->shop );
+
+        $this->order = new DDeliveryOrder($this->shop->getProductsFromCart());
+
+        SQLite::$dbUri = $dShopAdapter->getPathByDB();
 
     }
     
@@ -102,7 +107,7 @@ class DDeliveryUI
     /**
      * Получить информацию о заказе для точки
      * @var int $id
-     *
+     * @deprecated
      * @return DDeliveryInfo;
      */
     public function getDeliveryInfoForPoint( $id )
@@ -222,21 +227,21 @@ class DDeliveryUI
     
     public function createSelfOrder( )
     {
+        /** @var DDeliveryPointSelf $point */
     	$point = $this->order->getPoint();
     	
     	if( $point == null || !$point->get('_id')  )
     	{
             throw new DDeliveryException('Empty delivery point');
     	}
-    	$delivery_point = $point->get('_id');
     	$dimensionSide1 = $this->order->getDimensionSide1();
     	$dimensionSide2 = $this->order->getDimensionSide2();
     	$dimensionSide3 = $this->order->getDimensionSide3();
     	
     	$weight = $this->order->getWeight();
     	
-    	$this->sdk->addSelfOrder($delivery_point, $dimensionSide1, $dimensionSide2, 
-                                 $dimensionSide3, $confirmed, $weight, $to_name, 
+    	$this->sdk->addSelfOrder($point->_id, $dimensionSide1, $dimensionSide2,
+                                 $dimensionSide3, $confirmed, $weight, $to_name,
                                  $to_phone, $goods_description, $declaredPrice, $paymentPrice);
     }
     
@@ -343,7 +348,7 @@ class DDeliveryUI
 
         switch($deliveryType) {
             case DDeliverySDK::TYPE_SELF:
-                echo $this->renderMap();
+                echo $this->renderMap($cityId);
                 break;
             case DDeliverySDK::TYPE_COURIER:
 
@@ -356,9 +361,10 @@ class DDeliveryUI
 
     /**
      * Страница с картой
+     * @param int $cityId
      * @return string
      */
-    protected function renderMap()
+    protected function renderMap($cityId)
     {
         ob_start();
         include(__DIR__ . '/../../templates/map.php');
@@ -377,11 +383,19 @@ class DDeliveryUI
         $cityData = false;
         if(!$cityId){
             $sdkResponse = $this->sdk->getCityByIp($_SERVER['REMOTE_ADDR']);
-            if($sdkResponse->success && isset($sdkResponse->response['city_id'])) {
+            if($sdkResponse && $sdkResponse->success && isset($sdkResponse->response['city_id'])) {
                 $cityId = (int)$sdkResponse->response['city_id'];
                 $cityData = $sdkResponse->response;
             }
+            if(!$cityId) {
+                $cityId = 151184;
+            }
         }
+        if(!$cityData){
+            $cityDB = new City();
+            $data = $cityDB->getCityById($cityId);
+        }
+
         // @todo когда будет метод возвращающий инфу о городе по id добавить
         // @todo когда будет метод взять топ, забрать мск
         if(!$cityData) {
@@ -389,6 +403,15 @@ class DDeliveryUI
                 "region"=>"Москва", "region_id"=>77, "type"=>"г", "postal_code"=>"101000",
                 "area"=>"","kladr"=>"77000000000");
         }
+        $order = $this->order;
+
+        $order->declaredPrice = $this->shop->getDeclaredPrice($order->getProducts());
+
+        $this->sdk->calculatorPickupForCity($cityId,
+            $order->getDimensionSide1(), $order->getDimensionSide2(), $order->getDimensionSide3(), $order->getWeight(),
+            $order->declaredPrice
+        );
+
         $displayCityName = $cityData['type'].'. '.$cityData['region'];
 
         if(mb_strtolower($cityData['region']) != mb_strtolower($cityData['city'])) {

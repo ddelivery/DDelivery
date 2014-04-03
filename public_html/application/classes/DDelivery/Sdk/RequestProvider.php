@@ -96,7 +96,7 @@ class RequestProvider
      */
 	public function request($action, $params = array(), 
 	                        $method = 'get', $server = '')
-	{	
+	{
 		
 		$this->countRequests++;
 		
@@ -104,9 +104,9 @@ class RequestProvider
 			$server = $this->defaultServer;
 		
 	    $urlSuffix = $this->_setRequest($server, $params);
-	   
+
 	    $this->_setSpecificOptionsToRequest($method, $action, $server, $urlSuffix);
-	    
+
 	    $result = curl_exec($this->curl[$server]);
 	    
 	    $response = new DDeliverySDKResponse( $result );
@@ -136,6 +136,8 @@ class RequestProvider
 			curl_setopt($this->curl[$server], CURLOPT_RETURNTRANSFER, TRUE);
 			curl_setopt($this->curl[$server], CURLOPT_HEADER, 0);
 			curl_setopt($this->curl[$server], CURLOPT_FOLLOWLOCATION, 1);
+            // В реальных интернетах за пинг в секунду убивают
+            curl_setopt($this->curl[$server], CURLOPT_TIMEOUT_MS, 1000);
 		}
 		 
 		$urlSuffix = '';
@@ -172,7 +174,6 @@ class RequestProvider
 		}
 		else if($method == 'post')
 		{
-			
 			$url = $this->serverUrl[$server] . urlencode($this->apiKey) .'/' . urlencode($action) . '.json';
 			
 			curl_setopt($this->curl[$server], CURLOPT_URL, $url);

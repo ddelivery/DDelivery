@@ -50,9 +50,12 @@ class ShopAdapter extends DShopAdapter
     }
 
 
-
-
+    public function getPathByDB()
+    {
+        return __DIR__.'/db.sqlite';
+    }
 }
+
 
 $shopAdapter = new ShopAdapter();
 $ddeliveryUI = new DDeliveryUI($shopAdapter);
