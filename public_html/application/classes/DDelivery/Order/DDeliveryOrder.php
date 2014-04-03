@@ -70,6 +70,10 @@ class DDeliveryOrder
      */
     public $toPhone;
     
+    /**
+     * @var string
+     */
+    public $toEmail;
     
     /**
      * @var string
@@ -129,7 +133,12 @@ class DDeliveryOrder
         $this->getProductParams();
 		
     }
-
+    
+    /**
+     * 
+     * получить параметры товара
+     * 
+     */
     public function getProductParams()
     {
         $items = array();
@@ -238,5 +247,81 @@ class DDeliveryOrder
     {
     	return $this->weight;
     }
+    
+    public function setConfirmed( $confirmed )
+    {
+    	$this->confirmed = $confirmed;
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function getConfirmed()
+    {
+    	return $this->weight;
+    }
+    
+    public function setToPhone( $phone )
+    {
+    	$this->toPhone = $phone;
+    }
+    
+    public function getToPhone()
+    {
+    	return $this->toPhone;
+    }
+    
+    public function setToName( $name )
+    {
+    	$this->toName = $name;
+    }
+    
+    public function getToName()
+    {
+    	return $this->toName;
+    }
+    
+    public function getToStreet()
+    {
+    	return $this->toStreet;
+    }
+    
+    public function setToStreet( $toStreet )
+    {
+    	$this->toStreet = $toStreet;
+    }
+    
+    public function setToHouse( $toHouse )
+    {
+    	$this->toHouse = $toHouse;
+    }
+    
+    public function getToHouse()
+    {
+    	return $this->toHouse;
+    }
+    
+    public function setToFlat( $toFlat )
+    {
+    	$this->toFlat = $toFlat;
+    }
+    
+    public function getToFlat()
+    {
+    	return $this->toFlat;
+    }
+    
+    
+    public function setToEmail( $toEmail )
+    {
+    	$this->toFlat = $toFlat;
+    }
+    
+    public function getToFlat()
+    {
+    	return $this->toFlat;
+    }
+    
+    
 
 }     

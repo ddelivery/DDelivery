@@ -29,8 +29,8 @@ require_once 'application/bootstrap.php';
 /*
  * */
 
-$shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
-$DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
+//$shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
+//$DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 
 //$order = $DDeliveryUI->getCityByIp('188.162.64.72');
 //echo $order['city_id'] ;
@@ -39,7 +39,7 @@ $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 
 //$points = $DDeliveryUI->getSelfPointsForCity( $order['city_id'] );
 //print_r($points);
-
+/*
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $selfpoints = $DDeliveryUI->getSelfPoints( 151185 );
@@ -50,6 +50,7 @@ $DDeliveryUI->createSelfOrder();
 
 $selfpoints = $DDeliveryUI->getSelfPoints( $order['city_id'] );
 print_r($selfpoints);
+*/
 //print_r($selfpoints);
 //$order = $DDeliveryUI->getOrder()->getOrderInfo();
 /*
@@ -58,4 +59,9 @@ $DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d
 
 
 */
+$shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
+$DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
+
+$order = $DDeliveryUI->getOrder();
+echo $order->getGoodsDescription();
 
