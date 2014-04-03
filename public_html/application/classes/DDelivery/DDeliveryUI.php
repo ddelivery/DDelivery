@@ -19,6 +19,7 @@ use DDelivery\Order\DDeliveryOrder;
 use DDelivery\Adapter\DShopAdapterImpl;
 use DDelivery\Point\DDeliveryInfo;
 use DDelivery\Point\DDeliveryAbstractPoint;
+use DDelivery\Point\DDeliveryPointCourier;
 
 /**
  * DDeliveryUI - Обертка рабочих классов, для взаимодействия 
@@ -138,6 +139,7 @@ class DDeliveryUI
     	$response = $this->sdk->calculatorCourier( $cityID, $this->order->getDimensionSide1(),
                                                    $this->order->getDimensionSide2(), $this->order->getDimensionSide3(),
                                                    $this->order->getWeight(), 0 );
+    	$this->order->city = $cityID;
     	
     	if( $response->success )
         {
@@ -209,6 +211,12 @@ class DDeliveryUI
     	}
     }
     
+    /**
+     *
+     * Для удобства перебора сортируем массив объектов deliveryInfo
+     * 
+     *
+     */
     private function _getOrderedDeliveryInfo( $companyInfo )
     {
     	$deliveryInfo = array();
@@ -222,6 +230,100 @@ class DDeliveryUI
     
     /**
      *
+     * Перед отправкой заказа курьеркой на сервер DDelivery проверяется 
+     * заполнение всех данных для заказа
+     *
+     */
+    public function checkOrderCourierValues()
+    {	
+    	$point = $this->order->getPoint();
+    	
+        if( $point == null )
+        {
+        	throw new DDeliveryException("Bad courier point");
+        }
+        
+        if( !strlen( $this->order->toName ) || !strlen( $this->order->toPhone) 
+                     || !strlen( $this->order->toStreet ) || !strlen( $this->order->toHouse ) 
+                     || !strlen( $this->order->toFlat ) )
+        {
+        	throw new DDeliveryException("Bad userInfo");
+        }
+        return true;
+    }
+    
+    /**
+     *
+     * Перед отправкой заказа самовывоза на сервер DDelivery проверяется
+     * заполнение всех данных для заказа
+     *
+     */
+    public function checkOrderSelfValues()
+    {
+    	$point = $this->order->getPoint();
+    	 
+    	if( $point == null )
+    	{
+    		throw new DDeliveryException("Bad self delivery point");
+    	}
+    	
+    	if( !strlen( $this->order->toName ) || !strlen( $this->order->toPhone))
+    	{
+    		throw new DDeliveryException("Bad userInfo");
+    	}
+    	return true;
+    }
+    
+    /**
+     *
+     * отправить заказ на курьерку
+     *
+     */
+    public function createCourierOrder( )
+    {
+    	/** @var DDeliveryPointCourier $point */
+    	$point = $this->order->getPoint();
+    	$to_city = $this->order->city;
+    	
+    	$delivery_company = $point->getDeliveryInfo()->get('delivery_company');
+    	
+    	$dimensionSide1 = $this->order->getDimensionSide1();
+    	$dimensionSide2 = $this->order->getDimensionSide2();
+    	$dimensionSide3 = $this->order->getDimensionSide3();
+    	
+    	$goods_description = $this->order->getGoodsDescription();
+    	$weight = $this->order->getWeight();
+    	$confirmed = $this->order->getConfirmed();
+    	
+    	$to_name = $this->order->getToName();
+    	$to_phone = $this->order->getToPhone();
+    	$declaredPrice = $this->order->declaredPrice;
+    	$paymentPrice = $this->order->paymentPrice;
+    	
+    	$to_street = $this->order->toStreet;
+    	$to_house = $this->order->toHouse;
+    	$to_flat = $this->order->toFlat;
+    	$shop_refnum = $this->order->shopRefnum;
+    	
+    	$response = $this->sdk->addCourierOrder( $to_city, $delivery_company, 
+                                                 $dimensionSide1, $dimensionSide2, 
+    			                                 $dimensionSide3, $shop_refnum, $confirmed, 
+    			                                 $weight, $to_name, $to_phone, $goods_description, 
+    			                                 $declaredPrice, $paymentPrice, $to_street, 
+                                                 $to_house, $to_flat );
+    	
+    	if( !count ( $response->response ))
+    	{
+    		throw new DDeliveryException( implode(',', $response->errorMessage ));
+    	}
+    	
+    	 
+    	return $response->response['order'];
+    }
+    
+    
+    /**
+     *
      * отправить заказ на самовывоз
      *
      */
@@ -229,11 +331,6 @@ class DDeliveryUI
     {
         /** @var DDeliveryPointSelf $point */
     	$point = $this->order->getPoint();
-    	
-    	if( $point == null || !$point->get('_id')  )
-    	{
-            throw new DDeliveryException('Empty delivery point');
-    	}
     	
     	$pointID = $point->get('_id');
     	$dimensionSide1 = $this->order->getDimensionSide1();
@@ -244,10 +341,21 @@ class DDeliveryUI
     	$confirmed = $this->order->getConfirmed();
     	$to_name = $this->order->getToName();
     	$to_phone = $this->order->getToPhone();
+    	$declaredPrice = $this->order->declaredPrice;
+    	$paymentPrice = $this->order->paymentPrice;
     	
-    	$this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
-                                  $dimensionSide3, $confirmed, $weight, $to_name,
-                                  $to_phone, $goods_description, $declaredPrice, $paymentPrice );
+    	$response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
+                                              $dimensionSide3, $confirmed, $weight, $to_name,
+                                              $to_phone, $goods_description, $declaredPrice, 
+    			                              $paymentPrice );
+    	
+    	if( !count ( $response->response ))
+    	{
+    	     throw new DDeliveryException( implode(',', $response->errorMessage ));
+    	}
+        
+    	
+    	return $response->response['order'];
     }
     
     /**
@@ -342,7 +450,7 @@ class DDeliveryUI
     
     public function setOrderToEmail( $email )
     {
-    	$this->order->setToE( $house );
+    	$this->order->setToEmail($email );
     }
 
     /**

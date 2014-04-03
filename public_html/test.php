@@ -63,5 +63,17 @@ $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 
 $order = $DDeliveryUI->getOrder();
-echo $order->getGoodsDescription();
+$selfpoint = $DDeliveryUI->getCourierPointsForCity(151185);
+
+$order->setPoint($selfpoint[0]);
+$order->toName = 'Дима Грушин';
+$order->toPhone = '9999999999';
+$order->shopRefnum = 'xxx';
+$order->toStreet = 'Вознесенская';
+$order->toHouse = '1а';
+$order->toFlat = '42';
+$order->toEmail = '';
+
+$order_id = $DDeliveryUI->createCourierOrder();
+
 

@@ -51,6 +51,11 @@ class DDeliveryOrder
      * @var int
      */
     protected $weight = 0;
+    
+    /**
+     * @var int
+     */
+    public $city = 0;
 
     /**
      * @var float
@@ -60,7 +65,11 @@ class DDeliveryOrder
      * @var float
      */
     public $paymentPrice;
-
+    
+    /**
+     * @var string
+     */
+    public $shopRefnum;
     /**
      * @var string
      */
