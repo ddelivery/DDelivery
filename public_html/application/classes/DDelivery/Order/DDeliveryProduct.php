@@ -28,6 +28,12 @@ class DDeliveryProduct
 	private $id;
 	
 	/**
+	 * название товара
+	 * @var string
+	 */
+	private $name;
+	
+	/**
 	 * ширина товара в м
 	 * @var float
 	 */
@@ -82,12 +88,18 @@ class DDeliveryProduct
     	$this->weigth =   $params['weight'];
     	$this->price =    $params['price'];
     	$this->quantity = $params['quantity'];
+    	$this->name = $params['name'];
 
     }
 
     public function getID()
     {
     	return $this->id;
+    }
+    
+    public function getName()
+    {
+    	return $this->name;
     }
     
     public function getWidth()
