@@ -1,5 +1,5 @@
 <?/**
- * @var array $cityData
+ * @var array[] $cityList
  * @var \DDelivery\DDeliveryUI $this
  */ ?>
 <div class="map-popup">
@@ -7,6 +7,10 @@
         <p>Способы доставки в</p>
 
         <div class="delivery-place" style="width:280px;">
+            <?
+            $cityData = reset($cityList);
+            $cityId = $cityData['_id'];
+            ?>
             <input type="hidden" name="ddelivery_city" value="<?=$cityData['_id']?>"/>
             <div class="delivery-place__title">
                 <input type="text" title="<?=$cityData['display_name']?>"/>
@@ -16,22 +20,15 @@
                 <div class="delivery-place__drop_i">
                     <h2>Популярные города:</h2>
                     <ul>
-                        <li>
-                            <a href="#" data-id="<?=$cityData['_id']?>" class="active">
+                        <?foreach($cityList as $cityData):?>
+                            <li><a href="javascript:void(0)" data-id="<?=$cityData['_id']?>"
+                                   <?if($cityId == $cityData['_id']):?>class="active"<?endif;?>>
                                 <strong><?=$cityData['type'].'. '.$cityData['name']?></strong>
                                 <?if($cityData['name'] != $cityData['region']):?>
-                                    , <?=$cityData['region']?>
+                                    обл. <?=$cityData['region']?>
                                 <?endif;?>
-                            </a>
-                        </li>
-                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
-                        <li><a href="#" data-id="151184"><strong>г. Ханты-Мансийск</strong> обл.Ханты-Мансийский</a></li>
+                            </a></li>
+                        <?endforeach;?>
                     </ul>
                 </div>
             </div>

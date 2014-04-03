@@ -34,6 +34,7 @@ var DDelivery = {
                             }
                         );
                     }else{
+                        $ = jQuery;
                         Delivery.initStep2();
                     }
 
@@ -57,7 +58,7 @@ var DDelivery = {
                 this.ajax({});
             },
             ajax: function(data){
-                $.post( "ajax.php", data, function( data ) {
+                $.post( componentUrl, data, function( data ) {
                     $( Delivery.htmlObject ).html(data.html );
                     Delivery.ajaxRequestInit(data);
 

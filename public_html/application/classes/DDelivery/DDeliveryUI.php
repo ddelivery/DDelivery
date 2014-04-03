@@ -359,6 +359,26 @@ class DDeliveryUI
         }
     }
 
+    protected function getCityByDisplay($cityId)
+    {
+        $cityDB = new City();
+        $topCityId = $this->sdk->getTopCityId();
+        $cityList = $cityDB->getCityListById($topCityId, true);
+
+        // Складываем массивы получаем текущий город наверху, потом его и выберем
+        if(isset($cityList[$cityId])){
+            $cityData = $cityList[$cityId];
+            unset($cityList[$cityId]);
+            array_unshift($cityList, $cityData);
+        }else{
+            array_unshift($cityList, $cityDB->getCityById($cityId));
+        }
+        foreach($cityList as $key => $cityData){
+            $cityList[$key]['display_name'] = $cityDB->getDisplayCityName($cityData);
+        }
+        return $cityList;
+    }
+
     /**
      * Страница с картой
      * @param int $cityId
@@ -366,6 +386,8 @@ class DDeliveryUI
      */
     protected function renderMap($cityId)
     {
+        $cityList = $this->getCityByDisplay($cityId);
+
         ob_start();
         include(__DIR__ . '/../../templates/map.php');
         $content = ob_get_contents();
@@ -380,19 +402,18 @@ class DDeliveryUI
     protected function renderDeliveryTypeForm()
     {
         $cityId = (int)$this->shop->getClientCityId();
-        $cityData = false;
-        $cityDB = new City();
+
         if(!$cityId){
             $sdkResponse = $this->sdk->getCityByIp($_SERVER['REMOTE_ADDR']);
             if($sdkResponse && $sdkResponse->success && isset($sdkResponse->response['city_id'])) {
                 $cityId = (int)$sdkResponse->response['city_id'];
             }
             if(!$cityId) {
-                $cityId = 151184; // msk
+                $topCityId = $this->sdk->getTopCityId();
+                $cityId = reset($topCityId); // Самый большой город
             }
         }
-        if(!$cityData)
-            $cityData = $cityDB->getCityById($cityId);
+        $cityList = $this->getCityByDisplay($cityId);
 
         $order = $this->order;
 
@@ -403,12 +424,7 @@ class DDeliveryUI
             $order->declaredPrice
         );
 
-        $displayCityName = $cityData['type'].'. '.$cityData['region'];
 
-        if($cityData['region'] != $cityData['name']) {
-            $displayCityName .= ', '.$cityData['city'];
-        }
-        $cityData['display_name'] = $displayCityName;
 
         ob_start();
         include(__DIR__.'/../../templates/typeForm.php');
