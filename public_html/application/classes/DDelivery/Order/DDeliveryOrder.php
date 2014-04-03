@@ -69,6 +69,23 @@ class DDeliveryOrder
      * @var string
      */
     public $toPhone;
+    
+    
+    /**
+     * @var string
+     */
+    public $toStreet;
+    
+    /**
+     * @var string
+     */
+    public $toHouse;
+    
+    /**
+     * @var string
+     */
+    public $toFlat;
+    
     /**
      * @var string
      */
@@ -116,9 +133,15 @@ class DDeliveryOrder
     public function getProductParams()
     {
         $items = array();
+        
+        $description = array();
+        
         $this->weight = 0;
 
         foreach ($this->productList as $product) {
+        	
+        	$description[] = $product->getName() . ' ' . $product->getQuantity() . 'шт.';
+        	
             $this->weight += ($product->getQuantity() * $product->getWeight());
 
             $sizes =  array($product->getWidth(), $product->getHeight(), $product->getLength());
@@ -140,7 +163,9 @@ class DDeliveryOrder
                 $dimensionSide3 = $item[2];
             }
         }
-
+		
+        $this->goodsDescription = implode( ', ', $description );
+        
         $this->dimensionSide1 = $dimensionSide1;
         $this->dimensionSide2 = $dimensionSide2;
         $this->dimensionSide3 = $dimensionSide3;
@@ -197,9 +222,17 @@ class DDeliveryOrder
     {
     	return $this->dimensionSide3;
     }
-
+	
     /**
-     * @return int
+     * @return string
+     */
+    public function getGoodsDescription()
+    {
+    	return $this->goodsDescription;
+    }
+    
+    /**
+     * @return float
      */
     public function getWeight()
     {

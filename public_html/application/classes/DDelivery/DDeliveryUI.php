@@ -225,6 +225,11 @@ class DDeliveryUI
     	$this->order->setPoint( $point );
     }
     
+    /**
+     *
+     * отправить заказ на самовывоз
+     *
+     */
     public function createSelfOrder( )
     {
         /** @var DDeliveryPointSelf $point */
@@ -240,7 +245,7 @@ class DDeliveryUI
     	
     	$weight = $this->order->getWeight();
     	
-    	$this->sdk->addSelfOrder($point->_id, $dimensionSide1, $dimensionSide2,
+    	$this->sdk->addSelfOrder($point->get('_id'), $dimensionSide1, $dimensionSide2,
                                  $dimensionSide3, $confirmed, $weight, $to_name,
                                  $to_phone, $goods_description, $declaredPrice, $paymentPrice);
     }
@@ -249,8 +254,6 @@ class DDeliveryUI
      * Получить компании самовывоза  для города с их 
      * полным описанием, и координатами их филиалов
      * 
-     * Нужно профиксить баг с выдаванием точек
-     * узнать на каком уровне откидывать точки
      * 
      * @var int $cityID
      *
@@ -305,10 +308,7 @@ class DDeliveryUI
     	{	
     		foreach ( $response->response as $p )
     		{	
-    			if( $p['type'] == 1 )
-    			{
     			    $points[] = new \DDelivery\Point\DDeliveryPointSelf( $p );
-    			}
     		}
     	}
     	
