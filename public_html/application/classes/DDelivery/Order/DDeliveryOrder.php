@@ -310,18 +310,21 @@ class DDeliveryOrder
     {
     	return $this->toFlat;
     }
-    
-    
-    public function setToEmail( $toEmail )
+
+    /**
+     * @param string $toEmail
+     */
+    public function setToEmail($toEmail)
     {
-    	$this->toFlat = $toFlat;
+        $this->toEmail = $toEmail;
     }
-    
-    public function getToFlat()
+
+    /**
+     * @return string
+     */
+    public function getToEmail()
     {
-    	return $this->toFlat;
+        return $this->toEmail;
     }
-    
-    
 
 }     
