@@ -69,6 +69,12 @@ class DDeliveryOrder
      * @var string
      */
     public $toPhone;
+    
+    
+    /**
+     * @var string
+     */
+    public $to_street;
     /**
      * @var string
      */
