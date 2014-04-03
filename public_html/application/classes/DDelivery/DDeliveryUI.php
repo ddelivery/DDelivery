@@ -220,11 +220,6 @@ class DDeliveryUI
     	return $deliveryInfo;
     }
     
-    public function setOrderPoint( $point )
-    {
-    	$this->order->setPoint( $point );
-    }
-    
     /**
      *
      * отправить заказ на самовывоз
@@ -239,15 +234,20 @@ class DDeliveryUI
     	{
             throw new DDeliveryException('Empty delivery point');
     	}
+    	
+    	$pointID = $point->get('_id');
     	$dimensionSide1 = $this->order->getDimensionSide1();
     	$dimensionSide2 = $this->order->getDimensionSide2();
     	$dimensionSide3 = $this->order->getDimensionSide3();
-    	
+    	$goods_description = $this->order->getGoodsDescription();
     	$weight = $this->order->getWeight();
+    	$confirmed = $this->order->getConfirmed();
+    	$to_name = $this->order->getToName();
+    	$to_phone = $this->order->getToPhone();
     	
-    	$this->sdk->addSelfOrder($point->get('_id'), $dimensionSide1, $dimensionSide2,
-                                 $dimensionSide3, $confirmed, $weight, $to_name,
-                                 $to_phone, $goods_description, $declaredPrice, $paymentPrice);
+    	$this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
+                                  $dimensionSide3, $confirmed, $weight, $to_name,
+                                  $to_phone, $goods_description, $declaredPrice, $paymentPrice );
     }
     
     /**
@@ -313,6 +313,36 @@ class DDeliveryUI
     	}
     	
     	return $points;
+    }
+    
+    public function setOrderPoint( $point )
+    {
+    	$this->order->setPoint( $point );
+    }
+    
+    public function setOrderToPhone( $phone )
+    {
+    	$this->order->setToPhone( $phone );
+    }
+    
+    public function setOrderToName( $name )
+    {
+    	$this->order->setToName( $name );
+    }
+    
+    public function setOrderToFlat( $flat )
+    {
+    	$this->order->setToFlat( $flat );
+    }
+    
+    public function setOrderToHouse( $house )
+    {
+    	$this->order->setToHouse( $house );
+    }
+    
+    public function setOrderToEmail( $email )
+    {
+    	$this->order->setToE( $house );
     }
 
     /**

@@ -13,6 +13,8 @@ class DShopAdapterImpl extends DShopAdapter
 		return '4bf43a2cd2be3538bf4e35ad8191365d'; 
 	}
 	
+	public function getPathByDB(){}
+	
     public function getProductsFromCart()
     {
     	$products = array();
