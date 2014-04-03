@@ -1,13 +1,13 @@
 if(typeof(DDelivery) == 'undefined')
 var DDelivery = {
     delivery: function(objectId, componentUrl, staticPath, params){
+        var $;
         var Delivery;
         Delivery = {
             componentUrl: "",
             staticPath: "",
             htmlObject: null,
             includeScripts: false,
-            jQuery: null,
             init: function(objectId, componentUrl, staticPath, params) {
                 this.htmlObject = document.getElementById(objectId);
 
@@ -28,19 +28,18 @@ var DDelivery = {
                         this.utils.requireScript(
                             '//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js',
                             function(){
-                                Delivery.jQuery = jQuery;
-                                $.noConflict();
-                                $ = ref$;
+                                jQuery.noConflict();
+                                $ = jQuery;
                                 Delivery.initStep2();
                             }
                         );
                     }else{
-                        this.jQuery = jQuery;
                         Delivery.initStep2();
                     }
 
                     if(typeof(ymaps)=='undefined') {
-                        this.utils.requireScript('//api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU');
+
+                        this.utils.requireScript('//api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU');
                     }
 
                 }else{
@@ -58,15 +57,14 @@ var DDelivery = {
                 this.ajax({});
             },
             ajax: function(data){
-                this.jQuery.post( "ajax.php", data, function( data ) {
-                    Delivery.jQuery( Delivery.htmlObject ).html(data.html );
-                    Delivery.ajaxRequestInit();
+                $.post( "ajax.php", data, function( data ) {
+                    $( Delivery.htmlObject ).html(data.html );
+                    Delivery.ajaxRequestInit(data);
 
                     Delivery.utils.requireScript(Delivery.staticPath+'js/start.js');
                 }, 'json');
             },
-            ajaxRequestInit: function(){
-                var $ = this.jQuery;
+            ajaxRequestInit: function(data){
 
                 var radio = $('.map-popup__main__delivery input[type="radio"]', Delivery.htmlObject);
                 if(radio.length > 0){
@@ -87,7 +85,7 @@ var DDelivery = {
                 }
 
                 if($('.map-canvas', Delivery.htmlObject).length > 0){
-                    //delivery.map.
+                    Delivery.map.init(data);
                 }
 
                 // Город
@@ -110,7 +108,7 @@ var DDelivery = {
                     });
                 });
                 $('.delivery-place__drop li a').click(function(){
-                    var title = $(this)[0].innerText.replace('\n', ', ');
+                    var title = $(this)[0].innerText.trim().replace('\n', ', ');
                     $('.delivery-place__title input', Delivery.htmlObject).val('').attr('title', title).blur();
 
                     $('.delivery-place__drop li a').removeClass('active');
@@ -141,6 +139,8 @@ var DDelivery = {
                     }
                 });
 
+                // Ссылки
+                $('.map-popup__main__delivery__next a', Delivery.htmlObject).click(Delivery.typeFormSubmit);
             },
 
             mapAction:{
@@ -175,7 +175,8 @@ var DDelivery = {
                             } while(event.length > 0);
                         }
                     };
-                    document.childNodes[0].appendChild(script);
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(script, s);
                 },
                 requireStyle: function(url, onload) {
                     if(this.requireStyleInclude.indexOf(url) != -1) {
@@ -191,14 +192,15 @@ var DDelivery = {
                     if(typeof(onload) == "function"){
                         link.onload = onload;
                     }
-                    document.childNodes[0].appendChild(link);
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(link, s);
+
                 }
             },
 
             // события
 
             typeFormSubmit: function(){
-                var $ = this.jQuery;
 
                 var radio = $('input[type="radio"]:checked', this.htmlObject).val();
                 if(radio) {
@@ -211,18 +213,35 @@ var DDelivery = {
             },
 
             map: {
-                init: function(){
+                yamap: null,
+                init: function(data) {
                     var mapObject = $('.map-canvas', Delivery.htmlObject);
-                    if(mapObject.length>0)
+                    if(mapObject.length != 1)
                         return;
-
                     ymaps.ready(function(){
-                        Delivery.map = new ymaps.Map(mapObject[0], {
-                            center: [55.76, 37.64],
-                            zoom: 7
-                        });
 
-                        Delivery.map.controls.add('zoomControl', { top: 65, left: 10 });
+                        Delivery.map.yamap = new ymaps.Map(mapObject[0], {
+                            center: [55.76, 37.64],
+                            zoom: 7,
+                            behaviors: ['default', 'scrollZoom']
+                        });
+                        var yamap = Delivery.map.yamap;
+
+                        yamap.controls.add('zoomControl', { top: 65, left: 10 });
+
+                        ymaps.geocode($('.delivery-place__title input').attr('title'), {results: 1})
+                            .then(function (res) {
+                                // Выбираем первый результат геокодирования.
+                                var firstGeoObject = res.geoObjects.get(0);
+                                // Область видимости геообъекта.
+                                var bounds = firstGeoObject.properties.get('boundedBy');
+
+                                // Масштабируем карту на область видимости геообъекта.
+                                yamap.setBounds(bounds, {
+                                    checkZoomRange: true // проверяем наличие тайлов на данном масштабе.
+                                });
+                            });
+
                     });
                 }
             }

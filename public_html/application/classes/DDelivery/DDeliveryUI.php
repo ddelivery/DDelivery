@@ -381,28 +381,19 @@ class DDeliveryUI
     {
         $cityId = (int)$this->shop->getClientCityId();
         $cityData = false;
+        $cityDB = new City();
         if(!$cityId){
             $sdkResponse = $this->sdk->getCityByIp($_SERVER['REMOTE_ADDR']);
             if($sdkResponse && $sdkResponse->success && isset($sdkResponse->response['city_id'])) {
                 $cityId = (int)$sdkResponse->response['city_id'];
-                $cityData = $sdkResponse->response;
             }
             if(!$cityId) {
-                $cityId = 151184;
+                $cityId = 151184; // msk
             }
         }
-        if(!$cityData){
-            $cityDB = new City();
-            $data = $cityDB->getCityById($cityId);
-        }
+        if(!$cityData)
+            $cityData = $cityDB->getCityById($cityId);
 
-        // @todo когда будет метод возвращающий инфу о городе по id добавить
-        // @todo когда будет метод взять топ, забрать мск
-        if(!$cityData) {
-            $cityData = array("city_id"=>151184, "country"=>"RU", "city"=>"москва",
-                "region"=>"Москва", "region_id"=>77, "type"=>"г", "postal_code"=>"101000",
-                "area"=>"","kladr"=>"77000000000");
-        }
         $order = $this->order;
 
         $order->declaredPrice = $this->shop->getDeclaredPrice($order->getProducts());
@@ -414,7 +405,7 @@ class DDeliveryUI
 
         $displayCityName = $cityData['type'].'. '.$cityData['region'];
 
-        if(mb_strtolower($cityData['region']) != mb_strtolower($cityData['city'])) {
+        if($cityData['region'] != $cityData['name']) {
             $displayCityName .= ', '.$cityData['city'];
         }
         $cityData['display_name'] = $displayCityName;
