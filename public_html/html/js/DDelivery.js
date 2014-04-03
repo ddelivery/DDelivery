@@ -242,7 +242,37 @@ var DDelivery = {
                                     checkZoomRange: true // проверяем наличие тайлов на данном масштабе.
                                 });
                             });
-
+                    });
+                    // Инпут поиска
+                    $('.map__search input[type=text]', Delivery.htmlObject).keyup(Delivery.map.citySearch);
+                    $('.map__search input[type=submit]', Delivery.htmlObject).click(function(){
+                        Delivery.map.citySearch();
+                        return false;
+                    });
+                },
+                citySearch: function() {
+                    var input = $('.map__search input[type=text]', Delivery.htmlObject)[0];
+                    if(input.value.length < 3)
+                        return;
+                    ymaps.geocode(input.value, {results: 5}).then(function (res) {
+                        if(res.metaData.geocoder.request == input.value){
+                            var html = '';
+                            var boundList = [];
+                            for(var i=0; i< res.geoObjects.getLength(); i++ ) {
+                                var geoObject = res.geoObjects.get(i);
+                                html += '<a data-id="'+i+'" href="javascript:void(0)">'+geoObject.properties.get('text')+'</a><br>';
+                                boundList.push(geoObject.properties.get('boundedBy'));
+                            }
+                            var dropDown = $('div.map__search_dropdown', Delivery.htmlObject);
+                            dropDown.html(html).slideDown(300);
+                            $('a', dropDown).click(function(){
+                                Delivery.map.yamap.setBounds(boundList[parseInt($(this).data('id'))], {
+                                    checkZoomRange: true // проверяем наличие тайлов на данном масштабе.
+                                });
+                                dropDown.slideUp(300);
+                            });
+                            dropDown[0].bound = boundList;
+                        }
                     });
                 }
             }

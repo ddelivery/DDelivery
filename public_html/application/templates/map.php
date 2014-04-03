@@ -4,6 +4,14 @@
  * @var array[] $cityList
  */
 ?>
+<style type="text/css">
+    .map-popup div.map__search_dropdown {
+        background-color: #fff;
+        padding: 5px;
+        margin-top: 36px;
+        display: none;
+    }
+</style>
 <div class="map-popup">
 
     <div class="map-popup__head">
@@ -74,6 +82,7 @@
             <div class="map__search clearfix">
                 <input type="text" placeholder="Адрес или объект"/>
                 <input type="submit" value="ПОИСК"/>
+                <div class="map__search_dropdown"></div>
             </div>
         </div>
         <!-- map end-->
