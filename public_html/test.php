@@ -59,6 +59,20 @@ $DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d
 
 
 */
+//$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
+//$calc = $DDeliverySDK->calculatorCourier(151185, 10, 10, 10, 1, 0);
+//$order = $DDeliverySDK->calculatorCourier( 151185, 10, 10, 10, 1, 0 );
+//print_r(  $order  );
+$productList[] = new \DDelivery\Order\DDeliveryProduct( 1, 2, 6, 2,
+		1, 100, 2, 'Пиджак' );
+$productList[] = new \DDelivery\Order\DDeliveryProduct( 2, 3, 1,
+		1, 1, 200, 1,'Куртка кожанная') ;
+
+$fixture = new DDelivery\Order\DDeliveryOrder($productList);
+$fixture->getProductParams();
+print_r($fixture);
+
+/*
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 
@@ -75,5 +89,6 @@ $order->toFlat = '42';
 $order->toEmail = '';
 
 $order_id = $DDeliveryUI->createCourierOrder();
-
+echo $order_id;
+*/
 

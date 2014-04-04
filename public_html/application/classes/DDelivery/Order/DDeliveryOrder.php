@@ -38,15 +38,15 @@ class DDeliveryOrder
     /**
      * @var int
      */
-    protected $dimensionSide1 = 0;
+    public  $dimensionSide1 = 0;
     /**
      * @var int
      */
-    protected $dimensionSide2 = 0;
+    public $dimensionSide2 = 0;
     /**
      * @var int
      */
-    protected $dimensionSide3 = 0;
+    public $dimensionSide3 = 0;
     /**
      * @var int
      */
@@ -154,6 +154,8 @@ class DDeliveryOrder
         
         $description = array();
         
+        $productSizes = array();
+        
         $this->weight = 0;
 
         foreach ($this->productList as $product) {
@@ -162,25 +164,75 @@ class DDeliveryOrder
         	
             $this->weight += ($product->getQuantity() * $product->getWeight());
 
-            $sizes =  array($product->getWidth(), $product->getHeight(), $product->getLength());
+            $sizes =  array($product->getWidth(), $product->getHeight(), 
+            		        $product->getLength());
             sort($sizes);
+            $sizes[] = $product->getQuantity();
+            
             for($i=0;$i<$product->getQuantity();$i++) {
                 $items[] = $sizes;
             }
+            
+            $productSizes[] = $sizes;
         }
-
+        /*
         $dimensionSide1 = 0;
         $dimensionSide2 = 0;
         $dimensionSide3 = 0;
+        print_r($productSizes);
         foreach($items as $item) {
             $dimensionSide1 += $item[0];
-            if($dimensionSide2 < $item[1]) {
-                $dimensionSide2 = $item[1];
+            if($dimensionSide2 < $item[2]) {
+                $dimensionSide2 = $item[2];
             }
-            if($dimensionSide3 < $item[2]) {
-                $dimensionSide3 = $item[2];
+            if($dimensionSide3 < $item[1]) {
+                $dimensionSide3 = $item[1];
             }
         }
+        */
+        $dimensionSide1 = 0;
+        $dimensionSide2 = 0;
+        $dimensionSide3 = 0;
+        
+        for ($i = 0; $i < count( $productSizes );$i++ )
+        {
+        	$dimensionSide1 += ($productSizes[$i][0] * $productSizes[$i][3] );
+			
+			     	
+        	if( $productSizes[$i][1] > $dimensionSide2 )
+        	{
+        		$dimensionSideIndex = $i;
+        		$dimensionSideElement = 1;
+        		$dimensionSide2 = $productSizes[$i][1];
+        	}
+        	if( $productSizes[$i][2] > $dimensionSide2 )
+        	{
+        		$dimensionSideIndex = $i;
+        		$dimensionSideElement = 2;
+        		$dimensionSide2 = $productSizes[$i][2];
+        	} 
+        	
+        }
+        $dimensionSide2 = $productSizes[$dimensionSideIndex][$dimensionSideElement];
+        for ($i = 0; $i < count( $productSizes );$i++ )
+        {
+        	if( ( $productSizes[$i][1] > $dimensionSide3) && 
+        	      !(($i == $dimensionSideIndex) && ($dimensionSideElement == 1))  )
+        	{	
+        		
+        		$dimensionSideIndex3 = $i;
+        		$dimensionSideElement3 = 1;
+        		$dimensionSide3 = $productSizes[$i][1];
+        	}
+        	if( ($productSizes[$i][2] > $dimensionSide3)  && 
+        	     !(($i == $dimensionSideIndex) && ($dimensionSideElement == 2)) )
+        	{
+        		$dimensionSideIndex3 = $i;
+        		$dimensionSideElement3 = 2;
+        		$dimensionSide3 = $productSizes[$i][2];
+        	}
+        }
+        $dimensionSide3 = $productSizes[$dimensionSideIndex3][$dimensionSideElement3];
 		
         $this->goodsDescription = implode( ', ', $description );
         

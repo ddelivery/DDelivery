@@ -18,14 +18,11 @@ class DShopAdapterImpl extends DShopAdapter
     public function getProductsFromCart()
     {
     	$products = array();
-    	$prduct_item = array( 'id' => 1, 'name' =>'Пиджак', 'width' => 2, 'height' => 6,
-                              'length' => 2, 'weight' => 1, 'price' => 100, 'quantity' => 2 );
     	
-    	$prduct_item2 = array( 'id' => 2, 'name' =>'Куртка кожанная', 'width' => 3, 'height' => 1,
-    			'length' => 4, 'weight' => 1, 'price' => 200, 'quantity' => 1  );
-    	
-    	$products[] = new \DDelivery\Order\DDeliveryProduct( $prduct_item );
-    	$products[] = new \DDelivery\Order\DDeliveryProduct( $prduct_item2 );
+    	$products[] = new \DDelivery\Order\DDeliveryProduct( 1, 2, 6, 2, 
+    			                                             1, 100, 2, 'Пиджак' );
+    	$products[] = new \DDelivery\Order\DDeliveryProduct(2, 3, 1,  
+    			                                            1, 1, 200, 1,'Куртка кожанная') ;
     	
     	return $products;
     }

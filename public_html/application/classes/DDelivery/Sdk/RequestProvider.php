@@ -137,7 +137,7 @@ class RequestProvider
 			curl_setopt($this->curl[$server], CURLOPT_HEADER, 0);
 			curl_setopt($this->curl[$server], CURLOPT_FOLLOWLOCATION, 1);
             // В реальных интернетах за пинг в секунду убивают
-            curl_setopt($this->curl[$server], CURLOPT_TIMEOUT, 5);
+            curl_setopt($this->curl[$server], CURLOPT_TIMEOUT, 8);
 		}
 		 
 		$urlSuffix = '';
