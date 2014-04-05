@@ -111,33 +111,6 @@ class DDeliveryPointSelf extends DDeliveryAbstractPoint{
     }
 
 
-    /**
-     * фильтрует расположение точек только для текущей компании
-     * 
-     * @param array $locationConteiner - массив с расположением точек
-     * для разных компаний
-     * @deprecated
-     */
-    public function filterLocationInfo( $locationConteiner = array() )
-    {	
-    	$companyID = $this->getDeliveryInfo()->get('delivery_company');
-    	
-    	foreach ( $locationConteiner as $item  )
-    	{
-    	    if( $companyID == $item['company_id'])
-    	    {
-    	    	$this->pointLocation[] = $item;
-    	    }
-    	}
-    }
-    
-    /**
-     * получить масcив с располажением точек по городу для компании
-     * @deprecated
-     */
-    public function getPointsLocation()
-    {
-    	return $this->pointLocation;
-    }
+   
     
 }
