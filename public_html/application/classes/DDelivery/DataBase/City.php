@@ -34,6 +34,7 @@ class City {
     public function getCityById($cityId)
     {
         $cityId = (int)$cityId;
+       
         $sth = $this->pdo->query("SELECT * FROM ps_dd_cities WHERE _id = $cityId");
         $result = $sth->fetch(PDO::FETCH_ASSOC);
         return $result;

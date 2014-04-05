@@ -12,6 +12,7 @@
 namespace DDelivery;
 use DDelivery\Adapter\DShopAdapter;
 use DDelivery\DataBase\City;
+use DDelivery\DataBase\Order;
 use DDelivery\DataBase\SQLite;
 use DDelivery\Point\DDeliveryPointSelf;
 use DDelivery\Sdk\DDeliverySDK;
@@ -70,7 +71,17 @@ class DDeliveryUI
         $this->order = new DDeliveryOrder($this->shop->getProductsFromCart());
 
         SQLite::$dbUri = $dShopAdapter->getPathByDB();
-
+    }
+    
+    public function saveIntermediateOrder()
+    {	
+    	$orderDB = new DataBase\Order();
+    	$orderDB->createTable();
+    	/*
+    	$packOrder = $this->order->packOrder();
+    	return $packOrder;
+    	*/
+    	
     }
     
     /**
@@ -140,6 +151,7 @@ class DDeliveryUI
                                                    $this->order->getDimensionSide2(), $this->order->getDimensionSide3(),
                                                    $this->order->getWeight(), 0 );
     	$this->order->city = $cityID;
+    	
     	
     	if( $response->success )
         {
@@ -247,7 +259,7 @@ class DDeliveryUI
                      || !strlen( $this->order->toStreet ) || !strlen( $this->order->toHouse ) 
                      || !strlen( $this->order->toFlat ) )
         {
-        	throw new DDeliveryException("Bad userInfo");
+        	throw new DDeliveryException("Bad user Info");
         }
         return true;
     }
@@ -282,6 +294,14 @@ class DDeliveryUI
     public function createCourierOrder( )
     {
     	/** @var DDeliveryPointCourier $point */
+    	try
+    	{
+    		$this->checkOrderCourierValues();
+    	}
+    	catch (DDeliveryException $e)
+    	{
+    		return 0;
+    	}
     	$point = $this->order->getPoint();
     	$to_city = $this->order->city;
     	
@@ -315,6 +335,7 @@ class DDeliveryUI
     	if( !count ( $response->response ))
     	{
     		throw new DDeliveryException( implode(',', $response->errorMessage ));
+    		return 0;
     	}
     	
     	 
@@ -330,6 +351,14 @@ class DDeliveryUI
     public function createSelfOrder( )
     {
         /** @var DDeliveryPointSelf $point */
+    	try 
+    	{
+    		$this->checkOrderSelfValues();
+    	}
+    	catch (DDeliveryException $e)
+    	{
+    		return 0;
+    	}    	
     	$point = $this->order->getPoint();
     	
     	$pointID = $point->get('_id');

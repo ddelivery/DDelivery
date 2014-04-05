@@ -25,6 +25,7 @@ class SQLite {
         if ( empty(self::$pdo) ) {
             self::$pdo = new \PDO('sqlite:'.self::$dbUri);
         }
+        
         return self::$pdo;
     }
 } 

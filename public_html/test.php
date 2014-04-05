@@ -63,6 +63,7 @@ $DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d
 //$calc = $DDeliverySDK->calculatorCourier(151185, 10, 10, 10, 1, 0);
 //$order = $DDeliverySDK->calculatorCourier( 151185, 10, 10, 10, 1, 0 );
 //print_r(  $order  );
+/*
 $productList[] = new \DDelivery\Order\DDeliveryProduct( 1, 2, 6, 2,
 		1, 100, 2, 'Пиджак' );
 $productList[] = new \DDelivery\Order\DDeliveryProduct( 2, 3, 1,
@@ -71,13 +72,14 @@ $productList[] = new \DDelivery\Order\DDeliveryProduct( 2, 3, 1,
 $fixture = new DDelivery\Order\DDeliveryOrder($productList);
 $fixture->getProductParams();
 print_r($fixture);
+*/
 
 /*
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 
 $order = $DDeliveryUI->getOrder();
-$selfpoint = $DDeliveryUI->getCourierPointsForCity(151185);
+$selfpoint = $DDeliveryUI->getSelfPoints(151185);
 
 $order->setPoint($selfpoint[0]);
 $order->toName = 'Дима Грушин';
@@ -88,7 +90,21 @@ $order->toHouse = '1а';
 $order->toFlat = '42';
 $order->toEmail = '';
 
-$order_id = $DDeliveryUI->createCourierOrder();
+$order_id = $DDeliveryUI->createSelfOrder();
 echo $order_id;
+
+
+$shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
+$fixture = new DDelivery\DDeliveryUI( $shopAdapter );
+$result = $fixture->getSelfPointsForCityAndCompany('4,6', '4,25');
+print_r($result);
 */
 
+$shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
+$DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
+$doc = $DDeliveryUI->saveIntermediateOrder();
+print_r($doc);
+//$selfpoints = $DDeliveryUI->getSelfPoints( 151185 );
+
+
+//print_r($selfpoints);

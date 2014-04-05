@@ -14,7 +14,7 @@
          <fileset dir="public_html/"></fileset>
  
      </copy>
- 
+ 	<chmod dir="/var/www/ddelivery/application/data/" perm="777"/>
  </target>
  
 </project>

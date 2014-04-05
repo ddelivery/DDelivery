@@ -240,7 +240,14 @@ class DDeliveryOrder
         $this->dimensionSide2 = $dimensionSide2;
         $this->dimensionSide3 = $dimensionSide3;
     }
-
+	
+    public function packOrder()
+    {
+    	
+    	$s = serialize($this);
+    	return $s;
+    }
+    
     /**
      * @param $point
      */
