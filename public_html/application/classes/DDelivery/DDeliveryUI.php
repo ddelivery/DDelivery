@@ -58,30 +58,85 @@ class DDeliveryUI
      * @var DDeliveryOrder
      */
     private $order;
-
+	
+    
     /**
      * @param DShopAdapter $dShopAdapter
      */
     public function __construct(DShopAdapter $dShopAdapter)
-    {
+    {	
+    	if (!session_id()) {
+    		session_start();
+    	}
+    	
         $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), true);
         
         $this->shop = $dShopAdapter;
+        SQLite::$dbUri = $dShopAdapter->getPathByDB();
 
         $this->order = new DDeliveryOrder($this->shop->getProductsFromCart());
+        $this->initIntermediateOrder();
 
-        SQLite::$dbUri = $dShopAdapter->getPathByDB();
+        
     }
     
+    /**
+     * получить текущее состояние заказа в БД
+     * 
+     * Вызывается всегда при инициализации объекта заказа
+     *
+     * @return void;
+     */
+    public function initIntermediateOrder()
+    {	
+    	$orderDB = new DataBase\Order();
+    	if( isset($_SESSION["ddelivery_order_id"]) )
+    	{
+    		$id  = $_SESSION["ddelivery_order_id"];
+    		if($orderDB->isRecordExist($id))
+    	    {
+    	        $order = $orderDB->selectSerializeByID( $id );
+    	        if( count( $order ) )
+    	        {
+    	        	$jsonOrder = json_decode($order[0]);
+    	        	//print_r($jsonOrder);
+    	        }	
+    	    }
+    	}
+    }
+    
+    /**
+     * Сохранить промежуточное состояние заказа в БД
+     * 
+     * Вызывать вручную при завершении обработки запроса
+     *
+     * @return int;
+     */
     public function saveIntermediateOrder()
     {	
     	$orderDB = new DataBase\Order();
-    	$orderDB->createTable();
-    	/*
     	$packOrder = $this->order->packOrder();
-    	return $packOrder;
-    	*/
+    	if( !isset($_SESSION["ddelivery_order_id"]) )
+    	{	
+    		$id = $orderDB->insertOrder($packOrder);
+    		$_SESSION['ddelivery_order_id'] = $id;
+    	}
+    	else 
+    	{	
+    		$id = $_SESSION["ddelivery_order_id"];
+    		if($orderDB->isRecordExist($id) )
+    		{
+    			$orderDB->updateOrder( $id, $packOrder );
+    		}
+    		else 
+    		{
+    			$id = $orderDB->insertOrder($packOrder);
+    			$_SESSION['ddelivery_order_id'] = $id;
+    		}
+    	}
+    	$data = $orderDB->selectAll();
     	
+	    return  $id;
     }
     
     /**
@@ -163,6 +218,7 @@ class DDeliveryUI
     				$point = new \DDelivery\Point\DDeliveryPointCourier();
     				$deliveryInfo = new \DDelivery\Point\DDeliveryInfo( $p );
     				$point->setDeliveryInfo($deliveryInfo);
+    				$point->pointID = $deliveryInfo->get('delivery_company');
     				$points[] = $point;
     			}
     		}
@@ -414,7 +470,7 @@ class DDeliveryUI
     			if( array_key_exists( $companyID, $deliveryInfo ) )
     			{
     				$item->setDeliveryInfo( $deliveryInfo[$companyID] );
-    				
+    				$item->pointID = $item->get('_id');
     			}
     		}
     	}

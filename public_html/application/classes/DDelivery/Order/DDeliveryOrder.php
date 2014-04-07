@@ -13,6 +13,7 @@ namespace DDelivery\Order;
 
 use DDelivery\Adapter\DShopAdapter;
 use DDelivery\Point\DDeliveryAbstractPoint;
+use DDelivery\DataBase\SQLite;
 
 /**
  * DDeliveryOrder - заказ DDelivery
@@ -126,7 +127,7 @@ class DDeliveryOrder
      * @param DDeliveryProduct[] $productList
      * @throws DDeliveryOrderException
      */
-    public function __construct($productList)
+    public function __construct( $productList )
     {
         /**
          * Возвращает сразу массив DDeliveryProduct
@@ -151,7 +152,7 @@ class DDeliveryOrder
      * Сторона 2: максимальная сторона товара в Заказе
      * Сторона 3: следующая за максимальной стороной товара в Заказе 
      * 
-     * 
+     * @return void
      */
     public function getProductParams()
     {
@@ -175,17 +176,26 @@ class DDeliveryOrder
         $dimensionSide2 = array_pop( $items );
         $dimensionSide3 = array_pop( $items );
 		
+        $this->weight = $weight;
         $this->goodsDescription = implode( ', ', $description );
         $this->dimensionSide1 = $dimensionSide1;
         $this->dimensionSide2 = $dimensionSide2;
         $this->dimensionSide3 = $dimensionSide3;
     }
 	
+    /**
+     *
+     * Упаковать данные заказа для сохранения в БД
+     * 
+     * @return array
+     */
     public function packOrder()
     {
-    	
-    	$s = serialize($this);
-    	return $s;
+    	$packedOrder = array('type'=>$this->type, 'city' => $this->city, 
+    	                     'point_id' => $this->point->pointID, 'to_name' => $this->toName,
+    	                     'to_phone' => $this->toPhone, 'to_street' => $this->toStreet,
+                             'to_house' => $this->toHouse, 'to_flat' => $this->toFlat, 'to_email' => $this->toEmail);
+    	return $packedOrder;
     }
     
     /**

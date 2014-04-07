@@ -24,6 +24,7 @@ class SQLite {
             throw new DDeliveryException('SQLite::dbUri is empty');
         if ( empty(self::$pdo) ) {
             self::$pdo = new \PDO('sqlite:'.self::$dbUri);
+            self::$pdo->exec('PRAGMA journal_mode=WAL;');
         }
         
         return self::$pdo;
