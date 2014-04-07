@@ -25,8 +25,8 @@ class ShopAdapter extends DShopAdapter
     public function getProductsFromCart()
     {
         $products = array();
-        $products[] = new DDeliveryProduct(1, 20, 23, 25, 10, 1000, 1);
-        $products[] = new DDeliveryProduct(2, 10, 13, 15, 4, 1500, 2);
+        $products[] = new DDeliveryProduct(1, 20, 23, 25, 10, 1000, 1, 'Веселый клоун');
+        $products[] = new DDeliveryProduct(2, 10, 13, 15, 4, 1500, 2, 'Грустный клоун');
         return $products;
     }
 
@@ -38,8 +38,8 @@ class ShopAdapter extends DShopAdapter
     {
         return '4bf43a2cd2be3538bf4e35ad8191365d';
     }
-
-    /*public function getSupportedType()
+/*
+    public function getSupportedType()
     {
         return \DDelivery\Sdk\DDeliverySDK::TYPE_SELF;
     }*/
@@ -54,12 +54,30 @@ class ShopAdapter extends DShopAdapter
     {
         return __DIR__.'/db.sqlite';
     }
-}
 
+    /**
+     * Должен вернуть url до каталога с статикой
+     * @return string
+     */
+    public function getStaticPath()
+    {
+        return '/html/';
+    }
+
+    /**
+     * URL до скрипта где вызывается DDelivery::render
+     * @return string
+     */
+    public function getPhpScriptURL()
+    {
+        return '/html/ajax.php';
+    }
+}
 
 $shopAdapter = new ShopAdapter();
 $ddeliveryUI = new DDeliveryUI($shopAdapter);
-$ddeliveryUI->render(isset($_POST) ? $_POST : array());
+// В зависимости от параметров может выводить полноценный html или json
+$ddeliveryUI->render(isset($_REQUEST) ? $_REQUEST : array());
 
 
 

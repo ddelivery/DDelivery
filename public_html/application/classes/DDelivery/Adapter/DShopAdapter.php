@@ -38,6 +38,18 @@ abstract class DShopAdapter
     public abstract function getApiKey();
 
     /**
+     * Должен вернуть url до каталога с статикой
+     * @return string
+     */
+    public abstract function getStaticPath();
+
+    /**
+     * URL до скрипта где вызывается DDelivery::render
+     * @return string
+     */
+    public abstract function getPhpScriptURL();
+
+    /**
      * Если вы знаете имя покупателя, сделайте чтобы оно вернулось в этом методе
      * @return string|null
      */
@@ -54,7 +66,7 @@ abstract class DShopAdapter
     }
 
     /**
-     * Возвращает путь до файла базы данных
+     * Возвращает путь до файла базы данных, положите его в место не доступное по прямой ссылке
      * @return string
      */
     public abstract function getPathByDB();
