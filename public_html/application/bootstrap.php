@@ -14,7 +14,6 @@
  * @author  mrozk <mrozk2012@gmail.com>
  */
 
-header('Content-type: text/plain; charset=utf-8');
 
 /**
  * Для поиска недостающих классов, сканируем

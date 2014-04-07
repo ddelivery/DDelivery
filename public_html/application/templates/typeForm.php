@@ -41,10 +41,10 @@
         <div class="map-popup__main__overlay">&nbsp;</div>
         <div class="map-popup__main__delivery">
             <table>
-                <?if(in_array(\DDelivery\Sdk\DDeliverySDK::TYPE_SELF,  $this->supportedTypes)):?>
+                <?if(in_array(\DDelivery\Sdk\DDeliverySDK::TYPE_COURIER,  $this->supportedTypes)):?>
                     <tr>
                         <td class="col1">
-                            <input type="radio" name="ddeliveryType" checked value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_SELF?>"/>
+                            <input type="radio" name="ddeliveryType" checked value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_COURIER?>"/>
                         </td>
                         <td class="col2">
                             <i class="icon-car">&nbsp;</i>
@@ -63,10 +63,10 @@
                         </td>
                     </tr>
                 <?endif;?>
-                <?if(in_array(\DDelivery\Sdk\DDeliverySDK::TYPE_COURIER,  $this->supportedTypes)):?>
+                <?if(in_array(\DDelivery\Sdk\DDeliverySDK::TYPE_SELF,  $this->supportedTypes)):?>
                     <tr>
                         <td class="col1">
-                            <input type="radio" name="ddeliveryType" value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_COURIER?>"/>
+                            <input type="radio" name="ddeliveryType" value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_SELF?>"/>
                         </td>
                         <td class="col2">
                             <i class="icon-pack">&nbsp;</i>

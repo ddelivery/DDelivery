@@ -189,7 +189,7 @@ class DDeliveryUI
                                                          $this->order->getDimensionSide2(), 
     			                                         $this->order->getDimensionSide3(),
                                                          $this->order->getWeight(), 0 );
-    	
+
     	if( $response->success )
     	{
     		return $response->response;
@@ -386,14 +386,13 @@ class DDeliveryUI
     	
     	return $response->response['order'];
     }
-    
+
     /**
-     * Получить компании самовывоза  для города с их 
-     * полным описанием, и координатами их филиалов
-     * 
-     * 
+     * Получить компании самовывоза  для города с их полным описанием, и координатами их филиалов
+     *
      * @var int $cityID
      *
+     * @throws DDeliveryException
      * @return array DDeliveryAbstractPoint;
      */
     public function getSelfPoints( $cityID )
@@ -426,6 +425,7 @@ class DDeliveryUI
     	return $points;
     	
     }
+
     /**
      * Получить информацию о точке самовывоза по ее ID  и по ID города
      * 
@@ -483,15 +483,50 @@ class DDeliveryUI
     }
 
     /**
+     * Возвращает id текущего города или пытается определить его
+     * @return int
+     */
+    protected function getCityId()
+    {
+        if($this->order->city) {
+            return $this->order->city;
+        }
+
+        $cityId = (int)$this->shop->getClientCityId();
+
+        if(!$cityId){
+            $sdkResponse = $this->sdk->getCityByIp($_SERVER['REMOTE_ADDR']);
+            if($sdkResponse && $sdkResponse->success && isset($sdkResponse->response['city_id'])) {
+                $cityId = (int)$sdkResponse->response['city_id'];
+            }
+            if(!$cityId) {
+                $topCityId = $this->sdk->getTopCityId();
+                $cityId = reset($topCityId); // Самый большой город
+            }
+        }
+        return $cityId;
+    }
+
+    /**
      * Вызывается для рендера текущей странички
-     * @param array $post
+     * @param array $request
      * @throws DDeliveryException
      * @todo метод не финальный
      */
-    public function render($post)
+    public function render($request)
     {
-        $deliveryType = (int) (isset($post['type']) ? $post['type'] : 0);
-        $cityId = (int) (isset($post['city_id']) ? $post['city_id'] : 0);
+
+
+        $deliveryType = (int) (isset($request['type']) ? $request['type'] : 0);
+        $cityId = (int) (isset($request['city_id']) ? $request['city_id'] : 0);
+        $this->order->city = $cityId ? $cityId : $this->getCityId();
+
+        if(isset($request['iframe'])) {
+            $staticURL = $this->shop->getStaticPath();
+            $scriptURL = $this->shop->getPhpScriptURL();
+            include(__DIR__ . '/../../templates/iframe.php');
+            return;
+        }
 
         $supportedTypes = $this->shop->getSupportedType();
 
@@ -515,10 +550,10 @@ class DDeliveryUI
 
         switch($deliveryType) {
             case DDeliverySDK::TYPE_SELF:
-                echo $this->renderMap($cityId);
+                echo $this->renderMap();
                 break;
             case DDeliverySDK::TYPE_COURIER:
-
+                echo $this->renderCourier();
                 break;
             default:
                 throw new DDeliveryException('Not support delivery type');
@@ -551,8 +586,9 @@ class DDeliveryUI
      * @param int $cityId
      * @return string
      */
-    protected function renderMap($cityId)
+    protected function renderMap()
     {
+        $cityId = $this->getCityId();
         $cityList = $this->getCityByDisplay($cityId);
 
         ob_start();
@@ -568,18 +604,7 @@ class DDeliveryUI
      */
     protected function renderDeliveryTypeForm()
     {
-        $cityId = (int)$this->shop->getClientCityId();
-
-        if(!$cityId){
-            $sdkResponse = $this->sdk->getCityByIp($_SERVER['REMOTE_ADDR']);
-            if($sdkResponse && $sdkResponse->success && isset($sdkResponse->response['city_id'])) {
-                $cityId = (int)$sdkResponse->response['city_id'];
-            }
-            if(!$cityId) {
-                $topCityId = $this->sdk->getTopCityId();
-                $cityId = reset($topCityId); // Самый большой город
-            }
-        }
+        $cityId = $this->getCityId();
         $cityList = $this->getCityByDisplay($cityId);
 
         $order = $this->order;
@@ -599,6 +624,11 @@ class DDeliveryUI
         ob_end_clean();
 
         return json_encode(array('html'=>$content, 'js'=>''));
+    }
+
+    protected function renderCourier()
+    {
+
     }
 
 
