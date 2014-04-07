@@ -96,6 +96,8 @@ class DDeliveryProduct
         $this->quantity = $quantity;
         $this->name = $name;
     }
+    
+   
 
     /**
      * @return int

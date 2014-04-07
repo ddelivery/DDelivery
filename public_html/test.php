@@ -102,8 +102,9 @@ print_r($result);
 
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
-$doc = $DDeliveryUI->saveIntermediateOrder();
-print_r($doc);
+$order = $DDeliveryUI->getOrder();
+print_r($order);
+
 //$selfpoints = $DDeliveryUI->getSelfPoints( 151185 );
 
 
