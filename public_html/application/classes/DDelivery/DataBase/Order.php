@@ -1,4 +1,4 @@
-<?php
+	<?php
 namespace DDelivery\DataBase;
 
 use PDO;
@@ -19,7 +19,19 @@ class Order {
 	function createTable()
 	{
 		$this->pdo->exec("CREATE TABLE IF NOT EXISTS orders (
-                    id INTEGER PRIMARY KEY, 
+                    id INTEGER PRIMARY KEY,
+					type INTEGER,
+					dimension_side1 INTEGER,
+				 	dimension_side2 INTEGER,
+					dimension_side3 INTEGER,
+					confirmed INTEGER,
+					weight REAL,
+					declared_price REAL,
+					payment_price REAL,
+					to_name TEXT,
+					to_phone TEXT,
+					goods_description TEXT,
+				    
                     serilize TEXT
                     )");
 		
