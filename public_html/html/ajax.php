@@ -41,7 +41,7 @@ class ShopAdapter extends DShopAdapter
 
     public function getSupportedType()
     {
-        return self::getSupportedType();
+        return parent::getSupportedType();
         //return \DDelivery\Sdk\DDeliverySDK::TYPE_SELF;
     }
 

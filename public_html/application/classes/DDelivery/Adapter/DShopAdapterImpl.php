@@ -33,5 +33,23 @@ class DShopAdapterImpl extends DShopAdapter
     {
     	
     }
+
+    /**
+     * Должен вернуть url до каталога с статикой
+     * @return string
+     */
+    public function getStaticPath()
+    {
+        // TODO: Implement getStaticPath() method.
+    }
+
+    /**
+     * URL до скрипта где вызывается DDelivery::render
+     * @return string
+     */
+    public function getPhpScriptURL()
+    {
+        // TODO: Implement getPhpScriptURL() method.
+    }
 }
 ?>
