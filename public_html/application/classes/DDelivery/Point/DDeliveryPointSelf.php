@@ -61,7 +61,8 @@ class DDeliveryPointSelf extends DDeliveryAbstractPoint{
     		'has_fitting_room', 'is_cash', 'is_card' );
     
     public function __construct( $initParams = array() )
-    {
+    {   
+    	
         if(is_array($initParams))
     	{
     		foreach ( $initParams as $key => $value)

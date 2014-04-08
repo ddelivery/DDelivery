@@ -105,6 +105,7 @@ $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
 $selfpoint = $DDeliveryUI->getSelfPoints(151185);
 
+$order->city = 151185;
 $order->type = 1;
 $order->setPoint($selfpoint[0]);
 $order->toName = 'Дима Грушин';
@@ -117,8 +118,8 @@ $order->toEmail = '';
 
 
 
-$DDeliveryUI->saveIntermediateOrder();
-
+$DDeliveryUI->saveIntermediateOrder(1);
+$DDeliveryUI->initIntermediateOrder(1);
 
 
 //$selfpoints = $DDeliveryUI->getSelfPoints( 151185 );

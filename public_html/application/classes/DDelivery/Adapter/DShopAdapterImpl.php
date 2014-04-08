@@ -29,9 +29,8 @@ class DShopAdapterImpl extends DShopAdapter
     	return $products;
     }
     
-    public function getOrderPrice()
-    {
-    	
-    }
+    public function getOrderPrice(){}
+    public function getStaticPath(){}
+    public function getPhpScriptURL(){}
 }
 ?>

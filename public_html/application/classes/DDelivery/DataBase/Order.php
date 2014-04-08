@@ -23,7 +23,8 @@ class Order {
 		$this->pdo->exec("CREATE TABLE IF NOT EXISTS orders (
                     id INTEGER PRIMARY KEY,
 					type INTEGER,
-					to_city INTEGER, 
+					to_city INTEGER,
+					order_id INTEGER, 
 					delivery_company INTEGER,
 				    shop_refnum TEXT,
 					dimension_side1 INTEGER,
@@ -40,7 +41,8 @@ class Order {
 				    to_house TEXT,
 				    to_flat TEXT,
 				    to_email TEXT,
-                    serilize TEXT
+                    serilize TEXT,
+				    point TEXT
                     )");
 	}
 	
@@ -59,6 +61,7 @@ class Order {
 		$update = 'UPDATE orders SET type = :type, serilize = :serilize 
 		           WHERE id=:id';
 		$stmt = $this->pdo->prepare($update);
+		$point = $jsonOrder['point'];
 		$order = json_encode( $jsonOrder);
 		// Bind parameters to statement variables
 		$stmt->bindParam( ':type', $jsonOrder['type'] );
@@ -69,9 +72,10 @@ class Order {
 	
 	public function insertOrder( $jsonOrder )
 	{
-		$insert = "INSERT INTO orders (type, serilize)
-	                VALUES (:type, :serilize)";
+		$insert = "INSERT INTO orders (type, serilize,point)
+	                VALUES (:type, :serilize, :point )";
 		$stmt = $this->pdo->prepare($insert);
+		$point = $jsonOrder['point'];
 		$order = json_encode( $jsonOrder);
 		// Bind parameters to statement variables
 		$stmt->bindParam( ':type', $jsonOrder['type'] );
@@ -92,7 +96,7 @@ class Order {
 	
 	public function selectSerializeByID( $id )
 	{
-		$sth = $this->pdo->prepare('SELECT serilize FROM orders WHERE id = :id');
+		$sth = $this->pdo->prepare('SELECT serilize, point FROM orders WHERE id = :id');
 		$sth->bindParam( ':id', $id );
 		$sth->execute();
 		$data = $sth->fetchAll(PDO::FETCH_COLUMN);

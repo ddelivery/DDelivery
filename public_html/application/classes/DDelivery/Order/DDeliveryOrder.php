@@ -118,10 +118,6 @@ class DDeliveryOrder
      */
     private $point = null;
 
-    /**
-     * @var
-     */
-    private $user;
 
     /**
      * @param DDeliveryProduct[] $productList
@@ -190,11 +186,20 @@ class DDeliveryOrder
      * @return array
      */
     public function packOrder()
-    {
+    {	
+    	$point = $this->getPoint();
+    	$checkSum = md5( $this->goodsDescription );
+    	
+    	if( !empty( $point ) )
+    	{
+    		$pointPacked = serialize($point);
+    	}
+    	
     	$packedOrder = array('type'=>$this->type, 'city' => $this->city, 
     	                     'point_id' => $this->point->pointID, 'to_name' => $this->toName,
     	                     'to_phone' => $this->toPhone, 'to_street' => $this->toStreet,
-                             'to_house' => $this->toHouse, 'to_flat' => $this->toFlat, 'to_email' => $this->toEmail);
+                             'to_house' => $this->toHouse, 'to_flat' => $this->toFlat, 'to_email' => $this->toEmail,
+    						  'point' => $pointPacked, 'checksum' => $checkSum );
     	return $packedOrder;
     }
     

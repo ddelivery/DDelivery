@@ -65,9 +65,6 @@ class DDeliveryUI
      */
     public function __construct(DShopAdapter $dShopAdapter)
     {	
-    	if (!session_id()) {
-    		session_start();
-    	}
     	
         $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), true);
         
@@ -75,8 +72,6 @@ class DDeliveryUI
         SQLite::$dbUri = $dShopAdapter->getPathByDB();
 
         $this->order = new DDeliveryOrder($this->shop->getProductsFromCart());
-        $this->initIntermediateOrder();
-
         
     }
     
@@ -87,19 +82,63 @@ class DDeliveryUI
      *
      * @return void;
      */
-    public function initIntermediateOrder()
+    public function initIntermediateOrder( $id )
     {	
     	$orderDB = new DataBase\Order();
-    	if( isset($_SESSION["ddelivery_order_id"]) )
+    	if( !empty( $id ) )	
     	{
-    		$id  = $_SESSION["ddelivery_order_id"];
     		if($orderDB->isRecordExist($id))
     	    {
     	        $order = $orderDB->selectSerializeByID( $id );
     	        if( count( $order ) )
-    	        {
+    	        {	
+    	        	
     	        	$jsonOrder = json_decode($order[0]);
-    	        	//print_r($jsonOrder);
+    	        	
+    	        	$this->order->type = $jsonOrder->type;
+    	        	$this->order->city = $jsonOrder->city;
+    	        	$this->order->toName = $jsonOrder->to_name;
+    	        	$this->order->toPhone = $jsonOrder->to_phone;
+    	        	$this->order->toStreet = $jsonOrder->to_street;
+    	        	$this->order->toHouse = $jsonOrder->to_house;
+    	        	$this->order->toFlat = $jsonOrder->to_flat;
+    	        	$this->order->toHouse = $jsonOrder->to_email;
+    	        	if(!empty($jsonOrder->type) && !empty($jsonOrder->point_id))
+    	        	{	
+    	        		if( $jsonOrder->checksum != md5($this->order->goodsDescription) )
+    	        		{ 
+	    	        	    $point = unserialize($jsonOrder->point);
+	    	        	    $this->order->setPoint($point);
+    	        		}
+    	        	    else 
+    	        	    {
+    	        	    	if( $jsonOrder->type == 1 )
+    	        	    	{
+    	        	    		$points = $this->getSelfPoints( $this->order->city );	
+    	        	    		foreach ( $points as $p )
+    	        	    		{
+    	        	    			if( $p->pointID == $jsonOrder->point_id )
+    	        	    			{
+    	        	    				$this->order->setPoint($p);
+    	        	    				break;
+    	        	    			}
+    	        	    		}
+    	        	    	}
+    	        	    	else if( $jsonOrder->type == 2 )
+    	        	    	{
+    	        	    		$points = $this->getCourierPointsForCity( $this->order->city );
+    	        	    		foreach ( $points as $p )
+    	        	    		{
+    	        	    		    if( $p->pointID == $jsonOrder->point_id )
+    	        	    		    {
+    	        	    		        $this->order->setPoint($p);
+    	        	    		        break;
+    	        	    		    }
+    	        	    		}
+    	        	    	}
+    	        	    }
+    	        		
+    	        	}
     	        }	
     	    }
     	}
@@ -112,18 +151,16 @@ class DDeliveryUI
      *
      * @return int;
      */
-    public function saveIntermediateOrder()
+    public function saveIntermediateOrder( $id )
     {	
     	$orderDB = new DataBase\Order();
     	$packOrder = $this->order->packOrder();
-    	if( !isset($_SESSION["ddelivery_order_id"]) )
+    	if( !empty( $id ) )
     	{	
     		$id = $orderDB->insertOrder($packOrder);
-    		$_SESSION['ddelivery_order_id'] = $id;
     	}
     	else 
     	{	
-    		$id = $_SESSION["ddelivery_order_id"];
     		if($orderDB->isRecordExist($id) )
     		{
     			$orderDB->updateOrder( $id, $packOrder );
@@ -131,10 +168,8 @@ class DDeliveryUI
     		else 
     		{
     			$id = $orderDB->insertOrder($packOrder);
-    			$_SESSION['ddelivery_order_id'] = $id;
     		}
     	}
-    	$data = $orderDB->selectAll();
     	
 	    return  $id;
     }
@@ -171,28 +206,7 @@ class DDeliveryUI
         return $this->order;
     }
     
-    /**
-     * Получить информацию о заказе для точки
-     * @var int $id
-     * @deprecated
-     * @return DDeliveryInfo;
-     */
-    public function getDeliveryInfoForPoint( $id )
-    {
     	
-    	$declaredPrice = 0;
-    	$response = $this->sdk->calculatorPickup( $id, $this->order->getDimensionSide1(), 
-    			                                  $this->order->getDimensionSide2(), $this->order->getDimensionSide3(), 
-                                                  $this->order->getWeight(), $declaredPrice );
-
-    	if(count( $response->success) )
-    	{
-    		
-    		return new Point\DDeliveryInfo( $response->response );
-    		
-    	}
-    	return null; 
-    }
     
     /**
      * Получить курьерские точки для города
@@ -257,15 +271,15 @@ class DDeliveryUI
     }
     
     /**
-     * Получить компании самовывоза для города
+     * Получить информацию о самовывозе для точки
      * @var int $cityID
      *
-     * @return array DDeliveryAbstractPoint;
+     * @return DDeliveryAbstractPoint[];
      */
     public function getDeliveryInfoForPointID( $pointID )
     {
     	 
-    	$response = $this->sdk->calculatorPickupForCompany( $pointID, $this->order->getDimensionSide1(),
+    	$response = $this->sdk->calculatorPickupForPoint( $pointID, $this->order->getDimensionSide1(),
     			$this->order->getDimensionSide2(),
     			$this->order->getDimensionSide3(),
     			$this->order->getWeight(), 0 );
