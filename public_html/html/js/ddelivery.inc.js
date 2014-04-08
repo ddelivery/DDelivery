@@ -1,6 +1,4 @@
-/**
- * Created by DnAp on 07.04.14.
- */
+
 
 var DDelivery = {
     delivery: function(objectId, componentUrl, params) {

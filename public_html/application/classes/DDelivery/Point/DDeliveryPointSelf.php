@@ -111,6 +111,18 @@ class DDeliveryPointSelf extends DDeliveryAbstractPoint{
     }
 
 
-   
+    /**
+     * Возвращает только информацию которая может понадобиться на карте
+     * @return array
+     */
+    public function toJson()
+    {
+        $params = array('name', 'longitude', 'latitude', 'schedule', 'is_cash', 'is_card', 'has_fitting_room', 'company', 'company_id', 'address');
+        $result = array();
+        foreach($params as $param){
+            $result[$param] = $this->get($param);
+        }
+        return $result;
+    }
     
 }

@@ -194,18 +194,59 @@ var DDeliveryIframe = {
                                     var bound = yamap.getBounds();
                                 });
 
-                                var myPlacemark = new ymaps.Placemark(centerAndZoom.center, {
-                                        hintContent: "Хинт метки"
-                                    },{
-                                        iconLayout: 'default#image',
-                                        iconImageHref: staticUrl+'/img/point_75x75.png',
-                                        iconImageSize: [50, 50],
-                                        // Смещение левого верхнего угла иконки относительно
-                                        // её "ножки" (точки привязки).
-                                        iconImageOffset: [-22, -46]
-                                    }
-                                );
-                                yamap.geoObjects.add(myPlacemark);
+                                // Кластер
+
+                                var clusterer = new ymaps.Clusterer({
+                                    preset: 'twirl#invertedVioletClusterIcons',
+                                    /**
+                                     * Ставим true, если хотим кластеризовать только точки с одинаковыми координатами.
+                                     */
+                                    groupByCoordinates: false,
+                                    /**
+                                     * Опции кластеров указываем в кластеризаторе с префиксом "cluster".
+                                     * @see http://api.yandex.ru/maps/doc/jsapi/2.x/ref/reference/Cluster.xml
+                                     */
+                                    clusterDisableClickZoom: true
+                                });
+
+                                var geoObjects = [];
+                                var point;
+
+                                for(var pointKey in data.points) {
+                                    point = data.points[pointKey];
+                                    var myPlacemark =new ymaps.Placemark([point.latitude,point.longitude], {
+                                            hintContent: "Хинт метки"
+                                        },{
+                                            iconLayout: 'default#image',
+                                            iconImageHref: staticUrl+'/img/point_75x75.png',
+                                            iconImageSize: [50, 50],
+                                            // Смещение левого верхнего угла иконки относительно
+                                            // её "ножки" (точки привязки).
+                                            iconImageOffset: [-22, -46]
+                                        }
+                                    );
+                                    geoObjects.push(myPlacemark);
+                                    //yamap.geoObjects.add(myPlacemark);
+                                }
+
+                                clusterer.add(geoObjects);
+                                yamap.geoObjects.add(clusterer);
+
+                                clusterer.events
+                                    // Можно слушать сразу несколько событий, указывая их имена в массиве.
+                                    .add(['mouseenter', 'mouseleave'], function (e) {
+                                        var target = e.get('target'), // Геообъект - источник события.
+                                            eType = e.get('type'), // Тип события.
+                                            zIndex = Number(eType === 'mouseenter') * 1000; // 1000 или 0 в зависимости от типа события.
+
+                                        target.options.set('zIndex', zIndex);
+                                    })
+                                    .add('click', function(e){
+                                        var target = e.get('target');
+                                        // Вернет все геобъекты
+                                        target.properties.get('geoObjects');
+
+                                    });
 
 
                             });

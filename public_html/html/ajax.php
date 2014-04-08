@@ -38,11 +38,12 @@ class ShopAdapter extends DShopAdapter
     {
         return '4bf43a2cd2be3538bf4e35ad8191365d';
     }
-/*
+
     public function getSupportedType()
     {
-        return \DDelivery\Sdk\DDeliverySDK::TYPE_SELF;
-    }*/
+        return self::getSupportedType();
+        //return \DDelivery\Sdk\DDeliverySDK::TYPE_SELF;
+    }
 
     public function filterPointsSelf($courierPoints, \DDelivery\Order\DDeliveryOrder $order)
     {

@@ -449,7 +449,7 @@ class DDeliveryUI
      * @var int $cityID
      *
      * @throws DDeliveryException
-     * @return array DDeliveryAbstractPoint;
+     * @return DDeliveryPointSelf[]
      */
     public function getSelfPoints( $cityID )
     {
@@ -475,7 +475,7 @@ class DDeliveryUI
     	}
     	else 
     	{
-    		throw new \DDelivery\DDeliveryException("Точек самовывоза не найдено");
+    		throw new DDeliveryException("Точек самовывоза не найдено");
     	}
     	
     	return $points;
@@ -488,7 +488,7 @@ class DDeliveryUI
      * @var mixed $cityID
      * @var mixed $companyIDs
      *
-     * @return array;
+     * @return DDeliveryPointSelf[];
      */
     public function getSelfPointsForCityAndCompany( $companyIDs, $cityID )
     {	
@@ -501,7 +501,7 @@ class DDeliveryUI
     	{	
     		foreach ( $response->response as $p )
     		{	
-    			    $points[] = new \DDelivery\Point\DDeliveryPointSelf( $p );
+    			    $points[] = new DDeliveryPointSelf( $p );
     		}
     	}
     	
@@ -571,8 +571,6 @@ class DDeliveryUI
      */
     public function render($request)
     {
-
-
         $deliveryType = (int) (isset($request['type']) ? $request['type'] : 0);
         $cityId = (int) (isset($request['city_id']) ? $request['city_id'] : 0);
         $this->order->city = $cityId ? $cityId : $this->getCityId();
@@ -647,11 +645,17 @@ class DDeliveryUI
         $cityId = $this->getCityId();
         $cityList = $this->getCityByDisplay($cityId);
 
+        $points = $this->getSelfPoints($cityId);
+        $pointsJs = array();
+        foreach($points as $point) {
+            $pointsJs[] = $point->toJson();
+        }
+
         ob_start();
         include(__DIR__ . '/../../templates/map.php');
         $content = ob_get_contents();
         ob_end_clean();
-        return json_encode(array('html'=>$content, 'js'=>''));
+        return json_encode(array('html'=>$content, 'js'=>'', 'points' => $pointsJs));
     }
 
     /**
@@ -671,8 +675,6 @@ class DDeliveryUI
             $order->getDimensionSide1(), $order->getDimensionSide2(), $order->getDimensionSide3(), $order->getWeight(),
             $order->declaredPrice
         );
-
-
 
         ob_start();
         include(__DIR__.'/../../templates/typeForm.php');
