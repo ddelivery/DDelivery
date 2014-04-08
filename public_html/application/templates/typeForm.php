@@ -18,17 +18,11 @@
             </div>
             <div class="delivery-place__drop">
                 <div class="delivery-place__drop_i">
-                    <h2>Популярные города:</h2>
-                    <ul>
-                        <?foreach($cityList as $cityData):?>
-                            <li><a href="javascript:void(0)" data-id="<?=$cityData['_id']?>"
-                                   <?if($cityId == $cityData['_id']):?>class="active"<?endif;?>>
-                                <strong><?=$cityData['type'].'. '.$cityData['name']?></strong>
-                                <?if($cityData['name'] != $cityData['region']):?>
-                                    обл. <?=$cityData['region']?>
-                                <?endif;?>
-                            </a></li>
-                        <?endforeach;?>
+                    <h2 class="search">Поиск города:</h2>
+                    <ul class="search"></ul>
+                    <h2 class="pop">Популярные города:</h2>
+                    <ul class="pop">
+                        <?include(__DIR__.'/cityHelper.php');?>
                     </ul>
                 </div>
             </div>

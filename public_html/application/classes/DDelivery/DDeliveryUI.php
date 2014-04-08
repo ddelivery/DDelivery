@@ -473,11 +473,7 @@ class DDeliveryUI
     			}
     		}
     	}
-    	else 
-    	{
-    		throw new DDeliveryException("Точек самовывоза не найдено");
-    	}
-    	
+
     	return $points;
     	
     }
@@ -571,6 +567,35 @@ class DDeliveryUI
      */
     public function render($request)
     {
+        if(isset($request['action'])){
+            switch($request['action']){
+                case 'searchCity':
+                    if(isset($request['name']) && mb_strlen($request['name']) >= 3){
+                        /*$city = new City();
+                        $cityList = $city->getCityListByName($request['name']);*/
+                        $cityList = $this->sdk->getAutoCompleteCity($request['name']);
+
+                        $cityList = $cityList->response;
+                        $cityId = $this->order->city;
+                        ob_start();
+                        include(__DIR__ . '/../../templates/cityHelper.php');
+                        $content = ob_get_contents();
+                        ob_end_clean();
+
+                        echo json_encode(array(
+                            'html'=>$content,
+                            'request'=>array(
+                                'name'=>$request['name'],
+                                'action'=>'searchCity'
+                            )
+                        ));
+                        return;
+                    }
+
+            }
+        }
+
+
         $deliveryType = (int) (isset($request['type']) ? $request['type'] : 0);
         $cityId = (int) (isset($request['city_id']) ? $request['city_id'] : 0);
         $this->order->city = $cityId ? $cityId : $this->getCityId();
@@ -615,6 +640,11 @@ class DDeliveryUI
         }
     }
 
+    /**
+     * Получаем массив городов для отображения на странцие
+     * @param $cityId
+     * @return array
+     */
     protected function getCityByDisplay($cityId)
     {
         $cityDB = new City();
