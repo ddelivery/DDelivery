@@ -32,9 +32,9 @@ class DDeliverySDKTest extends PHPUnit_Framework_TestCase
     	$result = $this->fixture->getAutoCompleteCity('Иваново');
     	$this->assertTrue($result->success);
     }
-    public function testCalculatorPickupForCompany()
+    public function testCalculatorPickupForPoint()
     {
-    	$result = $this->fixture->calculatorPickupForCompany(50, 10, 
+    	$result = $this->fixture->calculatorPickupForPoint(50, 10, 
     			   10,  10, 1, 0);
     	$this->assertTrue( $result->success );
     }
