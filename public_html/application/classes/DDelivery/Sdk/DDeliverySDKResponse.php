@@ -64,12 +64,13 @@ class DDeliverySDKResponse {
             $this->errorMessage = 'Unknown error';
         }
     }
-    
+
     /**
-     * Анализирует в какой переменной находится 
+     * Анализирует в какой переменной находится
      * ответ сервера
-     * 
-     * @param object $jsonData 
+     *
+     * @param object $jsonData
+     * @return string
      */
     private function _analiseRequest( $jsonData )
     {

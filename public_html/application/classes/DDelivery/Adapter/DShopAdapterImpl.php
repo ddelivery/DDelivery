@@ -29,8 +29,29 @@ class DShopAdapterImpl extends DShopAdapter
     	return $products;
     }
     
-    public function getOrderPrice(){}
-    public function getStaticPath(){}
-    public function getPhpScriptURL(){}
+
+    public function getOrderPrice()
+    {
+    	
+    }
+
+    /**
+     * Должен вернуть url до каталога с статикой
+     * @return string
+     */
+    public function getStaticPath()
+    {
+        // TODO: Implement getStaticPath() method.
+    }
+
+    /**
+     * URL до скрипта где вызывается DDelivery::render
+     * @return string
+     */
+    public function getPhpScriptURL()
+    {
+        // TODO: Implement getPhpScriptURL() method.
+    }
+
 }
 ?>

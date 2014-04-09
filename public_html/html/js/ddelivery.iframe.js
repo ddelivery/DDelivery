@@ -1,18 +1,36 @@
 var DDeliveryIframe = {
     delivery: function(componentUrl, staticUrl, params){
-        console.log(componentUrl);
         var Delivery;
         Delivery = {
             includeScripts: false,
             init: function(params) {
-                this.ajax({});
+                this.ajaxPage({});
             },
-            ajax: function(data){
+            ajaxPage: function(data){
+                data.action = 'html';
+                $('#ddelivery').html('<img class="loader" src="'+staticUrl+'/img/ajax_loader.gif"/>');
                 $.post( componentUrl, data, function( data ) {
                     $( '#ddelivery' ).html(data.html );
 
                     Delivery.ajaxRequestInit(data);
                 }, 'json');
+            },
+            ajaxData: function(data, callBack) {
+                $.post( componentUrl, data, callBack, 'json');
+            },
+
+            citySelectEvent: function(){
+                var title = $(this)[0].innerText.trim().replace('\n', ', ');
+                $('.delivery-place__title input').val('').attr('title', title).blur();
+
+                $('.delivery-place__drop li a').removeClass('active');
+                var cityId = $(this).addClass('active').data('id');
+                $('input[name=ddelivery_city]').val(cityId);
+
+                $('.delivery-place__drop').slideUp(function () {
+                    $('.map-popup__main').removeClass('show-drop-2');
+                });
+                return false;
             },
             ajaxRequestInit: function(data) {
                 var radio = $('.map-popup__main__delivery input[type="radio"]');
@@ -46,6 +64,20 @@ var DDeliveryIframe = {
                             $(this).find('.delivery-place__drop_i').mCustomScrollbar('update');
                         }
                     });
+                }).keyup(function(){
+                    var title = $(this).val();
+                    var input = $(this);
+                    if(title.length >= 3){
+                        $('.delivery-place__drop_i ul.search').html('<img class="loader_search" src="'+staticUrl+'/img/ajax_loader.gif"/>');
+                        Delivery.ajaxData({action: 'searchCity', name: title}, function(data){
+                            if(data.request.name == input.val()){
+                                $('.delivery-place__drop_i .pop').hide();
+                                $('.delivery-place__drop_i .search').show();
+                                $('.delivery-place__drop_i ul.search').html(data.html);
+                            }
+                            $('.delivery-place__drop .search li a').on('click', Delivery.citySelectEvent);
+                        });
+                    }
                 });
 
                 $('.delivery-place__title > span').on('click', function () {
@@ -56,19 +88,7 @@ var DDeliveryIframe = {
                         }
                     });
                 });
-                $('.delivery-place__drop li a').click(function(){
-                    var title = $(this)[0].innerText.trim().replace('\n', ', ');
-                    $('.delivery-place__title input').val('').attr('title', title).blur();
-
-                    $('.delivery-place__drop li a').removeClass('active');
-                    var cityId = $(this).addClass('active').data('id');
-                    $('input[name=ddelivery_city]').val(cityId);
-
-                    $('.delivery-place__drop').slideUp(function () {
-                        $('.map-popup__main').removeClass('show-drop-2');
-                    });
-                    return false;
-                });
+                $('.delivery-place__drop li a').on('click', Delivery.citySelectEvent);
 
                 $('.map-popup__main__right__btn').on('click', function () {
                     $('.map-popup__main__right').toggleClass('map-popup__main__right_open');
@@ -153,7 +173,7 @@ var DDeliveryIframe = {
 
                 var radio = $('input[type="radio"]:checked').val();
                 if(radio) {
-                    Delivery.ajax({
+                    Delivery.ajaxPage({
                         type: radio,
                         city_id: $('input[name=ddelivery_city]').val()
                     });
@@ -269,7 +289,6 @@ var DDeliveryIframe = {
                             var boundList = [];
                             for(var i=0; i< res.geoObjects.getLength(); i++ ) {
                                 var geoObject = res.geoObjects.get(i);
-                                console.log(geoObject.properties.getAll());
                                 html += '<a data-id="'+i+'" href="javascript:void(0)">'+geoObject.properties.get('text')+'</a><br>';
                                 boundList.push(geoObject.properties.get('boundedBy'));
                             }
