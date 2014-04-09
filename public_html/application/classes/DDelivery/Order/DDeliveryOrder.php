@@ -57,7 +57,10 @@ class DDeliveryOrder
      * @var int
      */
     public $city = 0;
-
+    /**
+     * @var float
+     */
+    public $amount;
     /**
      * @var float
      */
@@ -189,17 +192,21 @@ class DDeliveryOrder
     {	
     	$point = $this->getPoint();
     	$checkSum = md5( $this->goodsDescription );
+    	$pointID = 0;
+    	$pointPacked = '';
     	
     	if( !empty( $point ) )
     	{
     		$pointPacked = serialize($point);
+    		$pointID = $this->point->pointID;
     	}
     	
     	$packedOrder = array('type'=>$this->type, 'city' => $this->city, 
-    	                     'point_id' => $this->point->pointID, 'to_name' => $this->toName,
+    	                     'point_id' => $pointID, 'to_name' => $this->toName,
     	                     'to_phone' => $this->toPhone, 'to_street' => $this->toStreet,
                              'to_house' => $this->toHouse, 'to_flat' => $this->toFlat, 'to_email' => $this->toEmail,
     						  'point' => $pointPacked, 'checksum' => $checkSum );
+    	
     	return $packedOrder;
     }
     

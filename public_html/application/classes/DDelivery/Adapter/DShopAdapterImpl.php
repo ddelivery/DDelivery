@@ -21,18 +21,16 @@ class DShopAdapterImpl extends DShopAdapter
     {
     	$products = array();
     	
-    	$products[] = new \DDelivery\Order\DDeliveryProduct( 1, 2, 6, 2, 
-    			                                             1, 100, 2, 'Пиджак' );
-    	$products[] = new \DDelivery\Order\DDeliveryProduct(2, 3, 1,  
-    			                                            1, 1, 200, 1,'Куртка кожанная') ;
+    	$products[] = new \DDelivery\Order\DDeliveryProduct(1, 20, 13, 25, 0.5, 1000, 1, 'Веселый клоун');
+    	$products[] = new \DDelivery\Order\DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'Грустный клоун') ;
     	
     	return $products;
     }
     
 
-    public function getOrderPrice()
+    public function getAmount()
     {
-    	
+    	return 100.5;
     }
 
     /**

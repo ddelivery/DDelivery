@@ -102,8 +102,13 @@ print_r($result);
 
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
-$order = $DDeliveryUI->getOrder();
+//$points = $DDeliveryUI->getSelfPoints(151185);
+//print_r( $points );
+$info = $DDeliveryUI->getSelfDeliveryInfoForCity(151185);
+var_dump($info);
+/*
 $selfpoint = $DDeliveryUI->getSelfPoints(151185);
+
 
 $order->city = 151185;
 $order->type = 1;
@@ -118,9 +123,10 @@ $order->toEmail = '';
 
 
 
-$DDeliveryUI->saveIntermediateOrder(1);
+$id = $DDeliveryUI->saveIntermediateOrder(null);
+echo $id;
 $DDeliveryUI->initIntermediateOrder(1);
-
+*/
 
 //$selfpoints = $DDeliveryUI->getSelfPoints( 151185 );
 

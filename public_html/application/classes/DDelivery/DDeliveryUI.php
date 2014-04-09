@@ -70,11 +70,27 @@ class DDeliveryUI
         
         $this->shop = $dShopAdapter;
         SQLite::$dbUri = $dShopAdapter->getPathByDB();
-
-        $this->order = new DDeliveryOrder($this->shop->getProductsFromCart());
+		
+        // Формируем объект заказа
+        $productList = $this->shop->getProductsFromCart();
+        $this->order = new DDeliveryOrder( $productList );
+        $this->order->amount = $this->shop->getAmount();
+        $this->order->declaredPrice = $this->shop->getDeclaredPrice();
         
     }
     
+    /**
+     * Жду подтверждение  для необходимости  реализации 
+     * 
+     * при изменении состояния заказа пересчитать 
+     * все возможные парамтры для заказа, цена для доставк на точку 
+     *
+     * @return void;
+     */
+    public function update()
+    {
+    	
+    }
     /**
      * получить текущее состояние заказа в БД
      * 
@@ -158,17 +174,20 @@ class DDeliveryUI
      */
     public function saveIntermediateOrder( $id )
     {	
-    	$orderDB = new DataBase\Order();
+    	
+    	$orderDB = new \DDelivery\DataBase\Order();
+    	
     	$packOrder = $this->order->packOrder();
+    	
     	if( !empty( $id ) )
     	{	
-    		$id = $orderDB->insertOrder($packOrder);
+    	    $id = $orderDB->insertOrder($packOrder);
     	}
     	else 
     	{	
     		if($orderDB->isRecordExist($id) )
     		{
-    			$orderDB->updateOrder( $id, $packOrder );
+    			$id = $orderDB->updateOrder( $id, $packOrder );
     		}
     		else 
     		{
@@ -241,6 +260,9 @@ class DDeliveryUI
     				$points[] = $point;
     			}
     		}
+    		
+    		$points = $this->shop->filterPointsCourier( $points, $this->order, $cityID );
+    		
     		return $points;
         }
         else
@@ -466,6 +488,7 @@ class DDeliveryUI
      * Получить компании самовывоза  для города с их полным описанием, и координатами их филиалов
      *
      * @var int $cityID
+     * 
      *
      * @throws DDeliveryException
      * @return DDeliveryPointSelf[]
@@ -492,7 +515,9 @@ class DDeliveryUI
     			}
     		}
     	}
-
+		
+    	$points = $this->shop->filterPointsSelf( $points, $this->order, $cityID );
+    	
     	return $points;
     	
     }
