@@ -667,7 +667,6 @@ class DDeliveryUI
 
     /**
      * Страница с картой
-     * @param int $cityId
      * @return string
      */
     protected function renderMap()

@@ -202,9 +202,13 @@ var DDeliveryIframe = {
                                     center: centerAndZoom.center,
                                     zoom: centerAndZoom.zoom,
                                     behaviors: ['default', 'scrollZoom']
+                                },{
+                                    maxZoom: 17
                                 });
 
                                 var yamap = Delivery.map.yamap;
+
+                                console.log(yamap.options.get('maxZoom'));
                                 // дебаг
                                 mapDbg = yamap;
                                 yamap.controls.add('zoomControl', { top: 65, left: 10 });
@@ -222,6 +226,7 @@ var DDeliveryIframe = {
                                      * Ставим true, если хотим кластеризовать только точки с одинаковыми координатами.
                                      */
                                     groupByCoordinates: false,
+                                    openBalloonOnClick: false,
                                     /**
                                      * Опции кластеров указываем в кластеризаторе с префиксом "cluster".
                                      * @see http://api.yandex.ru/maps/doc/jsapi/2.x/ref/reference/Cluster.xml
@@ -234,14 +239,14 @@ var DDeliveryIframe = {
 
                                 for(var pointKey in data.points) {
                                     point = data.points[pointKey];
+                                    console.log(point);
                                     var myPlacemark =new ymaps.Placemark([point.latitude,point.longitude], {
-                                            hintContent: "Хинт метки"
+                                            hintContent: point.address
                                         },{
                                             iconLayout: 'default#image',
                                             iconImageHref: staticUrl+'/img/point_75x75.png',
                                             iconImageSize: [50, 50],
-                                            // Смещение левого верхнего угла иконки относительно
-                                            // её "ножки" (точки привязки).
+                                            // Смещение левого верхнего угла иконки относительно её "ножки" (точки привязки).
                                             iconImageOffset: [-22, -46]
                                         }
                                     );
@@ -264,8 +269,31 @@ var DDeliveryIframe = {
                                     .add('click', function(e){
                                         var target = e.get('target');
                                         // Вернет все геобъекты
-                                        target.properties.get('geoObjects');
+                                        var geoObjects = target.properties.get('geoObjects');
 
+                                        var bound = [[99,99],[0,0]];
+                                        for(var geoKey in geoObjects){
+
+                                            var coord = geoObjects[geoKey].geometry.getCoordinates();
+                                            if(bound[1][0] < coord[0])
+                                                bound[1][0] = coord[0];
+                                            if(bound[1][1] < coord[1])
+                                                bound[1][1] = coord[1];
+                                            if(bound[0][0] > coord[0])
+                                                bound[0][0] = coord[0];
+                                            if(bound[0][1] > coord[1])
+                                                bound[0][1] = coord[1];
+                                        }
+                                        console.log(bound);
+                                        // Точки эквивалентны в допустимой погрешности и зумить есть куда
+                                        if(!ymaps.util.math.areEqual(bound[0], bound[1], 0.0001) && yamap.getZoom() != yamap.options.get('maxZoom')){
+                                            yamap.setBounds(bound, {duration:400});
+                                        }else{
+                                            yamap.setBounds(bound, {duration:400});
+                                        }
+
+
+                                        console.log(geoObjects);
                                     });
 
 
