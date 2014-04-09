@@ -13,13 +13,15 @@
     <script type="text/javascript" src="<?=$staticURL?>js/jquery.formtips.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/jquery.maskedinput.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.iframe.js"></script>
+    <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.map.js"></script>
+    <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.cityplace.js"></script>
     <script src="//api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU" async="async" type="text/javascript"></script>
     <div id="ddelivery">
 
     </div>
     <script>
         $(function(){
-            DDeliveryIframe.delivery(<?=json_encode($scriptURL)?>, <?=json_encode($staticURL)?>);
+            DDeliveryIframe.init(<?=json_encode($scriptURL)?>, <?=json_encode($staticURL)?>);
         });
     </script>
     </body>

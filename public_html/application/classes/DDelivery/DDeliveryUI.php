@@ -571,8 +571,6 @@ class DDeliveryUI
             switch($request['action']){
                 case 'searchCity':
                     if(isset($request['name']) && mb_strlen($request['name']) >= 3){
-                        /*$city = new City();
-                        $cityList = $city->getCityListByName($request['name']);*/
                         $cityList = $this->sdk->getAutoCompleteCity($request['name']);
 
                         $cityList = $cityList->response;
