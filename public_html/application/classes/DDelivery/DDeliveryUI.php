@@ -85,6 +85,7 @@ class DDeliveryUI
     public function initIntermediateOrder( $id )
     {	
     	$orderDB = new DataBase\Order();
+    	
     	if( !empty( $id ) )	
     	{
     		if($orderDB->isRecordExist($id))
@@ -92,9 +93,8 @@ class DDeliveryUI
     	        $order = $orderDB->selectSerializeByID( $id );
     	        if( count( $order ) )
     	        {	
-    	        	
+    	        	// Распаковываем те параметры которые менятся не могут
     	        	$jsonOrder = json_decode($order[0]);
-    	        	
     	        	$this->order->type = $jsonOrder->type;
     	        	$this->order->city = $jsonOrder->city;
     	        	$this->order->toName = $jsonOrder->to_name;
@@ -103,15 +103,20 @@ class DDeliveryUI
     	        	$this->order->toHouse = $jsonOrder->to_house;
     	        	$this->order->toFlat = $jsonOrder->to_flat;
     	        	$this->order->toHouse = $jsonOrder->to_email;
+    	        	
+    	        	// Распаковываем точку если она была выставлена
     	        	if(!empty($jsonOrder->type) && !empty($jsonOrder->point_id))
     	        	{	
+    	        		// Если содержимое корзины не изменялось
     	        		if( $jsonOrder->checksum != md5($this->order->goodsDescription) )
     	        		{ 
 	    	        	    $point = unserialize($jsonOrder->point);
 	    	        	    $this->order->setPoint($point);
     	        		}
     	        	    else 
-    	        	    {
+    	        	    {	
+    	        	    	// Если содержимое корзины изменялось то автоматически перересчитываем параметры заказа для точки
+    	        	    	// Либо для самовывоза, либо для курьерки
     	        	    	if( $jsonOrder->type == 1 )
     	        	    	{
     	        	    		$points = $this->getSelfPoints( $this->order->city );	

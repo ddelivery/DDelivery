@@ -222,7 +222,14 @@ class DDeliveryOrder
     	}
     	return null;
     }
-
+	
+    
+    public function setProducts( $productList )
+    {
+    	$this->productList = $productList;
+    	$this->getProductParams();
+    }
+    
     /**
      * @return DDeliveryProduct[]
      */
