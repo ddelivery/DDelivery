@@ -42,7 +42,7 @@ require_once 'application/bootstrap.php';
 /*
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
-$selfpoints = $DDeliveryUI->getSelfPoints( 151185 );
+$selfpoints = $DDeliveryUI->getSelfPoints( 	 );
 
 $DDeliveryUI->setOrderPoint($selfpoints[0]);
 $DDeliveryUI->createSelfOrder();
@@ -102,10 +102,12 @@ print_r($result);
 
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
-//$points = $DDeliveryUI->getSelfPoints(151185);
-//print_r( $points );
-$info = $DDeliveryUI->getSelfDeliveryInfoForCity(151185);
-var_dump($info);
+$points = $DDeliveryUI->getMinPriceAndPeriodCourier(151185);
+print_r( $points);
+//$price  = $DDeliveryUI->getMinPriceAndPeriodDelivery($points);
+//	print_r( $price );
+//$info = $DDeliveryUI->getSelfDeliveryInfoForCity(151185);
+//var_dump($info);
 /*
 $selfpoint = $DDeliveryUI->getSelfPoints(151185);
 

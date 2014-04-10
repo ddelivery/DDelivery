@@ -166,6 +166,140 @@ class DDeliveryUI
     }
     
     /**
+     * Получить  минимальный и максимальные период и цену поставки для массива точек
+     * @var array DDeliveryAbstractPoint[]
+     *
+     * @return array;
+     */
+    public function getMinMaxPriceAndPeriodDelivery( $points )
+    {
+        if( count( $points ) )
+        {
+        	$minPeriod = -1; 
+        	$minPrice  = -1;
+        	$maxPeriod = 0;
+        	$maxPrice = 0; 
+            foreach ($points as $p)
+            {	
+            	$deliveryInf = $p->getDeliveryInfo();
+            	
+                if( $minPeriod == -1 )
+                {
+                	
+                	$minPeriod = $deliveryInf->get('delivery_time_avg');
+                	$minPrice = $deliveryInf->get('total_price');
+                	
+                	$maxPeriod = $deliveryInf->get('delivery_time_avg');
+                	$maxPrice = $deliveryInf->get('total_price');
+                }
+                else
+                {
+                    if( $deliveryInf->get('delivery_time_avg') < $minPeriod )
+                    {
+                    	$minPeriod = $deliveryInf->get('delivery_time_avg');
+                    }
+                    if( $deliveryIf->get('total_price') < $minPrice )
+                    {
+                    	$minPrice  = $deliveryInf->get('total_price');
+                    }
+                    if( $deliveryInf->get('delivery_time_avg') > $maxPeriod )
+                    {
+                    	$maxPeriod = $deliveryInf->get('delivery_time_avg');
+                    }
+                    if( $deliveryIf->get('total_price') > $minPrice )
+                    {
+                    	$maxPrice  = $deliveryInf->get('total_price');
+                    }
+                }
+            	    
+            }
+            return array('min_price' => $minPrice, 'min_period' => $minPeriod,
+                         'max_price' => $maxPrice, 'max_period' => $maxPeriod);
+        }
+        return null;
+    }
+    
+    /**
+     * Получить минимальный и максимальные период и цену поставки для массива
+     * @var array $deliveryInfo
+     *
+     * @return array;
+     */
+    public function _getMinMaxPriceAndPeriod( $deliveryInfo )
+    {
+    	if( count( $deliveryInfo ) )
+    	{
+    		$minPeriod = -1;
+    		$minPrice  = -1;
+    		
+    		$maxPeriod = 0;
+    		$maxPrice = 0;
+    		
+    		foreach ($deliveryInfo as $p)
+    		{
+    			if( $minPeriod == -1 )
+    			{
+    				$minPeriod = $p['delivery_time_avg'];
+    				$minPrice = $p['total_price'];
+    				
+    				$maxPeriod = $p['delivery_time_avg'];
+    				$maxPrice = $p['total_price'];
+    			}
+    			else 
+    			{
+    				if( $p['delivery_time_avg'] < $minPeriod )
+    				{
+    					$minPeriod = $p['delivery_time_avg'];
+    				}
+    				if( $p['total_price'] < $minPrice )
+    				{
+    					$minPrice  = $p['total_price'];
+    				}
+    				
+    				if( $p['delivery_time_avg'] > $maxPeriod )
+    				{
+    					$maxPeriod = $p['delivery_time_avg'];
+    				}
+    				if( $p['total_price'] > $maxPrice )
+    				{
+    					$maxPrice  = $p['total_price'];
+    				}
+    			}
+    		}
+    		
+    		return array('min_price' => $minPrice, 'min_period' => $minPeriod,
+                         'max_price' => $maxPrice, 'max_period' => $maxPeriod);
+    	}
+    	return null;
+    }
+    
+    /**
+     * Получить минимальный период и цену поставки курьером для города
+     * @var int $cityID
+     *
+     * @return array;
+     */
+    public function getMinPriceAndPeriodCourier( $cityID )
+    {
+    	$deliveryInfo = $this->getCourierDeliveryInfoForCity($cityID);
+    	return $this->_getMinMaxPriceAndPeriod( $deliveryInfo );
+    }
+    
+    /**
+     * Получить минимальный период и цену поставки самовывоза для города 
+     * @var int $cityID
+     *
+     * @return array;
+     */
+    public function getMinPriceAndPeriodSelf( $cityID )
+    {
+        $deliveryInfo = $this->getSelfDeliveryInfoForCity($cityID);
+        
+        return $this->_getMinMaxPriceAndPeriod( $deliveryInfo );
+    }
+    
+    
+    /**
      * Сохранить промежуточное состояние заказа в БД
      * 
      * Вызывать вручную при завершении обработки запроса
@@ -277,7 +411,28 @@ class DDeliveryUI
      * Получить компании самовывоза для города
      * @var int $cityID
      *
-     * @return array DDeliveryAbstractPoint;
+     * @return array;
+     */
+    public function getCourierDeliveryInfoForCity( $cityID )
+    {
+    	$response = $this->sdk->calculatorCourier( $cityID, $this->order->getDimensionSide1(),
+    			                                   $this->order->getDimensionSide2(),
+    			                                   $this->order->getDimensionSide3(),
+    			                                   $this->order->getWeight(), 0 );
+    	if( $response->success )
+    	{
+    		return $response->response;
+    	}
+    	else
+    	{
+    		return 0;
+    	}	
+    }
+    /**
+     * Получить компании самовывоза для города
+     * @var int $cityID
+     *
+     * @return array;
      */
     public function getSelfDeliveryInfoForCity( $cityID )
     {
