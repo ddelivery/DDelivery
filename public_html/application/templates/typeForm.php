@@ -1,6 +1,10 @@
 <?/**
  * @var array[] $cityList
  * @var \DDelivery\DDeliveryUI $this
+ * @var int $minSelfPrice
+ * @var int $minSelfTime
+ * @var int $minCourierPrice
+ * @var int $minCourierTime
  */ ?>
 <div class="map-popup">
     <div class="map-popup__head">
@@ -50,10 +54,10 @@
                             </p>
                         </td>
                         <td class="col4">
-                            от <strong>100 <i class="icon-rub">&nbsp;</i></strong>
+                            от <strong><?=$minCourierPrice?> <i class="icon-rub">&nbsp;</i></strong>
                         </td>
                         <td class="col5">
-                            от <strong>1</strong> дня
+                            от <strong><?=$minCourierTime?></strong> дня
                         </td>
                     </tr>
                 <?endif;?>
@@ -72,10 +76,10 @@
                             </p>
                         </td>
                         <td class="col4">
-                            от <strong>100 <i class="icon-rub">&nbsp;</i></strong>
+                            от <strong><?=$minSelfPrice?> <i class="icon-rub">&nbsp;</i></strong>
                         </td>
                         <td class="col5">
-                            от <strong>1</strong> дня
+                            от <strong><?=$minSelfTime?></strong> дня
                         </td>
                     </tr>
                 <?endif;?>

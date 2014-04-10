@@ -26,6 +26,63 @@ use DDelivery\Sdk\DDeliverySDK;
 abstract class DShopAdapter
 {  
     /**
+     * Имя редактируется
+     */
+    const FIELD_EDIT_FIRST_NAME = 1;
+    /**
+     * Имя обязательное
+     */
+    const FIELD_REQUIRED_FIRST_NAME = 2;
+    /**
+     * Фамилия редактируется
+     */
+    const FIELD_EDIT_LAST_NAME = 4;
+    /**
+     * Фамилия обязательное
+     */
+    const FIELD_REQUIRED_LAST_NAME = 8;
+    /**
+     * Телефон редактируется
+     */
+    const FIELD_EDIT_PHONE = 16;
+    /**
+     * Телефон обязательное
+     */
+    const FIELD_REQUIRED_PHONE = 32;
+    /**
+     * Адресс редактируется
+     */
+    const FIELD_EDIT_ADDRESS = 64;
+    /**
+     * Адресс обязательное
+     */
+    const FIELD_REQUIRED_ADDRESS = 128;
+    /**
+     * Адресс, дом редактируется
+     */
+    const FIELD_EDIT_ADDRESS_HOUSE = 256;
+    /**
+     * Адресс, дом обязательное
+     */
+    const FIELD_REQUIRED_ADDRESS_HOUSE = 512;
+    /**
+     * Адресс, корпус редактируется
+     */
+    const FIELD_EDIT_ADDRESS_HOUSING = 1024;
+    /**
+     * Адресс, корпус обязательное
+     */
+    const FIELD_REQUIRED_ADDRESS_HOUSING = 2048;
+    /**
+     * Адресс, квартира редактируется
+     */
+    const FIELD_EDIT_ADDRESS_FLAT = 4096;
+    /**
+     * Адресс, квартира обязательное
+     */
+    const FIELD_REQUIRED_ADDRESS_FLAT = 8192;
+
+    /**
      * Возвращает товары находящиеся в корзине пользователя
      * @return DDeliveryProduct[]
      */
@@ -93,12 +150,13 @@ abstract class DShopAdapter
 
     /**
      * Если необходимо фильтрует курьеров и добавляет новых
+     * Кстати здесь можно отсортировать еще точки
      *
      * @param DDeliveryPointCourier[] $courierPoints
      * @param \DDelivery\Order\DDeliveryOrder $order
      * @return \DDelivery\Point\DDeliveryPointCourier[]
      */
-    public function filterPointsCourier($courierPoints, DDeliveryOrder $order, $cityID) {
+    public function filterPointsCourier($courierPoints, DDeliveryOrder $order) {
         return $courierPoints;
     }
 
@@ -109,7 +167,7 @@ abstract class DShopAdapter
      * @param \DDelivery\Order\DDeliveryOrder $order
      * @return \DDelivery\Point\DDeliveryPointSelf[]
      */
-    public function filterPointsSelf($courierPoints, DDeliveryOrder $order, $cityID) {
+    public function filterPointsSelf($courierPoints, DDeliveryOrder $order) {
         return $courierPoints;
     }
 
@@ -155,4 +213,36 @@ abstract class DShopAdapter
     {
         return array(DDeliverySDK::TYPE_COURIER, DDeliverySDK::TYPE_SELF);
     }
+
+    /**
+     * Возвращает бинарную маску обязательных полей для курьера
+     * Если редактирование не включено, но есть обязательность то поле появится
+     * Если редактируемых полей не будет то пропустим шаг
+     * @return int
+     */
+    public function getCourierRequiredFields()
+    {
+        // ВВести все обязательно, кроме корпуса
+        return self::FIELD_EDIT_FIRST_NAME | self::FIELD_REQUIRED_FIRST_NAME | self::FIELD_EDIT_LAST_NAME | self::FIELD_REQUIRED_LAST_NAME
+            | self::FIELD_EDIT_PHONE | self::FIELD_REQUIRED_PHONE
+            | self::FIELD_EDIT_ADDRESS | self::FIELD_REQUIRED_ADDRESS
+            | self::FIELD_EDIT_ADDRESS_HOUSE | self::FIELD_REQUIRED_ADDRESS_HOUSE
+            | self::FIELD_EDIT_ADDRESS_HOUSING
+            | self::FIELD_EDIT_ADDRESS_FLAT;
+    }
+
+    /**
+     * Возвращает бинарную маску обязательных полей для пунктов самовывоза
+     * Если редактирование не включено, но есть обязательность то поле появится
+     * Если редактируемых полей не будет то пропустим шаг
+     * @return int
+     */
+    public function getSelfRequiredFields()
+    {
+        // Имя, фамилия, мобилка
+        return self::FIELD_EDIT_FIRST_NAME | self::FIELD_REQUIRED_FIRST_NAME
+            | self::FIELD_EDIT_LAST_NAME | self::FIELD_REQUIRED_LAST_NAME
+            | self::FIELD_EDIT_PHONE | self::FIELD_REQUIRED_PHONE;
+    }
+
 }

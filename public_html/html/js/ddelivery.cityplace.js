@@ -25,7 +25,6 @@ var CityPlace = (function(){
                 if($('input[name=ddelivery_city]').val() == cityId) {
                     return false;
                 }
-                $(window).trigger('ddeliveryCityPlace', {id: cityId});
 
                 var title = $(this)[0].innerText.trim().replace('\n', ', ');
                 $('.delivery-place__title input').val('').attr('title', title).blur();
@@ -38,7 +37,7 @@ var CityPlace = (function(){
                 $('.delivery-place__drop').slideUp(function () {
                     $('.map-popup__main').removeClass('show-drop-2');
                 });
-
+                $(window).trigger('ddeliveryCityPlace', {id: cityId});
 
                 return false;
             }
@@ -56,7 +55,7 @@ var CityPlace = (function(){
                 .keyup(function(){
                     var title = $(this).val();
                     var input = $(this);
-                    if(title.length >= 3){
+                    if(title.length >= 2){
                         $('.delivery-place__drop_i ul.search').html('<img class="loader_search" src="'+staticUrl+'/img/ajax_loader.gif"/>');
                         DDeliveryIframe.ajaxData({action: 'searchCity', name: title}, function(data){
                             if(data.request.name == input.val()){

@@ -370,7 +370,7 @@ class DDeliveryUI
      * Получить курьерские точки для города
      * @var int $cityID
      *
-     * @return array DDeliveryAbstractPoint;
+     * @return DDeliveryPointCourier[]
      */
     public function getCourierPointsForCity( $cityID )
     {
@@ -788,7 +788,6 @@ class DDeliveryUI
                         ));
                         return;
                     }
-
             }
         }
 
@@ -896,6 +895,32 @@ class DDeliveryUI
         $order = $this->order;
 
         $order->declaredPrice = $this->shop->getDeclaredPrice($order->getProducts());
+        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $cityId);
+
+        $minSelfPrice = PHP_INT_MAX;
+        $minSelfTime = PHP_INT_MAX;
+        foreach($selfCompanyList as $selfCompany) {
+            if($minSelfPrice > $selfCompany['delivery_price']){
+                $minSelfPrice = $selfCompany['delivery_price'];
+            }
+            if($minSelfTime > $selfCompany['delivery_time_min']){
+                $minSelfTime = $selfCompany['delivery_time_min'];
+            }
+        }
+        $minCourierPrice = PHP_INT_MAX;
+        $minCourierTime = PHP_INT_MAX;
+
+        $courierCompanyList = $this->getCourierPointsForCity($cityId);
+        foreach($courierCompanyList as $courierCompany){
+            $deliveryInfo = $courierCompany->getDeliveryInfo();
+            $deliveryInfo->pickup_price;
+            if($minCourierPrice > $deliveryInfo->delivery_price){
+                $minCourierPrice = $deliveryInfo->delivery_price;
+            }
+            if($minCourierTime > $deliveryInfo->delivery_time_min){
+                $minCourierTime = $deliveryInfo->delivery_time_min;
+            }
+        }
 
         $this->sdk->calculatorPickupForCity($cityId,
             $order->getDimensionSide1(), $order->getDimensionSide2(), $order->getDimensionSide3(), $order->getWeight(),
@@ -910,9 +935,66 @@ class DDeliveryUI
         return json_encode(array('html'=>$content, 'js'=>''));
     }
 
+    //protected function renderDeliveryTypeForm
+
     protected function renderCourier()
     {
+        $cityId = $this->getCityId();
+        $cityList = $this->getCityByDisplay($cityId);
+        $companies = $this->getCompanySubInfo();
+        $courierCompanyList = $this->getCourierPointsForCity($cityId);
+        usort($courierCompanyList, function($a, $b){
+            /**
+             * @var DDeliveryPointCourier $a
+             * @var DDeliveryPointCourier $b
+             */
+            return $a->delivery_price - $b->delivery_price;
+        });
 
+        $courierCompanyList = $this->shop->filterPointsCourier($courierCompanyList, $this->order);
+        $staticPath = $this->shop->getStaticPath();
+
+        ob_start();
+        include(__DIR__.'/../../templates/couriers.php');
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        return json_encode(array('html'=>$content, 'js'=>''));
+    }
+
+
+    /**
+     * Возвращает дополнительную информацию по компаниям доставки
+     * @return array
+     */
+    public function getCompanySubInfo()
+    {
+        // pack забита для тех у кого нет иконки
+        return array(
+            1 => array('name' => 'PickPoint', 'ico' => 'pickpoint'),
+            3 => array('name' => 'Logibox', 'ico' => 'logibox'),
+            4 => array('name' => 'Boxberry', 'ico' => 'boxberry'),
+            6 => array('name' => 'СДЭК забор', 'ico' => 'cdek'),
+            7 => array('name' => 'QIWI Post', 'ico' => 'qiwi'),
+            11 => array('name' => 'Hermes', 'ico' => 'hermes'),
+            13 => array('name' => 'КТС', 'ico' => 'pack'),
+            14 => array('name' => 'Maxima Express', 'ico' => 'pack'),
+            16 => array('name' => 'IMLogistics Пушкинская', 'ico' => 'imlogistics'),
+            17 => array('name' => 'IMLogistics', 'ico' => 'imlogistics'),
+            18 => array('name' => 'Сам Заберу', 'ico' => 'pack'),
+            20 => array('name' => 'DPD Parcel', 'ico' => 'dpd'),
+            21 => array('name' => 'Boxberry Express', 'ico' => 'boxberry'),
+            22 => array('name' => 'IMLogistics Экспресс', 'ico' => 'imlogistics'),
+            23 => array('name' => 'DPD Consumer', 'ico' => 'dpd'),
+            24 => array('name' => 'Сити Курьер', 'ico' => 'pack'),
+            25 => array('name' => 'СДЭК Посылка Самовывоз', 'ico' => 'cdek'),
+            26 => array('name' => 'СДЭК Посылка до двери', 'ico' => 'cdek'),
+            27 => array('name' => 'DPD ECONOMY', 'ico' => 'dpd'),
+            28 => array('name' => 'DPD Express', 'ico' => 'dpd'),
+            29 => array('name' => 'DPD Classic', 'ico' => 'dpd'),
+            30 => array('name' => 'EMS', 'ico' => 'ems'),
+            31 => array('name' => 'Grastin', 'ico' => 'pack'),
+        );
     }
 
 

@@ -8,8 +8,8 @@
 namespace DDelivery\Point;
 
 /**
- * DDeliveryAbstractPoint
- * @package DDelivery.Point
+ * Class DDeliveryAbstractPoint
+ * @package DDelivery\Point
  */
 abstract class DDeliveryAbstractPoint {
 	
@@ -29,14 +29,20 @@ abstract class DDeliveryAbstractPoint {
 	 * @var DDeliveryInfo
 	 */
 	protected $deliveryInfo = null;
-	
-	
-	public function setDeliveryInfo( $deliveryInfo )
+
+
+    /**
+     * @param $deliveryInfo
+     */
+    public function setDeliveryInfo( $deliveryInfo )
 	{
 		$this->deliveryInfo = $deliveryInfo;
 	}
-	
-	public function getDeliveryInfo()
+
+    /**
+     * @return DDeliveryInfo
+     */
+    public function getDeliveryInfo()
 	{
 		return $this->deliveryInfo;
 	}

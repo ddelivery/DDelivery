@@ -66,4 +66,14 @@ class DDeliveryInfo
 		}
 		return null;
 	}
+
+    function __get($name)
+    {
+        return $this->get($name);
+    }
+
+    function __set($name, $value)
+    {
+        $this->set($name, $value);
+    }
 }
