@@ -880,7 +880,7 @@ class DDeliveryUI
         include(__DIR__ . '/../../templates/map.php');
         $content = ob_get_contents();
         ob_end_clean();
-        return json_encode(array('html'=>$content, 'js'=>'', 'points' => $pointsJs));
+        return json_encode(array('html'=>$content, 'js'=>'map', 'points' => $pointsJs));
     }
 
     /**
@@ -959,7 +959,7 @@ class DDeliveryUI
         $content = ob_get_contents();
         ob_end_clean();
 
-        return json_encode(array('html'=>$content, 'js'=>''));
+        return json_encode(array('html'=>$content, 'js'=>'courier'));
     }
 
 

@@ -21,6 +21,7 @@ var DDeliveryIframe = (function(){
                 $( '#ddelivery' ).html(dataHtml.html );
                 th.render(dataHtml);
             }, 'json');
+            $(window).trigger('ajaxPage');
         },
         ajaxData: function(data, callBack) {
             $.post( componentUrl, data, callBack, 'json');
@@ -44,11 +45,22 @@ var DDeliveryIframe = (function(){
                 });
             }
 
-            if($('.map-canvas').length > 0){
-                Map.init(data);
-            }
-
+            // У всех
             CityPlace.init();
+
+            if(typeof(data.js) != 'undefined' && data.js.length > 0) {
+                var js = data.js.split(',');
+                for(var k=0 ; k<js.length ; k++){
+                    switch (js[k]){
+                        case 'courier':
+                            Courier.init();
+                            break;
+                        case 'map':
+                            Map.init(data);
+                            break;
+                    }
+                }
+            }
 
             $('.map-popup__main__right__btn').on('click', function () {
                 $('.map-popup__main__right').toggleClass('map-popup__main__right_open');
