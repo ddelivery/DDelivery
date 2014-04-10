@@ -22,6 +22,8 @@ abstract class DDeliveryAbstractPoint {
 	 * @var int pointID
 	 */ 
 	public $pointID;
+	
+	
 	/**
 	 * Информация по доставке для данной компании
 	 * @var DDeliveryInfo

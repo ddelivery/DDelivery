@@ -14,7 +14,7 @@
  * @author  mrozk <mrozk2012@gmail.com>
  */
 
-
+header('Content-Type: text/html; charset=utf-8');
 /**
  * Для поиска недостающих классов, сканируем
  * на содержание пакетов в названиях классов
@@ -24,7 +24,7 @@
  *
  */
 function autoloadClasses( $className ) {
-	$classPath = '';
+	$classPath = '';	
 
     if( (strpos($className, '\\')) > 0 )
     {

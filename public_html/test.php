@@ -42,7 +42,7 @@ require_once 'application/bootstrap.php';
 /*
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
-$selfpoints = $DDeliveryUI->getSelfPoints( 151185 );
+$selfpoints = $DDeliveryUI->getSelfPoints( 	 );
 
 $DDeliveryUI->setOrderPoint($selfpoints[0]);
 $DDeliveryUI->createSelfOrder();
@@ -102,9 +102,17 @@ print_r($result);
 
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
-$order = $DDeliveryUI->getOrder();
+$points = $DDeliveryUI->getMinPriceAndPeriodCourier(151185);
+print_r( $points);
+//$price  = $DDeliveryUI->getMinPriceAndPeriodDelivery($points);
+//	print_r( $price );
+//$info = $DDeliveryUI->getSelfDeliveryInfoForCity(151185);
+//var_dump($info);
+/*
 $selfpoint = $DDeliveryUI->getSelfPoints(151185);
 
+
+$order->city = 151185;
 $order->type = 1;
 $order->setPoint($selfpoint[0]);
 $order->toName = 'Дима Грушин';
@@ -117,9 +125,10 @@ $order->toEmail = '';
 
 
 
-$DDeliveryUI->saveIntermediateOrder();
-
-
+$id = $DDeliveryUI->saveIntermediateOrder(null);
+echo $id;
+$DDeliveryUI->initIntermediateOrder(1);
+*/
 
 //$selfpoints = $DDeliveryUI->getSelfPoints( 151185 );
 

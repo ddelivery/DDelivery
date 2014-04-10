@@ -24,13 +24,13 @@ use DDelivery\Sdk\DDeliverySDK;
  * @package DDelivery\Adapter
  */
 abstract class DShopAdapter
-{
+{  
     /**
      * Возвращает товары находящиеся в корзине пользователя
      * @return DDeliveryProduct[]
      */
     public abstract function getProductsFromCart();
-
+    
     /**
      * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
      * @return string
@@ -98,7 +98,7 @@ abstract class DShopAdapter
      * @param \DDelivery\Order\DDeliveryOrder $order
      * @return \DDelivery\Point\DDeliveryPointCourier[]
      */
-    public function filterPointsCourier($courierPoints, DDeliveryOrder $order) {
+    public function filterPointsCourier($courierPoints, DDeliveryOrder $order, $cityID) {
         return $courierPoints;
     }
 
@@ -109,7 +109,7 @@ abstract class DShopAdapter
      * @param \DDelivery\Order\DDeliveryOrder $order
      * @return \DDelivery\Point\DDeliveryPointSelf[]
      */
-    public function filterPointsSelf($courierPoints, DDeliveryOrder $order) {
+    public function filterPointsSelf($courierPoints, DDeliveryOrder $order, $cityID) {
         return $courierPoints;
     }
 
@@ -123,18 +123,27 @@ abstract class DShopAdapter
         }
         return 0;
     }
-
+    
+    
+    /**
+     * Возвращает стоимоть заказа
+     * @return float
+     */
+    public abstract function getAmount();
+    
+    
     /**
      * Возвращает оценочную цену для товаров в послыке
-     * @param DDeliveryProduct[] $productList
-     * @return int
+     * @return float
      */
-    public function getDeclaredPrice($productList) {
+    public function getDeclaredPrice() {
+    	/*
         $declaredPrice = 0;
         foreach($productList as $product) {
             $declaredPrice = $product->getPrice();
         }
-
+        */
+    	$declaredPrice = $this->getAmount();
         return $declaredPrice;
     }
 

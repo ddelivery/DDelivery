@@ -2,7 +2,7 @@
 
 namespace DDelivery\Adapter;
 
-class DShopAdapterImpl extends DShopAdapter
+class DShopAdapterTest extends DShopAdapter
 {
     /**
      * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
@@ -14,23 +14,31 @@ class DShopAdapterImpl extends DShopAdapter
 	}
 	
 	public function getPathByDB(){
-		return $_SERVER['DOCUMENT_ROOT'] . '/ddelivery/application/data/ddelivery.db';
+		
+		return '/home/mrozk/git/ddelivery_front_module/public_html/tests/ddelivery.db';
 	}
 	
     public function getProductsFromCart()
     {
     	$products = array();
     	
-    	$products[] = new \DDelivery\Order\DDeliveryProduct(1, 20, 13, 25, 0.5, 1000, 1, 'Веселый клоун');
-    	$products[] = new \DDelivery\Order\DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'Грустный клоун') ;
+    	$products[] = new \DDelivery\Order\DDeliveryProduct( 1, 2, 6, 2, 
+    			                                             1, 100, 2, 'Пиджак' );
+    	$products[] = new \DDelivery\Order\DDeliveryProduct(2, 3, 1,  
+    			                                            1, 1, 200, 1,'Куртка кожанная') ;
     	
     	return $products;
     }
     
-
     public function getAmount()
     {
     	return 100.5;
+    }
+    
+    
+    public function getOrderPrice()
+    {
+    	
     }
 
     /**

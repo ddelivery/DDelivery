@@ -224,7 +224,7 @@ class DDeliverySDK {
      * 
      * @return DDeliverySDKResponse
      */
-    public function calculatorPickupForCompany( $deliveryPoint, $dimensionSide1, 
+    public function calculatorPickupForPoint( $deliveryPoint, $dimensionSide1, 
                                                 $dimensionSide2, $dimensionSide3, $weight, 
                                                 $declaredPrice, $paymentPrice = null )
     {
@@ -279,7 +279,7 @@ class DDeliverySDK {
 	
     
     /**
-     * Получить список пунктов самовывоза
+     * Получить автокомплит для города
      * 
      * @param string $q Часть строки для поиска
      * 

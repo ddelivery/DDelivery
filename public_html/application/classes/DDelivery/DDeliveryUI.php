@@ -65,21 +65,32 @@ class DDeliveryUI
      */
     public function __construct(DShopAdapter $dShopAdapter)
     {	
-    	if (!session_id()) {
-    		session_start();
-    	}
     	
         $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), true);
         
         $this->shop = $dShopAdapter;
         SQLite::$dbUri = $dShopAdapter->getPathByDB();
-
-        $this->order = new DDeliveryOrder($this->shop->getProductsFromCart());
-        $this->initIntermediateOrder();
-
+		
+        // Формируем объект заказа
+        $productList = $this->shop->getProductsFromCart();
+        $this->order = new DDeliveryOrder( $productList );
+        $this->order->amount = $this->shop->getAmount();
+        $this->order->declaredPrice = $this->shop->getDeclaredPrice();
         
     }
     
+    /**
+     * Жду подтверждение  для необходимости  реализации 
+     * 
+     * при изменении состояния заказа пересчитать 
+     * все возможные парамтры для заказа, цена для доставк на точку 
+     *
+     * @return void;
+     */
+    public function update()
+    {
+    	
+    }
     /**
      * получить текущее состояние заказа в БД
      * 
@@ -87,23 +98,206 @@ class DDeliveryUI
      *
      * @return void;
      */
-    public function initIntermediateOrder()
+    public function initIntermediateOrder( $id )
     {	
     	$orderDB = new DataBase\Order();
-    	if( isset($_SESSION["ddelivery_order_id"]) )
+    	
+    	if( !empty( $id ) )	
     	{
-    		$id  = $_SESSION["ddelivery_order_id"];
     		if($orderDB->isRecordExist($id))
     	    {
     	        $order = $orderDB->selectSerializeByID( $id );
     	        if( count( $order ) )
-    	        {
+    	        {	
+    	        	// Распаковываем те параметры которые менятся не могут
     	        	$jsonOrder = json_decode($order[0]);
-    	        	//print_r($jsonOrder);
+    	        	$this->order->type = $jsonOrder->type;
+    	        	$this->order->city = $jsonOrder->city;
+    	        	$this->order->toName = $jsonOrder->to_name;
+    	        	$this->order->toPhone = $jsonOrder->to_phone;
+    	        	$this->order->toStreet = $jsonOrder->to_street;
+    	        	$this->order->toHouse = $jsonOrder->to_house;
+    	        	$this->order->toFlat = $jsonOrder->to_flat;
+    	        	$this->order->toHouse = $jsonOrder->to_email;
+    	        	
+    	        	// Распаковываем точку если она была выставлена
+    	        	if(!empty($jsonOrder->type) && !empty($jsonOrder->point_id))
+    	        	{	
+    	        		// Если содержимое корзины не изменялось
+    	        		if( $jsonOrder->checksum != md5($this->order->goodsDescription) )
+    	        		{ 
+	    	        	    $point = unserialize($jsonOrder->point);
+	    	        	    $this->order->setPoint($point);
+    	        		}
+    	        	    else 
+    	        	    {	
+    	        	    	// Если содержимое корзины изменялось то автоматически перересчитываем параметры заказа для точки
+    	        	    	// Либо для самовывоза, либо для курьерки
+    	        	    	if( $jsonOrder->type == 1 )
+    	        	    	{
+    	        	    		$points = $this->getSelfPoints( $this->order->city );	
+    	        	    		foreach ( $points as $p )
+    	        	    		{
+    	        	    			if( $p->pointID == $jsonOrder->point_id )
+    	        	    			{
+    	        	    				$this->order->setPoint($p);
+    	        	    				break;
+    	        	    			}
+    	        	    		}
+    	        	    	}
+    	        	    	else if( $jsonOrder->type == 2 )
+    	        	    	{
+    	        	    		$points = $this->getCourierPointsForCity( $this->order->city );
+    	        	    		foreach ( $points as $p )
+    	        	    		{
+    	        	    		    if( $p->pointID == $jsonOrder->point_id )
+    	        	    		    {
+    	        	    		        $this->order->setPoint($p);
+    	        	    		        break;
+    	        	    		    }
+    	        	    		}
+    	        	    	}
+    	        	    }
+    	        		
+    	        	}
     	        }	
     	    }
     	}
     }
+    
+    /**
+     * Получить  минимальный и максимальные период и цену поставки для массива точек
+     * @var array DDeliveryAbstractPoint[]
+     *
+     * @return array;
+     */
+    public function getMinMaxPriceAndPeriodDelivery( $points )
+    {
+        if( count( $points ) )
+        {
+        	$minPeriod = -1; 
+        	$minPrice  = -1;
+        	$maxPeriod = 0;
+        	$maxPrice = 0; 
+            foreach ($points as $p)
+            {	
+            	$deliveryInf = $p->getDeliveryInfo();
+            	
+                if( $minPeriod == -1 )
+                {
+                	
+                	$minPeriod = $deliveryInf->get('delivery_time_avg');
+                	$minPrice = $deliveryInf->get('total_price');
+                	
+                	$maxPeriod = $deliveryInf->get('delivery_time_avg');
+                	$maxPrice = $deliveryInf->get('total_price');
+                }
+                else
+                {
+                    if( $deliveryInf->get('delivery_time_avg') < $minPeriod )
+                    {
+                    	$minPeriod = $deliveryInf->get('delivery_time_avg');
+                    }
+                    if( $deliveryIf->get('total_price') < $minPrice )
+                    {
+                    	$minPrice  = $deliveryInf->get('total_price');
+                    }
+                    if( $deliveryInf->get('delivery_time_avg') > $maxPeriod )
+                    {
+                    	$maxPeriod = $deliveryInf->get('delivery_time_avg');
+                    }
+                    if( $deliveryIf->get('total_price') > $minPrice )
+                    {
+                    	$maxPrice  = $deliveryInf->get('total_price');
+                    }
+                }
+            	    
+            }
+            return array('min_price' => $minPrice, 'min_period' => $minPeriod,
+                         'max_price' => $maxPrice, 'max_period' => $maxPeriod);
+        }
+        return null;
+    }
+    
+    /**
+     * Получить минимальный и максимальные период и цену поставки для массива
+     * @var array $deliveryInfo
+     *
+     * @return array;
+     */
+    public function _getMinMaxPriceAndPeriod( $deliveryInfo )
+    {
+    	if( count( $deliveryInfo ) )
+    	{
+    		$minPeriod = -1;
+    		$minPrice  = -1;
+    		
+    		$maxPeriod = 0;
+    		$maxPrice = 0;
+    		
+    		foreach ($deliveryInfo as $p)
+    		{
+    			if( $minPeriod == -1 )
+    			{
+    				$minPeriod = $p['delivery_time_avg'];
+    				$minPrice = $p['total_price'];
+    				
+    				$maxPeriod = $p['delivery_time_avg'];
+    				$maxPrice = $p['total_price'];
+    			}
+    			else 
+    			{
+    				if( $p['delivery_time_avg'] < $minPeriod )
+    				{
+    					$minPeriod = $p['delivery_time_avg'];
+    				}
+    				if( $p['total_price'] < $minPrice )
+    				{
+    					$minPrice  = $p['total_price'];
+    				}
+    				
+    				if( $p['delivery_time_avg'] > $maxPeriod )
+    				{
+    					$maxPeriod = $p['delivery_time_avg'];
+    				}
+    				if( $p['total_price'] > $maxPrice )
+    				{
+    					$maxPrice  = $p['total_price'];
+    				}
+    			}
+    		}
+    		
+    		return array('min_price' => $minPrice, 'min_period' => $minPeriod,
+                         'max_price' => $maxPrice, 'max_period' => $maxPeriod);
+    	}
+    	return null;
+    }
+    
+    /**
+     * Получить минимальный период и цену поставки курьером для города
+     * @var int $cityID
+     *
+     * @return array;
+     */
+    public function getMinPriceAndPeriodCourier( $cityID )
+    {
+    	$deliveryInfo = $this->getCourierDeliveryInfoForCity($cityID);
+    	return $this->_getMinMaxPriceAndPeriod( $deliveryInfo );
+    }
+    
+    /**
+     * Получить минимальный период и цену поставки самовывоза для города 
+     * @var int $cityID
+     *
+     * @return array;
+     */
+    public function getMinPriceAndPeriodSelf( $cityID )
+    {
+        $deliveryInfo = $this->getSelfDeliveryInfoForCity($cityID);
+        
+        return $this->_getMinMaxPriceAndPeriod( $deliveryInfo );
+    }
+    
     
     /**
      * Сохранить промежуточное состояние заказа в БД
@@ -112,29 +306,28 @@ class DDeliveryUI
      *
      * @return int;
      */
-    public function saveIntermediateOrder()
+    public function saveIntermediateOrder( $id )
     {	
-    	$orderDB = new DataBase\Order();
+    	
+    	$orderDB = new \DDelivery\DataBase\Order();
+    	
     	$packOrder = $this->order->packOrder();
-    	if( !isset($_SESSION["ddelivery_order_id"]) )
+    	
+    	if( !empty( $id ) )
     	{	
-    		$id = $orderDB->insertOrder($packOrder);
-    		$_SESSION['ddelivery_order_id'] = $id;
+    	    $id = $orderDB->insertOrder($packOrder);
     	}
     	else 
     	{	
-    		$id = $_SESSION["ddelivery_order_id"];
     		if($orderDB->isRecordExist($id) )
     		{
-    			$orderDB->updateOrder( $id, $packOrder );
+    			$id = $orderDB->updateOrder( $id, $packOrder );
     		}
     		else 
     		{
     			$id = $orderDB->insertOrder($packOrder);
-    			$_SESSION['ddelivery_order_id'] = $id;
     		}
     	}
-    	$data = $orderDB->selectAll();
     	
 	    return  $id;
     }
@@ -171,28 +364,7 @@ class DDeliveryUI
         return $this->order;
     }
     
-    /**
-     * Получить информацию о заказе для точки
-     * @var int $id
-     * @deprecated
-     * @return DDeliveryInfo;
-     */
-    public function getDeliveryInfoForPoint( $id )
-    {
     	
-    	$declaredPrice = 0;
-    	$response = $this->sdk->calculatorPickup( $id, $this->order->getDimensionSide1(), 
-    			                                  $this->order->getDimensionSide2(), $this->order->getDimensionSide3(), 
-                                                  $this->order->getWeight(), $declaredPrice );
-
-    	if(count( $response->success) )
-    	{
-    		
-    		return new Point\DDeliveryInfo( $response->response );
-    		
-    	}
-    	return null; 
-    }
     
     /**
      * Получить курьерские точки для города
@@ -222,6 +394,9 @@ class DDeliveryUI
     				$points[] = $point;
     			}
     		}
+    		
+    		$points = $this->shop->filterPointsCourier( $points, $this->order, $cityID );
+    		
     		return $points;
         }
         else
@@ -236,7 +411,28 @@ class DDeliveryUI
      * Получить компании самовывоза для города
      * @var int $cityID
      *
-     * @return array DDeliveryAbstractPoint;
+     * @return array;
+     */
+    public function getCourierDeliveryInfoForCity( $cityID )
+    {
+    	$response = $this->sdk->calculatorCourier( $cityID, $this->order->getDimensionSide1(),
+    			                                   $this->order->getDimensionSide2(),
+    			                                   $this->order->getDimensionSide3(),
+    			                                   $this->order->getWeight(), 0 );
+    	if( $response->success )
+    	{
+    		return $response->response;
+    	}
+    	else
+    	{
+    		return 0;
+    	}	
+    }
+    /**
+     * Получить компании самовывоза для города
+     * @var int $cityID
+     *
+     * @return array;
      */
     public function getSelfDeliveryInfoForCity( $cityID )
     {
@@ -257,15 +453,15 @@ class DDeliveryUI
     }
     
     /**
-     * Получить компании самовывоза для города
+     * Получить информацию о самовывозе для точки
      * @var int $cityID
      *
-     * @return array DDeliveryAbstractPoint;
+     * @return DDeliveryAbstractPoint[];
      */
     public function getDeliveryInfoForPointID( $pointID )
     {
     	 
-    	$response = $this->sdk->calculatorPickupForCompany( $pointID, $this->order->getDimensionSide1(),
+    	$response = $this->sdk->calculatorPickupForPoint( $pointID, $this->order->getDimensionSide1(),
     			$this->order->getDimensionSide2(),
     			$this->order->getDimensionSide3(),
     			$this->order->getWeight(), 0 );
@@ -447,6 +643,7 @@ class DDeliveryUI
      * Получить компании самовывоза  для города с их полным описанием, и координатами их филиалов
      *
      * @var int $cityID
+     * 
      *
      * @throws DDeliveryException
      * @return DDeliveryPointSelf[]
@@ -473,7 +670,9 @@ class DDeliveryUI
     			}
     		}
     	}
-
+		
+    	$points = $this->shop->filterPointsSelf( $points, $this->order, $cityID );
+    	
     	return $points;
     	
     }
