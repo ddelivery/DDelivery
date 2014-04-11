@@ -77,7 +77,7 @@
                 ?>
                 <tr>
                     <td class="col1">
-                        <input type="radio" name="delivery_company"/>
+                        <input type="radio" name="delivery_company" value="<?=$courierCompany->pointID?>"/>
                     </td>
                     <td class="col2">
                         <img src="<?=$staticPath?>img/logo/<?=$companies[$courierCompany->delivery_company]['ico']?>.png" alt="title"/>

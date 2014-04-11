@@ -27,6 +27,11 @@ class DDeliveryOrder
      */
     protected $_id;
     /**
+     * Локальный id для хранилища
+     * @var int
+     */
+    public $localId;
+    /**
      * Тип если самовывоз - 1, если курьерка - 2
      * @var int
      */
@@ -203,7 +208,7 @@ class DDeliveryOrder
     	if( !empty( $point ) )
     	{
     		$pointPacked = serialize($point);
-    		$pointID = $this->point->pointID;
+            $pointID = $this->point->pointID;
     	}
     	
     	$packedOrder = array('type'=>$this->type, 'city' => $this->city, 
@@ -214,13 +219,22 @@ class DDeliveryOrder
     	
     	return $packedOrder;
     }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->_id;
+    }
+
     
     /**
-     * @param $point
+     * @param DDeliveryAbstractPoint $point
      */
     public function setPoint( $point )
     {
-        $this->point = $point;    	
+        $this->point = $point;
     }
 
     /**

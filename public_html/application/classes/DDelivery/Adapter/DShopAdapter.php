@@ -110,7 +110,15 @@ abstract class DShopAdapter
      * Если вы знаете имя покупателя, сделайте чтобы оно вернулось в этом методе
      * @return string|null
      */
-    public function getClientName() {
+    public function getClientFirstName() {
+        return null;
+    }
+
+    /**
+     * Если вы знаете фамилию покупателя, сделайте чтобы оно вернулось в этом методе
+     * @return string|null
+     */
+    public function getClientLastName() {
         return null;
     }
 

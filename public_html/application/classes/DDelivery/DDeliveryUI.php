@@ -112,6 +112,9 @@ class DDeliveryUI
     	        {	
     	        	// Распаковываем те параметры которые менятся не могут
     	        	$jsonOrder = json_decode($order[0]);
+    	        	
+    	        	$this->order->localId = (int)$id;
+    	        	
     	        	$this->order->type = $jsonOrder->type;
     	        	$this->order->city = $jsonOrder->city;
     	        	$this->order->toName = $jsonOrder->to_name;
@@ -321,20 +324,11 @@ class DDeliveryUI
     	
     	$packOrder = $this->order->packOrder();
     	
-    	if( !empty( $id ) )
-    	{	
+        $id = $this->order->localId;
+    	if($this->order->localId) {
     	    $id = $orderDB->insertOrder($packOrder);
-    	}
-    	else 
-    	{	
-    		if($orderDB->isRecordExist($id) )
-    		{
-    			$id = $orderDB->updateOrder( $id, $packOrder );
-    		}
-    		else 
-    		{
-    			$id = $orderDB->insertOrder($packOrder);
-    		}
+    	} else {
+            $orderDB->updateOrder( $id, $packOrder );
     	}
     	
 	    return  $id;
@@ -537,7 +531,7 @@ class DDeliveryUI
      * отправить заказ на курьерку
      *
      */
-    public function createCourierOrder( $intermediateID )
+    public function createCourierOrder( )
     {
     	/** @var DDeliveryPointCourier $point */
     	try
@@ -611,7 +605,7 @@ class DDeliveryUI
      * отправить заказ на самовывоз
      *
      */
-    public function createSelfOrder( $intermediateID )
+    public function createSelfOrder( )
     {
         /** @var DDeliveryPointSelf $point */
     	try 
