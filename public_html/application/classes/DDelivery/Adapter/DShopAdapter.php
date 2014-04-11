@@ -127,7 +127,10 @@ abstract class DShopAdapter
      * @return string
      */
     public abstract function getPathByDB();
-
+    
+    
+    
+    
     /**
      * Вызывается перед отображением цены точки самовывоза, можно что-то изменить
      *
@@ -170,7 +173,65 @@ abstract class DShopAdapter
     public function filterPointsSelf($courierPoints, DDeliveryOrder $order) {
         return $courierPoints;
     }
-
+    
+    /**
+     *
+     * Получить свойство refnum для курьерки
+     *
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     *
+     * @return float
+     */
+    public function getShopRefNum( $order )
+    {
+    	return 'shopRefNum';
+    }
+    
+    /**
+     * Если есть необходимость перед началом поиска точек
+     * вернуть свой набор точек
+     *
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     *
+     * @return array DDeliveryAbstractPoint[]
+     */
+    public function preGoToFindPoints( $order )
+    {
+        return array('go_to_server' => true, 'points' => array());        	
+    }
+    
+    /**
+     * 
+     * Есть ли необходимость отправлять заказ на сервер ddelivery
+     * 
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     * 
+     * @return float
+     */
+    public function sendOrderToDDeliveryServer( $order ) 
+    {
+        return true;    	
+    }
+    
+    /**
+     * Возвращает выбраный вариант оплаты
+     * @return float
+     */
+    public function getPaymentVariant( ) {
+    	 return null;
+    }
+    /**
+     * Возвращает параметр payment_price для создания заказа
+     * 
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     * @param float
+     * 
+     * @return float
+     */
+    public function getPaymentPrice( $order, $orderPrice ) {
+    	return $this->getAmount() + $orderPrice;
+    }
+    
     /**
      * Верните id города в системе DDelivery
      * @return int

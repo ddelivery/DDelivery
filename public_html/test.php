@@ -102,8 +102,30 @@ print_r($result);
 
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
-$points = $DDeliveryUI->getMinPriceAndPeriodCourier(151185);
-print_r( $points);
+
+$selfpoint = $DDeliveryUI->getSelfPoints(151185);
+
+$order = $DDeliveryUI->getOrder();
+
+
+$order->city = 151185;
+$order->type = 1;
+$order->setPoint($selfpoint[0]);
+$order->toName = 'Дима Грушин';
+$order->toPhone = '9999999999';
+$order->shopRefnum = 'xxx';
+$order->toStreet = 'Вознесенская';
+$order->toHouse = '1а';
+$order->toFlat = '42';
+$order->toEmail = '';
+
+$id = $DDeliveryUI->saveIntermediateOrder(null);
+$co = $DDeliveryUI->createSelfOrder(1);
+$data = $DDeliveryUI->getAllOrders();
+print_r($data);
+
+//$points = $DDeliveryUI->getMinPriceAndPeriodCourier(151185);
+//print_r( $points);
 //$price  = $DDeliveryUI->getMinPriceAndPeriodDelivery($points);
 //	print_r( $price );
 //$info = $DDeliveryUI->getSelfDeliveryInfoForCity(151185);
