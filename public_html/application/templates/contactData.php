@@ -1,9 +1,3 @@
-<?/**
- * @var int $requiredFieldMask
- */
-use DDelivery\Adapter\DShopAdapter;
-
-?>
 <div class="map-popup">
 
     <div class="map-popup__head">
@@ -14,19 +8,17 @@ use DDelivery\Adapter\DShopAdapter;
     <!--map-popup__head end-->
     <div class="map-popup__main">
         <div class="map-popup__main__form">
-            <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_LAST_NAME):?>
-                <div class="row clearfix">
-                    <div class="row__title">
-                        <label for="sname">Фамилия</label>
-                    </div>
-                    <div class="row__inp <?//error?>">
-                        <input type="text" title="Иванов" id="sname"/>
-                        <div class="error-box">
-                            <i>&nbsp;</i> Поле обязательное для заполнения
-                        </div>
+            <div class="row clearfix">
+                <div class="row__title">
+                    <label for="sname">Фамилия</label>
+                </div>
+                <div class="row__inp error">
+                    <input type="text" title="Иванов" id="sname"/>
+                    <div class="error-box">
+                        <i>&nbsp;</i> Вы сделали что-то неверно
                     </div>
                 </div>
-            <?endif;?>
+            </div>
             <div class="row clearfix">
                 <div class="row__title">
                     <label for="name">Имя</label>

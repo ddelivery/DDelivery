@@ -15,7 +15,6 @@ var DDeliveryIframe = (function(){
         },
         ajaxPage: function(data) {
             var th = this;
-            data.action = 'html';
             $('#ddelivery').html('<img class="loader" src="'+staticUrl+'/img/ajax_loader.gif"/>');
             $.post( componentUrl, data, function( dataHtml ) {
                 $( '#ddelivery' ).html(dataHtml.html );

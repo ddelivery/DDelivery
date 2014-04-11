@@ -11,11 +11,12 @@ var Courier = (function(){
                 var radio = $('input[type="radio"]:checked').val();
                 if(radio) {
                     DDeliveryIframe.ajaxPage({
-                        type: radio,
-                        city_id: $('input[name=delivery_company]').val()
+                        point: $('input[name=delivery_company]').val(),
+                        'action': 'contactForm'
                     });
                 }
             });
+
         }
     }
 })();

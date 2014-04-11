@@ -70,7 +70,7 @@ class DDeliveryUI
         
         $this->shop = $dShopAdapter;
         SQLite::$dbUri = $dShopAdapter->getPathByDB();
-		
+
         // Формируем объект заказа
         $productList = $this->shop->getProductsFromCart();
         $this->order = new DDeliveryOrder( $productList );
@@ -91,15 +91,17 @@ class DDeliveryUI
     {
     	
     }
+
     /**
      * получить текущее состояние заказа в БД
-     * 
+     *
      * Вызывается всегда при инициализации объекта заказа
      *
-     * @return void;
+     * @param $id
+     * @return void
      */
     public function initIntermediateOrder( $id )
-    {	
+    {
     	$orderDB = new DataBase\Order();
     	
     	if( !empty( $id ) )	
@@ -111,6 +113,7 @@ class DDeliveryUI
     	        {	
     	        	// Распаковываем те параметры которые менятся не могут
     	        	$jsonOrder = json_decode($order[0]);
+                    $this->order->localId = (int)$id;
     	        	$this->order->type = $jsonOrder->type;
     	        	$this->order->city = $jsonOrder->city;
     	        	$this->order->toName = $jsonOrder->to_name;
@@ -198,7 +201,7 @@ class DDeliveryUI
                     {
                     	$minPeriod = $deliveryInf->get('delivery_time_avg');
                     }
-                    if( $deliveryIf->get('total_price') < $minPrice )
+                    if( $deliveryInf->get('total_price') < $minPrice )
                     {
                     	$minPrice  = $deliveryInf->get('total_price');
                     }
@@ -206,7 +209,7 @@ class DDeliveryUI
                     {
                     	$maxPeriod = $deliveryInf->get('delivery_time_avg');
                     }
-                    if( $deliveryIf->get('total_price') > $minPrice )
+                    if( $deliveryInf->get('total_price') > $minPrice )
                     {
                     	$maxPrice  = $deliveryInf->get('total_price');
                     }
@@ -297,39 +300,28 @@ class DDeliveryUI
         
         return $this->_getMinMaxPriceAndPeriod( $deliveryInfo );
     }
-    
-    
+
+
     /**
      * Сохранить промежуточное состояние заказа в БД
-     * 
+     *
      * Вызывать вручную при завершении обработки запроса
      *
      * @return int;
      */
-    public function saveIntermediateOrder( $id )
+    public function saveIntermediateOrder( )
     {	
-    	
     	$orderDB = new \DDelivery\DataBase\Order();
-    	
+
     	$packOrder = $this->order->packOrder();
-    	
-    	if( !empty( $id ) )
-    	{	
+        $id = $this->order->localId;
+    	if($this->order->localId) {
     	    $id = $orderDB->insertOrder($packOrder);
+    	} else {
+            $orderDB->updateOrder( $id, $packOrder );
     	}
-    	else 
-    	{	
-    		if($orderDB->isRecordExist($id) )
-    		{
-    			$id = $orderDB->updateOrder( $id, $packOrder );
-    		}
-    		else 
-    		{
-    			$id = $orderDB->insertOrder($packOrder);
-    		}
-    	}
-    	
-	    return  $id;
+
+	    return $id;
     }
     
     /**
@@ -766,6 +758,10 @@ class DDeliveryUI
      */
     public function render($request)
     {
+        if(!empty($request['orderId'])) {
+            $this->initIntermediateOrder($request['orderId']);
+        }
+
         if(isset($request['action'])){
             switch($request['action']){
                 case 'searchCity':
@@ -791,10 +787,16 @@ class DDeliveryUI
             }
         }
 
-
-        $deliveryType = (int) (isset($request['type']) ? $request['type'] : 0);
         $cityId = (int) (isset($request['city_id']) ? $request['city_id'] : 0);
-        $this->order->city = $cityId ? $cityId : $this->getCityId();
+        if($cityId) {
+            $this->order->city = $cityId;
+        }
+        if(!$this->order->city ) {
+            $this->order->city = $this->getCityId();
+        }
+        if(!empty($request['point'])) {
+            $this->order->setPoint($this->getDeliveryInfoForPointID($request['point']));
+        }
 
         if(isset($request['iframe'])) {
             $staticURL = $this->shop->getStaticPath();
@@ -803,6 +805,8 @@ class DDeliveryUI
             return;
         }
 
+        $orderLocalId = $this->saveIntermediateOrder();
+
         $supportedTypes = $this->shop->getSupportedType();
 
         if(!is_array($supportedTypes))
@@ -810,28 +814,48 @@ class DDeliveryUI
 
         $this->supportedTypes = $supportedTypes;
 
+        $deliveryType = (int) (isset($request['type']) ? $request['type'] : 0);
         // Проверяем поддерживаем ли мы этот тип доставки
-        if($deliveryType && !in_array($deliveryType, $supportedTypes))
+        if($deliveryType && !in_array($deliveryType, $supportedTypes)) {
             $deliveryType = 0;
-
-        if(count($supportedTypes) > 1 && !$deliveryType) {
-            echo $this->renderDeliveryTypeForm();
-            return;
         }
-        if(!$deliveryType)
-            $deliveryType = reset($supportedTypes);
 
-        $this->deliveryType = $deliveryType;
+        if(empty($request['action'])) {
+            // Неизвестно какой экшен, выбираем
+            if(count($supportedTypes) > 1 && !$deliveryType) {
+                $request['action'] = 'typeForm';
+            }else{
+                if(!$deliveryType)
+                    $deliveryType = reset($supportedTypes);
+                $this->deliveryType = $deliveryType;
 
-        switch($deliveryType) {
-            case DDeliverySDK::TYPE_SELF:
+                if($deliveryType == DDeliverySDK::TYPE_SELF){
+                    $request['action'] = 'map';
+                }elseif($deliveryType == DDeliverySDK::TYPE_COURIER){
+                    $request['action'] = 'courier';
+                }else{
+                    throw new DDeliveryException('Not support delivery type');
+                }
+            }
+        }
+
+
+
+        switch($request['action']) {
+            case 'map':
                 echo $this->renderMap();
                 break;
-            case DDeliverySDK::TYPE_COURIER:
+            case 'courier':
                 echo $this->renderCourier();
                 break;
+            case 'typeForm':
+                echo $this->renderDeliveryTypeForm();
+                break;
+            case 'contactForm':
+                echo $this->renderContactForm();
+                break;
             default:
-                throw new DDeliveryException('Not support delivery type');
+                throw new DDeliveryException('Not support action');
                 break;
         }
     }
@@ -962,6 +986,30 @@ class DDeliveryUI
         return json_encode(array('html'=>$content, 'js'=>'courier'));
     }
 
+    private function renderContactForm()
+    {
+        // @todo хардкодим курьера
+        $deliveryType = DDeliverySDK::TYPE_COURIER;
+        if($deliveryType == DDeliverySDK::TYPE_COURIER){
+            $requiredFieldMask = $this->shop->getCourierRequiredFields();
+        }
+
+        $order = $this->order;
+
+        $fieldValue = $order->getToName();
+        if(!$fieldValue)
+            $order->setToName($this->shop->getClientFirstName());
+
+
+
+
+        ob_start();
+        include(__DIR__.'/../../templates/contactForm.php');
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        return json_encode(array('html'=>$content, 'js'=>''));
+    }
 
     /**
      * Возвращает дополнительную информацию по компаниям доставки
