@@ -75,6 +75,7 @@ class DDeliveryUI
         $this->order = new DDeliveryOrder( $productList );
         $this->order->amount = $this->shop->getAmount();
         $this->order->declaredPrice = $this->shop->getDeclaredPrice();
+        $this->order->paymentVariant = $this->shop->getPaymentVariant();
         
     }
     
@@ -999,37 +1000,15 @@ class DDeliveryUI
         if(!$fieldValue)
             $order->setToName($this->shop->getClientFirstName());
 
-        /** @todo Фамилия
-        $fieldValue = $order->getToLastName();
-        if(!$fieldValue)
-            $order->setToLastName($this->shop->getClientLastName());
-        */
 
-        $fieldValue = $order->getToPhone();
-        if(!$fieldValue)
-            $order->setToPhone($this->shop->getClientPhone());
 
-        $fieldValue = $order->getToStreet();
-        if(!$fieldValue){
-            $address = $this->shop->getClientAddress();
-            if(!is_array($address))
-                $address = array($address);
-            if(isset($address[0]))
-                $order->setToStreet($address[0]);
-            if(isset($address[1]))
-                $order->setToFlat($address[1]);
-            if(isset($address[2]))
-                $order->setToHouse($address[2]);
-            if(isset($address[3]))
-                $order->setToFlat($address[3]);
-        }
 
         ob_start();
         include(__DIR__.'/../../templates/contactForm.php');
         $content = ob_get_contents();
         ob_end_clean();
 
-        return json_encode(array('html'=>$content, 'js'=>'contactForm'));
+        return json_encode(array('html'=>$content, 'js'=>''));
     }
 
     /**

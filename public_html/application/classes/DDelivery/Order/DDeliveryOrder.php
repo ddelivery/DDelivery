@@ -83,6 +83,9 @@ class DDeliveryOrder
      * @var string
      */
     public $toName;
+    
+    
+    public $secondName;
     /**
      * @var string
      */
@@ -125,7 +128,9 @@ class DDeliveryOrder
      * @var DDeliveryAbstractPoint
      */
     private $point = null;
-
+	
+    
+    public $paymentVariant = null;
 
     /**
      * @param DDeliveryProduct[] $productList
