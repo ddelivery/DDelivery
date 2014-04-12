@@ -82,7 +82,7 @@ use DDelivery\Adapter\DShopAdapter;
                                 <input type="text" title="Корпус" class="small" name="address_housing" />
                             <?endif;?>
                             <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS_FLAT || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_FLAT && !$order->getToFlat() )):?>
-                                <input type="text" title="Квартира" class="small" name="address_flat"  value="<?=!$order->getToFlat()?>"/>
+                                <input type="text" title="Квартира" class="small" name="address_flat"  value="<?=$order->getToFlat()?>"/>
                             <?endif;?>
                             <div class="error-box">
                                 <i>&nbsp;</i> Вы сделали что-то неверно
