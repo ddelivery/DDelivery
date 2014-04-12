@@ -16,6 +16,7 @@
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.map.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.cityplace.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.courier.js"></script>
+    <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.contact_form.js"></script>
     <script src="//api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU" async="async" type="text/javascript"></script>
     <div id="ddelivery">
 

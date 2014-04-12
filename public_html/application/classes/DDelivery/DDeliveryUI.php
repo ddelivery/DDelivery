@@ -64,9 +64,8 @@ class DDeliveryUI
      * @param DShopAdapter $dShopAdapter
      */
     public function __construct(DShopAdapter $dShopAdapter)
-    {	
-    	
-        $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), true);
+    {
+        $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), false);
         
         $this->shop = $dShopAdapter;
         SQLite::$dbUri = $dShopAdapter->getPathByDB();
@@ -1000,15 +999,37 @@ class DDeliveryUI
         if(!$fieldValue)
             $order->setToName($this->shop->getClientFirstName());
 
+        /** @todo Фамилия
+        $fieldValue = $order->getToLastName();
+        if(!$fieldValue)
+            $order->setToLastName($this->shop->getClientLastName());
+        */
 
+        $fieldValue = $order->getToPhone();
+        if(!$fieldValue)
+            $order->setToPhone($this->shop->getClientPhone());
 
+        $fieldValue = $order->getToStreet();
+        if(!$fieldValue){
+            $address = $this->shop->getClientAddress();
+            if(!is_array($address))
+                $address = array($address);
+            if(isset($address[0]))
+                $order->setToStreet($address[0]);
+            if(isset($address[1]))
+                $order->setToFlat($address[1]);
+            if(isset($address[2]))
+                $order->setToHouse($address[2]);
+            if(isset($address[3]))
+                $order->setToFlat($address[3]);
+        }
 
         ob_start();
         include(__DIR__.'/../../templates/contactForm.php');
         $content = ob_get_contents();
         ob_end_clean();
 
-        return json_encode(array('html'=>$content, 'js'=>''));
+        return json_encode(array('html'=>$content, 'js'=>'contactForm'));
     }
 
     /**

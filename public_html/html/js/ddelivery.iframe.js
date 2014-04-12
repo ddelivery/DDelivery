@@ -57,6 +57,9 @@ var DDeliveryIframe = (function(){
                         case 'map':
                             Map.init(data);
                             break;
+                        case 'contactForm':
+                            ContactForm.init();
+                            break;
                     }
                 }
             }

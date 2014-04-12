@@ -131,6 +131,14 @@ abstract class DShopAdapter
     }
 
     /**
+     * Верни массив Адрес, Дом, Корпус, Квартира. Если не можешь можно вернуть все в одном поле и настроить через get*RequiredFields
+     * @return string[]
+     */
+    public function getClientAddress() {
+        return array();
+    }
+
+    /**
      * Возвращает путь до файла базы данных, положите его в место не доступное по прямой ссылке
      * @return string
      */
