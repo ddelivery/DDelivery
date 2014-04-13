@@ -158,7 +158,7 @@ class DDeliverySDK {
     			'cities' => $cities,
     			'companies' => $companies
     	);
-    	return $this->requestProvider->request('geoip', $params, 'get', 'node');
+    	return $this->requestProvider->request('geoip', $params, 'get', $this->server . 'node');
     }
     
     /**
@@ -173,7 +173,7 @@ class DDeliverySDK {
             '_action' => 'geoip',
             'ip' => $ip
         );
-    	return $this->requestProvider->request('geoip', $params, 'get', 'node');
+    	return $this->requestProvider->request('geoip', $params, 'get', $this->server . 'node');
     }
     
     /**
@@ -289,7 +289,7 @@ class DDeliverySDK {
     	);
     	
     	return $this->requestProvider->request('autocomplete', $params,
-    											'get', 'node') ;
+    											'get', $this->server . 'node') ;
     }
 
 

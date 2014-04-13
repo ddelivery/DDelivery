@@ -523,7 +523,7 @@ class DDeliveryUI
     
     /**
      *
-     * Сохранить в БД заказ при отправке на сервер DDelivery
+     * Сохранить в локальную БД заказ при отправке на сервер DDelivery
      * 
      * @param int $ddeliveryID - id заявки на сервере ddelivery
      *
@@ -539,38 +539,39 @@ class DDeliveryUI
     	$dimensionSide3 = $this->order->getDimensionSide3();
     	$goods_description = $this->order->getGoodsDescription();
     	$weight = $this->order->getWeight();
+    	
+    	$to_city = $this->order->city;
+    	$delivery_company = $point->getDeliveryInfo()->get('delivery_company');
+    	
     	$confirmed = $this->order->getConfirmed();
     	$to_name = $this->order->getToName();
     	$to_phone = $this->order->getToPhone();
     	$declaredPrice = $this->order->declaredPrice;
     	$orderPrice = $point->getDeliveryInfo()->get('total_price');
-    	$paymentPrice = $this->shop->getPaymentPrice($order, $orderPrice);
-    	
+    	$paymentPrice = $this->shop->getPaymentPrice($this->order, $orderPrice);
     	if( $this->order->type == 1 )
     	 {
-    	 	$pointID = $point->get('_id');
-    	 	$id = $orderDB->saveFullSelfOrder( $this->order->localId, $pointID, 
+    	    $pointID = $point->get('_id');
+    	    $id = $orderDB->saveFullSelfOrder( $this->order->localId, $pointID, 
     	 			                           $dimensionSide1, $dimensionSide2, $dimensionSide3, 
     	 			                           $confirmed, $weight, $to_name, $to_phone, 
     	 			                           $goods_description, $declaredPrice, 
-    	 			                           $paymentPrice, $ddeliveryID );
+    	 			                           $paymentPrice, $ddeliveryID, $to_city, $delivery_company);
     	 }
     	 else if( $this->order->type == 2 )
     	 {
-    	 	$to_city = $this->order->city;
-    	 	$delivery_company = $point->getDeliveryInfo()->get('delivery_company');
-    	 	$to_street = $this->order->toStreet;
-    	 	$to_house = $this->order->toHouse;
-    	 	$to_flat = $this->order->toFlat;
-    	 	$shop_refnum = $this->order->shopRefnum;
-    	 	$id = $orderDB->saveFullCourierOrder( $this->order->localId, $to_city, $delivery_company, 
+    	    $to_street = $this->order->toStreet;
+    	    $to_house = $this->order->toHouse;
+    	    $to_flat = $this->order->toFlat;
+    	    $shop_refnum = $this->order->shopRefnum;
+    	    $id = $orderDB->saveFullCourierOrder( $this->order->localId, $to_city, $delivery_company, 
     	 			                              $dimensionSide1, $dimensionSide2, $dimensionSide3, 
     	 			                              $shop_refnum, $confirmed, $weight, $to_name, 
     	 			                              $to_phone, $goods_description, $declaredPrice, 
     	 			                              $paymentPrice, $to_street, $to_house, $to_flat, 
     	 			                              $ddeliveryID );
     	 }
-
+         
     	 return $id;
     	 	
     }
@@ -609,28 +610,25 @@ class DDeliveryUI
     	$declaredPrice = $this->order->declaredPrice;
     	
     	$orderPrice = $point->getDeliveryInfo()->get('total_price');
-    	$paymentPrice = $this->shop->getPaymentPrice($order, $orderPrice);
+    	$paymentPrice = $this->shop->getPaymentPrice($this->order, $orderPrice);
     	
     	$to_street = $this->order->toStreet;
     	$to_house = $this->order->toHouse;
     	$to_flat = $this->order->toFlat;
     	$shop_refnum = $this->order->shopRefnum;
     	
-    	if( $this->shop->sendOrderToDDeliveryServer( $this->order ))
-    	{
-    	    $response = $this->sdk->addCourierOrder( $to_city, $delivery_company, 
-                                                     $dimensionSide1, $dimensionSide2, 
-    			                                     $dimensionSide3, $shop_refnum, $confirmed, 
-    			                                     $weight, $to_name, $to_phone, $goods_description, 
-    			                                     $declaredPrice, $paymentPrice, $to_street, 
-                                                     $to_house, $to_flat );
+    	$response = $this->sdk->addCourierOrder( $to_city, $delivery_company, 
+                                                 $dimensionSide1, $dimensionSide2, 
+    			                                 $dimensionSide3, $shop_refnum, $confirmed, 
+    			                                 $weight, $to_name, $to_phone, $goods_description, 
+    			                                 $declaredPrice, $paymentPrice, $to_street, 
+                                                 $to_house, $to_flat );
     	
     	    if( !count ( $response->response ))
     	    {
     		    throw new DDeliveryException( implode(',', $response->errorMessage ));
     		    return 0;
     	    }
-    	}
     	 
     	return $response->response['order'];
     }
@@ -670,21 +668,24 @@ class DDeliveryUI
     	$orderPrice = $point->getDeliveryInfo()->get('total_price');
     	$paymentPrice = $this->shop->getPaymentPrice($order, $orderPrice);
     	
-    	if( $this->shop->sendOrderToDDeliveryServer( $this->order ))
-    	{
-    		$response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
+    	$response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
     				                              $dimensionSide3, $confirmed, $weight, $to_name,
     				                              $to_phone, $goods_description, $declaredPrice,
     				                              $paymentPrice );
-    		if( !count ( $response->response ))
-    		{
+    	if( ! $response->success )
+    	{
     			throw new DDeliveryException( implode(',', $response->errorMessage ));
-    		}
     	}
     	
     	return $response->response['order'];
     }
 
+    public function getAllOrders()
+    {
+    	$orderDB = new DataBase\Order();
+    	return $orderDB->selectAll();
+    }
+    
     /**
      * Получить компании самовывоза  для города с их полным описанием, и координатами их филиалов
      *
@@ -749,34 +750,90 @@ class DDeliveryUI
     		}
     	}
     	
+    	
     	return $points;
     }
+    /**
+     * Проверяем правильность Email
+     * 
+     * @param string $email
+     * 
+     * @return boolean
+     */
+    public function isValidEmail( $email )
+    {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL))
+        {   
+        	return true;
+        }
+        return false;
+    }
     
+    /**
+     * Проверяем правильность телефона
+     *
+     * @param string $phone
+     *
+     * @return boolean
+     */
+    public function isValidPhone( $phone )
+    {
+    	if( preg_match('/^[0-9]{10}$/', $phone) )
+    	{
+    		return true;
+    	}
+    	return false;
+    }
+    
+    /**
+     * Назначить точку доставки
+     *
+     */
     public function setOrderPoint( $point )
     {   
     	$this->order->setPoint( $point );
     }
     
+    /**
+     * Назначить номер телефона доставки
+     *
+     */
     public function setOrderToPhone( $phone )
     {
     	$this->order->toPhone = trim( strip_tags( $phone ) );
     }
     
+    /**
+     * Назначить ФИО доставки
+     *
+     */
     public function setOrderToName( $name )
     {
     	$this->order->toName = trim( strip_tags( $name ) );
     }
     
+    /**
+     * Назначить квартиру доставки
+     *
+     */
     public function setOrderToFlat( $flat )
     {
     	$this->order->toFlat = trim( strip_tags( $flat ) );
     }
     
+    /**
+     * Назначить дом для доставки
+     *
+     */
     public function setOrderToHouse( $house )
     {
     	$this->order->toHouse = trim( strip_tags( $house ) );
     }
     
+    /**
+     * Назначить email для доставки
+     *
+     */
     public function setOrderToEmail( $email )
     {
     	$this->order->setToEmail($email );

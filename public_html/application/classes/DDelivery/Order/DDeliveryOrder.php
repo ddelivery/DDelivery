@@ -35,7 +35,7 @@ class DDeliveryOrder
     /**
      * @var bool
      */
-    public $confirmed = false;
+    public $confirmed = 0;
 
     /**
      * @var int
@@ -310,7 +310,7 @@ class DDeliveryOrder
      */
     public function getConfirmed()
     {
-    	return $this->weight;
+    	return $this->confirmed;
     }
     
     public function setToPhone( $phone )

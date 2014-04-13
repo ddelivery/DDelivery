@@ -10,9 +10,7 @@
  	 <mkdir dir="/var/www/ddelivery"></mkdir>
  
      <copy todir="/var/www/ddelivery">
- 
          <fileset dir="public_html/"></fileset>
- 
      </copy>
  	<chmod dir="/var/www/ddelivery/application/data/" perm="777"/>
  </target>

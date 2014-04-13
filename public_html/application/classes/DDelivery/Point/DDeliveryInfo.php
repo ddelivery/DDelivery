@@ -29,15 +29,26 @@ namespace DDelivery\Point;
 class DDeliveryInfo
 {   
 	
-	
+	/**
+     * Массив с параметрами объекта
+     * @var array
+     */
 	private $params = array();
 	
+	/**
+	 * Разрешенные праметры
+	 * @var array
+	 */
 	private  $allowParams = array('delivery_company', 'delivery_company_name', 
 			'pickup_price', 'delivery_price', 'delivery_price_fee',
 			'declared_price_fee', 'delivery_time_min', 'delivery_time_max', 
 			'delivery_time_avg', 'return_price', 'return_client_price', 'return_partial_price', 
 			'total_price');
 	
+	/**
+	 * 
+	 * @param array $initParams - массив со значениями для инициализации
+	 */
 	public function __construct( $initParams = array() )
 	{
 		if(is_array($initParams))
