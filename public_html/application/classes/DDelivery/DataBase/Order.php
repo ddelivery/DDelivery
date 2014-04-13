@@ -1,9 +1,18 @@
 <?php
+/**
+ * @package    DDelivery.DataBase
+ *
+ * @author  mrozk 
+ */
 
 namespace DDelivery\DataBase;
 
 use PDO;
 
+/**
+ * Class Order
+ * @package DDelivery\DataBase
+ */
 class Order {
 	
 	/**
@@ -24,12 +33,13 @@ class Order {
                           id INT PRIMARY KEY,
 					      type INT,
 					      to_city INT,
+				          status INT,
 					      order_id INT,
 				          date DATETIME,
 				          ddeliveryorder_id INT,
 				          point_id INT,  
 					      delivery_company INT,
-				          shop_refnum VARCHAR(50),
+				          shop_refnum VARCHAR(255),
 					      dimension_side1 INT,
 				 	      dimension_side2 INT,
 					      dimension_side3 INT,
@@ -37,13 +47,13 @@ class Order {
 					      weight REAL,
 					      declared_price REAL,
 					      payment_price REAL,
-					      to_name VARCHAR(100),
+					      to_name VARCHAR(255),
 					      to_phone VARCHAR(10),
 					      goods_description VARCHAR(255),
-				          to_street  VARCHAR(100),    
-				          to_house VARCHAR(50),
-				          to_flat VARCHAR(25),
-				          to_email VARCHAR(50),
+				          to_street  VARCHAR(255),    
+				          to_house VARCHAR(255),
+				          to_flat VARCHAR(255),
+				          to_email VARCHAR(255),
                           serilize TEXT
                         )");
 	}

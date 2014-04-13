@@ -3,22 +3,33 @@
 *
 * @package    DDelivery.Point
 *
-* @copyright  Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
-*
-* @license    GNU General Public License version 2 or later; see LICENSE.txt
-*
-* @author  mrozk <mrozk2012@gmail.com>
 */
 namespace DDelivery\Point;
 
 
 /**
  * DDeliveryInfo - Информация по доставке на точку
+ * 
+ * "delivery_company": 1, - ID компании доставки
+ * "delivery_company_name": "PickPoint", - Буквенное название компании доставки
+ * "pickup_price": 0, - цена забора
+ * "delivery_price": 254, цена доставки
+ * "delivery_price_fee": 22.86, - наценка DD
+ * "declared_price_fee": 0, - размер страховки
+ * "delivery_time_min": 2, - минимальное время доставки
+ * "delivery_time_max": 3, - максимальное время доставки
+ * "delivery_time_avg": 3, - средняя между максимальный и минимальным временем
+ * "return_price": 118, - цена возврата
+ * "return_client_price": 0, - цена клиентского возврата
+ * "return_partial_price": 236, - цена частичного возврата
+ * "total_price": 276.86 – Суммарная цена доставки
  *
- * @package  DDelivery
+ * @package  DDelivery.Point
  */
 class DDeliveryInfo
-{
+{   
+	
+	
 	private $params = array();
 	
 	private  $allowParams = array('delivery_company', 'delivery_company_name', 

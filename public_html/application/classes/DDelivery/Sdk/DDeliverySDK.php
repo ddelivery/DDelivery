@@ -3,11 +3,7 @@
 *
 * @package    DDelivery.Sdk
 *
-* @copyright  Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
-*
-* @license    GNU General Public License version 2 or later; see LICENSE.txt
-*
-* @author  mrozk <mrozk2012@gmail.com>
+* @author  mrozk 
 */
 		 
 namespace DDelivery\Sdk;
@@ -15,7 +11,7 @@ namespace DDelivery\Sdk;
 /**
  * DDelivery Sdk - API для работы с сервером DDelivery
  *
- * @package     DDelivery
+ * @package     DDelivery\Sdk
  */
 class DDeliverySDK {
 

@@ -3,11 +3,7 @@
  *
  * @package    DDelivery.Adapter
  *
- * @copyright  Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- *
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
- *
- * @author  mrozk <mrozk2012@gmail.com>
+ * @author  mrozk 
  */
 
 namespace DDelivery\Adapter;
@@ -238,14 +234,16 @@ abstract class DShopAdapter
     }
     /**
      * Возвращает параметр payment_price для создания заказа
+     * Параметр payment_price необходим для добавления заявки на заказ
+     * По этому параметру в доках интегратору будет написан раздел
      * 
      * @param \DDelivery\Order\DDeliveryOrder $order
-     * @param float
+     * @param float $orderPrice
      * 
      * @return float
      */
     public function getPaymentPrice( $order, $orderPrice ) {
-    	return $this->getAmount() + $orderPrice;
+    	return 0;
     }
     
     /**
