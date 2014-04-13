@@ -204,16 +204,16 @@ abstract class DShopAdapter
     }
     
     /**
-     * Если есть необходимость перед началом поиска точек
-     * вернуть свой набор точек
-     *
+     * Если есть необходимость искать точки на сервере 
+     * ddelivery 
+     * 
      * @param \DDelivery\Order\DDeliveryOrder $order
-     *
-     * @return array DDeliveryAbstractPoint[]
+     * 
+     * @return boolean
      */
     public function preGoToFindPoints( $order )
     {
-        return array('go_to_server' => true, 'points' => array());        	
+        return true;        	
     }
     
     /**

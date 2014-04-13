@@ -365,38 +365,33 @@ class DDeliveryUI
      * @return DDeliveryPointCourier[]
      */
     public function getCourierPointsForCity( $cityID )
-    {
-    	$response = $this->sdk->calculatorCourier( $cityID, $this->order->getDimensionSide1(),
-                                                   $this->order->getDimensionSide2(), $this->order->getDimensionSide3(),
-                                                   $this->order->getWeight(), 0 );
-    	$this->order->city = $cityID;
-    	
-    	
-    	if( $response->success )
-        {
-    		$points = array();
-    		if( count( $response->response ) )
-    		{
-    			foreach ($response->response as $p)
-    			{
-    				$point = new \DDelivery\Point\DDeliveryPointCourier();
-    				$deliveryInfo = new \DDelivery\Point\DDeliveryInfo( $p );
-    				$point->setDeliveryInfo($deliveryInfo);
-    				$point->pointID = $deliveryInfo->get('delivery_company');
-    				$points[] = $point;
-    			}
-    		}
-    		
-    		$points = $this->shop->filterPointsCourier( $points, $this->order, $cityID );
-    		
-    		return $points;
-        }
-        else
-        {
-        	return 0;
-        }
-    	
-    	
+    {   
+    	// Есть ли необходимость искать точки на сервере ddelivery
+    	if( $this->shop->preGoToFindPoints( $this->order ))
+    	{
+    	    $response = $this->sdk->calculatorCourier( $cityID, $this->order->getDimensionSide1(),
+                                                       $this->order->getDimensionSide2(), $this->order->getDimensionSide3(),
+                                                       $this->order->getWeight(), 0 );
+    	    $this->order->city = $cityID;
+    	    $points = array();
+    	    if( $response->success )
+            {
+    		    
+    		    if( count( $response->response ) )
+    		    {
+    			    foreach ($response->response as $p)
+    			    {
+    				    $point = new \DDelivery\Point\DDeliveryPointCourier();
+    				    $deliveryInfo = new \DDelivery\Point\DDeliveryInfo( $p );
+    				    $point->setDeliveryInfo($deliveryInfo);
+    				    $point->pointID = $deliveryInfo->get('delivery_company');
+    				    $points[] = $point;
+    			    }
+    		    }
+            }
+    	}
+    	$points = $this->shop->filterPointsCourier( $points, $this->order, $cityID );
+    	return $points;
     }
     
     /**
@@ -642,27 +637,29 @@ class DDeliveryUI
      */
     public function getSelfPoints( $cityID )
     {
-    	
-    	$points = $this->getSelfPointsForCityAndCompany(null, $cityID);
-    	
-    	$companyInfo = $this->getSelfDeliveryInfoForCity( $cityID );
-    	
-    	$deliveryInfo = $this->_getOrderedDeliveryInfo( $companyInfo );
-    	
-    	if( count( $points ) )
+    	// Есть ли необходимость искать точки на сервере ddelivery
+    	if( $this->shop->preGoToFindPoints( $this->order ))
     	{
-    		foreach ( $points as $item )
-    		{
-    			$companyID = $item->get('company_id');
+    	    $points = $this->getSelfPointsForCityAndCompany(null, $cityID);
+    	
+    	    $companyInfo = $this->getSelfDeliveryInfoForCity( $cityID );
+    	
+    	    $deliveryInfo = $this->_getOrderedDeliveryInfo( $companyInfo );
+    	
+    	    if( count( $points ) )
+    	    {
+    		    foreach ( $points as $item )
+    		    {
+    			    $companyID = $item->get('company_id');
     			
-    			if( array_key_exists( $companyID, $deliveryInfo ) )
-    			{
-    				$item->setDeliveryInfo( $deliveryInfo[$companyID] );
-    				$item->pointID = $item->get('_id');
-    			}
-    		}
+    			    if( array_key_exists( $companyID, $deliveryInfo ) )
+    			    {
+    				    $item->setDeliveryInfo( $deliveryInfo[$companyID] );
+    				    $item->pointID = $item->get('_id');
+    			    }
+    		    }
+    	    }
     	}
-		
     	$points = $this->shop->filterPointsSelf( $points, $this->order, $cityID );
     	
     	return $points;
