@@ -17,8 +17,8 @@ class DShopAdapterTest extends DShopAdapter
 		
 		return '/home/mrozk/git/ddelivery_front_module/public_html/tests/ddelivery.db';
 	}
-	
-    public function _getProductsFromCart()
+
+    protected function _getProductsFromCart()
     {
     	$products = array();
     	

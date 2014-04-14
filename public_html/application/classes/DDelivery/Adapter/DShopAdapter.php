@@ -85,13 +85,13 @@ abstract class DShopAdapter
     private $productsFromCart = null;
 
     /**
-     * Возвращает товары находящиеся в корзине пользователя
+     * Возвращает товары находящиеся в корзине пользователя, будет вызван один раз, затем закеширован
      * @return DDeliveryProduct[]
      */
-    public abstract function _getProductsFromCart();
+    protected abstract function _getProductsFromCart();
 
     /**
-     * Возвращает товары находящиеся в корзине пользователя
+     * Возвращает товары находящиеся в корзине пользователя, реализует кеширование getProductsFromCart
      * @return DDeliveryProduct[]
      */
     public final function getProductsFromCart()
