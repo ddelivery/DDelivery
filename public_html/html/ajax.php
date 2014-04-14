@@ -22,7 +22,7 @@ class ShopAdapter extends DShopAdapter
      * Возвращает товары находящиеся в корзине пользователя
      * @return \DDelivery\Order\DDeliveryProduct[]
      */
-    public function getProductsFromCart()
+    public function _getProductsFromCart()
     {
         $products = array();
         $products[] = new DDeliveryProduct(1, 20, 13, 25, 0.5, 1000, 1, 'Веселый клоун');

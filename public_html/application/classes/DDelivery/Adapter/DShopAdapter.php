@@ -79,10 +79,28 @@ abstract class DShopAdapter
     const FIELD_REQUIRED_ADDRESS_FLAT = 8192;
 
     /**
+     * Кеш объекта
+     * @var DDeliveryProduct[]
+     */
+    private $productsFromCart = null;
+
+    /**
      * Возвращает товары находящиеся в корзине пользователя
      * @return DDeliveryProduct[]
      */
-    public abstract function getProductsFromCart();
+    public abstract function _getProductsFromCart();
+
+    /**
+     * Возвращает товары находящиеся в корзине пользователя
+     * @return DDeliveryProduct[]
+     */
+    public final function getProductsFromCart()
+    {
+        if(!$this->productsFromCart) {
+            $this->productsFromCart = $this->_getProductsFromCart();
+        }
+        return $this->productsFromCart;
+    }
     
     /**
      * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
@@ -101,6 +119,15 @@ abstract class DShopAdapter
      * @return string
      */
     public abstract function getPhpScriptURL();
+
+    /**
+     * Верните true если нужно использовать тестовый(stage) сервер
+     * @return bool
+     */
+    public function isTestMode()
+    {
+        return true;
+    }
 
     /**
      * Если вы знаете имя покупателя, сделайте чтобы оно вернулось в этом методе
@@ -283,8 +310,8 @@ abstract class DShopAdapter
     public function getDeclaredPrice() {
     	/*
         $declaredPrice = 0;
-        foreach($productList as $product) {
-            $declaredPrice = $product->getPrice();
+        foreach($this->getProductsFromCart() as $product) {
+            $declaredPrice += $product->getPrice() * $product->getQuantity();
         }
         */
     	$declaredPrice = $this->getAmount();

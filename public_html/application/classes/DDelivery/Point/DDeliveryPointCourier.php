@@ -9,24 +9,23 @@
 namespace DDelivery\Point;
 
 /**
- * DDeliveryPointCourier - компания 
- * для курьерской доставки
+ * DDeliveryPointCourier - компания для курьерской доставки
  * 
  * @package  DDelivery.Point
  *
- * @property int $delivery_company
- * @property string $delivery_company_name
- * @property int $pickup_price
- * @property int $delivery_price_fee
- * @property int $declared_price_fee
- * @property int $delivery_time_min
- * @property int $delivery_time_max
+ * @property int $delivery_company ID компании доставки
+ * @property string $delivery_company_name Буквенное название компании доставки
+ * @property int $pickup_price сколько стоит забрать товар
+ * @property int $delivery_price_fee наценка DD
+ * @property int $declared_price_fee размер страховки
+ * @property int $delivery_time_min минимальное время доставки
+ * @property int $delivery_time_max максимальное время доставки
  * @property int $delivery_time_avg
  * @property int $return_price
  * @property int $return_client_price
  * @property int $return_partial_price
  * @property int $total_price
- * @property int $delivery_price
+ * @property int $delivery_price цена доставки
 
  */
 class DDeliveryPointCourier extends DDeliveryAbstractPoint {
@@ -38,6 +37,11 @@ class DDeliveryPointCourier extends DDeliveryAbstractPoint {
     function __get($name)
     {
         return $this->deliveryInfo->get($name);
+    }
+
+    function __set($name, $value)
+    {
+        $this->deliveryInfo->set($name, $value);
     }
 
 }

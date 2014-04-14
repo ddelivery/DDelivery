@@ -61,9 +61,10 @@ class DDeliveryUI
      */
     public function __construct(DShopAdapter $dShopAdapter)
     {
-        $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), false);
-
         $this->shop = $dShopAdapter;
+
+        $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), $this->shop->isTestMode());
+
         SQLite::$dbUri = $dShopAdapter->getPathByDB();
 
         // Формируем объект заказа

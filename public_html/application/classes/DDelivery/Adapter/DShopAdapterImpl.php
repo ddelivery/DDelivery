@@ -17,7 +17,7 @@ class DShopAdapterImpl extends DShopAdapter
 		return $_SERVER['DOCUMENT_ROOT'] . '/ddelivery/application/data/ddelivery.db';
 	}
 	
-    public function getProductsFromCart()
+    public function _getProductsFromCart()
     {
     	$products = array();
     	
