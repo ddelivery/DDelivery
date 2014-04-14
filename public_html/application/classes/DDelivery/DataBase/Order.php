@@ -291,7 +291,7 @@ class Order {
 	
 	public function selectSerializeByID( $id )
 	{
-		$sth = $this->pdo->prepare('SELECT serilize, point FROM orders WHERE id = :id');
+		$sth = $this->pdo->prepare('SELECT serilize FROM orders WHERE id = :id');
 		$sth->bindParam( ':id', $id );
 		$sth->execute();
 		$data = $sth->fetchAll(PDO::FETCH_COLUMN);

@@ -306,18 +306,18 @@ class DDeliveryUI
      *
      * @return int;
      */
-    public function saveIntermediateOrder( )
+    public function saveIntermediateOrder()
     {
     	$orderDB = new \DDelivery\DataBase\Order();
 
     	$packOrder = $this->order->packOrder();
         $id = $this->order->localId;
+        echo $id;
     	if($this->order->localId) {
-    	    $id = $orderDB->insertOrder($packOrder);
+    	    $orderDB->updateOrder( $id, $packOrder );
     	} else {
-            $orderDB->updateOrder( $id, $packOrder );
+    		$id = $orderDB->insertOrder($packOrder);
     	}
-
 	    return $id;
     }
 

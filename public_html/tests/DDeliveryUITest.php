@@ -1,4 +1,5 @@
 <?php
+// setShopOrderId
 
 class DDeliveryUITest extends PHPUnit_Framework_TestCase
 {
@@ -12,9 +13,6 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 	
 	public function testSaveIntermediateOrder()
 	{	
-		
-		$id = $this->fixture->saveIntermediateOrder( null);
-		$this->assertGreaterThan( 0, $id );
 		
 		$order = $this->fixture->getOrder();
 		$selfpoint = $this->fixture->getSelfPoints(151185);
@@ -30,13 +28,16 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 		$order->toFlat = '42';
 		$order->toEmail = '';
 		
-		$id = $this->fixture->saveIntermediateOrder(null);
+		$id = $this->fixture->saveIntermediateOrder();
+		$data = $this->fixture->getAllOrders();
+		
 		$this->assertGreaterThan( 0, $id );
+		$this->assertGreaterThan( 0, count($data) );
 	}
 	
-	public function testSaveIntermediateOrder()
+	public function testSelectAllOrders()
 	{
-		$this->fixture->initIntermediateOrder(1);
+	    
 	}
 	
 	public function getCourierPointsForCity()
@@ -59,18 +60,19 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 	{
 	
 	}
+	/*
 	public function testGetSelfPointsForCityAndCompany()
 	{
 		$result = $this->fixture->getSelfPointsForCityAndCompany('4,6', '4,25');
 		$this->assertEquals( $result[0]->get('_id'), 2651 );
 	}
-	
+	*/
 	public function testGetSelfPoints()
 	{
 		$selfpoints = $this->fixture->getSelfPoints( 151185 );
 		$this->assertGreaterThan( 0, count($selfpoints) );
 	}
-	
+	/*
 	public function testCreateSelfOrder()
 	{
 		$order = $this->fixture->getOrder();
@@ -84,6 +86,7 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 		
 		$this->assertGreaterThan( 0, $order_id );
 	}
+	*/
 	public function testCreateCourierOrder()
 	{
 		$order = $this->fixture->getOrder();

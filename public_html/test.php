@@ -100,9 +100,29 @@ $result = $fixture->getSelfPointsForCityAndCompany('4,6', '4,25');
 print_r($result);
 */
 
+
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
+$order = $DDeliveryUI->getOrder();
 
+$selfpoint = $DDeliveryUI->getCourierPointsForCity(151185);
+
+$order->city = 151185;
+$order->type = 2;
+$order->setPoint($selfpoint[0]);
+$order->toName = 'Дима Грушин';
+$order->toPhone = '9999999999';
+$order->shopRefnum = 'xxx';
+$order->toStreet = 'Вознесенская';
+$order->toHouse = '1а';
+$order->toFlat = '42';
+$order->toEmail = '';
+
+$DDeliveryUI->saveIntermediateOrder();
+print_r( $DDeliveryUI->getAllOrders() );
+$DDeliveryUI->initIntermediateOrder(1);
+//print_r($order);
+/*
 $selfpoint = $DDeliveryUI->getCourierPointsForCity(151185);
 
 $order = $DDeliveryUI->getOrder();
@@ -118,12 +138,19 @@ $order->toStreet = 'Вознесенская';
 $order->toHouse = '1а';
 $order->toFlat = '42';
 $order->toEmail = '';
-
+*/
 //print_r($order);
-
+/*
 $DDeliveryUI->saveFullOrder( $ddeliveryID = 5 );
 $data = $DDeliveryUI->getAllOrders();
-print_r( $data );
+//print_r( $data );
+
+$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
+print_r( $DDeliverySDK->getCityByIp('188.162.64.72') );
+*/
+
+
+
 /*
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );

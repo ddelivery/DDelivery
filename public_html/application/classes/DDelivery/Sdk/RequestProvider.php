@@ -47,7 +47,7 @@ class RequestProvider
 	private $serverUrl = array('stage' => 'http://stage.ddelivery.ru/api/v1/',
 	                           'dev' => 'http://cabinet.ddelivery.ru/api/v1/',
 	                           'devnode' => 'http://dev.ddelivery.ru/daemon/daemon.js',
-			                   'stagenode' => 'http://dev.ddelivery.ru/daemon/daemon.js'
+			                   'stagenode' => 'http://stage.ddelivery.ru/daemon/daemon.js'
 	                           );
 	/**
 	 * Количество проделанных запросов на сервер ddelivery
@@ -103,7 +103,7 @@ class RequestProvider
 		
 	    $urlSuffix = $this->_setRequest($server, $params);
 
-	    $this->_setSpecificOptionsToRequest($method, $action, $server, $urlSuffix);
+	    $this->_setSpecificOptionsToRequest( $method, $action, $server, $urlSuffix );
 		
 	    $result = curl_exec($this->curl[$server]);
 	   
@@ -165,7 +165,7 @@ class RequestProvider
 			
 			curl_setopt($this->curl[$server], CURLOPT_URL, $url);
 		}
-		else if( $method == 'get' && $server == 'node' )
+		else if( $method == 'get' && ( $server == 'devnode' || $server == 'stagenode')  ) 
 		{
 			
 			$url = $this->serverUrl[$server] . '?';
@@ -180,6 +180,7 @@ class RequestProvider
 			curl_setopt($this->curl[$server], CURLOPT_POST, true);
 			curl_setopt($this->curl[$server], CURLOPT_POSTFIELDS, $urlSuffix);
 		}
+		
 	}
     
 }
