@@ -312,7 +312,6 @@ class DDeliveryUI
 
     	$packOrder = $this->order->packOrder();
         $id = $this->order->localId;
-        echo $id;
     	if($this->order->localId) {
     	    $orderDB->updateOrder( $id, $packOrder );
     	} else {
