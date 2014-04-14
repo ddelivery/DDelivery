@@ -678,7 +678,7 @@ class DDeliveryUI
     	$declaredPrice = $this->order->declaredPrice;
 
     	$orderPrice = $point->getDeliveryInfo()->get('total_price');
-    	$paymentPrice = $this->shop->getPaymentPrice($order, $orderPrice);
+    	$paymentPrice = $this->shop->getPaymentPrice($this->order, $orderPrice);
 
     	$response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
     				                              $dimensionSide3, $confirmed, $weight, $to_name,

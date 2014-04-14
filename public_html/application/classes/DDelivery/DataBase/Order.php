@@ -60,15 +60,18 @@ class Order {
                           serilize TEXT
                         )");
 	}
-	
-	
-	/**
-	 * Проверяем на существование запись
-	 * 
-	 * @param int $id 
-	 */
+
+
+    /**
+     * Проверяем на существование запись
+     *
+     * @param int $id
+     * @return int
+     */
 	public function isRecordExist( $id )
 	{
+        if(!$id)
+            return 0;
 		$sth = $this->pdo->prepare('SELECT id FROM orders WHERE id = :id');
 		$sth->bindParam( ':id', $id );
 		$sth->execute();

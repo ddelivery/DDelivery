@@ -40,6 +40,19 @@ abstract class PluginFilters extends DShopAdapter
      */
     const INTERVAL_RULES_MARKET_AMOUNT = 4;
 
+    /**
+     * Оплата не важно где
+     */
+    const PAYMENT_NOT_CARE = 0;
+    /**
+     * Способ оплаты, только предоплата
+     */
+    const PAYMENT_PREPAYMENT = 1;
+    /**
+     * Оплата на месте курьеру или в точке самовывоза
+     */
+    const PAYMENT_POST_PAYMENT = 2;
+
 
     /**
      * @todo все исправить
@@ -68,6 +81,20 @@ abstract class PluginFilters extends DShopAdapter
         return $ddeliveryPointCourier;
     }
 
+    public function getPaymentPrice()
+    {
+        $filterByPayment = $this->filterPointByPaymentTypeCourier();
+        if($filterByPayment == self::PAYMENT_POST_PAYMENT){
+            return $this->getAmount();
+        }
+        //if(!$filterByPayment || $filterByPayment == self::PAYMENT_PREPAYMENT){
+        return 0;
+    }
+
+    /**
+     * @param $price
+     * @return bool|int
+     */
     private function preDisplayPointCalc($price)
     {
         $intervals = self::getIntervalsByPoint();
@@ -105,18 +132,81 @@ abstract class PluginFilters extends DShopAdapter
     }
 
     /**
+     * Если необходимо фильтрует пункты самовывоза и добавляет новые
+     *
      * @param \DDelivery\Point\DDeliveryPointSelf[] $courierPoints
      * @param DDeliveryOrder $order
      * @return \DDelivery\Point\DDeliveryPointSelf[]
      */
     public function filterPointsSelf($courierPoints, DDeliveryOrder $order)
     {
-        foreach($courierPoints as $courierPoint) {
-            //if($courierPoint->)
+        $filterCompany = $this->filterCompanyPointSelf();
+        if(!is_array($filterCompany) || empty($filterCompany)) {
+            return $courierPoints;
+        }
+
+        foreach($courierPoints as $key => $courierPoint) {
+            // Удаляем те компании которые есть в фильтре
+            if(in_array($courierPoint->company_id, $filterCompany)) {
+                unset($courierPoints[$key]);
+            }
         }
 
         return $courierPoints;
     }
+
+
+    /**
+     * Если необходимо фильтрует курьеров и добавляет новых
+     * Кстати здесь можно отсортировать еще точки
+     *
+     * @param \DDelivery\Point\DDeliveryPointCourier[] $courierPoints
+     * @param DDeliveryOrder $order
+     * @return \DDelivery\Point\DDeliveryPointCourier[]
+     */
+    public function filterPointsCourier($courierPoints, DDeliveryOrder $order)
+    {
+        $filterCompany = $this->filterCompanyPointCourier();
+        if(!is_array($filterCompany) || empty($filterCompany)) {
+            return $courierPoints;
+        }
+
+        foreach($courierPoints as $key => $courierPoint) {
+            // Удаляем те компании которые есть в фильтре
+            if(in_array($courierPoint->delivery_company, $filterCompany)) {
+                unset($courierPoints[$key]);
+            }
+        }
+
+
+        return $courierPoints;
+    }
+
+    /**
+     * Должен вернуть те компании которые НЕ показываются в курьерке
+     * см. список компаний в DDeliveryUI::getCompanySubInfo()
+     * @return int[]
+     */
+    abstract public function filterCompanyPointCourier();
+
+    /**
+     * Должен вернуть те компании которые НЕ показываются в самовывозе
+     * см. список компаний в DDeliveryUI::getCompanySubInfo()
+     * @return int[]
+     */
+    abstract public function filterCompanyPointSelf();
+
+    /**
+     * Возвращаем способ оплаты константой PluginFilters::PAYMENT_, предоплата или оплата на месте. Курьер
+     * @return int
+     */
+    abstract public function filterPointByPaymentTypeCourier();
+
+    /**
+     * Возвращаем способ оплаты константой PluginFilters::PAYMENT_, предоплата или оплата на месте. Самовывоз
+     * @return int
+     */
+    abstract public function filterPointByPaymentTypeSelf();
 
 
     /**
