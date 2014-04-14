@@ -123,7 +123,11 @@ $order->toEmail = '';
 
 $DDeliveryUI->saveFullOrder( $ddeliveryID = 5 );
 $data = $DDeliveryUI->getAllOrders();
-print_r( $data );
+//print_r( $data );
+
+$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
+print_r( $DDeliverySDK->getCityByIp('188.162.64.72') );
+
 /*
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );

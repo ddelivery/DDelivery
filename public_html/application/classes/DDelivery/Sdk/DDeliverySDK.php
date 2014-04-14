@@ -173,7 +173,7 @@ class DDeliverySDK {
             '_action' => 'geoip',
             'ip' => $ip
         );
-    	return $this->requestProvider->request('geoip', $params, 'get', $this->server . 'node');
+    	return $this->requestProvider->request('geoip', $params, 'get', 'devnode');
     }
     
     /**
