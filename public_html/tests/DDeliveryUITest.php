@@ -1,4 +1,5 @@
 <?php
+// setShopOrderId
 
 class DDeliveryUITest extends PHPUnit_Framework_TestCase
 {
@@ -12,9 +13,6 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 	
 	public function testSaveIntermediateOrder()
 	{	
-		
-		$id = $this->fixture->saveIntermediateOrder( null);
-		$this->assertGreaterThan( 0, $id );
 		
 		$order = $this->fixture->getOrder();
 		$selfpoint = $this->fixture->getSelfPoints(151185);
@@ -30,10 +28,17 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 		$order->toFlat = '42';
 		$order->toEmail = '';
 		
-		$id = $this->fixture->saveIntermediateOrder(null);
+		$id = $this->fixture->saveIntermediateOrder();
+		$data = $this->fixture->getAllOrders();
+		
 		$this->assertGreaterThan( 0, $id );
+		$this->assertGreaterThan( 0, count($data) );
 	}
 	
+	public function testSelectAllOrders()
+	{
+	    
+	}
 	
 	public function getCourierPointsForCity()
 	{
