@@ -35,11 +35,38 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 		$this->assertGreaterThan( 0, count($data) );
 	}
 	
-	public function testSelectAllOrders()
+	public function testInitIntermediateOrder()
 	{
-	    
+		$shopAdapter = new \DDelivery\Adapter\DShopAdapterTest();
+		$ui = new \DDelivery\DDeliveryUI( $shopAdapter );
+		$ui->initIntermediateOrder(1);
+		$order = $ui->getOrder();
+		$this->assertGreaterThan( 0, $order->type );
 	}
 	
+	public function testSaveFullOrder()
+	{
+		$order = $this->fixture->getOrder();
+		$selfpoint = $this->fixture->getCourierPointsForCity(151185);
+		$order->city = 151185;
+		$order->type = 2;
+		$order->setPoint($selfpoint[0]);
+		$order->toName = 'Дима Грушин';
+		$order->toPhone = '9999999999';
+		$order->shopRefnum = 'xxx';
+		$order->toStreet = 'Вознесенская';
+		$order->toHouse = '1а';
+		$order->toFlat = '42';
+		$order->toEmail = '';
+		$id = $this->fixture->saveFullOrder(5);
+		$this->assertGreaterThan( 0, $id );
+	}
+	
+	public function testGetSelfPointsForCityAndCompany()
+	{
+		$result = $this->fixture->getSelfPointsForCityAndCompany('4,6', '4,25');
+		$this->assertGreaterThan( 0, count($result) );
+	}
 	public function getCourierPointsForCity()
 	{
 		
@@ -58,21 +85,17 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 	}
 	public function testCheckOrderCourierValues()
 	{
+		$order = $this->fixture->getOrder();
+	}
 	
-	}
-	/*
-	public function testGetSelfPointsForCityAndCompany()
-	{
-		$result = $this->fixture->getSelfPointsForCityAndCompany('4,6', '4,25');
-		$this->assertEquals( $result[0]->get('_id'), 2651 );
-	}
-	*/
+	
+	
 	public function testGetSelfPoints()
 	{
 		$selfpoints = $this->fixture->getSelfPoints( 151185 );
 		$this->assertGreaterThan( 0, count($selfpoints) );
 	}
-	/*
+	
 	public function testCreateSelfOrder()
 	{
 		$order = $this->fixture->getOrder();
@@ -86,7 +109,7 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 		
 		$this->assertGreaterThan( 0, $order_id );
 	}
-	*/
+	
 	public function testCreateCourierOrder()
 	{
 		$order = $this->fixture->getOrder();

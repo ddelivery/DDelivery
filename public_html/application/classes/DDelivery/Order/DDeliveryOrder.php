@@ -80,7 +80,14 @@ class DDeliveryOrder
      */
     public $toName;
     
+    /**
+     * @var string
+     */
+    public $firstName;
     
+    /**
+     * @var string
+     */
     public $secondName;
     /**
      * @var string
@@ -208,8 +215,8 @@ class DDeliveryOrder
     	}
     	
     	$packedOrder = array('type'=>$this->type, 'city' => $this->city, 
-    	                     'point_id' => $pointID, 'to_name' => $this->toName,
-    	                     'to_phone' => $this->toPhone, 'to_street' => $this->toStreet,
+    	                     'point_id' => $pointID, 'to_name' => $this->toName, 'firstName' => $this->firstName,
+    	                     'secondName' => $this->secondName, 'to_phone' => $this->toPhone, 'to_street' => $this->toStreet,
                              'to_house' => $this->toHouse, 'to_flat' => $this->toFlat, 'to_email' => $this->toEmail,
     						  'point' => $pointPacked, 'checksum' => $checkSum );
     	

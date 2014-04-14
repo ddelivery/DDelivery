@@ -119,6 +119,8 @@ class DDeliveryUI
     	        	$this->order->toHouse = $jsonOrder->to_house;
     	        	$this->order->toFlat = $jsonOrder->to_flat;
     	        	$this->order->toHouse = $jsonOrder->to_email;
+    	        	$this->order->firstName = $jsonOrder->firstName;
+    	        	$this->order->secondName = $jsonOrder->secondName;
 
     	        	// Распаковываем точку если она была выставлена
     	        	if(!empty($jsonOrder->type) && !empty($jsonOrder->point_id))
@@ -570,7 +572,8 @@ class DDeliveryUI
     	 			                           $paymentPrice, $ddeliveryID, $to_city, $delivery_company);
     	 }
     	 else if( $this->order->type == 2 )
-    	 {
+    	 {  
+    	 	
     	    $to_street = $this->order->toStreet;
     	    $to_house = $this->order->toHouse;
     	    $to_flat = $this->order->toFlat;
@@ -591,6 +594,7 @@ class DDeliveryUI
      *
      * отправить заказ на курьерку
      *
+     * @return int
      */
     public function createCourierOrder( )
     {
@@ -603,45 +607,53 @@ class DDeliveryUI
     	{
     		return 0;
     	}
-    	$point = $this->order->getPoint();
+    	
+    	$ddeliveryOrderID = 0;
+    	
+    	if( $this->shop->sendOrderToDDeliveryServer($this->order) )
+    	{
+    	    $point = $this->order->getPoint();
 
-    	$to_city = $this->order->city;
-    	$delivery_company = $point->getDeliveryInfo()->get('delivery_company');
+    	    $to_city = $this->order->city;
+    	    $delivery_company = $point->getDeliveryInfo()->get('delivery_company');
 
-    	$dimensionSide1 = $this->order->getDimensionSide1();
-    	$dimensionSide2 = $this->order->getDimensionSide2();
-    	$dimensionSide3 = $this->order->getDimensionSide3();
+    	    $dimensionSide1 = $this->order->getDimensionSide1();
+    	    $dimensionSide2 = $this->order->getDimensionSide2();
+    	    $dimensionSide3 = $this->order->getDimensionSide3();
 
-    	$goods_description = $this->order->getGoodsDescription();
-    	$weight = $this->order->getWeight();
-    	$confirmed = $this->order->getConfirmed();
+    	    $goods_description = $this->order->getGoodsDescription();
+    	    $weight = $this->order->getWeight();
+    	    $confirmed = $this->order->getConfirmed();
 
-    	$to_name = $this->order->getToName();
-    	$to_phone = $this->order->getToPhone();
-    	$declaredPrice = $this->order->declaredPrice;
+    	    $to_name = $this->order->getToName();
+    	    $to_phone = $this->order->getToPhone();
+    	    $declaredPrice = $this->order->declaredPrice;
 
-    	$orderPrice = $point->getDeliveryInfo()->get('total_price');
-    	$paymentPrice = $this->shop->getPaymentPrice($this->order, $orderPrice);
+    	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
+    	    $paymentPrice = $this->shop->getPaymentPrice($this->order, $orderPrice);
 
-    	$to_street = $this->order->toStreet;
-    	$to_house = $this->order->toHouse;
-    	$to_flat = $this->order->toFlat;
-    	$shop_refnum = $this->order->shopRefnum;
+    	    $to_street = $this->order->toStreet;
+    	    $to_house = $this->order->toHouse;
+    	    $to_flat = $this->order->toFlat;
+    	    $shop_refnum = $this->order->shopRefnum;
 
-    	$response = $this->sdk->addCourierOrder( $to_city, $delivery_company,
-                                                 $dimensionSide1, $dimensionSide2,
-    			                                 $dimensionSide3, $shop_refnum, $confirmed,
-    			                                 $weight, $to_name, $to_phone, $goods_description,
-    			                                 $declaredPrice, $paymentPrice, $to_street,
-                                                 $to_house, $to_flat );
-
+    	    $response = $this->sdk->addCourierOrder( $to_city, $delivery_company,
+                                                     $dimensionSide1, $dimensionSide2,
+    			                                     $dimensionSide3, $shop_refnum, $confirmed,
+    			                                     $weight, $to_name, $to_phone, $goods_description,
+    			                                     $declaredPrice, $paymentPrice, $to_street,
+                                                     $to_house, $to_flat );
+   
     	    if( !count ( $response->response ))
     	    {
     		    throw new DDeliveryException( implode(',', $response->errorMessage ));
     		    return 0;
     	    }
-
-    	return $response->response['order'];
+    	    
+    	    $ddeliveryOrderID = $response->response['order'];
+    	}
+    	$order_id = $this->saveFullOrder( $ddeliveryOrderID );
+    	return $order_id;
     }
 
 
@@ -663,31 +675,36 @@ class DDeliveryUI
     	{
     		return 0;
     	}
-    	$point = $this->order->getPoint();
+    	$ddeliveryOrderID = 0;
+    	if( $this->shop->sendOrderToDDeliveryServer($this->order) )
+    	{
+    	    $point = $this->order->getPoint();
 
-    	$pointID = $point->get('_id');
-    	$dimensionSide1 = $this->order->getDimensionSide1();
-    	$dimensionSide2 = $this->order->getDimensionSide2();
-    	$dimensionSide3 = $this->order->getDimensionSide3();
-    	$goods_description = $this->order->getGoodsDescription();
-    	$weight = $this->order->getWeight();
-    	$confirmed = $this->order->getConfirmed();
-    	$to_name = $this->order->getToName();
-    	$to_phone = $this->order->getToPhone();
-    	$declaredPrice = $this->order->declaredPrice;
+    	    $pointID = $point->get('_id');
+    	    $dimensionSide1 = $this->order->getDimensionSide1();
+    	    $dimensionSide2 = $this->order->getDimensionSide2();
+    	    $dimensionSide3 = $this->order->getDimensionSide3();
+    	    $goods_description = $this->order->getGoodsDescription();
+    	    $weight = $this->order->getWeight();
+    	    $confirmed = $this->order->getConfirmed();
+    	    $to_name = $this->order->getToName();
+    	    $to_phone = $this->order->getToPhone();
+    	    $declaredPrice = $this->order->declaredPrice;
 
-    	$orderPrice = $point->getDeliveryInfo()->get('total_price');
-    	$paymentPrice = $this->shop->getPaymentPrice($this->order, $orderPrice);
+    	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
+    	    $paymentPrice = $this->shop->getPaymentPrice($this->order, $orderPrice);
 
-    	$response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
+    	    $response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
     				                              $dimensionSide3, $confirmed, $weight, $to_name,
     				                              $to_phone, $goods_description, $declaredPrice,
     				                              $paymentPrice );
-    	if( ! $response->success )
-    	{
-    			throw new DDeliveryException( implode(',', $response->errorMessage ));
+    	    if( ! $response->success )
+    	    {
+    		    throw new DDeliveryException( implode(',', $response->errorMessage ));
+    	    }
+    	    
+    	    $ddeliveryOrderID = $response->response['order'];
     	}
-
     	return $response->response['order'];
     }
 
@@ -847,7 +864,7 @@ class DDeliveryUI
      */
     public function setOrderToEmail( $email )
     {
-    	$this->order->setToEmail($email );
+    	$this->order->toEmail = trim( strip_tags( $email ) );
     }
 
     /**

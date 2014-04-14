@@ -111,6 +111,7 @@ class Order {
     			                          $declaredPrice, $paymentPrice, $to_street, 
                                           $to_house, $to_flat, $ddeliveryOrderID ) 
 	{
+		$wasUpdate = 0;
 		$this->pdo->beginTransaction();
 		if( $this->isRecordExist( $intermediateID ) )
 		{   
@@ -124,6 +125,7 @@ class Order {
 				
 			$stmt = $this->pdo->prepare($query);
 			$stmt->bindParam( ':id', $intermediateID );
+			$wasUpdate = 1;
 		}
 		else
 		{
@@ -160,6 +162,14 @@ class Order {
 		$stmt->bindParam( ':to_flat', $to_flat );
 		$stmt->execute();
 		$this->pdo->commit();
+		if( $wasUpdate )
+		{
+			return $intermediateID;
+		}
+		else 
+		{
+		    return $this->pdo->lastInsertId();
+		}
 	}
 	
 	/**
@@ -204,6 +214,7 @@ class Order {
 			
 			$stmt = $this->pdo->prepare($query);
 			$stmt->bindParam( ':id', $id );
+			$wasUpdate = 0;
 		}
 		else 
 		{
@@ -236,6 +247,15 @@ class Order {
 		$stmt->bindParam( ':date', $dateTime );
 		$stmt->execute();
 		$this->pdo->commit();
+		
+		if( $wasUpdate )
+		{
+			return $intermediateID;
+		}
+		else
+		{
+			return $this->pdo->lastInsertId();
+		}
 	}
 	
 	/**
