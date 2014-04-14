@@ -42,11 +42,11 @@ abstract class ThreeFilters extends DShopAdapter
 
     /**
      * @todo все раскоментировать и исправить
-     * @param DDeliveryOrder $order
      * @param DDeliveryPointSelf $ddeliveryPointSelf
+     * @param DDeliveryOrder $order
      * @return DDeliveryPointSelf
      */
-    public function preDisplayPoint(DDeliveryOrder $order, $ddeliveryPointSelf)
+    public function preDisplaySelfPoint(DDeliveryPointSelf $ddeliveryPointSelf, DDeliveryOrder $order)
     {
         $intervals = self::getIntervalsByPointSelf();
 
