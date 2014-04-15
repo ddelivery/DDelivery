@@ -15,6 +15,10 @@ var Courier = (function(){
                         'action': 'contactForm'
                     });
                 }
+
+            });
+            $('.map-popup__main__delivery').mCustomScrollbar({
+                scrollInertia: 0
             });
 
         }

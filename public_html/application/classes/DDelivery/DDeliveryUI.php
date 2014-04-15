@@ -216,8 +216,7 @@ class DDeliveryUI
 
     /**
      * Получить  минимальный и максимальные период и цену поставки для массива точек
-     * @var array DDeliveryAbstractPoint[]
-     *
+     * @param DDeliveryAbstractPoint[] $points
      * @return array;
      */
     public function getMinMaxPriceAndPeriodDelivery( $points )
@@ -685,6 +684,7 @@ class DDeliveryUI
     	 			                              $shop_refnum, $confirmed, $weight, $to_name,
     	 			                              $to_phone, $goods_description, $declaredPrice,
     	 			                              $paymentPrice, $to_street, $to_house, $to_flat,
+
     	 			                              $ddeliveryID, $productString );
     	 }
 
@@ -839,7 +839,7 @@ class DDeliveryUI
      *
      *
      * @throws DDeliveryException
-     * @return array DDeliveryPointSelf[]
+     * @return DDeliveryPointSelf[]
      */
     public function getSelfPoints( $cityID )
     {
@@ -1161,7 +1161,7 @@ class DDeliveryUI
         include(__DIR__ . '/../../templates/map.php');
         $content = ob_get_contents();
         ob_end_clean();
-        return json_encode(array('html'=>$content, 'js'=>'map', 'points' => $pointsJs));
+        return json_encode(array('html'=>$content, 'js'=>'map', 'points' => $pointsJs, 'orderId' => $this->order->getId()));
     }
 
     /**
@@ -1213,7 +1213,7 @@ class DDeliveryUI
         $content = ob_get_contents();
         ob_end_clean();
 
-        return json_encode(array('html'=>$content, 'js'=>''));
+        return json_encode(array('html'=>$content, 'js'=>'', 'orderId' => $this->order->getId()));
     }
 
     //protected function renderDeliveryTypeForm
@@ -1229,13 +1229,15 @@ class DDeliveryUI
             $this->shop->preDisplayCourierPoint($courierCompany, $this->order);
         }
         $staticPath = $this->shop->getStaticPath();
+        // Ресетаем ключи.
+        $courierCompanyList = array_values($courierCompanyList);
 
         ob_start();
         include(__DIR__.'/../../templates/couriers.php');
         $content = ob_get_contents();
         ob_end_clean();
 
-        return json_encode(array('html'=>$content, 'js'=>'courier'));
+        return json_encode(array('html'=>$content, 'js'=>'courier', 'orderId' => $this->order->getId()));
     }
 
     private function renderContactForm()
@@ -1284,7 +1286,7 @@ class DDeliveryUI
         $content = ob_get_contents();
         ob_end_clean();
 
-        return json_encode(array('html'=>$content, 'js'=>'contactForm'));
+        return json_encode(array('html'=>$content, 'js'=>'contactForm', 'orderId' => $this->order->getId()));
     }
 
     /**

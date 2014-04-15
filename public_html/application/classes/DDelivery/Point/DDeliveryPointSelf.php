@@ -114,7 +114,7 @@ class DDeliveryPointSelf extends DDeliveryAbstractPoint{
      */
     public function toJson()
     {
-        $params = array('name', 'longitude', 'latitude', 'schedule', 'is_cash', 'is_card', 'has_fitting_room', 'company', 'company_id', 'address');
+        $params = array('_id', 'name', 'longitude', 'latitude', 'schedule', 'is_cash', 'is_card', 'has_fitting_room', 'company', 'company_id', 'address');
         $result = array();
         foreach($params as $param){
             $result[$param] = $this->get($param);

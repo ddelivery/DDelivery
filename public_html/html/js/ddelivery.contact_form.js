@@ -18,6 +18,10 @@ var ContactForm = (function(){
                 $('#main_form').submit();
             });
 
+            $('.row-btns a.prev').click(function(){
+                DDeliveryIframe.ajaxPage({});
+            });
+
         }
     }
 })();

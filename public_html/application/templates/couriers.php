@@ -73,11 +73,11 @@
     <div class="map-popup__main__overlay">&nbsp;</div>
     <div class="map-popup__main__delivery">
         <table>
-            <?foreach($courierCompanyList as $courierCompany):
+            <?foreach($courierCompanyList as $key => $courierCompany):
                 ?>
                 <tr>
                     <td class="col1">
-                        <input type="radio" name="delivery_company" value="<?=$courierCompany->pointID?>"/>
+                        <input type="radio" name="delivery_company" value="<?=$courierCompany->pointID?>" <?if($key==0):?>checked="checked"<?endif;?>/>
                     </td>
                     <td class="col2">
                         <img src="<?=$staticPath?>img/logo/<?=$companies[$courierCompany->delivery_company]['ico']?>.png" alt="title"/>

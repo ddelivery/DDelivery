@@ -7,6 +7,7 @@ var DDeliveryIframe = (function(){
     return {
         componentUrl:null,
         staticUrl:null,
+        orderId: null,
         init: function(_componentUrl, _staticUrl) {
             // Инициализация модуля. В ней мы инициализируем все остальные модули на странице
             this.componentUrl = componentUrl = _componentUrl;
@@ -15,9 +16,16 @@ var DDeliveryIframe = (function(){
         },
         ajaxPage: function(data) {
             var th = this;
+            if(this.orderId)
+                data.orderId = this.orderId;
             $('#ddelivery').html('<img class="loader" src="'+staticUrl+'/img/ajax_loader.gif"/>');
             $.post( componentUrl, data, function( dataHtml ) {
                 $( '#ddelivery' ).html(dataHtml.html );
+
+                if(typeof(data.orderId) != 'undefined' && data.orderId){
+                    th.orderId = data.orderId;
+                }
+
                 th.render(dataHtml);
             }, 'json');
             $(window).trigger('ajaxPage');
