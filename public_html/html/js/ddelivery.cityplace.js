@@ -9,6 +9,7 @@ var CityPlace = (function(){
         init: function(){
             el = $('.delivery-place');
             if(el.length > 0) {
+                this.render();
                 this.event();
             }
             componentUrl = DDeliveryIframe.componentUrl;
@@ -16,6 +17,11 @@ var CityPlace = (function(){
 
             // Вырубаем все старые евенты, подпишитесь заново
             $(window).off('ddeliveryCityPlace');
+        },
+        render: function(){
+            $('.map-popup__info__more__text, .delivery-place__drop_i').mCustomScrollbar({
+                scrollInertia: 0
+            });
         },
         event: function(){
 
