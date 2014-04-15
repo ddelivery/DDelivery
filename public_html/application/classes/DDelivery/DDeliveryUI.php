@@ -70,8 +70,8 @@ class DDeliveryUI
         // Формируем объект заказа
         $productList = $this->shop->getProductsFromCart();
         $this->order = new DDeliveryOrder( $productList );
+        
         $this->order->amount = $this->shop->getAmount();
-        $this->order->declaredPrice = $this->shop->getDeclaredPrice();
         $this->order->paymentVariant = $this->shop->getPaymentVariant();
 
     }
@@ -88,7 +88,21 @@ class DDeliveryUI
     {
 
     }
-
+    
+    /**
+     * Устанавливаем для заказа в таблице Orders SQLLite id заказа в CMS
+     *
+     * @param int $id id локальной БД SQLLite
+     * @param int $shopOrderID id заказа в CMS
+     *
+     * @return bool
+     */
+    public function setShopOrderID( $id, $shopOrderID )
+    {
+    	$orderDB = new DataBase\Order();
+    	return $orderDB->setShopOrderID($id, $shopOrderID);
+    }
+    
     /**
      * получить текущее состояние заказа в БД
      *
@@ -121,7 +135,6 @@ class DDeliveryUI
     	        	$this->order->toHouse = $jsonOrder->to_email;
     	        	$this->order->firstName = $jsonOrder->firstName;
     	        	$this->order->secondName = $jsonOrder->secondName;
-
     	        	// Распаковываем точку если она была выставлена
     	        	if(!empty($jsonOrder->type) && !empty($jsonOrder->point_id))
     	        	{
@@ -310,16 +323,18 @@ class DDeliveryUI
      */
     public function saveIntermediateOrder()
     {
-    	$orderDB = new \DDelivery\DataBase\Order();
+        $orderDB = new \DDelivery\DataBase\Order();
 
-    	$packOrder = $this->order->packOrder();
+        $packOrder = $this->order->packOrder();
         $id = $this->order->localId;
-    	if($this->order->localId) {
-    	    $orderDB->updateOrder( $id, $packOrder );
-    	} else {
-    		$id = $orderDB->insertOrder($packOrder);
-    	}
-	    return $id;
+        if($this->order->localId) {
+            $orderDB->updateOrder( $id, $packOrder );
+        } 
+        else 
+        {
+            $id = $orderDB->insertOrder($packOrder);
+        }
+        return $id;
     }
 
     /**
@@ -538,14 +553,13 @@ class DDeliveryUI
      *
      * Сохранить в локальную БД заказ при отправке на сервер DDelivery
      *
-     * @param int $ddeliveryID - id заявки на сервере ddelivery
+     * @param DDeliveryOrder $order заказ ddelivery
      *
      * @return int
      */
-    public function saveFullOrder( $ddeliveryID )
+    public function saveFullOrder( $order )
     {
     	$orderDB = new DataBase\Order();
-
     	$point = $this->order->getPoint();
     	$dimensionSide1 = $this->order->getDimensionSide1();
     	$dimensionSide2 = $this->order->getDimensionSide2();
@@ -593,15 +607,17 @@ class DDeliveryUI
     /**
      *
      * отправить заказ на курьерку
-     *
+     * 
+     * @param DDeliveryOrder
+     * 
      * @return int
      */
-    public function createCourierOrder( )
+    public function createCourierOrder( $order )
     {
     	/** @var DDeliveryPointCourier $point */
     	try
     	{
-    		$this->checkOrderCourierValues();
+    		$this->checkOrderCourierValues( $order );
     	}
     	catch (DDeliveryException $e)
     	{
@@ -610,32 +626,33 @@ class DDeliveryUI
     	
     	$ddeliveryOrderID = 0;
     	
-    	if( $this->shop->sendOrderToDDeliveryServer($this->order) )
+    	if( $this->shop->sendOrderToDDeliveryServer($order) )
     	{
-    	    $point = $this->order->getPoint();
+    	    $point = $order->getPoint();
 
-    	    $to_city = $this->order->city;
+    	    $to_city = $order->city;
     	    $delivery_company = $point->getDeliveryInfo()->get('delivery_company');
 
-    	    $dimensionSide1 = $this->order->getDimensionSide1();
-    	    $dimensionSide2 = $this->order->getDimensionSide2();
-    	    $dimensionSide3 = $this->order->getDimensionSide3();
+    	    $dimensionSide1 = $order->getDimensionSide1();
+    	    $dimensionSide2 = $order->getDimensionSide2();
+    	    $dimensionSide3 = $order->getDimensionSide3();
 
-    	    $goods_description = $this->order->getGoodsDescription();
-    	    $weight = $this->order->getWeight();
-    	    $confirmed = $this->order->getConfirmed();
+    	    $goods_description = $order->getGoodsDescription();
+    	    $weight = $order->getWeight();
+    	    $confirmed = $order->getConfirmed();
 
-    	    $to_name = $this->order->getToName();
-    	    $to_phone = $this->order->getToPhone();
-    	    $declaredPrice = $this->order->declaredPrice;
-
+    	    $to_name = $order->getToName();
+    	    $to_phone = $order->getToPhone();
+            
     	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
-    	    $paymentPrice = $this->shop->getPaymentPrice($this->order, $orderPrice);
+    	    
+    	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
+    	    $paymentPrice = $this->shop->getPaymentPrice( $order, $orderPrice );
 
-    	    $to_street = $this->order->toStreet;
-    	    $to_house = $this->order->toHouse;
-    	    $to_flat = $this->order->toFlat;
-    	    $shop_refnum = $this->order->shopRefnum;
+    	    $to_street = $order->toStreet;
+    	    $to_house = $order->toHouse;
+    	    $to_flat = $order->toFlat;
+    	    $shop_refnum = $order->shopRefnum;
 
     	    $response = $this->sdk->addCourierOrder( $to_city, $delivery_company,
                                                      $dimensionSide1, $dimensionSide2,
@@ -652,7 +669,8 @@ class DDeliveryUI
     	    
     	    $ddeliveryOrderID = $response->response['order'];
     	}
-    	$order_id = $this->saveFullOrder( $ddeliveryOrderID );
+    	$order->ddeliveryID = $ddeliveryOrderID;
+    	$order_id = $this->saveFullOrder( $order );
     	return $order_id;
     }
 
@@ -660,39 +678,42 @@ class DDeliveryUI
     /**
      *
      * отправить заказ на самовывоз
-     *
+     * 
+     * @param DDeliveryOrder
+     * 
      * @return int
      *
      */
-    public function createSelfOrder( )
+    public function createSelfOrder( $order )
     {
         /** @var DDeliveryPointSelf $point */
     	try
     	{
-    		$this->checkOrderSelfValues();
+    		$this->checkOrderSelfValues( $order );
     	}
     	catch (DDeliveryException $e)
     	{
     		return 0;
     	}
     	$ddeliveryOrderID = 0;
-    	if( $this->shop->sendOrderToDDeliveryServer($this->order) )
+    	if( $this->shop->sendOrderToDDeliveryServer($order) )
     	{
-    	    $point = $this->order->getPoint();
+    	    $point = $order->getPoint();
 
     	    $pointID = $point->get('_id');
-    	    $dimensionSide1 = $this->order->getDimensionSide1();
-    	    $dimensionSide2 = $this->order->getDimensionSide2();
-    	    $dimensionSide3 = $this->order->getDimensionSide3();
-    	    $goods_description = $this->order->getGoodsDescription();
-    	    $weight = $this->order->getWeight();
-    	    $confirmed = $this->order->getConfirmed();
-    	    $to_name = $this->order->getToName();
-    	    $to_phone = $this->order->getToPhone();
-    	    $declaredPrice = $this->order->declaredPrice;
+    	    $dimensionSide1 = $order->getDimensionSide1();
+    	    $dimensionSide2 = $order->getDimensionSide2();
+    	    $dimensionSide3 = $order->getDimensionSide3();
+    	    $goods_description = $order->getGoodsDescription();
+    	    $weight = $order->getWeight();
+    	    $confirmed = $order->getConfirmed();
+    	    $to_name = $order->getToName();
+    	    $to_phone = $order->getToPhone();
 
     	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
-    	    $paymentPrice = $this->shop->getPaymentPrice($this->order, $orderPrice);
+    	    
+    	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
+    	    $paymentPrice = $this->shop->getPaymentPrice( $order, $orderPrice );
 
     	    $response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
     				                              $dimensionSide3, $confirmed, $weight, $to_name,
@@ -705,9 +726,14 @@ class DDeliveryUI
     	    
     	    $ddeliveryOrderID = $response->response['order'];
     	}
+    	$order->ddeliveryID = $ddeliveryOrderID;
+    	$order_id = $this->saveFullOrder( $order );
     	return $response->response['order'];
     }
-
+    /**
+     * Весь список заказов
+     *
+     */
     public function getAllOrders()
     {
     	$orderDB = new DataBase\Order();

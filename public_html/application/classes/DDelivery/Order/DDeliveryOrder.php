@@ -33,92 +33,96 @@ class DDeliveryOrder
      */
     public $type;
     /**
-     * @var bool
+     * @var заказ подтвержден
      */
     public $confirmed = 0;
 
     /**
-     * @var int
+     * @var int сторона 3 (см)
      */
     public  $dimensionSide1 = 0;
     /**
-     * @var int
+     * @var int сторона 2 (см)
      */
     public $dimensionSide2 = 0;
     /**
-     * @var int
+     * @var int сторона 3 (см)
      */
     public $dimensionSide3 = 0;
     /**
-     * @var int
+     * @var int вес заказа
      */
     protected $weight = 0;
     
     /**
-     * @var int
+     * @var int город
      */
     public $city = 0;
     /**
-     * @var float
+     * @var float сумма предоставляемая корзиной
      */
     public $amount;
     /**
-     * @var float
+     * @var float страховка товара
      */
     public $declaredPrice;
     /**
-     * @var float
+     * @var float сума к оплате на точке
      */
     public $paymentPrice;
     
     /**
-     * @var string
+     * @var string 
      */
     public $shopRefnum;
     /**
-     * @var string
+     * @var string ФИО
      */
     public $toName;
     
     /**
-     * @var string
+     * @var string имя
      */
     public $firstName;
     
     /**
-     * @var string
+     * @var string фамилия
      */
     public $secondName;
     /**
-     * @var string
+     * @var string телефон
      */
     public $toPhone;
     
     /**
-     * @var string
+     * @var string email
      */
     public $toEmail;
     
     /**
-     * @var string
+     * @var string улица
      */
     public $toStreet;
     
     /**
-     * @var string
+     * @var string номер дома
      */
     public $toHouse;
     
     /**
-     * @var string
+     * @var string номер квартиры
      */
     public $toFlat;
     
     /**
-     * @var string
+     * @var string описание заказа 
      */
     public $goodsDescription;
-
+    
+    /**
+     * @var string id продуктов в заказе
+     */
+    public $productIDs;
 
     /**
      * Лист товаров
@@ -132,9 +136,17 @@ class DDeliveryOrder
      */
     private $point = null;
 	
-    
+    /**
+     * 
+     * @var int id способа оплаты
+     */
     public $paymentVariant = null;
-
+    
+    /**
+     *
+     * @var int id заказа на стороне сервера ddelivery
+     */
+    public $ddeliveryID = 0;
     /**
      * @param DDeliveryProduct[] $productList
      * @throws DDeliveryOrderException
@@ -170,6 +182,7 @@ class DDeliveryOrder
     {
         $items = array();
         $description = array();
+        $productIDs = array();
         $weight = 0;
         $dimensionSide1 = 0;
         $dimensionSide2 = 0;
@@ -183,6 +196,7 @@ class DDeliveryOrder
         	$minValue = array_shift($currentSizes);
         	$dimensionSide1 += ( $minValue * $product->getQuantity() );
         	$items = array_merge($items, $currentSizes);
+        	array_push($productIDs, $product->getID());
         }
         sort($items);
         $dimensionSide2 = array_pop( $items );
@@ -193,6 +207,7 @@ class DDeliveryOrder
         $this->dimensionSide1 = $dimensionSide1;
         $this->dimensionSide2 = $dimensionSide2;
         $this->dimensionSide3 = $dimensionSide3;
+        $this->productIDs = implode(',', $productIDs);
     }
 	
     /**
@@ -214,11 +229,12 @@ class DDeliveryOrder
             $pointID = $this->point->pointID;
     	}
     	
-    	$packedOrder = array('type'=>$this->type, 'city' => $this->city, 
+    	$packedOrder = array('type'=>$this->type, 'city' => $this->city, 'amount' => $this->amount, 'productIDs' => $this->productIDs,
+    			             'ddeliveryID' => $this->ddeliveryID, 
     	                     'point_id' => $pointID, 'to_name' => $this->toName, 'firstName' => $this->firstName,
     	                     'secondName' => $this->secondName, 'to_phone' => $this->toPhone, 'to_street' => $this->toStreet,
                              'to_house' => $this->toHouse, 'to_flat' => $this->toFlat, 'to_email' => $this->toEmail,
-    						  'point' => $pointPacked, 'checksum' => $checkSum );
+    						 'point' => $pointPacked, 'checksum' => $checkSum );
     	
     	return $packedOrder;
     }
@@ -337,7 +353,7 @@ class DDeliveryOrder
     
     public function getToName()
     {
-    	return $this->toName;
+    	return $this->firstName . ' ' . $this->secondName;
     }
     
     public function getToStreet()

@@ -35,6 +35,8 @@ class Order {
 		$this->pdo->exec("CREATE TABLE IF NOT EXISTS orders (
                           id INTEGER PRIMARY KEY AUTOINCREMENT,
 					      type INTEGER,
+				          amount REAL,
+				          product_ids TEXT,
 					      to_city INTEGER,
 				          status INTEGER,
 					      order_id INTEGER,
@@ -60,7 +62,32 @@ class Order {
                           serilize TEXT
                         )");
 	}
-
+	
+	/**
+	 * Устанавливаем для заказа в БД SQLLite id заказа в CMS 
+	 *
+	 * @param int $id id локальной БД SQLLite
+	 * @param int $shopOrderID id заказа в CMS
+	 * 
+	 * @return bool
+	 */
+	public function setShopOrderID( $id, $shopOrderID )
+	{
+		$this->pdo->beginTransaction();
+		if( $this->isRecordExist( $id ) )
+		{
+			$query = 'UPDATE orders SET order_id = :order_id WHERE id=:id';
+			$sth = $this->pdo->prepare( $query );
+			$sth->bindParam( ':id', $id );
+			$sth->bindParam( ':order_id', $id );
+			if( $sth->execute() )
+			{
+				return true;
+			}
+		}
+		$this->pdo->commit();
+		return false;
+	}
 
     /**
      * Проверяем на существование запись
@@ -70,8 +97,9 @@ class Order {
      */
 	public function isRecordExist( $id )
 	{
-        if(!$id)
-            return 0;
+        $id = (int)$id;
+        if(!$id) return 0;
+        
 		$sth = $this->pdo->prepare('SELECT id FROM orders WHERE id = :id');
 		$sth->bindParam( ':id', $id );
 		$sth->execute();
@@ -112,9 +140,9 @@ class Order {
                                           $to_house, $to_flat, $ddeliveryOrderID ) 
 	{
 		$wasUpdate = 0;
-		$this->pdo->beginTransaction();
-		if( $this->isRecordExist( $intermediateID ) )
-		{   
+ 		$this->pdo->beginTransaction();
+ 		if( $this->isRecordExist( $intermediateID ) )
+ 		{   
 			
 			$query = 'UPDATE orders SET type = :type, to_city = :to_city, ddeliveryorder_id = :ddeliveryorder_id, delivery_company = :delivery_company,
 					  dimension_side1 = :dimension_side1, dimension_side2 = :dimension_side2, dimension_side3 = :dimension_side3,

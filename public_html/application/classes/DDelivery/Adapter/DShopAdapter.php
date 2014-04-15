@@ -271,6 +271,9 @@ abstract class DShopAdapter
     	 return null;
     }
     /**
+     * 
+     * Сумма к оплате на точке или курьеру
+     * 
      * Возвращает параметр payment_price для создания заказа
      * Параметр payment_price необходим для добавления заявки на заказ
      * По этому параметру в доках интегратору будет написан раздел
@@ -283,7 +286,17 @@ abstract class DShopAdapter
     public function getPaymentPrice( $order, $orderPrice ) {
     	return 0;
     }
-    
+    /**
+     *
+     * Получить список продуктов по id
+     * @param int[]
+     * 
+     * @return array DDeliveryProduct[]
+     */
+    public function getProductsByID( $productIDs )
+    {
+        return array();
+    }
     /**
      * Верните id города в системе DDelivery
      * @return int
@@ -305,16 +318,13 @@ abstract class DShopAdapter
     
     /**
      * Возвращает оценочную цену для товаров в послыке
+     * 
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     * 
      * @return float
      */
-    public function getDeclaredPrice() {
-    	/*
-        $declaredPrice = 0;
-        foreach($this->getProductsFromCart() as $product) {
-            $declaredPrice += $product->getPrice() * $product->getQuantity();
-        }
-        */
-    	$declaredPrice = $this->getAmount();
+    public function getDeclaredPrice( $order ) {
+    	$declaredPrice = $order->amount;
         return $declaredPrice;
     }
 
