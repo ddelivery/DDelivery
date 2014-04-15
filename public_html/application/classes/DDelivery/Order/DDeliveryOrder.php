@@ -209,7 +209,17 @@ class DDeliveryOrder
         $this->dimensionSide3 = $dimensionSide3;
         $this->productIDs = implode(',', $productIDs);
     }
-	
+    /**
+     *
+     * Упаковать продукты заказа для сохранения в БД
+     *
+     * @return string
+     */
+    public function getSerializedProducts()
+    {
+        return serialize( $this->productList );
+    }
+    
     /**
      *
      * Упаковать данные заказа для сохранения в БД
@@ -229,12 +239,13 @@ class DDeliveryOrder
             $pointID = $this->point->pointID;
     	}
     	
-    	$packedOrder = array('type'=>$this->type, 'city' => $this->city, 'amount' => $this->amount, 'productIDs' => $this->productIDs,
-    			             'ddeliveryID' => $this->ddeliveryID, 
-    	                     'point_id' => $pointID, 'to_name' => $this->toName, 'firstName' => $this->firstName,
-    	                     'secondName' => $this->secondName, 'to_phone' => $this->toPhone, 'to_street' => $this->toStreet,
-                             'to_house' => $this->toHouse, 'to_flat' => $this->toFlat, 'to_email' => $this->toEmail,
-    						 'point' => $pointPacked, 'checksum' => $checkSum );
+    	$packedOrder = array( 'type'=>$this->type, 'city' => $this->city, 'amount' => $this->amount, 
+    			              'productIDs' => $this->productIDs, 'ddeliveryID' => $this->ddeliveryID, 
+    			              'products' => serialize( $this->productList ), 'point_id' => $pointID, 
+                              'to_name' => $this->toName, 'firstName' => $this->firstName,
+    	                      'secondName' => $this->secondName, 'to_phone' => $this->toPhone, 'to_street' => $this->toStreet,
+                              'to_house' => $this->toHouse, 'to_flat' => $this->toFlat, 'to_email' => $this->toEmail,
+    						  'point' => $pointPacked, 'checksum' => $checkSum );
     	
     	return $packedOrder;
     }

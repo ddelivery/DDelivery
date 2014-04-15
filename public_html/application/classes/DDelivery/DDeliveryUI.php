@@ -17,6 +17,8 @@ use DDelivery\Adapter\DShopAdapterImpl;
 use DDelivery\Point\DDeliveryInfo;
 use DDelivery\Point\DDeliveryAbstractPoint;
 use DDelivery\Point\DDeliveryPointCourier;
+use DDelivery\Sdk\Messager;
+
 
 /**
  * DDeliveryUI - Обертка рабочих классов, для взаимодействия
@@ -54,7 +56,12 @@ class DDeliveryUI
      * @var DDeliveryOrder
      */
     private $order;
-
+    
+    /**
+     * печаталка сообщений про ошибку
+     * @var string
+     */
+    private $messager;
 
     /**
      * @param DShopAdapter $dShopAdapter
@@ -73,7 +80,8 @@ class DDeliveryUI
         
         $this->order->amount = $this->shop->getAmount();
         $this->order->paymentVariant = $this->shop->getPaymentVariant();
-
+        
+        $this->messager = new Sdk\DDeliveryMessager($this->shop->isTestMode());
     }
 
     /**
@@ -104,14 +112,40 @@ class DDeliveryUI
     }
     
     /**
-     * получить текущее состояние заказа в БД
+     * Инициализирует массив заказов из массива id заказов локальной БД
+     *
+     * @param array  $ids массив с id заказов 
+     * 
+     * @return array DDeliveryOrder[]
+     */
+    public function initIntermediateOrder($ids)
+    {   
+    	$orderDB = new DataBase\Order();
+        $orderList = array();
+        if(!count($ids))
+        	throw new DDeliveryException('Пустой массив для инициализации заказа');
+        $orders = $orderDB->getOrderList($ids);
+       
+        if(count($orders))
+        {
+            foreach ( $orders as $item)
+            {   
+            	$productList = unserialize( $item->products );
+                $currentOrder = new DDeliveryOrder( $productList );
+            	$orderList[] = $currentOrder;
+            }    
+        }
+        return $orderList;
+    }
+    /**
+     * Инициализировать заказ в контексте текущего заказа
      *
      * Вызывается всегда при инициализации объекта заказа
      *
      * @param $id
      * @return void
      */
-    public function initIntermediateOrder( $id )
+    public function initOrderInUIContext( $id )
     {
     	$orderDB = new DataBase\Order();
 
@@ -507,24 +541,60 @@ class DDeliveryUI
      *
      * Перед отправкой заказа курьеркой на сервер DDelivery проверяется
      * заполнение всех данных для заказа
-     *
+     * 
+     * @param DDeliveryOrder $order заказ ddelivery
+     * 
+     * @return bool
      */
-    public function checkOrderCourierValues()
+    public function checkOrderCourierValues( $order )
     {
-    	$point = $this->order->getPoint();
-
+    	
+    	$errors = array();
+    	$point = $order->getPoint();
+        
         if( $point == null )
         {
-        	throw new DDeliveryException("Bad courier point");
+        	$errors[] = "Укажите пожалуйста точку";
         }
-
-        if( !strlen( $this->order->toName ) || !strlen( $this->order->toPhone)
-                     || !strlen( $this->order->toStreet ) || !strlen( $this->order->toHouse )
-                     || !strlen( $this->order->toFlat ) )
+        if(!strlen( $order->getToName() ))
         {
-        	throw new DDeliveryException("Bad user Info");
+        	$errors[] = "Укажите пожалуйста ФИО";
         }
-        return true;
+        if(!$this->isValidPhone( $order->toPhone ))
+        {
+        	$errors[] = "Укажите пожалуйста телефон в верном формате";
+        }
+        if( $order->type != 2 )
+        {
+        	$errors[] = "Не верный тип доставки";
+        }
+        if( !strlen( $order->toStreet ) )
+        {
+        	$errors[] = "Укажите пожалуйста улицу";
+        }
+        if(!strlen( $order->toHouse ))
+        {
+        	$errors[] = "Укажите пожалуйста дом";
+        }
+        if(!$order->city)
+        {
+        	$errors[] = "Город не определен";
+        }
+        if( !strlen( $order->toFlat ) )
+        {
+        	$errors[] = "Укажите пожалуйста квартиру";
+        }
+        if(!empty($order->toEmail))
+        {
+            if(!$this->isValidEmail($order->toEmail))
+            {
+            	$errors[] = "Укажите пожалуйста email в верном формате";
+            }
+        }
+        if(count($errors))
+        {
+            throw new DDeliveryException(implode(', ', $errors));
+        }
     }
 
     /**
@@ -532,21 +602,35 @@ class DDeliveryUI
      * Перед отправкой заказа самовывоза на сервер DDelivery проверяется
      * заполнение всех данных для заказа
      *
+     * @param DDeliveryOrder $order заказ ddelivery
+     * 
+     * @return bool
      */
-    public function checkOrderSelfValues()
-    {
-    	$point = $this->order->getPoint();
-
-    	if( $point == null )
-    	{
-    		throw new DDeliveryException("Bad self delivery point");
-    	}
-
-    	if( !strlen( $this->order->toName ) || !strlen( $this->order->toPhone))
-    	{
-    		throw new DDeliveryException("Bad userInfo");
-    	}
-    	return true;
+    public function checkOrderSelfValues( $order )
+    {   
+    	$errors = array();
+    	$point = $order->getPoint();
+    	
+        if( $point == null )
+        {
+        	$errors[] = "Укажите пожалуйста точку";
+        }
+        if(!strlen( $order->getToName() ))
+        {
+        	$errors[] = "Укажите пожалуйста ФИО";
+        }
+        if(!$this->isValidPhone( $order->toPhone ))
+        {
+        	$errors[] = "Укажите пожалуйста телефон в верном формате";
+        }
+        if( $order->type != 1 )
+        {
+        	$errors[] = "Не верный тип доставки";
+        }
+        if(count($errors))
+        {
+        	throw new DDeliveryException(implode(', ', $errors));
+        }
     }
 
     /**
@@ -560,30 +644,34 @@ class DDeliveryUI
     public function saveFullOrder( $order )
     {
     	$orderDB = new DataBase\Order();
-    	$point = $this->order->getPoint();
-    	$dimensionSide1 = $this->order->getDimensionSide1();
-    	$dimensionSide2 = $this->order->getDimensionSide2();
-    	$dimensionSide3 = $this->order->getDimensionSide3();
-    	$goods_description = $this->order->getGoodsDescription();
-    	$weight = $this->order->getWeight();
+    	$point = $order->getPoint();
+    	$dimensionSide1 = $order->getDimensionSide1();
+    	$dimensionSide2 = $order->getDimensionSide2();
+    	$dimensionSide3 = $order->getDimensionSide3();
+    	$goods_description = $order->getGoodsDescription();
+    	$weight = $order->getWeight();
 
-    	$to_city = $this->order->city;
+    	$to_city = $order->city;
     	$delivery_company = $point->getDeliveryInfo()->get('delivery_company');
 
-    	$confirmed = $this->order->getConfirmed();
-    	$to_name = $this->order->getToName();
-    	$to_phone = $this->order->getToPhone();
-    	$declaredPrice = $this->order->declaredPrice;
+    	$confirmed = $order->getConfirmed();
+    	$to_name = $order->getToName();
+    	$to_phone = $order->getToPhone();
+    	$declaredPrice = $order->declaredPrice;
     	$orderPrice = $point->getDeliveryInfo()->get('total_price');
-    	$paymentPrice = $this->shop->getPaymentPrice($this->order, $orderPrice);
-    	if( $this->order->type == 1 )
+    	$paymentPrice = $this->shop->getPaymentPrice($order, $orderPrice);
+    	$ddeliveryID = $order->ddeliveryID;
+    	$localId = $order->localId;
+    	$productString = $order->getSerializedProducts();
+    	if( $order->type == 1 )
     	 {
     	    $pointID = $point->get('_id');
-    	    $id = $orderDB->saveFullSelfOrder( $this->order->localId, $pointID,
+    	    $id = $orderDB->saveFullSelfOrder( $localId, $pointID,
     	 			                           $dimensionSide1, $dimensionSide2, $dimensionSide3,
     	 			                           $confirmed, $weight, $to_name, $to_phone,
     	 			                           $goods_description, $declaredPrice,
-    	 			                           $paymentPrice, $ddeliveryID, $to_city, $delivery_company);
+    	 			                           $paymentPrice, $ddeliveryID, $to_city, $delivery_company,
+    	                                       $productString );
     	 }
     	 else if( $this->order->type == 2 )
     	 {  
@@ -592,12 +680,12 @@ class DDeliveryUI
     	    $to_house = $this->order->toHouse;
     	    $to_flat = $this->order->toFlat;
     	    $shop_refnum = $this->order->shopRefnum;
-    	    $id = $orderDB->saveFullCourierOrder( $this->order->localId, $to_city, $delivery_company,
+    	    $id = $orderDB->saveFullCourierOrder( $localId, $to_city, $delivery_company,
     	 			                              $dimensionSide1, $dimensionSide2, $dimensionSide3,
     	 			                              $shop_refnum, $confirmed, $weight, $to_name,
     	 			                              $to_phone, $goods_description, $declaredPrice,
     	 			                              $paymentPrice, $to_street, $to_house, $to_flat,
-    	 			                              $ddeliveryID );
+    	 			                              $ddeliveryID, $productString );
     	 }
 
     	 return $id;
@@ -621,6 +709,7 @@ class DDeliveryUI
     	}
     	catch (DDeliveryException $e)
     	{
+    		$this->messager->pushMessage( $e->getMessage() );
     		return 0;
     	}
     	
@@ -653,20 +742,20 @@ class DDeliveryUI
     	    $to_house = $order->toHouse;
     	    $to_flat = $order->toFlat;
     	    $shop_refnum = $order->shopRefnum;
-
-    	    $response = $this->sdk->addCourierOrder( $to_city, $delivery_company,
-                                                     $dimensionSide1, $dimensionSide2,
-    			                                     $dimensionSide3, $shop_refnum, $confirmed,
-    			                                     $weight, $to_name, $to_phone, $goods_description,
-    			                                     $declaredPrice, $paymentPrice, $to_street,
-                                                     $to_house, $to_flat );
-   
-    	    if( !count ( $response->response ))
-    	    {
-    		    throw new DDeliveryException( implode(',', $response->errorMessage ));
-    		    return 0;
-    	    }
-    	    
+            try
+            {
+    	        $response = $this->sdk->addCourierOrder( $to_city, $delivery_company,
+                                                         $dimensionSide1, $dimensionSide2,
+    			                                         $dimensionSide3, $shop_refnum, $confirmed,
+    			                                         $weight, $to_name, $to_phone, $goods_description,
+    			                                         $declaredPrice, $paymentPrice, $to_street,
+                                                         $to_house, $to_flat );
+            }
+            catch ( DDeliveryException $e )
+            {
+                $this->messager->pushMessage( $e->getMessage());
+                return 0;
+            }
     	    $ddeliveryOrderID = $response->response['order'];
     	}
     	$order->ddeliveryID = $ddeliveryOrderID;
@@ -693,7 +782,8 @@ class DDeliveryUI
     	}
     	catch (DDeliveryException $e)
     	{
-    		return 0;
+    		$this->messager->pushMessage($e->getMessage());
+    	    return 0;
     	}
     	$ddeliveryOrderID = 0;
     	if( $this->shop->sendOrderToDDeliveryServer($order) )
@@ -714,16 +804,18 @@ class DDeliveryUI
     	    
     	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
     	    $paymentPrice = $this->shop->getPaymentPrice( $order, $orderPrice );
-
-    	    $response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
-    				                              $dimensionSide3, $confirmed, $weight, $to_name,
-    				                              $to_phone, $goods_description, $declaredPrice,
-    				                              $paymentPrice );
-    	    if( ! $response->success )
+    	    try
     	    {
-    		    throw new DDeliveryException( implode(',', $response->errorMessage ));
+    	        $response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
+    				                                  $dimensionSide3, $confirmed, $weight, $to_name,
+    				                                  $to_phone, $goods_description, $declaredPrice,
+    				                                  $paymentPrice );
     	    }
-    	    
+    	    catch ( DDeliveryException $e )
+    	    {
+    	    	$this->messager->pushMessage( $e->getMessage() );
+    	    	return 0;
+    	    }
     	    $ddeliveryOrderID = $response->response['order'];
     	}
     	$order->ddeliveryID = $ddeliveryOrderID;

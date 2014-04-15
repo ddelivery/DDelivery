@@ -111,7 +111,8 @@ $order->city = 151185;
 //$order->localId = 1;
 $order->type = 2;
 $order->setPoint($selfpoint[0]);
-$order->toName = 'Дима Грушин';
+$order->firstName = 'Дима';
+$order->secondName = 'Грушин';
 $order->toPhone = '9999999999';
 $order->shopRefnum = 'xxx';
 $order->toStreet = 'Вознесенская';
@@ -119,10 +120,15 @@ $order->toHouse = '1а';
 $order->toFlat = '42';
 $order->toEmail = '';
 
-$id = $DDeliveryUI->saveFullOrder(5);
+echo $DDeliveryUI->saveFullOrder($order);
+//print_r($DDeliveryUI->getAllOrders());
+print_r($DDeliveryUI->initIntermediateOrder(array(1)));
+/*
+$id = $DDeliveryUI->saveFullOrder($order);
 echo $id;
 $data = $DDeliveryUI->getAllOrders();
 print_r($data);
+*/
 //print_r($order);
 /*
 $selfpoint = $DDeliveryUI->getCourierPointsForCity(151185);
