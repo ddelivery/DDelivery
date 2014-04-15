@@ -26,6 +26,7 @@ var Map = (function(){
                         // Выбираем первый результат геокодирования.
                         renderGeoObject = res.geoObjects.get(0);
                         th.render();
+                        th.event();
                     });
             });
 
@@ -141,7 +142,11 @@ var Map = (function(){
 
                 });
         },
-
+        event: function(){
+            $('.map-popup__info__close').click(function(){
+                $('.map-popup__info').fadeOut();
+            });
+        },
         renderInfo: function(point){
             if(!point.name){
                 point.name = point.company+' #'+point._id
