@@ -748,7 +748,7 @@ class DDeliveryUI
      *
      *
      * @throws DDeliveryException
-     * @return array DDeliveryPointSelf[]
+     * @return DDeliveryPointSelf[]
      */
     public function getSelfPoints( $cityID )
     {

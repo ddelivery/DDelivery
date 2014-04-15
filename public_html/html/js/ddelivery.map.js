@@ -84,7 +84,8 @@ var Map = (function(){
                 point = points[pointKey];
                 //console.log(point);
                 var myPlacemark =new ymaps.Placemark([point.latitude,point.longitude], {
-                        hintContent: point.address
+                        hintContent: point.address,
+                        point: point
                     },{
                         iconLayout: 'default#image',
                         iconImageHref: staticUrl+'/img/point_75x75.png',
@@ -92,6 +93,7 @@ var Map = (function(){
                         iconImageOffset: [-22, -46]
                     }
                 );
+
                 geoObjects.push(myPlacemark);
                 //yamap.geoObjects.add(myPlacemark);
             }
@@ -110,33 +112,56 @@ var Map = (function(){
                 })
                 .add('click', function(e){
                     var target = e.get('target');
+                    t = target;
                     // Вернет все геобъекты
                     var geoObjects = target.properties.get('geoObjects');
+                    if(geoObjects) { // Клик по кластеру
+                        var bound = [[99,99],[0,0]];
+                        for(var geoKey in geoObjects){
 
-                    var bound = [[99,99],[0,0]];
-                    for(var geoKey in geoObjects){
-
-                        var coord = geoObjects[geoKey].geometry.getCoordinates();
-                        if(bound[1][0] < coord[0])
-                            bound[1][0] = coord[0];
-                        if(bound[1][1] < coord[1])
-                            bound[1][1] = coord[1];
-                        if(bound[0][0] > coord[0])
-                            bound[0][0] = coord[0];
-                        if(bound[0][1] > coord[1])
-                            bound[0][1] = coord[1];
-                    }
-                    console.log(bound);
-                    // Точки эквивалентны в допустимой погрешности и зумить есть куда
-                    if(!ymaps.util.math.areEqual(bound[0], bound[1], 0.0001) && yamap.getZoom() != yamap.options.get('maxZoom')){
-                        yamap.setBounds(bound, {duration:400});
+                            var coord = geoObjects[geoKey].geometry.getCoordinates();
+                            if(bound[1][0] < coord[0])
+                                bound[1][0] = coord[0];
+                            if(bound[1][1] < coord[1])
+                                bound[1][1] = coord[1];
+                            if(bound[0][0] > coord[0])
+                                bound[0][0] = coord[0];
+                            if(bound[0][1] > coord[1])
+                                bound[0][1] = coord[1];
+                        }
+                        // Точки эквивалентны в допустимой погрешности и зумить есть куда
+                        if(!ymaps.util.math.areEqual(bound[0], bound[1], 0.0001) && yamap.getZoom() != yamap.options.get('maxZoom')){
+                            yamap.setBounds(bound, {duration:400});
+                        }else{
+                            yamap.setBounds(bound, {duration:400});
+                        }
                     }else{
-                        yamap.setBounds(bound, {duration:400});
+                        Map.renderInfo(target.properties.getAll().point);
                     }
 
-                    d_geoObjects = geoObjects;
-                    console.log(geoObjects);
                 });
+        },
+
+        renderInfo: function(point){
+            if(!point.name){
+                point.name = point.company+' #'+point._id
+            }
+            $('.map-popup__info__title h2').html(point.name);
+            $('.map-popup__info__table .rub').html('load');
+            var payType = [];
+            if(point.is_cash){
+                payType.push('Наличными');
+            }
+            if(point.is_card){
+                payType.push('Visa/MasterCard');
+            }
+            if(payType.length == 0){
+                payType.push('Предоплата');
+            }
+            $('.map-popup__info__table .payType').html(payType.join(', '));
+
+            $('.map-popup__info').fadeIn();
+
         },
 
         citySearch: function() {
