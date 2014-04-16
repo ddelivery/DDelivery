@@ -71,7 +71,7 @@
     <!--map-popup__head end-->
     <div class="map-popup__main">
     <div class="map-popup__main__overlay">&nbsp;</div>
-    <div class="map-popup__main__delivery">
+    <div class="map-popup__main__delivery small">
         <table>
             <?foreach($courierCompanyList as $key => $courierCompany):
                 ?>
@@ -91,7 +91,7 @@
                         от <strong><?=$courierCompany->delivery_price?> <i class="icon-rub">&nbsp;</i></strong>
                     </td>
                     <td class="col5">
-                        от <strong><?=$courierCompany->delivery_time_min?></strong> дня
+                        <strong><?=$courierCompany->delivery_time_min?></strong> дня
                     </td>
                 </tr>
             <?endforeach;?>

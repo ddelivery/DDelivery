@@ -31,7 +31,7 @@ namespace DDelivery\Point;
  * @property int schedule
  * @property int longitude
  * @property int latitude
- * @property int type
+ * @property int type 1 - ячейка, 2 - живой пункт
  * @property int status
  * @property int has_fitting_room
  * @property int is_cash
@@ -114,7 +114,8 @@ class DDeliveryPointSelf extends DDeliveryAbstractPoint{
      */
     public function toJson()
     {
-        $params = array('_id', 'name', 'longitude', 'latitude', 'schedule', 'is_cash', 'is_card', 'has_fitting_room', 'company', 'company_id', 'address');
+        $params = array('_id', 'name', 'longitude', 'latitude', 'schedule', 'is_cash', 'is_card',
+            'has_fitting_room', 'company', 'company_id', 'address', 'type');
         $result = array();
         foreach($params as $param){
             $result[$param] = $this->get($param);

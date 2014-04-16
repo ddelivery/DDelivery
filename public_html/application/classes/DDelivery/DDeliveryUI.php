@@ -1195,9 +1195,13 @@ class DDeliveryUI
 
         $points = $this->getSelfPoints($cityId);
         $pointsJs = array();
+
         foreach($points as $point) {
             $pointsJs[] = $point->toJson();
         }
+        $staticURL = $this->shop->getStaticPath();
+        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $cityId);
+
 
         ob_start();
         include(__DIR__ . '/../../templates/map.php');

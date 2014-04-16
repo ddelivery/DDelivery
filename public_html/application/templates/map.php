@@ -2,7 +2,9 @@
 /**
  * @var \DDelivery\DDeliveryUI $this
  * @var array[] $cityList
+ * @var DDelivery\Point\DDeliveryPointSelf[] $selfCompanyList
  */
+
 ?>
 <style type="text/css">
     .map-popup div.map__search_dropdown {
@@ -75,10 +77,10 @@
     </div>
     <!--map-popup__head end-->
     <div class="map-popup__main">
-
+    <?//var_dump($selfCompanyList);?>
         <div class="map-popup__main__overlay">&nbsp;</div>
         <div class="map">
-            <div class="map-canvas" style="width: 1000px; height: 562px"></div>
+            <div class="map-canvas" style="width: 1000px; height: 568px"></div>
             <div class="map__search clearfix">
                 <input type="text" placeholder="Адрес или объект"/>
                 <input type="submit" value="ПОИСК"/>
@@ -91,40 +93,24 @@
             <div class="map-popup__main__right__btn"><i>&nbsp;</i></div>
             <h2>Пункты:</h2>
 
-            <div class="places">
+            <div class="places" style="overflow-y: auto; overflow-x: hidden; height: 370px;">
                 <ul class="clearfix">
-                    <li>
-                        <a href="#info1" class="clearfix border">
-                            <span class="img"><img src="img/67x49.png" alt="title"/></span>
-                            <span class="price">100 $</span>
-                            <span class="date">от <strong>1</strong> дня</span>
-                            <i class="shadow">&nbsp;</i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#info2" class="clearfix hasinfo">
-                            <span class="img"><img src="img/67x49.png" alt="title"/></span>
-                            <span class="price">100 $</span>
-                            <span class="date">от <strong>1</strong> дня</span>
-                            <i class="shadow">&nbsp;</i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#info3" class="clearfix bg hasinfo">
-                            <span class="img"><img src="img/67x49.png" alt="title"/></span>
-                            <span class="price">100 $</span>
-                            <span class="date">от <strong>1</strong> дня</span>
-                            <i class="shadow">&nbsp;</i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#info4" class="clearfix">
-                            <span class="img"><img src="img/67x49.png" alt="title"/></span>
-                            <span class="price">100 $</span>
-                            <span class="date">от <strong>1</strong> дня</span>
-                            <i class="shadow">&nbsp;</i>
-                        </a>
-                    </li>
+                    <?
+                    $companySubInfo = $this->getCompanySubInfo();
+                    $selfCompanyList = array_slice($selfCompanyList, 0, 4);
+                    foreach($selfCompanyList as $selfCompany):
+
+                        $ico = isset($companySubInfo[$selfCompany['delivery_company']]) ? $companySubInfo[$selfCompany['delivery_company']]['ico'] : 'pack';
+                        ?>
+                        <li>
+                            <a href="javascript:void(0)" class="clearfix border <?//hasinfo?>">
+                                <span class="img"><img src="<?=$staticURL?>img/logo/<?=$ico?>.png" alt="title"/></span>
+                                <span class="price"><?=floor($selfCompany['total_price'])?> р</span>
+                                <span class="date">от <strong><?=$selfCompany['delivery_time_min']?></strong> дня</span>
+                                <i class="shadow">&nbsp;</i>
+                            </a>
+                        </li>
+                    <?endforeach;?>
                 </ul>
             </div>
             <!--places end-->
@@ -134,22 +120,29 @@
 
                 <div class="filters__small clearfix">
                     <ul>
-                        <li><a href="#" class="bg"><i class="icon-dollar">&nbsp;</i></a></li>
-                        <li><a href="#" class="border"><i class="icon-credit">&nbsp;</i></a></li>
-                        <li><a href="#"><i class="icon-time">&nbsp;</i></a></li>
-                        <li><a href="#" class="border"><i class="icon-wear">&nbsp;</i></a></li>
-                        <li><a href="#" class="border"><i class="icon-safe">&nbsp;</i></a></li>
-                        <li><a href="#"><i class="icon-safe">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" class="border" data-filter="cash"><i class="icon-dollar">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" class="border" data-filter="card"><i class="icon-credit">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" class="" data-filter="time"><i class="icon-time">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" class="" data-filter="has_fitting_room"><i class="icon-wear">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" class="border" data-filter="type1"><i class="icon-safe">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" class="border" data-filter="type2"><i class="icon-live">&nbsp;</i></a></li>
                     </ul>
                 </div>
 
                 <div class="filters__big">
-                    <p><strong>Способ оплаты</strong><a href="#" class="bg">Нал</a><a href="#" class="border">Карта</a>
+                    <?//Если вставить пробелы или \n то все разъедется?>
+                    <p><strong>Способ оплаты</strong><a
+                            href="javascript:void(0)" class="border" data-filter="cash">Нал</a><a
+                            href="javascript:void(0)" class="border" data-filter="card">Карта</a>
                     </p>
 
-                    <p><strong>Доп услуги</strong><a href="#">24 часа</a><a href="#" class="bg">Примерочная</a></p>
+                    <p><strong>Доп услуги</strong><a
+                            href="javascript:void(0)" class="" data-filter="time">24 часа</a><a
+                            href="javascript:void(0)" class="" data-filter="has_fitting_room">Примерочная</a></p>
 
-                    <p><strong>Тип пункта</strong><a href="#" class="bg">Ячейка</a><a href="#">Живой пункт</a></p>
+                    <p><strong>Тип пункта</strong><a
+                            href="javascript:void(0)" class="border" data-filter="type1">Ячейка</a><a
+                            href="javascript:void(0)" class="border" data-filter="type2">Живой пункт</a></p>
                 </div>
 
             </div>

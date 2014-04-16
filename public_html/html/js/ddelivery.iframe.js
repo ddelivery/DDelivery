@@ -72,11 +72,6 @@ var DDeliveryIframe = (function(){
                 }
             }
 
-            $('.map-popup__main__right__btn').on('click', function () {
-                $('.map-popup__main__right').toggleClass('map-popup__main__right_open');
-                $('.map-popup__info').toggleClass('wide');
-            });
-
             /*$(window).on('ddeliveryCityPlace', function(e, data){
                 $this.getData(data.id)
             });*/
