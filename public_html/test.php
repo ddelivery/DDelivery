@@ -122,7 +122,7 @@ $order->toEmail = '';
 
 echo $DDeliveryUI->saveFullOrder($order);
 //print_r($DDeliveryUI->getAllOrders());
-print_r($DDeliveryUI->initIntermediateOrder(array(1)));
+print_r($DDeliveryUI->initIntermediateOrder(array(1,2,3,4,5,6)));
 /*
 $id = $DDeliveryUI->saveFullOrder($order);
 echo $id;
