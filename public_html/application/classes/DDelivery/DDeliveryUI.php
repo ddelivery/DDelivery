@@ -83,7 +83,7 @@ class DDeliveryUI
         
         $this->messager = new Sdk\DDeliveryMessager($this->shop->isTestMode());
     }
-    public 
+   
     /**
      * Жду подтверждение  для необходимости  реализации
      *
