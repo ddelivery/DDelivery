@@ -129,7 +129,7 @@ class DDeliverySDK {
      */
     public function addSelfOrder( $delivery_point, $dimensionSide1, $dimensionSide2, $dimensionSide3,
                                   $confirmed = true, $weight, $to_name, $to_phone, $goods_description,
-    		                      $declaredPrice, $paymentPrice )
+    		                      $declaredPrice, $paymentPrice, $shop_refnum )
     {   
     	$params = array(
     			'type' => self::TYPE_SELF,
@@ -143,7 +143,8 @@ class DDeliverySDK {
     			'to_phone' => $to_phone,
     			'goods_description' => $goods_description,
     			'declared_price' => $declaredPrice,
-    			'payment_price' => $paymentPrice
+    			'payment_price' => $paymentPrice,
+    			'shop_refnum' => $shop_refnum
     	);
         
         $response = $this->requestProvider->request( 'order_create', $params,'post' );

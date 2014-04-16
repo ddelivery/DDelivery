@@ -83,7 +83,7 @@ class DDeliveryUI
         
         $this->messager = new Sdk\DDeliveryMessager($this->shop->isTestMode());
     }
-
+    public 
     /**
      * Жду подтверждение  для необходимости  реализации
      *
@@ -132,6 +132,30 @@ class DDeliveryUI
             {   
             	$productList = unserialize( $item->products );
                 $currentOrder = new DDeliveryOrder( $productList );
+                $currentOrder->type = $item->type;
+                $currentOrder->localId = $item->id;
+                $currentOrder->confirmed = $item->confirmed;
+                $currentOrder->amount = $item->amount;
+                $currentOrder->to_city = $item->to_city;
+                $currentOrder->status = $item->status;
+                $currentOrder->order_id = $item->order_id;
+                $currentOrder->ddeliveryorder_id = $item->ddeliveryorder_id;
+                if( $item->point != null )
+                {
+                	$currentOrder->point = unserialize( $item->point );
+                } 
+                $currentOrder->firstName = $item->firstName;
+                $currentOrder->secondName = $item->secondName;
+                $currentOrder->shop_refnum = $item->shop_refnum;
+                $currentOrder->declared_price = $item->declared_price;
+                $currentOrder->paymentPrice = $item->payment_price;
+                $currentOrder->to_name = $item->to_name;
+                $currentOrder->to_phone = $item->to_phone;
+                $currentOrder->goods_description = $item->goods_description;
+                $currentOrder->to_street = $item->to_street;
+                $currentOrder->to_house = $item->to_house;
+                $currentOrder->to_flat = $item->to_flat;
+                $currentOrder->to_email = $item->to_email;
             	$orderList[] = $currentOrder;
             }    
         }
@@ -663,7 +687,16 @@ class DDeliveryUI
     	$localId = $order->localId;
     	$productString = $order->getSerializedProducts();
     	if( $order->type == 1 )
-    	 {
+    	{   
+    	    try
+    	    {
+    		    $this->checkOrderSelfValues( $order );
+    	    }
+    	    catch (DDeliveryException $e)
+    	    {
+    		    $this->messager->pushMessage($e->getMessage());
+    	        return 0;
+    	    }
     	    $pointID = $point->get('_id');
     	    $id = $orderDB->saveFullSelfOrder( $localId, $pointID,
     	 			                           $dimensionSide1, $dimensionSide2, $dimensionSide3,
@@ -674,7 +707,15 @@ class DDeliveryUI
     	 }
     	 else if( $this->order->type == 2 )
     	 {  
-    	 	
+    	 	try
+    	 	{
+    	 		$this->checkOrderCourierValues( $order );
+    	 	}
+    	 	catch (DDeliveryException $e)
+    	 	{
+    	 		$this->messager->pushMessage( $e->getMessage() );
+    	 		return 0;
+    	 	}
     	    $to_street = $this->order->toStreet;
     	    $to_house = $this->order->toHouse;
     	    $to_flat = $this->order->toFlat;
@@ -804,12 +845,13 @@ class DDeliveryUI
     	    
     	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
     	    $paymentPrice = $this->shop->getPaymentPrice( $order, $orderPrice );
+    	    $shop_refnum = $order->shopRefnum;
     	    try
     	    {
     	        $response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
     				                                  $dimensionSide3, $confirmed, $weight, $to_name,
     				                                  $to_phone, $goods_description, $declaredPrice,
-    				                                  $paymentPrice );
+    				                                  $paymentPrice, $shop_refnum );
     	    }
     	    catch ( DDeliveryException $e )
     	    {

@@ -72,7 +72,7 @@ class DDeliveryOrder
     public $paymentPrice;
     
     /**
-     * @var string 
+     * @var string id заказа на стороне CMS обязательна для курьерки и для самовывоза
      */
     public $shopRefnum;
     /**

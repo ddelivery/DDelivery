@@ -29,22 +29,57 @@ class Order {
 	
 	/**
 	 * Создаем таблицу orders
+	 * 
+	 * Описание к полям таблицы:
+	 * 
+	 * paymen_variant способ оплаты
+	 * shop_refnum id заказа на стороне CMS
+	 * local_status статус заказа на стороне CMS
+	 * dd_status статус заказа на стороне ddelivery       
+	 * type тип заказа
+	 * amount сума заказа
+	 * products сериализированный массив с продуктами
+	 * to_city id города клиента
+	 * date дата добавления заявки
+	 * ddeliveryorder_id id заявки на стороне ddelivery
+	 * point_id id точки
+	 * delivery_company id компании
+	 * dimension_side1 сторона заказа 1
+	 * dimension_side2 строна заказа 2 
+	 * dimension_side3 сторона заказа 3 
+	 * confirmed подтвержден заказ
+	 * weight вес
+	 * declared_price свойство заказа dd
+	 * payment_price  свойство заказа dd
+	 * to_name    ФИО клиента 
+	 * to_phone телефон клиента
+	 * goods_description описание товаров
+	 * to_street  улица   
+	 * to_house дом
+	 * to_flat квартира
+	 * to_email емейл
+	 * firstName имя
+	 * secondName Фамилия
+	 * serilize упакованый order
+	 * point сериализированный объект точки
+	 * 
 	 */
 	public function createTable()
 	{
 		$this->pdo->exec("CREATE TABLE IF NOT EXISTS orders (
                           id INTEGER PRIMARY KEY AUTOINCREMENT,
+				          paymen_variant INTEGER,
+				          shop_refnum INTEGER,
+				          local_status INTEGER,
+				          dd_status INTEGER,          
 					      type INTEGER,
 				          amount REAL,
 				          products TEXT,
 					      to_city INTEGER,
-				          status INTEGER,
-					      order_id INTEGER,
 				          date TEXT,
 				          ddeliveryorder_id INTEGER,
 				          point_id INTEGER,  
 					      delivery_company INTEGER,
-				          shop_refnum TEXT,
 					      dimension_side1 INTEGER,
 				 	      dimension_side2 INTEGER,
 					      dimension_side3 INTEGER,
@@ -59,7 +94,10 @@ class Order {
 				          to_house TEXT,
 				          to_flat TEXT,
 				          to_email TEXT,
-                          serilize TEXT
+				          firstName TEXT,
+				          secondName TEXT,
+                          serilize TEXT,
+				          point TEXT
                         )");
 	}
 	
