@@ -8,6 +8,7 @@
 		 
 namespace DDelivery\Sdk;
 
+use DDelivery\DDeliveryException;
 /**
  * DDelivery Sdk - API для работы с сервером DDelivery
  *
@@ -100,8 +101,12 @@ class DDeliverySDK {
     			'to_flat' => $to_flat,
     			'to_email' => $to_email
     	);
-    
-    	return $this->requestProvider->request( 'order_create', $params,'post' );
+    	$response = $this->requestProvider->request( 'order_create', $params,'post' );
+    	if( !count ( $response->response ))
+    	{
+    		throw new DDeliveryException( implode(',', $response->errorMessage ));
+    	}
+    	return $response;
     }
     
     
@@ -141,7 +146,12 @@ class DDeliverySDK {
     			'payment_price' => $paymentPrice
     	);
         
-        return $this->requestProvider->request( 'order_create', $params,'post' );
+        $response = $this->requestProvider->request( 'order_create', $params,'post' );
+        if( !count ( $response->response ))
+        {
+        	throw new DDeliveryException( implode(',', $response->errorMessage ));
+        }
+        return $response;
     }
     
     /**
@@ -158,7 +168,12 @@ class DDeliverySDK {
     			'cities' => $cities,
     			'companies' => $companies
     	);
-    	return $this->requestProvider->request('geoip', $params, 'get', $this->server . 'node');
+    	$response = $this->requestProvider->request('geoip', $params, 'get', $this->server . 'node');
+    	if( !$response->success )
+    	{
+    	    throw new DDeliveryException( $response->errorMessage );
+    	}
+    	return $response;
     }
     
     /**
@@ -173,7 +188,12 @@ class DDeliverySDK {
             '_action' => 'geoip',
             'ip' => $ip
         );
-    	return $this->requestProvider->request('geoip', $params, 'get', 'devnode');
+    	$response = $this->requestProvider->request('geoip', $params, 'get', 'devnode');
+    	if( !$response->success )
+    	{
+    	    throw new DDeliveryException( $response->errorMessage );
+    	}
+    	return $response;
     }
     
     /**
@@ -204,8 +224,14 @@ class DDeliverySDK {
     	
     	if($paymentPrice !== null)
     		$params['payment_price']  = $paymentPrice;
-    
-    	return $this->requestProvider->request( 'calculator', $params );
+    	
+    	$response = $this->requestProvider->request( 'calculator', $params );
+    	if( !$response->success )
+    	{
+    	    throw new DDeliveryException( $response->errorMessage );
+    	}
+    	
+    	return $response;
     }
 
     /**
@@ -238,7 +264,12 @@ class DDeliverySDK {
         if($paymentPrice !== null)
             $params['payment_price']  = $paymentPrice;
 		
-        return $this->requestProvider->request( 'calculator', $params );
+        $response = $this->requestProvider->request( 'calculator', $params );
+        if( !$response->success )
+        {
+        	throw new DDeliveryException( $response->errorMessage );
+        }
+        return $response;
     }
 
     /**
@@ -269,8 +300,12 @@ class DDeliverySDK {
 		
         if($paymentPrice !== null)
             $params['payment_price']  = $paymentPrice;
-
-        return $this->requestProvider->request('calculator', $params);
+        $response = $this->requestProvider->request('calculator', $params);
+        if( !$response->success )
+        {
+        	throw new DDeliveryException( $response->errorMessage );
+        }
+        return $response;
     }
 	
     
@@ -287,9 +322,13 @@ class DDeliverySDK {
     			'_action' => 'autocomplete',
     			'q' => $q
     	);
-    	
-    	return $this->requestProvider->request('autocomplete', $params,
+    	$response = $this->requestProvider->request('autocomplete', $params,
     											'get', $this->server . 'node') ;
+    	if( !$response->success )
+        {
+        	throw new DDeliveryException( $response->errorMessage );
+        }
+        return $response;
     }
 
 

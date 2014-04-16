@@ -9,4 +9,4 @@
 */
 namespace DDelivery\Sdk;
 
-class DDeliveryOrderException extends \Exception{}
+class DDeliverySDKException extends \Exception{}
