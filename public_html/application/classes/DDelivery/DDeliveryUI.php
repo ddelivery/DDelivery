@@ -110,13 +110,13 @@ class DDeliveryUI
     	$orderDB = new DataBase\Order();
     	return $orderDB->setShopOrderID($id, $shopOrderID);
     }
-    
+
     /**
      * Инициализирует массив заказов из массива id заказов локальной БД
      *
-     * @param array  $ids массив с id заказов 
-     * 
-     * @return array DDeliveryOrder[]
+     * @param int[]  $ids массив с id заказов
+     *
+     * @return DDeliveryOrder[]
      */
     public function initIntermediateOrder($ids)
     {   

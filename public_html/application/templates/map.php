@@ -93,19 +93,19 @@
             <div class="map-popup__main__right__btn"><i>&nbsp;</i></div>
             <h2>Пункты:</h2>
 
-            <div class="places" style="overflow-y: auto; overflow-x: hidden; height: 370px;">
+            <div class="places">
                 <ul class="clearfix">
                     <?
                     $companySubInfo = $this->getCompanySubInfo();
-                    $selfCompanyList = array_slice($selfCompanyList, 0, 4);
+                    $selfCompanyList = array_slice($selfCompanyList, 0, 5);
                     foreach($selfCompanyList as $selfCompany):
 
                         $ico = isset($companySubInfo[$selfCompany['delivery_company']]) ? $companySubInfo[$selfCompany['delivery_company']]['ico'] : 'pack';
                         ?>
                         <li>
-                            <a href="javascript:void(0)" class="clearfix border <?//hasinfo?>">
+                            <a href="javascript:void(0)" data-id="<?=$selfCompany['delivery_company']?>" class="clearfix border <?//hasinfo?>">
                                 <span class="img"><img src="<?=$staticURL?>img/logo/<?=$ico?>.png" alt="title"/></span>
-                                <span class="price"><?=floor($selfCompany['total_price'])?> р</span>
+                                <span class="price"><?=floor($selfCompany['total_price'])?> <i class="icon-rub">&nbsp;</i></span>
                                 <span class="date">от <strong><?=$selfCompany['delivery_time_min']?></strong> дня</span>
                                 <i class="shadow">&nbsp;</i>
                             </a>
@@ -120,12 +120,12 @@
 
                 <div class="filters__small clearfix">
                     <ul>
-                        <li><a href="javascript:void(0)" class="border" data-filter="cash"><i class="icon-dollar">&nbsp;</i></a></li>
-                        <li><a href="javascript:void(0)" class="border" data-filter="card"><i class="icon-credit">&nbsp;</i></a></li>
-                        <li><a href="javascript:void(0)" class="" data-filter="time"><i class="icon-time">&nbsp;</i></a></li>
-                        <li><a href="javascript:void(0)" class="" data-filter="has_fitting_room"><i class="icon-wear">&nbsp;</i></a></li>
-                        <li><a href="javascript:void(0)" class="border" data-filter="type1"><i class="icon-safe">&nbsp;</i></a></li>
-                        <li><a href="javascript:void(0)" class="border" data-filter="type2"><i class="icon-live">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" title="Принимает наличные" class="border" data-filter="cash"><i class="icon-dollar">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" title="Принимает пластиковые карты" class="border" data-filter="card"><i class="icon-credit">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" title="Круглосуточно" data-filter="time"><i class="icon-time">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" title="Наличие примерочной" data-filter="has_fitting_room"><i class="icon-wear">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" title="Ячейка самовывоза" class="border" data-filter="type1"><i class="icon-safe">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" title="Живой пункт" class="border" data-filter="type2"><i class="icon-live">&nbsp;</i></a></li>
                     </ul>
                 </div>
 

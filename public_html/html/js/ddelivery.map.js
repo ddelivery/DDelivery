@@ -15,7 +15,8 @@ Map = (function () {
         time: false,
         has_fitting_room: false,
         type1: true,
-        type2: true
+        type2: true,
+        hideCompany: []
     };
 
     var staticUrl;
@@ -93,7 +94,7 @@ Map = (function () {
 
             var geoObjects = [];
             var point;
-            console.table(points);
+
             for (var pointKey in points) {
                 point = points[pointKey];
                 point.display = true;
@@ -164,20 +165,35 @@ Map = (function () {
             var pointsRemove = [];
             var pointsAdd = [];
             var point, display;
+            // В рамках функции красивей решается
+            var isDisplayPoint = function(point) {
+                // Если не удовлетворяет одному из вариантов
+                if (!((filter.card && point.is_card) || (filter.cash && point.is_cash))) {
+                    return false;
+                }
+
+                if(point.type == 1 && !filter.type1) {
+                    return false;
+                }
+                if(point.type == 2 && !filter.type2) {
+                    return false;
+                }
+
+                if (filter.time && point.schedule) {
+                    return false;
+                }
+                if (filter.has_fitting_room && !point.has_fitting_room) {
+                    return false;
+                }
+                if(filter.hideCompany.indexOf(point.company_id) != -1){
+                    return false;
+                }
+                return true;
+            };
+
             for (var pointKey in points) {
                 point = points[pointKey];
-                display = false;
-                if ((filter.card && point.is_card) || (filter.cash && point.is_cash)) {
-                    if ((filter.type1 && point.type == 1) || (filter.type2 && point.type == 2)) {
-                        display = true;
-                    }
-                }
-                if (display && filter.time) {
-                    display = !point.schedule;
-                }
-                if (display && filter.has_fitting_room) {
-                    display = point.has_fitting_room;
-                }
+                display = isDisplayPoint(point);
                 if (point.display != display) {
                     if (display) { // Скрыта, пказать
                         pointsAdd.push(point.placemark);
@@ -213,6 +229,18 @@ Map = (function () {
                     $('.filters a[data-filter='+filterName+']').addClass('border');
                 }else{
                     $('.filters a[data-filter='+filterName+']').removeClass('border');
+                }
+                Map.filterPoints();
+            });
+
+            $('.map-popup__main__right .places a').click(function(){
+                var check = $(this).hasClass('border');
+                if(check) {
+                    $(this).removeClass('border').addClass('hasinfo');
+                    filter.hideCompany.push(parseInt($(this).data('id')));
+                }else{
+                    $(this).addClass('border').removeClass('hasinfo');
+                    filter.hideCompany.splice(filter.hideCompany.indexOf(parseInt($(this).data('id'))), 1);
                 }
                 Map.filterPoints();
             });

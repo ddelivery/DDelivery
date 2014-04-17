@@ -30,6 +30,11 @@ class ShopAdapter extends DShopAdapter
         return $products;
     }
 
+    public function isTestMode()
+    {
+        return false;
+    }
+
     /**
      * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
      * @return string
