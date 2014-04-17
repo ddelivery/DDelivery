@@ -757,10 +757,9 @@ class DDeliveryUI
     	{   
     	    
     	    $pointID = $point->get('_id');
-    	    $id = $orderDB->saveFullSelfOrder( $localId, $pointID,
-    	 			                           $dimensionSide1, $dimensionSide2, $dimensionSide3, $shop_refnum,
-    	 			                           $confirmed, $weight, $to_name, $to_phone,
-    	 			                           $goods_description, $declaredPrice,
+    	    $id = $orderDB->saveFullSelfOrder( $localId, $pointID, $dimensionSide1, $dimensionSide2, 
+    	    		                           $dimensionSide3, $shop_refnum, $confirmed, $weight, 
+    	    		                           $to_name, $to_phone, $goods_description, $declaredPrice,
     	 			                           $paymentPrice, $ddeliveryID, $to_city, $delivery_company,
     	                                       $productString, $localStatus, $ddStatus );
     	 }
@@ -771,12 +770,11 @@ class DDeliveryUI
     	    $to_house = $this->order->toHouse;
     	    $to_flat = $this->order->toFlat;
     	    
-    	    $id = $orderDB->saveFullCourierOrder( $localId, $to_city, $delivery_company,
-    	 			                              $dimensionSide1, $dimensionSide2, $dimensionSide3,
-    	 			                              $shop_refnum, $confirmed, $weight, $to_name,
-    	 			                              $to_phone, $goods_description, $declaredPrice,
-    	 			                              $paymentPrice, $to_street, $to_house, $to_flat,
-    	 			                              $ddeliveryID, $productString, $localStatus, $ddStatus );
+    	    $id = $orderDB->saveFullCourierOrder( $localId, $to_city, $delivery_company, $dimensionSide1, 
+    	    		                              $dimensionSide2, $dimensionSide3, $shop_refnum, $confirmed, 
+    	    		                              $weight, $to_name, $to_phone, $goods_description, $declaredPrice,
+    	 			                              $paymentPrice, $to_street, $to_house, $to_flat, $ddeliveryID, 
+    	    		                              $productString, $localStatus, $ddStatus );
     	 }
 
     	 return $id;
@@ -835,12 +833,10 @@ class DDeliveryUI
     	    $shop_refnum = $order->shopRefnum;
             try
             {
-    	        $response = $this->sdk->addCourierOrder( $to_city, $delivery_company,
-                                                         $dimensionSide1, $dimensionSide2,
-    			                                         $dimensionSide3, $shop_refnum, $confirmed,
-    			                                         $weight, $to_name, $to_phone, $goods_description,
-    			                                         $declaredPrice, $paymentPrice, $to_street,
-                                                         $to_house, $to_flat );
+    	        $response = $this->sdk->addCourierOrder( $to_city, $delivery_company, $dimensionSide1, $dimensionSide2,
+    			                                         $dimensionSide3, $shop_refnum, $confirmed, $weight, 
+    	        		                                 $to_name, $to_phone, $goods_description, $declaredPrice, 
+    	        		                                 $paymentPrice, $to_street, $to_house, $to_flat );
             }
             catch ( DDeliveryException $e )
             {

@@ -166,7 +166,7 @@ class Order {
 	 * @param int $dimensionSide1
 	 * @param int $dimensionSide2
 	 * @param int $dimensionSide3
-	 * @param string $shop_refnum
+	 * @param int $shop_refnum
 	 * @param int $confirmed
 	 * @param float $weight
 	 * @param string $to_name
@@ -180,21 +180,21 @@ class Order {
 	 * @param $ddeliveryOrderID - id заказа на стороне сервера ddelivery
 	 *    
 	 */
-	public function saveFullCourierOrder( $intermediateID, $to_city, $delivery_company, 
-                                          $dimensionSide1, $dimensionSide2, 
-    			                          $dimensionSide3, $shop_refnum, $confirmed, 
-    			                          $weight, $to_name, $to_phone, $goods_description, 
-    			                          $declaredPrice, $paymentPrice, $to_street, 
-                                          $to_house, $to_flat, $ddeliveryOrderID, $productString,$localStatus, $ddStatus ) 
+	public function saveFullCourierOrder( $intermediateID, $to_city, $delivery_company, $dimensionSide1, 
+			                              $dimensionSide2, $dimensionSide3, $shop_refnum, $confirmed, 
+    			                          $weight, $to_name, $to_phone, $goods_description, $declaredPrice, 
+			                              $paymentPrice, $to_street, $to_house, $to_flat, $ddeliveryOrderID, 
+			                              $productString,$localStatus, $ddStatus ) 
 	{
 		$wasUpdate = 0;
  		$this->pdo->beginTransaction();
  		if( $this->isRecordExist( $intermediateID ) )
  		{   
 			
-			$query = 'UPDATE orders SET type = :type, to_city = :to_city, ddeliveryorder_id = :ddeliveryorder_id, delivery_company = :delivery_company,
-					  dimension_side1 = :dimension_side1, dimension_side2 = :dimension_side2, dimension_side3 = :dimension_side3,
-					  confirmed = :confirmed, weight = :weight, declared_price = :declared_price, payment_price = :payment_price, to_name = :to_name,
+			$query = 'UPDATE orders SET type = :type, to_city = :to_city, ddeliveryorder_id = :ddeliveryorder_id, 
+					  delivery_company = :delivery_company, dimension_side1 = :dimension_side1, 
+					  dimension_side2 = :dimension_side2, dimension_side3 = :dimension_side3, confirmed = :confirmed, 
+					  weight = :weight, declared_price = :declared_price, payment_price = :payment_price, to_name = :to_name,
 					  to_phone = :to_phone, goods_description = :goods_description, to_street= :to_street, 
 					  to_house = :to_house, to_flat = :to_flat, date = :date, 
 					  shop_refnum =:shop_refnum, products = :products, local_status = :local_status,
@@ -265,7 +265,7 @@ class Order {
 	 * @param int $dimensionSide1
 	 * @param int $dimensionSide2
 	 * @param int $dimensionSide3
-	 * @param string $shop_refnum
+	 * @param int $shop_refnum
 	 * @param int $confirmed
 	 * @param float $weight
 	 * @param string $to_name
@@ -278,10 +278,10 @@ class Order {
 	 * @param $companyID 
 	 *
 	 */
-	public function saveFullSelfOrder( $intermediateID, $pointID, $dimensionSide1, $dimensionSide2,
-                                       $dimensionSide3, $shop_refnum, $confirmed, $weight, $to_name,
-                                       $to_phone, $goods_description, $declaredPrice, 
-    			                       $paymentPrice, $ddeliveryOrderID, $toCity, $companyID, $productString, $localStatus, $ddStatus )
+	public function saveFullSelfOrder( $intermediateID, $pointID, $dimensionSide1, $dimensionSide2, $dimensionSide3, 
+			                           $shop_refnum, $confirmed, $weight, $to_name, $to_phone, $goods_description, 
+			                           $declaredPrice,  $paymentPrice, $ddeliveryOrderID, $toCity, $companyID, 
+			                           $productString, $localStatus, $ddStatus )
 	{
 		
 		$this->pdo->beginTransaction();
@@ -289,12 +289,14 @@ class Order {
 		if( $this->isRecordExist( $intermediateID ) )
 		{
 			
-			$query = 'UPDATE orders SET type = :type, point_id = :point_id, to_city = :to_city, ddeliveryorder_id = :ddeliveryorder_id,
-					  dimension_side1 = :dimension_side1, dimension_side2 = :dimension_side2, dimension_side3 = :dimension_side3, 
-					  confirmed = :confirmed, weight = :weight, declared_price = :declared_price, payment_price = :payment_price, to_name = :to_name,
-					  to_phone = :to_phone, goods_description = :goods_description,date = :date, 
-					  delivery_company = :delivery_company, products = :products, local_status = :local_status,
-				      dd_status = :dd_status, shop_refnum = :shop_refnum  WHERE id=:id';
+			$query = 'UPDATE orders SET type = :type, point_id = :point_id, to_city = :to_city, 
+					  ddeliveryorder_id = :ddeliveryorder_id, dimension_side1 = :dimension_side1, 
+					  dimension_side2 = :dimension_side2, dimension_side3 = :dimension_side3, 
+					  confirmed = :confirmed, weight = :weight, declared_price = :declared_price, 
+					  payment_price = :payment_price, to_name = :to_name, to_phone = :to_phone, 
+					  goods_description = :goods_description,date = :date,  delivery_company = :delivery_company, 
+					  products = :products, local_status = :local_status, dd_status = :dd_status, 
+					  shop_refnum = :shop_refnum  WHERE id=:id';
 			
 			$stmt = $this->pdo->prepare($query);
 			$stmt->bindParam( ':id', $id );
@@ -304,11 +306,13 @@ class Order {
 		{
 			
 			$query = 'INSERT INTO orders ( type, to_city, ddeliveryorder_id,  dimension_side1,
-                      dimension_side2, dimension_side3, confirmed, weight, declared_price, payment_price, to_name,
-                      to_phone, goods_description, point_id, delivery_company, date, products, local_status, dd_status, shop_refnum)
+                      dimension_side2, dimension_side3, confirmed, weight, declared_price, 
+					  payment_price, to_name, to_phone, goods_description, point_id, delivery_company, 
+					  date, products, local_status, dd_status, shop_refnum)
 	                  VALUES ( :type, :to_city, :ddeliveryorder_id, :dimension_side1,
-                      :dimension_side2, :dimension_side3, :confirmed, :weight, :declared_price, :payment_price, :to_name,
-                      :to_phone, :goods_description, :point_id, :delivery_company, :date, :products, :local_status, :dd_status, :shop_refnum)';
+                      :dimension_side2, :dimension_side3, :confirmed, :weight, :declared_price, 
+					  :payment_price, :to_name, :to_phone, :goods_description, :point_id, 
+					  :delivery_company, :date, :products, :local_status, :dd_status, :shop_refnum)';
 			$stmt = $this->pdo->prepare($query);
 		}
 		$dateTime = date( "Y-m-d H:i:s" );
