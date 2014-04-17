@@ -94,16 +94,36 @@ class DDeliveryUI
      */
     public function update()
     {
-
+    
     }
     
+    
+    public function changeOrderStatus( $orederStatus )
+    {
+        echo $this->shop->getLocalStatusByDD($orederStatus);
+    }
+    
+    public function checkOrderStatus( $orderID )
+    {
+    	try
+    	{
+            $response = $this->sdk->getOrderStatus($orderID);
+    	}
+    	catch (DDeliveryException $e)
+    	{
+    		$this->messager->pushMessage( $e->getMessage() );
+    	}
+    	return $response;
+    }
     /**
      * После окончания оформления заказа в cms вызывается для 
      * дальнейшей обработки заказа
      *
      * @param int $id id заказа в локальной БД SQLLite
      * @param int $shopOrderID id заказа в CMS
-     *
+     * 
+     * @todo
+     * 
      * @return bool
      */
     public function onCmsOrderFinish( $id, $shopOrderID)
@@ -118,19 +138,28 @@ class DDeliveryUI
             return false;
         }
         $shopOrderInfo = $this->shop->getShopOrderInfo( $order[0]->shop_refnum );	
-        $this->setShopOrderID( $id, $shopOrderInfo['payment'], $shopOrderInfo['status'], $shopOrderInfo['id']);
+        //$this->setShopOrderID( $id, $shopOrderInfo['payment'], $shopOrderInfo['status'], $shopOrderInfo['id']);
+        $order->paymentVariant = $shopOrderInfo['payment'];
+        $order->shopRefnum = $shopOrderInfo['id'];
+        $order->localStatus = $shopOrderInfo['status'];
+        
         if( $this->shop->isStatusToSendOrder( $shopOrderInfo['status'], $order) )
         {
             if( $order->type == 1 )
             {
-                $this->createSelfOrder($order);
+                $ddOrderID = $this->createSelfOrder($order);
             }
             else if( $order->type == 2 )
             {
-                $this->createCourierOrder($order);
+                $ddOrderID = $this->createCourierOrder($order);
             }
+            $order->ddeliveryID = $ddOrderID;
         }
+        $this->saveFullOrder($order);
+        return true;
     }
+    
+    
     
     /**
      * Устанавливаем для заказа в таблице Orders SQLLite id заказа в CMS

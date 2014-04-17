@@ -109,6 +109,22 @@ class DDeliverySDK {
     	return $response;
     }
     
+    /**
+     * Получить статус заказа 
+     *
+     * @param int $orderID  id заказа на DDelivery 
+     *
+     */
+    public function getOrderStatus( $orderID )
+    {
+    	$params = array( 'order' => $orderID );
+    	$response = $this->requestProvider->request( 'order_status', $params,'get' );
+    	if( !count ( $response->response ))
+    	{
+    		throw new DDeliveryException( implode(',', $response->errorMessage ));
+    	}
+    	return $response;
+    }
     
     /**
      * Добавить заказ на самовывоз на обработку DDelivery
@@ -154,6 +170,8 @@ class DDeliverySDK {
         }
         return $response;
     }
+    
+   
     
     /**
      * Получить список точек для самовывоза
