@@ -97,12 +97,16 @@ class DDeliveryUI
     
     }
     
-    
+    /**
+     * @todo завтра допилится
+     */
     public function changeOrderStatus( $orederStatus )
     {
         echo $this->shop->getLocalStatusByDD($orederStatus);
     }
-    
+    /**
+     * @todo завтра допилится
+     */
     public function checkOrderStatus( $orderID )
     {
     	try
