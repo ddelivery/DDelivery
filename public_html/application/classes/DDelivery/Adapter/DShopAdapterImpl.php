@@ -27,6 +27,15 @@ class DShopAdapterImpl extends DShopAdapter
     	return $products;
     }
     
+    public function isStatusToSendOrder(  $status, $order )
+    {
+        return true;
+    }
+    
+    public function getShopOrderInfo( $orderID )
+    {
+        return array('id' => $orderID, 'status' => 4,'payment' => 6 );
+    }
 
     public function getAmount()
     {

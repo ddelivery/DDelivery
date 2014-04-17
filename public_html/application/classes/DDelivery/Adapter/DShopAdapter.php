@@ -102,12 +102,10 @@ abstract class DShopAdapter
      * @param string $status
      * @param DDeliveryOrder $order
      * 
-     * @return DDeliveryProduct[]
+     * @return bool
      */
-    public function isStatusToSendOrder( $status, $order )
-    {
-       return true;
-    }
+    public abstract function isStatusToSendOrder( $status, $order );
+    
     
     /**
      * Получить необходимую про заказ из CMS 
@@ -122,7 +120,7 @@ abstract class DShopAdapter
      *
      * @return array
      */
-    public abstract  function getShopOrderInfo( $orderID );
+    public abstract function getShopOrderInfo( $orderID );
     /**
      * Возвращает товары находящиеся в корзине пользователя, реализует кеширование getProductsFromCart
      * @return DDeliveryProduct[]

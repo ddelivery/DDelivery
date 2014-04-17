@@ -98,6 +98,31 @@ class DDeliveryUI
     }
     
     /**
+     * После окончания оформления заказа в cms вызывается для 
+     * дальнейшей обработки заказа
+     *
+     * @param int $id id заказа в локальной БД SQLLite
+     * @param int $shopOrderID id заказа в CMS
+     *
+     * @return bool
+     */
+    public function onCmsOrderFinish( $id, $shopOrderID)
+    {   
+        try
+        {
+            $order = $this->initIntermediateOrder( array($id) );
+        }
+        catch (DDeliveryException $e)
+        {
+            $this->messager->pushMessage( $e->getMessage() );
+            return false;
+        }
+        
+        $shopOrderInfo = $this->shop->getShopOrderInfo( $order[0]->shop_refnum );	
+        print_r($shopOrderInfo);
+    }
+    
+    /**
      * Устанавливаем для заказа в таблице Orders SQLLite id заказа в CMS
      *
      * @param int $id id локальной БД SQLLite
@@ -139,8 +164,9 @@ class DDeliveryUI
                 $currentOrder->confirmed = $item->confirmed;
                 $currentOrder->amount = $item->amount;
                 $currentOrder->to_city = $item->to_city;
-                $currentOrder->status = $item->status;
-                $currentOrder->order_id = $item->order_id;
+                $currentOrder->localStatus = $item->local_status;
+                $currentOrder->ddStatus = $item->dd_status;
+                $currentOrder->shopRefnum = $item->shop_refnum;
                 $currentOrder->ddeliveryorder_id = $item->ddeliveryorder_id;
                 if( $item->point != null )
                 {
@@ -160,6 +186,10 @@ class DDeliveryUI
                 $currentOrder->to_email = $item->to_email;
             	$orderList[] = $currentOrder;
             }    
+        }
+        else 
+        {
+        	throw new DDeliveryException('Заказ DD в локальной БД не найден');
         }
         return $orderList;
     }
@@ -707,10 +737,8 @@ class DDeliveryUI
     	$dimensionSide3 = $order->getDimensionSide3();
     	$goods_description = $order->getGoodsDescription();
     	$weight = $order->getWeight();
-
     	$to_city = $order->city;
     	$delivery_company = $point->getDeliveryInfo()->get('delivery_company');
-
     	$confirmed = $order->getConfirmed();
     	$to_name = $order->getToName();
     	$to_phone = $order->getToPhone();
@@ -720,16 +748,21 @@ class DDeliveryUI
     	$ddeliveryID = $order->ddeliveryID;
     	$localId = $order->localId;
     	$productString = $order->getSerializedProducts();
+    	
+    	$localStatus = $order->localStatus;
+    	$ddStatus = $order->ddStatus;
+    	$shop_refnum = $this->order->shopRefnum;
+    	
     	if( $order->type == 1 )
     	{   
     	    
     	    $pointID = $point->get('_id');
     	    $id = $orderDB->saveFullSelfOrder( $localId, $pointID,
-    	 			                           $dimensionSide1, $dimensionSide2, $dimensionSide3,
+    	 			                           $dimensionSide1, $dimensionSide2, $dimensionSide3, $shop_refnum,
     	 			                           $confirmed, $weight, $to_name, $to_phone,
     	 			                           $goods_description, $declaredPrice,
     	 			                           $paymentPrice, $ddeliveryID, $to_city, $delivery_company,
-    	                                       $productString );
+    	                                       $productString, $localStatus, $ddStatus );
     	 }
     	 else if( $this->order->type == 2 )
     	 {  
@@ -737,14 +770,13 @@ class DDeliveryUI
     	    $to_street = $this->order->toStreet;
     	    $to_house = $this->order->toHouse;
     	    $to_flat = $this->order->toFlat;
-    	    $shop_refnum = $this->order->shopRefnum;
+    	    
     	    $id = $orderDB->saveFullCourierOrder( $localId, $to_city, $delivery_company,
     	 			                              $dimensionSide1, $dimensionSide2, $dimensionSide3,
     	 			                              $shop_refnum, $confirmed, $weight, $to_name,
     	 			                              $to_phone, $goods_description, $declaredPrice,
     	 			                              $paymentPrice, $to_street, $to_house, $to_flat,
-
-    	 			                              $ddeliveryID, $productString );
+    	 			                              $ddeliveryID, $productString, $localStatus, $ddStatus );
     	 }
 
     	 return $id;

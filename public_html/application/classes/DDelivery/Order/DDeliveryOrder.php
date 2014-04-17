@@ -144,6 +144,18 @@ class DDeliveryOrder
     
     /**
      *
+     * @var string  статус заказа на стороне CMS
+     * 
+     */
+    public $localStatus;
+    /**
+     *
+     * @var string id статус заказа на стороне DD
+     *
+     */
+    public $ddStatus;
+    /**
+     *
      * @var int id заказа на стороне сервера ddelivery
      */
     public $ddeliveryID = 0;
