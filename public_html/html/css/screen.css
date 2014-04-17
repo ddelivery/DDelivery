@@ -287,3 +287,15 @@ sprites locations are 0 -56px/-20px -56px/-40px -56px/-60px -56px (light) and -8
 .map-popup .tip-box_i .text p { font-size: 14px; line-height: 18px; color: #666; }
 .map-popup .tip-box__arr { position: absolute; right: 10px; top: -6px; text-indent: 100%; white-space: nowrap; overflow: hidden; display: block; background: url('../img/icons-sdcb5931be9.png') 0 -687px no-repeat; width: 9px; height: 6px; }
 .map-popup .tip-box__close { display: block; text-indent: 100%; white-space: nowrap; overflow: hidden; position: absolute; right: 10px; top: 10px; background: url('../img/icons-sdcb5931be9.png') 0 -592px no-repeat; width: 8px; height: 8px; cursor: pointer; }
+.map-popup .places ul li a { border: 2px solid transparent; }
+.map-popup .places ul li a .price { font-size: 10px; line-height: 12px; }
+.map-popup .places ul li a .img img { max-height: 18px; }
+.map-popup .map-popup__main__right_open .places ul li a .img img { max-height: 100px; }
+.map-popup .places.info-open ul li a.hasinfo { border-color: #fff; width: 100%; position: relative; left: -4px; }
+.map-popup .places.info-open ul li a .shadow:after { display: none; }
+.map-popup .places.info-open ul li a.hasinfo .shadow:after { display: block; padding: 2px 0; top: -2px; }
+.map-popup .places.info-open ul li a.hasinfo.active .shadow:after { display: none; }
+.map-popup .map-popup__main__right_open .places ul li a .price, .map-popup .map-popup__main__right_open .places ul li a .date { height: 30px; line-height: 30px; }
+.map-popup .map-popup__main__right_open .places ul li a .img img { max-height: 30px; }
+.map-popup .map-popup__main__right_open .places ul li a .img { width: 85px; }
+.map-popup .map-popup__main__right { -webkit-transform: translate3d(0, 0, 0); -moz-transform: translate3d(0, 0, 0); -ms-transform: translate3d(0, 0, 0); -o-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }

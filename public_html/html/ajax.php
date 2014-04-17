@@ -6,7 +6,7 @@
  */
 
 ini_set("display_errors", "1");
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_NOTICE);
 
 $_SERVER['REMOTE_ADDR'] = '88.201.177.120';
 
@@ -86,6 +86,37 @@ class ShopAdapter extends DShopAdapter
     public function getAmount()
     {
         // TODO: Implement getAmount() method.
+    }
+
+    /**
+     * Проверяет статус заказа, при определенном статусе отправляем заказ на сервер dd
+     *
+     * @param string $status
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     *
+     * @return bool
+     */
+    public function isStatusToSendOrder($status, $order)
+    {
+        // TODO: Implement isStatusToSendOrder() method.
+    }
+
+    /**
+     * Получить необходимую про заказ из CMS
+     *
+     * Когда заказ в CMS закончил оформлятся нужно получить информацию для отправки на dd
+     * отдавать информацию необходимо в формате
+     * array( 'id' => 'id заказа', 'status' => 'Статус заказа', 'payment' => 'Способ оплаты').
+     * Типы данных 'status'  и 'payment' выбираются интегратором произвольные, в дальнейшем
+     * интегратор будет их обрабатывать
+     *
+     * @param string $orderID
+     *
+     * @return array
+     */
+    public function getShopOrderInfo($orderID)
+    {
+        // TODO: Implement getShopOrderInfo() method.
     }
 }
 
