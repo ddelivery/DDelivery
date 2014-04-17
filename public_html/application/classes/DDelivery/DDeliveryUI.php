@@ -117,9 +117,19 @@ class DDeliveryUI
             $this->messager->pushMessage( $e->getMessage() );
             return false;
         }
-        
         $shopOrderInfo = $this->shop->getShopOrderInfo( $order[0]->shop_refnum );	
-        print_r($shopOrderInfo);
+        $this->setShopOrderID( $id, $shopOrderInfo['payment'], $shopOrderInfo['status'], $shopOrderInfo['id']);
+        if( $this->shop->isStatusToSendOrder( $shopOrderInfo['status'], $order) )
+        {
+            if( $order->type == 1 )
+            {
+                $this->createSelfOrder($order);
+            }
+            else if( $order->type == 2 )
+            {
+                $this->createCourierOrder($order);
+            }
+        }
     }
     
     /**
