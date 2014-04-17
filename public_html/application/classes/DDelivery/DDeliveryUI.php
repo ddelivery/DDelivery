@@ -112,7 +112,7 @@ class DDeliveryUI
     	$orderDB = new DataBase\Order();
     	return $orderDB->setShopOrderID($id, $paymentVariant, $status, $shopOrderID);
     }
-
+    
     /**
      * Инициализирует массив заказов из массива id заказов локальной БД
      *

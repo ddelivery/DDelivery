@@ -104,11 +104,25 @@ abstract class DShopAdapter
      * 
      * @return DDeliveryProduct[]
      */
-    public function isValidStatusToOrder( $status, $order )
+    public function isStatusToSendOrder( $status, $order )
     {
        return true;
     }
     
+    /**
+     * Получить необходимую про заказ из CMS 
+     *
+     * Когда заказ в CMS закончил оформлятся нужно получить информацию для отправки на dd
+     * отдавать информацию необходимо в формате
+     * array( 'id' => 'id заказа', 'status' => 'Статус заказа', 'payment' => 'Способ оплаты').
+     * Типы данных 'status'  и 'payment' выбираются интегратором произвольные, в дальнейшем 
+     * интегратор будет их обрабатывать
+     * 
+     * @param string $orderID
+     *
+     * @return array
+     */
+    public abstract  function getShopOrderInfo( $orderID );
     /**
      * Возвращает товары находящиеся в корзине пользователя, реализует кеширование getProductsFromCart
      * @return DDeliveryProduct[]
