@@ -83,13 +83,32 @@ abstract class DShopAdapter
      * @var DDeliveryProduct[]
      */
     private $productsFromCart = null;
-
+    
+    
+    private $ddeliveryOrderStatus = array( '10' => 'В обработке', '20' => 'Подтверждена', '30' => 'На складе ИМ',
+                                           '40' => 'Заказ в пути', '50' => 'Заказ доставлен', '60' => 'Заказ получен',
+                                           '70' => 'Возврат заказа', '80' => 'Клиент вернул заказ', '90' => 'Частичный возврат заказа',
+                                           '100' => 'Возвращен в ИМ', '110' => 'Ожидание', '120' => 'Отмена');
+    
     /**
      * Возвращает товары находящиеся в корзине пользователя, будет вызван один раз, затем закеширован
      * @return DDeliveryProduct[]
      */
     protected abstract function _getProductsFromCart();
-
+    
+    /**
+     * Проверяет статус заказа, при определенном статусе отправляем заказ на сервер dd
+     * 
+     * @param string $status
+     * @param DDeliveryOrder $order
+     * 
+     * @return DDeliveryProduct[]
+     */
+    public function isValidStatusToOrder( $status, $order )
+    {
+       return true;
+    }
+    
     /**
      * Возвращает товары находящиеся в корзине пользователя, реализует кеширование getProductsFromCart
      * @return DDeliveryProduct[]

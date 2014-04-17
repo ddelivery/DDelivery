@@ -102,13 +102,15 @@ class DDeliveryUI
      *
      * @param int $id id локальной БД SQLLite
      * @param int $shopOrderID id заказа в CMS
-     *
+     * @param string $paymentVariant  вариант оплаты в CMS
+     * @param string $status статус заказа
+     * 
      * @return bool
      */
-    public function setShopOrderID( $id, $shopOrderID )
+    public function setShopOrderID( $id, $paymentVariant, $status, $shopOrderID )
     {
     	$orderDB = new DataBase\Order();
-    	return $orderDB->setShopOrderID($id, $shopOrderID);
+    	return $orderDB->setShopOrderID($id, $paymentVariant, $status, $shopOrderID);
     }
 
     /**
@@ -614,6 +616,22 @@ class DDeliveryUI
             	$errors[] = "Укажите пожалуйста email в верном формате";
             }
         }
+        
+        if( empty( $order->paymentVariant ) )
+        {
+        		$errors[] = "Не указан способ оплаты в CMS";
+        }
+        
+        if( empty( $order->status ) )
+        {
+        	$errors[] = "Не указан статус заказа в CMS";
+        }
+        
+        if( ! $order->shopRefnum )
+        {
+        	$errors[] = "Не найден id заказа в CMS";
+        }
+        
         if(count($errors))
         {
             throw new DDeliveryException(implode(', ', $errors));
@@ -650,6 +668,22 @@ class DDeliveryUI
         {
         	$errors[] = "Не верный тип доставки";
         }
+        
+        if( empty( $order->paymentVariant ) )
+        {
+        	$errors[] = "Не указан способ оплаты в CMS";
+        }
+        
+        if( empty( $order->status ) )
+        {
+        	$errors[] = "Не указан статус заказа в CMS";
+        }
+        
+        if( ! $order->shopRefnum )
+        {
+        	$errors[] = "Не найден id заказа в CMS";
+        }
+        
         if(count($errors))
         {
         	throw new DDeliveryException(implode(', ', $errors));
@@ -688,15 +722,7 @@ class DDeliveryUI
     	$productString = $order->getSerializedProducts();
     	if( $order->type == 1 )
     	{   
-    	    try
-    	    {
-    		    $this->checkOrderSelfValues( $order );
-    	    }
-    	    catch (DDeliveryException $e)
-    	    {
-    		    $this->messager->pushMessage($e->getMessage());
-    	        return 0;
-    	    }
+    	    
     	    $pointID = $point->get('_id');
     	    $id = $orderDB->saveFullSelfOrder( $localId, $pointID,
     	 			                           $dimensionSide1, $dimensionSide2, $dimensionSide3,
@@ -707,15 +733,7 @@ class DDeliveryUI
     	 }
     	 else if( $this->order->type == 2 )
     	 {  
-    	 	try
-    	 	{
-    	 		$this->checkOrderCourierValues( $order );
-    	 	}
-    	 	catch (DDeliveryException $e)
-    	 	{
-    	 		$this->messager->pushMessage( $e->getMessage() );
-    	 		return 0;
-    	 	}
+    	 	
     	    $to_street = $this->order->toStreet;
     	    $to_house = $this->order->toHouse;
     	    $to_flat = $this->order->toFlat;
