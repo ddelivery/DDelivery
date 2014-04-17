@@ -189,7 +189,7 @@
                     </tr>
                     <tr>
                         <td class="col1">Тип пункта:</td>
-                        <td class="col2">от <strong>1</strong> дня</td>
+                        <td class="col2 day">от <strong>1</strong> дня</td>
                     </tr>
                     <tr>
                         <td class="col1">Вариант оплаты:</td>
@@ -207,13 +207,13 @@
                         <table>
                             <tr>
                                 <td class="col1">Адресс:</td>
-                                <td class="col2">
+                                <td class="col2 address">
                                     ул. Социалистическая, д. 138
                                 </td>
                             </tr>
                             <tr>
                                 <td class="col1">Расписание работы:</td>
-                                <td class="col2">
+                                <td class="col2 schedule">
                                     пн: 09:00-18:30;<br/>
                                     вт: 09:00-18:30;<br/>
                                     ср: 09:00-18:30;<br/>
@@ -223,14 +223,14 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col1">Подробнее:</td>
-                                <td class="col2">
+                                <td class="col1">Пункт выдачи:</td>
+                                <td class="col2 company">
                                     Пункт выдачи BoxBerry
                                 </td>
                             </tr>
                             <tr>
                                 <td class="col1">Подробнее:</td>
-                                <td class="col2">
+                                <td class="col2 more">
                                     Угол ул. Социалистическая и
                                     пер. Парковый. Двухэтажное
                                     красное здание, крайняя дверь

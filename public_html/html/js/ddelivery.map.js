@@ -153,9 +153,14 @@ Map = (function () {
                             yamap.setBounds(bound, {duration: 400});
                         } else {
                             yamap.setBounds(bound, {duration: 400});
+                            var myPoints = [];
+                            for (var geoKey in geoObjects) {
+                                myPoints.push(geoObjects[geoKey].properties.get('point'));
+                            }
+                            Map.renderInfo(myPoints);
                         }
                     } else {
-                        Map.renderInfo(target.properties.getAll().point);
+                        Map.renderInfo(target.properties.get('point'));
                     }
 
                 });
@@ -244,27 +249,66 @@ Map = (function () {
                 }
                 Map.filterPoints();
             });
+
+            $('.map-popup__info__more__btn').on('click', function (e) {
+                e.preventDefault();
+                var el = $(this).toggleClass('open');
+                el.closest('.map-popup__info__more').find('.map-popup__info__more__text').slideToggle(function () {
+                    if ($('.no-touch').length) {
+                        $(this).mCustomScrollbar('update');
+                    }
+                });
+            });
+
         },
         renderInfo: function (point) {
+            var points = [];
+            cp = point;
+            if(point instanceof Array) {
+                points = point;
+                point = points[0];
+            }
             current_point = point;
+            if(points.length > 1){
+                $('.map-popup__info__title .more').show();
+            }else{
+                $('.map-popup__info__title .more').hide();
+            }
+
             if (!point.name) {
-                point.name = point.company + ' #' + point._id
+                point.name = point.company + ' #' + point._id;
             }
             $('.map-popup__info__title h2').html(point.name);
-            $('.map-popup__info__table .rub').html('load');
+            $('.map-popup__info__table .rub').html('<img src="'+DDeliveryIframe.staticUrl+'/img/ajax_loader_min.gif"/> ');
             var payType = [];
             if (point.is_cash) {
                 payType.push('Наличными');
             }
             if (point.is_card) {
-                payType.push('Visa/MasterCard');
+                payType.push('Банковскими картами');
             }
             if (payType.length == 0) {
                 payType.push('Предоплата');
             }
-            $('.map-popup__info__table .payType').html(payType.join(', '));
+            $('.map-popup__info__table .payType').html(payType.join('<br>'));
+
+            $('.map-popup__info__table .day').hide();
+
+            // Подробнее
+            var more = $('.map-popup__info__more__text_i table');
+            $('.address', more).html(point.address);
+            $('.schedule', more).html(point.schedule.replace(/\n/g, "<br>"));
+            $('.company', more).html(point.company);
+            $('.more', more).html('');
 
             $('.map-popup__info').fadeIn();
+
+            DDeliveryIframe.ajaxData(
+                {action: 'mapGetPoint', id: point._id},
+                function(data) {
+                    console.log(data);
+                }
+            );
         },
 
         citySearch: function () {
