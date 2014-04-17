@@ -122,10 +122,10 @@
                     <ul>
                         <li><a href="javascript:void(0)" title="Принимает наличные" class="border" data-filter="cash"><i class="icon-dollar">&nbsp;</i></a></li>
                         <li><a href="javascript:void(0)" title="Принимает пластиковые карты" class="border" data-filter="card"><i class="icon-credit">&nbsp;</i></a></li>
-                        <li><a href="javascript:void(0)" title="Круглосуточно" data-filter="time"><i class="icon-time">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" title="Круглосуточно" data-filter="time"><i class="icon-time2">&nbsp;</i></a></li>
                         <li><a href="javascript:void(0)" title="Наличие примерочной" data-filter="has_fitting_room"><i class="icon-wear">&nbsp;</i></a></li>
                         <li><a href="javascript:void(0)" title="Ячейка самовывоза" class="border" data-filter="type1"><i class="icon-safe">&nbsp;</i></a></li>
-                        <li><a href="javascript:void(0)" title="Живой пункт" class="border" data-filter="type2"><i class="icon-live">&nbsp;</i></a></li>
+                        <li><a href="javascript:void(0)" title="Живой пункт" class="border" data-filter="type2"><i class="icon-light">&nbsp;</i></a></li>
                     </ul>
                 </div>
 
