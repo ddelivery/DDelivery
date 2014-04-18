@@ -68,7 +68,7 @@ class Order {
 	{
 		$this->pdo->exec("CREATE TABLE IF NOT EXISTS orders (
                           id INTEGER PRIMARY KEY AUTOINCREMENT,
-				          paymen_variant INTEGER,
+				          paymen_variant TEXT,
 				          shop_refnum INTEGER,
 				          local_status INTEGER,
 				          dd_status INTEGER,          
@@ -177,10 +177,122 @@ class Order {
 		$result = (count($data))?1:0;
 		return $result;
 	}
-	
+	/**
+	 * @param DDeliveryOrder $order
+	 */
+	public function saveFullOrder( $order )
+	{
+	    $wasUpdate = 0;
+	    
+	    $point = $order->getPoint();
+	    $dimensionSide1 = $order->getDimensionSide1();
+	    $dimensionSide2 = $order->getDimensionSide2();
+	    $dimensionSide3 = $order->getDimensionSide3();
+	    $goods_description = $order->getGoodsDescription();
+	    $weight = $order->getWeight();
+	    $to_city = $order->city;
+	    $delivery_company = $point->getDeliveryInfo()->get('delivery_company');
+	    $confirmed = $order->getConfirmed();
+	    $to_name = $order->getToName();
+	    $to_phone = $order->getToPhone();
+	    $declaredPrice = $order->declaredPrice;
+	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
+	    $paymentPrice = $order->paymentPrice;
+	    $ddeliveryID = $order->ddeliveryID;
+	    $localId = $order->localId;
+	    $paymen_variant = $order->paymentVariant;
+	    $localStatus = $order->localStatus;
+	    $ddStatus = $order->ddStatus;
+	    $shop_refnum = $order->shopRefnum;
+	    $firstName = $order->firstName;
+	    $secondName = $order->secondName;
+	    $amount = $order->amount;
+	    $pointDB = serialize($point);
+	    $productString = $order->getSerializedProducts();
+	    $toStreet = $order->toStreet;
+	    $toHouse = $order->toHouse;
+	    $toFlat = $order->toFlat;
+	    $type = $order->type;
+	    
+	    $this->pdo->beginTransaction();
+	    if( $this->isRecordExist($localId) )
+	    {
+	    	$query = 'UPDATE orders SET paymen_variant = :paymen_variant, type = :type, amount =:amount,
+	    			  to_city = :to_city, 
+	    			  ddeliveryorder_id = :ddeliveryorder_id, delivery_company = :delivery_company, 
+	    			  dimension_side1 = :dimension_side1, dimension_side2 = :dimension_side2, 
+	    			  dimension_side3 = :dimension_side3, confirmed = :confirmed,
+			          weight = :weight, declared_price = :declared_price, payment_price = :payment_price, 
+	    			  to_name = :to_name, to_phone = :to_phone, goods_description = :goods_description, 
+	    			  to_street= :to_street, to_house = :to_house, to_flat = :to_flat, date = :date,
+			          shop_refnum =:shop_refnum, products = :products, local_status = :local_status,
+			          dd_status = :dd_status, first_name = :first_name, second_name =:second_name, 
+	    			  point = :point  WHERE id=:id';
+	    	$stmt = $this->pdo->prepare($query);
+	    	$stmt->bindParam( ':id', $localId );
+	    }
+	    else 
+	    {
+	    	$query = 'INSERT INTO orders (paymen_variant, type, amount, to_city, ddeliveryorder_id, 
+	    			  delivery_company, dimension_side1,
+                      dimension_side2, dimension_side3, confirmed, weight, declared_price, 
+	    			  payment_price, to_name, to_phone, goods_description, to_flat, to_house, 
+	    			  to_street, to_phone, date, shop_refnum, products, local_status, dd_status, 
+	    			  first_name, second_name, point)
+	                  VALUES(:paymen_variant, :type, :amount, :to_city, :ddeliveryorder_id, :delivery_company, 
+	    			  :dimension_side1, :dimension_side2, :dimension_side3, :confirmed, :weight, 
+	    			  :declared_price, :payment_price, :to_name, :to_phone, :goods_description, 
+	    			  :to_flat, :to_house, :to_street, :to_phone, :date, :shop_refnum, :products, 
+	    			  :local_status, :dd_status, :first_name, :second_name, :point )';
+	    	$stmt = $this->pdo->prepare($query);
+	    }
+	    $stmt->bindParam( ':paymen_variant', $paymen_variant );
+	    $stmt->bindParam( ':type', $type );
+	    $stmt->bindParam( ':amount', $amount );
+	    $dateTime = date( "Y-m-d H:i:s" );
+	    $stmt->bindParam( ':to_city', $to_city );
+	    $stmt->bindParam( ':ddeliveryorder_id', $ddeliveryOrderID );
+	    $stmt->bindParam( ':delivery_company', $delivery_company );
+	    $stmt->bindParam( ':dimension_side1', $dimensionSide1 );
+	    $stmt->bindParam( ':dimension_side2', $dimensionSide2 );
+	    $stmt->bindParam( ':dimension_side3', $dimensionSide3 );
+	    $stmt->bindParam( ':confirmed', $confirmed );
+	    $stmt->bindParam( ':weight', $weight );
+	    $stmt->bindParam( ':declared_price', $declaredPrice );
+	    $stmt->bindParam( ':payment_price', $paymentPrice );
+	    $stmt->bindParam( ':to_name', $to_name );
+	    $stmt->bindParam( ':to_phone', $to_phone );
+	    $stmt->bindParam( ':goods_description', $goods_description );
+	    $stmt->bindParam( ':to_house', $toHouse );
+	    $stmt->bindParam( ':to_street', $toStreet );
+	    $stmt->bindParam( ':to_flat', $toFlat );
+	    $stmt->bindParam( ':date', $dateTime );
+	    $stmt->bindParam( ':shop_refnum', $shop_refnum );
+	    $stmt->bindParam( ':products', $productString );
+	    $stmt->bindParam( ':local_status', $localStatus );
+	    $stmt->bindParam( ':dd_status', $ddStatus );
+	    $stmt->bindParam( ':first_name', $firstName );
+	    $stmt->bindParam( ':second_name', $secondName );
+	    $stmt->bindParam( ':point', $pointDB );
+	    $stmt->execute();
+	    $this->pdo->commit();
+	    if( $wasUpdate )
+	    {
+	    	return $localId;
+	    }
+	    else
+	    {
+	    	return $this->pdo->lastInsertId();
+	    }
+	    
+	    
+	    
+	}
 	/**
 	 * 
 	 * Сохраняем значения курьерского заказа
+	 * 
+	 * @deprecated
 	 * 
 	 * @param int $intermediateID id существующего заказа
 	 * @param int $to_city
@@ -206,7 +318,8 @@ class Order {
 			                              $dimensionSide2, $dimensionSide3, $shop_refnum, $confirmed, 
     			                          $weight, $to_name, $to_phone, $goods_description, $declaredPrice, 
 			                              $paymentPrice, $to_street, $to_house, $to_flat, $ddeliveryOrderID, 
-			                              $productString,$localStatus, $ddStatus, $firstName, $secondName,$pointDB   ) 
+			                              $productString,$localStatus, $ddStatus, $firstName, $secondName,
+			                              $pointDB   ) 
 	{
 		$wasUpdate = 0;
  		$this->pdo->beginTransaction();
@@ -283,6 +396,8 @@ class Order {
 	/**
 	 *
 	 * Сохраняем значения заказа самовывоза
+	 *
+	 * @deprecated
 	 *
 	 * @param int $intermediateID id существующего заказа
 	 * @param int $pointID 

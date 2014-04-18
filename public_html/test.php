@@ -98,6 +98,21 @@ $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $fixture = new DDelivery\DDeliveryUI( $shopAdapter );
 $result = $fixture->getSelfPointsForCityAndCompany('4,6', '4,25');
 print_r($result);
+
+$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
+$selfpoint = $DDeliverySDK->getSelfDeliveryPoints('', '151184');
+$funki = array();
+foreach ($selfpoint->response as $res)
+{
+	unset($res['metro']);
+	unset($res['description_in']);
+	unset($res['description_out']);
+	unset($res['indoor_place']);
+	$funki[] = $res;
+}
+
+print_r( json_encode($funki));
+
 */
 
 
@@ -105,11 +120,14 @@ $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
 
-$selfpoint = $DDeliveryUI->getCourierPointsForCity(151185);
+$selfpoint = $DDeliveryUI->getSelfPoints(151184);
 
-$order->city = 151185;
+
+
+$order->city = 151184;
 $order->localId = 1;
 $order->type = 2;
+
 $order->setPoint($selfpoint[0]);
 $order->firstName = 'Дима';
 $order->secondName = 'Грушин';
@@ -120,8 +138,18 @@ $order->toHouse = '1а';
 $order->toFlat = '42';
 $order->toEmail = '';	
 
-$DDeliveryUI->saveFullOrder($order);
+$id = $DDeliveryUI->saveFullOrder($order);
 $DDeliveryUI->onCmsOrderFinish($order->localId, $shopOrderID = 5);
+
+$DDeliveryUI->changeOrderStatus( 5 );
+
+$data = $DDeliveryUI->getAllOrders();
+//print_r($data);
+
+//$data = $DDeliveryUI->getAllOrders();
+
+//print_r($data);
+//$DDeliveryUI->onCmsOrderFinish($order->localId, $shopOrderID = 5);
 //$DDeliveryUI->checkOrderStatus(947);
 //$DDeliveryUI->changeOrderStatus(5);
 /*

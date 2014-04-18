@@ -99,12 +99,19 @@ class DDeliveryUI
     
     /**
      * 
+     * Обработчик смены статуса заказа
+     * 
      */
     public function changeOrderStatus( $cmsOrderID )
     {
         $orderDB = new DataBase\Order();
-        $data = $orderDB->getOrderByCmsOrderID($cmsOrderID);
-        print_r($data);
+        $data = $orderDB->getOrderByCmsOrderID( $cmsOrderID );
+        $ids = array( $data[0]->id );
+        
+        $orderArr = $this->initIntermediateOrder($ids);
+        $order = $orderArr[0];
+       
+        $this->getDDOrderStatus($order->ddeliveryID);
     }
     /**
      * 
@@ -123,6 +130,7 @@ class DDeliveryUI
     	catch (DDeliveryException $e)
     	{
     		$this->messager->pushMessage( $e->getMessage() );
+    		return null;
     	}
     	return $response;
     }
@@ -149,14 +157,15 @@ class DDeliveryUI
             return false;
         }
         $order = $orderArr[0]; 
-        $shopOrderInfo = $this->shop->getShopOrderInfo( $order->shop_refnum );	
+        $shopOrderInfo = $this->shop->getShopOrderInfo( $shopOrderID );	
         //$this->setShopOrderID( $id, $shopOrderInfo['payment'], $shopOrderInfo['status'], $shopOrderInfo['id']);
         $order->paymentVariant = $shopOrderInfo['payment'];
         $order->shopRefnum = $shopOrderInfo['id'];
         $order->localStatus = $shopOrderInfo['status'];
-        echo $order->shopRefnum;
+        
         if( $this->shop->isStatusToSendOrder( $shopOrderInfo['status'], $order) )
-        {
+        {   
+        	
             if( $order->type == 1 )
             {
                 $ddOrderID = $this->createSelfOrder($order);
@@ -166,6 +175,7 @@ class DDeliveryUI
                 $ddOrderID = $this->createCourierOrder($order);
             }
             $order->ddeliveryID = $ddOrderID;
+            
         }
         $this->saveFullOrder($order);
         return true;
@@ -223,18 +233,18 @@ class DDeliveryUI
                 {
                 	$currentOrder->setPoint(unserialize( $item->point ));
                 } 
-                $currentOrder->firstName = $item->firstName;
-                $currentOrder->secondName = $item->secondName;
-                $currentOrder->shop_refnum = $item->shop_refnum;
+                $currentOrder->firstName = $item->first_name;
+                $currentOrder->secondName = $item->second_name;
+                $currentOrder->shopRefnum = $item->shop_refnum;
                 $currentOrder->declared_price = $item->declared_price;
                 $currentOrder->paymentPrice = $item->payment_price;
-                $currentOrder->to_name = $item->to_name;
+                $currentOrder->toName = $item->to_name;
                 $currentOrder->toPhone = $item->to_phone;
                 $currentOrder->goodsDescription = $item->goods_description;
                 $currentOrder->toStreet = $item->to_street;
                 $currentOrder->toHouse = $item->to_house;
                 $currentOrder->toFlat = $item->to_flat;
-                $currentOrder->to_email = $item->to_email;
+                $currentOrder->toEmail = $item->to_email;
             	$orderList[] = $currentOrder;
             }    
         }
@@ -712,7 +722,7 @@ class DDeliveryUI
         {
         	$errors[] = "Не найден id заказа в CMS";
         }
-        
+        print_r($errors);
         if(count($errors))
         {
             throw new DDeliveryException(implode(', ', $errors));
@@ -780,7 +790,11 @@ class DDeliveryUI
      * @return int
      */
     public function saveFullOrder( $order )
-    {
+    {   
+    	$orderDB = new DataBase\Order();
+    	$id = $orderDB->saveFullOrder( $order );
+    	return $id;
+    	/*
     	$orderDB = new DataBase\Order();
     	$point = $order->getPoint();
     	$dimensionSide1 = $order->getDimensionSide1();
@@ -788,7 +802,6 @@ class DDeliveryUI
     	$dimensionSide3 = $order->getDimensionSide3();
     	$goods_description = $order->getGoodsDescription();
     	$weight = $order->getWeight();
-    	$to_city = $order->city;
     	$to_city = $order->city;
     	$delivery_company = $point->getDeliveryInfo()->get('delivery_company');
     	$confirmed = $order->getConfirmed();
@@ -808,6 +821,7 @@ class DDeliveryUI
     	$firstName = $order->firstName;
     	$secondName = $order->secondName;
     	$pointDB = serialize($point);
+    	//echo $shop_refnum;
     	if( $order->type == 1 )
     	{   
     	    
@@ -816,7 +830,8 @@ class DDeliveryUI
     	    		                           $dimensionSide3, $shop_refnum, $confirmed, $weight, 
     	    		                           $to_name, $to_phone, $goods_description, $declaredPrice,
     	 			                           $paymentPrice, $ddeliveryID, $to_city, $delivery_company,
-    	                                       $productString, $localStatus, $ddStatus, $firstName, $secondName, $pointDB );
+    	                                       $productString, $localStatus, $ddStatus, $firstName, 
+    	    		                           $secondName, $pointDB );
     	 }
     	 else if( $this->order->type == 2 )
     	 {  
@@ -833,7 +848,7 @@ class DDeliveryUI
     	 }
 
     	 return $id;
-
+         */
     }
 
     /**
@@ -845,7 +860,10 @@ class DDeliveryUI
      * @return int
      */
     public function createCourierOrder( $order )
-    {
+    {   
+    	
+    	
+    	
     	/** @var DDeliveryPointCourier $point */
     	try
     	{
@@ -886,12 +904,14 @@ class DDeliveryUI
     	    $to_house = $order->toHouse;
     	    $to_flat = $order->toFlat;
     	    $shop_refnum = $order->shopRefnum;
+    	    
             try
             {
     	        $response = $this->sdk->addCourierOrder( $to_city, $delivery_company, $dimensionSide1, $dimensionSide2,
     			                                         $dimensionSide3, $shop_refnum, $confirmed, $weight, 
     	        		                                 $to_name, $to_phone, $goods_description, $declaredPrice, 
-    	        		                                 $paymentPrice, $to_street, $to_house, $to_flat );
+    	          	                                     $paymentPrice, $to_street, $to_house, $to_flat );
+                
             }
             catch ( DDeliveryException $e )
             {
@@ -931,7 +951,6 @@ class DDeliveryUI
     	if( $this->shop->sendOrderToDDeliveryServer($order) )
     	{
     	    $point = $order->getPoint();
-
     	    $pointID = $point->get('_id');
     	    $dimensionSide1 = $order->getDimensionSide1();
     	    $dimensionSide2 = $order->getDimensionSide2();
@@ -941,12 +960,12 @@ class DDeliveryUI
     	    $confirmed = $order->getConfirmed();
     	    $to_name = $order->getToName();
     	    $to_phone = $order->getToPhone();
-
     	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
-    	    
     	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
     	    $paymentPrice = $this->shop->getPaymentPrice( $order, $orderPrice );
+    	    
     	    $shop_refnum = $order->shopRefnum;
+    	    
     	    try
     	    {
     	        $response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
