@@ -117,13 +117,22 @@ abstract class DShopAdapter
     protected abstract function _getProductsFromCart();
     
     
+    /**
+     * Меняет статус внутреннего заказа cms
+     * 
+     * @param $orderID - id заказа
+     * @param $status - статус заказа для обновления 
+     *  
+     * @return bool
+     */
+    public abstract function setCmsOrderStatus( $orderID, $status );
+    
     public function getLocalStatusByDD($ddStatus)
     {
     	$ddeliveryOrderStatus = array_keys($this->ddeliveryOrderStatus);
     	$indexDD = array_search($ddStatus, $ddeliveryOrderStatus);
     	$cmsOrderStatus = array_keys($this->cmsOrderStatus);
     	$indexLocal = $cmsOrderStatus[$indexDD];
-    	
     	return $this->cmsOrderStatus[$indexLocal];
     }
     /**
