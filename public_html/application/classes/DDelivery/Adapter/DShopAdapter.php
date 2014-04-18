@@ -285,7 +285,18 @@ abstract class DShopAdapter
     public function filterPointsSelf($courierPoints, DDeliveryOrder $order) {
         return $courierPoints;
     }
-    
+
+    /**
+     * Перед тем как показать точную информацию о стоимости мы сообщаем информацию
+     *
+     * @param \DDelivery\Point\DDeliveryInfo $selfCompanyList
+     * @return \DDelivery\Point\DDeliveryInfo
+     */
+    public function filterSelfInfo($selfCompanyList)
+    {
+        return $selfCompanyList;
+    }
+
     /**
      *
      * Получить свойство refnum для курьерки

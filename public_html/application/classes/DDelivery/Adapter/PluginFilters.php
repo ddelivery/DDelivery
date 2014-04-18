@@ -157,6 +157,31 @@ abstract class PluginFilters extends DShopAdapter
 
 
     /**
+     * Перед тем как показать точную информацию о стоимости мы сообщаем информацию
+     *
+     * @param \DDelivery\Point\DDeliveryInfo $selfCompanyList
+     * @return \DDelivery\Point\DDeliveryInfo
+     */
+    public function filterSelfInfo($selfCompanyList)
+    {
+        $filterCompany = $this->filterCompanyPointSelf();
+        if(!is_array($filterCompany) || empty($filterCompany)) {
+            return $selfCompanyList;
+        }
+
+        foreach($selfCompanyList as $key => $company) {
+            // Удаляем те компании которые есть в фильтре
+
+            if(in_array($company->delivery_company, $filterCompany)) {
+                unset($selfCompanyList[$key]);
+            }
+        }
+
+        return $selfCompanyList;
+    }
+
+
+    /**
      * Если необходимо фильтрует курьеров и добавляет новых
      * Кстати здесь можно отсортировать еще точки
      *
