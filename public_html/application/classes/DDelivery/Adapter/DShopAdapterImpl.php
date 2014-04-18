@@ -26,7 +26,10 @@ class DShopAdapterImpl extends DShopAdapter
     	
     	return $products;
     }
-    
+    public function setCmsOrderStatus( $orderID, $status )
+    {
+        
+    }
     public function isStatusToSendOrder(  $status, $order )
     {
         return true;

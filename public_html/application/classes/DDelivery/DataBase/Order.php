@@ -94,13 +94,35 @@ class Order {
 				          to_house TEXT,
 				          to_flat TEXT,
 				          to_email TEXT,
-				          firstName TEXT,
-				          secondName TEXT,
+				          first_name TEXT,
+				          second_name TEXT,
                           serilize TEXT,
 				          point TEXT
                         )");
 	}
+	/**
+	 * Получить заказ по его cms ID
+	 * 
+	 * @param array $cmsOrderID - id заказа внутри cms 
+	 * 
+	 */
+	public function getOrderByCmsOrderID( $cmsOrderID )
+	{
+		$query = 'SELECT id FROM orders WHERE shop_refnum = ' . $cmsOrderID;
+		$sth = $this->pdo->query( $query );
+		$result = $sth->fetchAll(PDO::FETCH_OBJ);
+		
+		return $result;
+	}
 	
+	/**
+	 * Получить список заказов
+	 * 
+	 * @param array $ids массив с  заказов
+	 * 
+	 * return stdClass[]
+	 * 
+	 */
 	public function getOrderList( $ids )
 	{   
 		$idWhere = implode(',', $ids);
@@ -184,7 +206,7 @@ class Order {
 			                              $dimensionSide2, $dimensionSide3, $shop_refnum, $confirmed, 
     			                          $weight, $to_name, $to_phone, $goods_description, $declaredPrice, 
 			                              $paymentPrice, $to_street, $to_house, $to_flat, $ddeliveryOrderID, 
-			                              $productString,$localStatus, $ddStatus ) 
+			                              $productString,$localStatus, $ddStatus, $firstName, $secondName,$pointDB   ) 
 	{
 		$wasUpdate = 0;
  		$this->pdo->beginTransaction();
@@ -198,7 +220,7 @@ class Order {
 					  to_phone = :to_phone, goods_description = :goods_description, to_street= :to_street, 
 					  to_house = :to_house, to_flat = :to_flat, date = :date, 
 					  shop_refnum =:shop_refnum, products = :products, local_status = :local_status,
-				      dd_status = :dd_status WHERE id=:id';
+				      dd_status = :dd_status, first_name = :first_name, second_name =:second_name, point = :point  WHERE id=:id';
 				
 			$stmt = $this->pdo->prepare($query);
 			$stmt->bindParam( ':id', $intermediateID );
@@ -209,12 +231,12 @@ class Order {
 			$query = 'INSERT INTO orders (type, to_city, ddeliveryorder_id, delivery_company, dimension_side1,
                       dimension_side2, dimension_side3, confirmed, weight, declared_price, payment_price, to_name,
                       to_phone, goods_description, to_flat, to_house, to_street, to_phone, date, shop_refnum,
-					  products, local_status, dd_status)
+					  products, local_status, dd_status, first_name, second_name, point)
 	                  VALUES 
 					  (:type, :to_city, :ddeliveryorder_id, :delivery_company, :dimension_side1,
                       :dimension_side2, :dimension_side3, :confirmed, :weight, :declared_price, 
 					  :payment_price, :to_name, :to_phone, :goods_description, :to_flat, :to_house, 
-					  :to_street, :to_phone, :date, :shop_refnum, :products, :local_status, :dd_status )';
+					  :to_street, :to_phone, :date, :shop_refnum, :products, :local_status, :dd_status, :first_name, :second_name, :point )';
 			$stmt = $this->pdo->prepare($query);
 		}
 		
@@ -243,6 +265,9 @@ class Order {
 		$stmt->bindParam( ':products', $productString );
 		$stmt->bindParam( ':local_status', $localStatus );
 		$stmt->bindParam( ':dd_status', $ddStatus );
+		$stmt->bindParam( ':first_name', $firstName );
+		$stmt->bindParam( ':second_name', $secondName );
+		$stmt->bindParam( ':point', $pointDB );
 		$stmt->execute();
 		$this->pdo->commit();
 		if( $wasUpdate )
@@ -281,7 +306,7 @@ class Order {
 	public function saveFullSelfOrder( $intermediateID, $pointID, $dimensionSide1, $dimensionSide2, $dimensionSide3, 
 			                           $shop_refnum, $confirmed, $weight, $to_name, $to_phone, $goods_description, 
 			                           $declaredPrice,  $paymentPrice, $ddeliveryOrderID, $toCity, $companyID, 
-			                           $productString, $localStatus, $ddStatus )
+			                           $productString, $localStatus, $ddStatus, $firstName, $secondName, $pointDB )
 	{
 		
 		$this->pdo->beginTransaction();
@@ -296,7 +321,7 @@ class Order {
 					  payment_price = :payment_price, to_name = :to_name, to_phone = :to_phone, 
 					  goods_description = :goods_description,date = :date,  delivery_company = :delivery_company, 
 					  products = :products, local_status = :local_status, dd_status = :dd_status, 
-					  shop_refnum = :shop_refnum  WHERE id=:id';
+					  shop_refnum = :shop_refnum, first_name = :first_name, second_name =:second_name, point = :point WHERE id=:id';
 			
 			$stmt = $this->pdo->prepare($query);
 			$stmt->bindParam( ':id', $id );
@@ -308,11 +333,11 @@ class Order {
 			$query = 'INSERT INTO orders ( type, to_city, ddeliveryorder_id,  dimension_side1,
                       dimension_side2, dimension_side3, confirmed, weight, declared_price, 
 					  payment_price, to_name, to_phone, goods_description, point_id, delivery_company, 
-					  date, products, local_status, dd_status, shop_refnum)
+					  date, products, local_status, dd_status, shop_refnum, first_name, second_name, point)
 	                  VALUES ( :type, :to_city, :ddeliveryorder_id, :dimension_side1,
                       :dimension_side2, :dimension_side3, :confirmed, :weight, :declared_price, 
 					  :payment_price, :to_name, :to_phone, :goods_description, :point_id, 
-					  :delivery_company, :date, :products, :local_status, :dd_status, :shop_refnum)';
+					  :delivery_company, :date, :products, :local_status, :dd_status, :shop_refnum, :first_name, :second_name, :point)';
 			$stmt = $this->pdo->prepare($query);
 		}
 		$dateTime = date( "Y-m-d H:i:s" );
@@ -337,6 +362,9 @@ class Order {
 		$stmt->bindParam( ':local_status', $localStatus );
 		$stmt->bindParam( ':dd_status', $ddStatus );
 		$stmt->bindParam( ':shop_refnum', $shop_refnum );
+		$stmt->bindParam( ':first_name', $firstName );
+		$stmt->bindParam( ':second_name', $secondName );
+		$stmt->bindParam( ':point', $pointDB );
 		$stmt->execute();
 		$this->pdo->commit();
 		

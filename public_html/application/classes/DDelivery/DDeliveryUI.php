@@ -98,16 +98,23 @@ class DDeliveryUI
     }
     
     /**
-     * @todo завтра допилится
+     * 
      */
-    public function changeOrderStatus( $orederStatus )
+    public function changeOrderStatus( $cmsOrderID )
     {
-        echo $this->shop->getLocalStatusByDD($orederStatus);
+        $orderDB = new DataBase\Order();
+        $data = $orderDB->getOrderByCmsOrderID($cmsOrderID);
+        print_r($data);
     }
     /**
-     * @todo завтра допилится
+     * 
+     * Проверяет статус заказа на сервере DD
+     * 
+     * @param $orderID id заказа на сервере DD
+     * 
+     * return 
      */
-    public function checkOrderStatus( $orderID )
+    public function getDDOrderStatus( $orderID )
     {
     	try
     	{
@@ -134,19 +141,20 @@ class DDeliveryUI
     {   
         try
         {
-            $order = $this->initIntermediateOrder( array($id) );
+            $orderArr = $this->initIntermediateOrder( array($id) );
         }
         catch (DDeliveryException $e)
         {
             $this->messager->pushMessage( $e->getMessage() );
             return false;
         }
-        $shopOrderInfo = $this->shop->getShopOrderInfo( $order[0]->shop_refnum );	
+        $order = $orderArr[0]; 
+        $shopOrderInfo = $this->shop->getShopOrderInfo( $order->shop_refnum );	
         //$this->setShopOrderID( $id, $shopOrderInfo['payment'], $shopOrderInfo['status'], $shopOrderInfo['id']);
         $order->paymentVariant = $shopOrderInfo['payment'];
         $order->shopRefnum = $shopOrderInfo['id'];
         $order->localStatus = $shopOrderInfo['status'];
-        
+        echo $order->shopRefnum;
         if( $this->shop->isStatusToSendOrder( $shopOrderInfo['status'], $order) )
         {
             if( $order->type == 1 )
@@ -206,7 +214,7 @@ class DDeliveryUI
                 $currentOrder->localId = $item->id;
                 $currentOrder->confirmed = $item->confirmed;
                 $currentOrder->amount = $item->amount;
-                $currentOrder->to_city = $item->to_city;
+                $currentOrder->city = $item->to_city;
                 $currentOrder->localStatus = $item->local_status;
                 $currentOrder->ddStatus = $item->dd_status;
                 $currentOrder->shopRefnum = $item->shop_refnum;
@@ -221,11 +229,11 @@ class DDeliveryUI
                 $currentOrder->declared_price = $item->declared_price;
                 $currentOrder->paymentPrice = $item->payment_price;
                 $currentOrder->to_name = $item->to_name;
-                $currentOrder->to_phone = $item->to_phone;
-                $currentOrder->goods_description = $item->goods_description;
-                $currentOrder->to_street = $item->to_street;
-                $currentOrder->to_house = $item->to_house;
-                $currentOrder->to_flat = $item->to_flat;
+                $currentOrder->toPhone = $item->to_phone;
+                $currentOrder->goodsDescription = $item->goods_description;
+                $currentOrder->toStreet = $item->to_street;
+                $currentOrder->toHouse = $item->to_house;
+                $currentOrder->toFlat = $item->to_flat;
                 $currentOrder->to_email = $item->to_email;
             	$orderList[] = $currentOrder;
             }    
@@ -695,7 +703,7 @@ class DDeliveryUI
         		$errors[] = "Не указан способ оплаты в CMS";
         }
         
-        if( empty( $order->status ) )
+        if( empty( $order->localStatus ) )
         {
         	$errors[] = "Не указан статус заказа в CMS";
         }
@@ -781,6 +789,7 @@ class DDeliveryUI
     	$goods_description = $order->getGoodsDescription();
     	$weight = $order->getWeight();
     	$to_city = $order->city;
+    	$to_city = $order->city;
     	$delivery_company = $point->getDeliveryInfo()->get('delivery_company');
     	$confirmed = $order->getConfirmed();
     	$to_name = $order->getToName();
@@ -794,8 +803,11 @@ class DDeliveryUI
     	
     	$localStatus = $order->localStatus;
     	$ddStatus = $order->ddStatus;
-    	$shop_refnum = $this->order->shopRefnum;
+    	$shop_refnum = $order->shopRefnum;
     	
+    	$firstName = $order->firstName;
+    	$secondName = $order->secondName;
+    	$pointDB = serialize($point);
     	if( $order->type == 1 )
     	{   
     	    
@@ -804,7 +816,7 @@ class DDeliveryUI
     	    		                           $dimensionSide3, $shop_refnum, $confirmed, $weight, 
     	    		                           $to_name, $to_phone, $goods_description, $declaredPrice,
     	 			                           $paymentPrice, $ddeliveryID, $to_city, $delivery_company,
-    	                                       $productString, $localStatus, $ddStatus );
+    	                                       $productString, $localStatus, $ddStatus, $firstName, $secondName, $pointDB );
     	 }
     	 else if( $this->order->type == 2 )
     	 {  
@@ -817,7 +829,7 @@ class DDeliveryUI
     	    		                              $dimensionSide2, $dimensionSide3, $shop_refnum, $confirmed, 
     	    		                              $weight, $to_name, $to_phone, $goods_description, $declaredPrice,
     	 			                              $paymentPrice, $to_street, $to_house, $to_flat, $ddeliveryID, 
-    	    		                              $productString, $localStatus, $ddStatus );
+    	    		                              $productString, $localStatus, $ddStatus, $firstName, $secondName, $pointDB );
     	 }
 
     	 return $id;

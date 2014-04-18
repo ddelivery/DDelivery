@@ -114,17 +114,16 @@ $order->setPoint($selfpoint[0]);
 $order->firstName = 'Дима';
 $order->secondName = 'Грушин';
 $order->toPhone = '9999999999';
-$order->shopRefnum = 'xxx';
+
 $order->toStreet = 'Вознесенская';
 $order->toHouse = '1а';
 $order->toFlat = '42';
-$order->toEmail = '';
+$order->toEmail = '';	
 
-//$DDeliveryUI->saveFullOrder($order);
-
-//$DDeliveryUI->onCmsOrderFinish($order->localId, $shopOrderID = 5);
+$DDeliveryUI->saveFullOrder($order);
+$DDeliveryUI->onCmsOrderFinish($order->localId, $shopOrderID = 5);
 //$DDeliveryUI->checkOrderStatus(947);
-$DDeliveryUI->changeOrderStatus(40);
+//$DDeliveryUI->changeOrderStatus(5);
 /*
 print_r($DDeliveryUI->initIntermediateOrder(array(1,2,3,4,5,6)));
 $DDeliveryUI->getSelfPoints(151185);
