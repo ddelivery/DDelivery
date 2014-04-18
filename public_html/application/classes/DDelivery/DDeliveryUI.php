@@ -556,7 +556,7 @@ class DDeliveryUI
      * Получить информацию о самовывозе для точки
      * @var int $cityID
      *
-     * @return DDeliveryAbstractPoint[];
+     * @return Point\DDeliveryInfo;
      */
     public function getDeliveryInfoForPointID( $pointID )
     {
@@ -571,7 +571,7 @@ class DDeliveryUI
     	}
     	else
     	{
-    		return 0;
+    		return false;
     	}
     }
 
@@ -1130,8 +1130,20 @@ class DDeliveryUI
                                 'action'=>'searchCity'
                             )
                         ));
-                        return;
                     }
+                    return;
+                case 'mapGetPoint':
+                    if(!empty($request['id'])) {
+                        $deliveryInfo = $this->getDeliveryInfoForPointID($request['id']);
+
+                        //$this->order->getPoint();
+
+                        // @todo получить подробные данные по точке и отдать их
+                        echo json_encode(array(
+                            'point'=>''
+                        ));
+                    }
+                    return;
             }
         }
 

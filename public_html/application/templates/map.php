@@ -97,7 +97,6 @@
                 <ul class="clearfix">
                     <?
                     $companySubInfo = $this->getCompanySubInfo();
-                    $selfCompanyList = array_slice($selfCompanyList, 0, 5);
                     foreach($selfCompanyList as $selfCompany):
 
                         $ico = isset($companySubInfo[$selfCompany['delivery_company']]) ? $companySubInfo[$selfCompany['delivery_company']]['ico'] : 'pack';
@@ -201,7 +200,7 @@
                 <a href="#">Заберу здесь</a>
             </div>
             <div class="map-popup__info__more">
-                <div class="map-popup__info__more__btn"><a href="#">Подробнее<i>&nbsp;</i></a></div>
+                <div class="map-popup__info__more__btn"><a href="javascript:void(0)">Подробнее<i>&nbsp;</i></a></div>
                 <div class="map-popup__info__more__text">
                     <div class="map-popup__info__more__text_i">
                         <table>

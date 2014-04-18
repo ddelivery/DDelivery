@@ -219,6 +219,8 @@ Map = (function () {
         event: function () {
             $('.map-popup__info__close').click(function () {
                 $('.map-popup__info').fadeOut();
+                $('.map-popup__main__right .places').removeClass('info-open');
+                $('.map-popup__main__right .places a').removeClass('active').removeClass('hasinfo');
             });
             $('.map-popup__main__right__btn').on('click', function () {
                 $('.map-popup__main__right').toggleClass('map-popup__main__right_open');
@@ -262,6 +264,10 @@ Map = (function () {
 
         },
         renderInfo: function (point) {
+
+            $('.map-popup__main__right .places').addClass('info-open');
+            $('.map-popup__main__right .places a').removeClass('active').removeClass('hasinfo');
+
             var points = [];
             cp = point;
             if(point instanceof Array) {
@@ -269,10 +275,16 @@ Map = (function () {
                 point = points[0];
             }
             current_point = point;
+
             if(points.length > 1){
                 $('.map-popup__info__title .more').show();
+                for(var i=0;i<points.length;i++){
+                    $('.map-popup__main__right .places a[data-id='+points[i].company_id+']').addClass('hasinfo');
+                }
+                $('.map-popup__main__right .places a[data-id='+point.company_id+']').addClass('active');
             }else{
                 $('.map-popup__info__title .more').hide();
+                $('.map-popup__main__right .places a[data-id='+point.company_id+']').addClass('active').addClass('hasinfo');
             }
 
             if (!point.name) {
