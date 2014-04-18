@@ -213,7 +213,7 @@ class DDeliveryUI
                 $currentOrder->ddeliveryorder_id = $item->ddeliveryorder_id;
                 if( $item->point != null )
                 {
-                	$currentOrder->point = unserialize( $item->point );
+                	$currentOrder->setPoint(unserialize( $item->point ));
                 } 
                 $currentOrder->firstName = $item->firstName;
                 $currentOrder->secondName = $item->secondName;
