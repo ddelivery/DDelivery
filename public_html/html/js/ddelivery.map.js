@@ -7,6 +7,7 @@ Map = (function () {
     var mapObject;
     var renderGeoObject;
     var points = [];
+    var current_points = false;
     var current_point = false;
     var clusterer;
     var filter = {
@@ -89,6 +90,7 @@ Map = (function () {
                  * @see http://api.yandex.ru/maps/doc/jsapi/2.x/ref/reference/Cluster.xml
                  */
                 clusterDisableClickZoom: true,
+                gridSize: 100,
                 synchAdd: true // Добавлять объекты на карту сразу, може тупить на медленных пк
             });
 
@@ -149,7 +151,7 @@ Map = (function () {
                                 bound[0][1] = coord[1];
                         }
                         // Точки эквивалентны в допустимой погрешности и зумить есть куда
-                        if (!ymaps.util.math.areEqual(bound[0], bound[1], 0.0001) && yamap.getZoom() != yamap.options.get('maxZoom')) {
+                        if (!ymaps.util.math.areEqual(bound[0], bound[1], 0.0002) && yamap.getZoom() != yamap.options.get('maxZoom')) {
                             yamap.setBounds(bound, {duration: 400});
                         } else {
                             yamap.setBounds(bound, {duration: 400});
@@ -157,7 +159,7 @@ Map = (function () {
                             for (var geoKey in geoObjects) {
                                 myPoints.push(geoObjects[geoKey].properties.get('point'));
                             }
-                            Map.renderInfo(myPoints);
+                            Map.renderInfo(myPoints[0], myPoints);
                         }
                     } else {
                         Map.renderInfo(target.properties.get('point'));
@@ -221,6 +223,7 @@ Map = (function () {
                 $('.map-popup__info').fadeOut();
                 $('.map-popup__main__right .places').removeClass('info-open');
                 $('.map-popup__main__right .places a').removeClass('active').removeClass('hasinfo');
+                current_points = [];
             });
             $('.map-popup__main__right__btn').on('click', function () {
                 $('.map-popup__main__right').toggleClass('map-popup__main__right_open');
@@ -241,15 +244,27 @@ Map = (function () {
             });
 
             $('.map-popup__main__right .places a').click(function(){
-                var check = $(this).hasClass('border');
-                if(check) {
-                    $(this).removeClass('border').addClass('hasinfo');
-                    filter.hideCompany.push(parseInt($(this).data('id')));
+                if(current_points.length > 0) {
+                    var id = parseInt($(this).data('id'));
+                    if(current_point.company_id != parseInt($(this).data('id'))) {
+                        for(var i =0 ; i < current_points.length; i++) {
+                            if(current_points[i].company_id == id) {
+                                Map.renderInfo(current_points[i] , current_points);
+                                break;
+                            }
+                        }
+                    }
                 }else{
-                    $(this).addClass('border').removeClass('hasinfo');
-                    filter.hideCompany.splice(filter.hideCompany.indexOf(parseInt($(this).data('id'))), 1);
+                    var check = $(this).hasClass('border');
+                    if(check) {
+                        $(this).removeClass('border').addClass('hasinfo');
+                        filter.hideCompany.push(parseInt($(this).data('id')));
+                    }else{
+                        $(this).addClass('border').removeClass('hasinfo');
+                        filter.hideCompany.splice(filter.hideCompany.indexOf(parseInt($(this).data('id'))), 1);
+                    }
+                    Map.filterPoints();
                 }
-                Map.filterPoints();
             });
 
             $('.map-popup__info__more__btn').on('click', function (e) {
@@ -263,17 +278,17 @@ Map = (function () {
             });
 
         },
-        renderInfo: function (point) {
+        renderInfo: function (point, points) {
 
             $('.map-popup__main__right .places').addClass('info-open');
             $('.map-popup__main__right .places a').removeClass('active').removeClass('hasinfo');
 
-            var points = [];
-            cp = point;
-            if(point instanceof Array) {
-                points = point;
-                point = points[0];
+            cp = points;
+            if(!points){
+                points = [];
             }
+
+            current_points = points;
             current_point = point;
 
             if(points.length > 1){
@@ -318,7 +333,7 @@ Map = (function () {
             DDeliveryIframe.ajaxData(
                 {action: 'mapGetPoint', id: point._id},
                 function(data) {
-                    console.log(data);
+                    //console.log(data);
                 }
             );
         },

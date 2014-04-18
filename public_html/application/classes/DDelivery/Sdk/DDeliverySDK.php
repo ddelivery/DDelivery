@@ -42,7 +42,7 @@ class DDeliverySDK {
 	 */
     public function __construct($apiKey, $testMode = false)
     {
-        if($testMode){
+        if(!$testMode){
             $this->server = 'stage';
         }else{
             $this->server = 'dev';
@@ -125,22 +125,24 @@ class DDeliverySDK {
     	}
     	return $response;
     }
-    
+
     /**
      * Добавить заказ на самовывоз на обработку DDelivery
-     * 
-     * @param int $delivery_point  Идентификатор пункта выдачи
-     * @param int $dimensionSide1  Сторона 1 (см)
-     * @param int $dimensionSide2  Сторона 2 (см)
-     * @param int $dimensionSide3  Сторона 3 (см)
-     * @param boolean $confirmed   Подвтержденная ли заявка
-     * @param float $weight        Вес (кг)
-     * @param String $to_name      ФИО получателя
-     * @param String $to_phone     Телефон получателя
-     * @param String $goods_description  Описание посылки
-     * @param float  $declaredPrice Оценочная стоимость (руб)
-     * @param float  $paymentPrice  Наложенный платеж (руб)
      *
+     * @param int $delivery_point Идентификатор пункта выдачи
+     * @param int $dimensionSide1 Сторона 1 (см)
+     * @param int $dimensionSide2 Сторона 2 (см)
+     * @param int $dimensionSide3 Сторона 3 (см)
+     * @param boolean $confirmed Подвтержденная ли заявка
+     * @param float $weight Вес (кг)
+     * @param String $to_name ФИО получателя
+     * @param String $to_phone Телефон получателя
+     * @param String $goods_description Описание посылки
+     * @param float $declaredPrice Оценочная стоимость (руб)
+     * @param float $paymentPrice Наложенный платеж (руб)
+     * @param $shop_refnum
+     *
+     * @throws \DDelivery\DDeliveryException
      * @return DDeliverySDKResponse
      */
     public function addSelfOrder( $delivery_point, $dimensionSide1, $dimensionSide2, $dimensionSide3,
@@ -170,14 +172,14 @@ class DDeliverySDK {
         }
         return $response;
     }
-    
-   
-    
+
+
     /**
      * Получить список точек для самовывоза
-     * @param mixed $cities список id городов через запятую
-     * @param mixed $cities список id компаний через запятую
-     * 
+     * @param string $companies список id компаний через запятую
+     * @param mixed $cities
+     *
+     * @throws \DDelivery\DDeliveryException
      * @return DDeliverySDKResponse
      */
     public function getSelfDeliveryPoints( $companies, $cities  )

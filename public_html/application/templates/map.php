@@ -102,9 +102,23 @@
                         $ico = isset($companySubInfo[$selfCompany['delivery_company']]) ? $companySubInfo[$selfCompany['delivery_company']]['ico'] : 'pack';
                         ?>
                         <li>
-                            <a href="javascript:void(0)" data-id="<?=$selfCompany['delivery_company']?>" class="clearfix border <?//hasinfo?>">
-                                <span class="img"><img src="<?=$staticURL?>img/logo/<?=$ico?>.png" alt="title"/></span>
+                            <a title="<?=$selfCompany['delivery_company_name']?>" href="javascript:void(0)" data-id="<?=$selfCompany['delivery_company']?>" class="clearfix border <?//hasinfo?>">
+                                <span class="img">
+                                    <img src="<?=$staticURL?>img/logo/<?=$ico?>_1.png" alt="<?=$selfCompany['delivery_company_name']?>"/>
+                                    <img class="big" src="<?=$staticURL?>img/logo/<?=$ico?>.png" alt="<?=$selfCompany['delivery_company_name']?>"/>
+                                </span>
+
                                 <span class="price"><?=floor($selfCompany['total_price'])?> <i class="icon-rub">&nbsp;</i></span>
+
+                                <div style="display: none;
+                                    background-image: url(<?=$staticURL?>img/logo/<?=$ico?>_1.png);
+                                    height: 37px;
+                                    background-repeat: no-repeat;
+                                    background-position: left top;
+                                    background-position-y: 1px;
+                                    background-position-x: 1px;">
+
+                                </div>
                                 <span class="date">от <strong><?=$selfCompany['delivery_time_min']?></strong> дня</span>
                                 <i class="shadow">&nbsp;</i>
                             </a>
@@ -205,7 +219,7 @@
                     <div class="map-popup__info__more__text_i">
                         <table>
                             <tr>
-                                <td class="col1">Адресс:</td>
+                                <td class="col1">Адрес:</td>
                                 <td class="col2 address">
                                     ул. Социалистическая, д. 138
                                 </td>

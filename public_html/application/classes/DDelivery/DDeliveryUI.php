@@ -996,7 +996,9 @@ class DDeliveryUI
     			    }
     		    }
     	    }
-    	}
+    	}else{
+            $points = array();
+        }
     	$points = $this->shop->filterPointsSelf( $points, $this->order, $cityID );
 
     	return $points;
@@ -1010,7 +1012,7 @@ class DDeliveryUI
      * @param mixed $cityID
      * @param mixed $companyIDs
      *
-     * @return array DDeliveryPointSelf[];
+     * @return DDeliveryPointSelf[]
      */
     public function getSelfPointsForCityAndCompany( $companyIDs, $cityID )
     {

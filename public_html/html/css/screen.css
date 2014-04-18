@@ -155,7 +155,7 @@ sprites locations are 0 -56px/-20px -56px/-40px -56px/-60px -56px (light) and -8
 .map-popup .places ul li a.border { border: 2px solid #fa9d11; -webkit-border-radius: 3px; -moz-border-radius: 3px; -ms-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px; }
 .map-popup .places ul li a.bg { background: #fa9d11; -webkit-border-radius: 3px; -moz-border-radius: 3px; -ms-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px; }
 .map-popup .places ul li a .shadow { display: none; }
-.map-popup .places ul li a .img { display: block; padding: 0 7px 0 7px; text-align: center; }
+.map-popup .places ul li a .img { display: block; padding: 1px 0 0 1px;  text-align: left }
 .map-popup .places ul li a .price { display: block; text-align: center; font-size: 16px; line-height: 19px; color: #88417b; padding: 0 0 0 0; font-weight: bold; }
 .map-popup .places ul li a .date { display: none; }
 .map-popup .places.info-open:after { content: ""; display: block; height: 100%; width: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2; position: absolute; left: 0; top: 0; }
@@ -288,14 +288,16 @@ sprites locations are 0 -56px/-20px -56px/-40px -56px/-60px -56px (light) and -8
 .map-popup .tip-box__arr { position: absolute; right: 10px; top: -6px; text-indent: 100%; white-space: nowrap; overflow: hidden; display: block; background: url('../img/icons-sdcb5931be9.png') 0 -687px no-repeat; width: 9px; height: 6px; }
 .map-popup .tip-box__close { display: block; text-indent: 100%; white-space: nowrap; overflow: hidden; position: absolute; right: 10px; top: 10px; background: url('../img/icons-sdcb5931be9.png') 0 -592px no-repeat; width: 8px; height: 8px; cursor: pointer; }
 .map-popup .places ul li a { border: 2px solid transparent; }
-.map-popup .places ul li a .price { font-size: 10px; line-height: 12px; }
+.map-popup .places ul li a .price { font-size: 19px; line-height: 12px; padding-right: 5px; text-align: right; margin-bottom: 3px }
 .map-popup .places ul li a .img img { max-height: 18px; }
+.map-popup .places ul li a .img img.big { display: none; }
 .map-popup .map-popup__main__right_open .places ul li a .img img { max-height: 100px; }
 .map-popup .places.info-open ul li a.hasinfo { border-color: #fff; width: 100%; position: relative; left: -4px; }
 .map-popup .places.info-open ul li a .shadow:after { display: none; }
 .map-popup .places.info-open ul li a.hasinfo .shadow:after { display: block; padding: 2px 0; top: -2px; }
 .map-popup .places.info-open ul li a.hasinfo.active .shadow:after { display: none; }
-.map-popup .map-popup__main__right_open .places ul li a .price, .map-popup .map-popup__main__right_open .places ul li a .date { height: 30px; line-height: 30px; }
-.map-popup .map-popup__main__right_open .places ul li a .img img { max-height: 30px; }
+.map-popup .map-popup__main__right_open .places ul li a .price, .map-popup .map-popup__main__right_open .places ul li a .date { height: 30px; line-height: 30px; text-align: center; margin-bottom: 0px; }
+.map-popup .map-popup__main__right_open .places ul li a .img img { max-height: 30px; display: none; }
+.map-popup .map-popup__main__right_open .places ul li a .img img.big { max-height: 30px; display: block; }
 .map-popup .map-popup__main__right_open .places ul li a .img { width: 85px; }
 .map-popup .map-popup__main__right { -webkit-transform: translate3d(0, 0, 0); -moz-transform: translate3d(0, 0, 0); -ms-transform: translate3d(0, 0, 0); -o-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
