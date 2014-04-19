@@ -10,7 +10,46 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 		$shopAdapter = new \DDelivery\Adapter\DShopAdapterTest();
 		$this->fixture = new \DDelivery\DDeliveryUI( $shopAdapter );
 	}
-	
+
+
+    public function testGetCourierPointsForCity()
+    {
+        $points = $this->fixture->getCourierPointsForCity(151185);
+        $this->assertGreaterThan( 0, count( $points ) );
+    }
+
+    public function testSaveFullOrder()
+    {
+        $order = $this->fixture->getOrder();
+        $order->city = 151184;
+        $order->localId = 1;
+        $order->type = 2;
+        $order->firstName = 'Дима';
+        $order->secondName = 'Грушин';
+        $order->toPhone = '9999999999';
+        $order->toStreet = 'Вознесенская';
+        $order->toHouse = '1а';
+        $order->toFlat = '42';
+        $order->toEmail = '';
+        $id = $this->fixture->saveFullOrder($order);
+        $this->assertGreaterThan( 0, $id );
+    }
+    public function testGetLocalStatusByDD()
+    {
+        $status = $this->fixture->getLocalStatusByDD(20);
+        $this->assertGreaterThan( 0, $status );
+    }
+    public function testGetDDOrderStatus()
+    {
+
+    }
+    public function testChangeOrderStatus()
+    {
+
+    }
+
+
+    /*
 	public function testSaveIntermediateOrder()
 	{	
 		
@@ -127,4 +166,6 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 		
 		$this->assertGreaterThan( 0, $order_id );
 	}
+
+    */
 }
