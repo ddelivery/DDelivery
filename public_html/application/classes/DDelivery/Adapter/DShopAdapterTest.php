@@ -4,6 +4,22 @@ namespace DDelivery\Adapter;
 
 class DShopAdapterTest extends DShopAdapter
 {
+
+
+    protected $cmsOrderStatus = array( DDStatusProvider::ORDER_IN_PROGRESS => 1,
+                                       DDStatusProvider::ORDER_CONFIRMED => 2,
+                                       DDStatusProvider::ORDER_IN_STOCK => 3,
+                                       DDStatusProvider::ORDER_IN_WAY => 'Заказ в пути',
+                                       DDStatusProvider::ORDER_DELIVERED => 'Заказ доставлен',
+                                       DDStatusProvider::ORDER_RECEIVED => 'Заказ получен',
+                                       DDStatusProvider::ORDER_RETURN => 'Возврат заказа',
+                                       DDStatusProvider::ORDER_CUSTOMER_RETURNED => 'Клиент вернул заказ',
+                                       DDStatusProvider::ORDER_PARTIAL_REFUND => 'Частичный возврат заказа',
+                                       DDStatusProvider::ORDER_RETURNED_MI => 'Возвращен в ИМ',
+                                       DDStatusProvider::ORDER_WAITING => 'Ожидание',
+                                       DDStatusProvider::ORDER_CANCEL => 'Отмена' );
+
+
     /**
      * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
      * @return string
@@ -59,5 +75,19 @@ class DShopAdapterTest extends DShopAdapter
         // TODO: Implement getPhpScriptURL() method.
     }
 
+    public function setCmsOrderStatus( $orderID, $status )
+    {
+
+    }
+
+    public function isStatusToSendOrder(  $status, $order )
+    {
+        return true;
+    }
+
+    public function getShopOrderInfo( $orderID )
+    {
+        return array('id' => $orderID, 'status' => 4,'payment' => 6 );
+    }
 }
 ?>

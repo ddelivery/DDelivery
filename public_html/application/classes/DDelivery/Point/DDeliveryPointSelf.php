@@ -10,7 +10,7 @@ namespace DDelivery\Point;
 /**
  * DDeliveryPointSelf - точка самовывоза
  *
- * @property int _id
+ * @property int _id 
  * @property int name
  * @property int city_id
  * @property int city
@@ -23,7 +23,7 @@ namespace DDelivery\Point;
  * @property int company
  * @property int company_id
  * @property int company_code
- * @property int metro
+ * @property int metro 
  * @property int description_in
  * @property int description_out
  * @property int indoor_place
@@ -35,7 +35,7 @@ namespace DDelivery\Point;
  * @property int status
  * @property int has_fitting_room
  * @property int is_cash
- * @property int is_card
+ * @property int is_card 
  *
  * @package  DDelivery.Point
  */

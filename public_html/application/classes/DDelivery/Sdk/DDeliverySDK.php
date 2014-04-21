@@ -119,9 +119,10 @@ class DDeliverySDK {
     {
     	$params = array( 'order' => $orderID );
     	$response = $this->requestProvider->request( 'order_status', $params,'get' );
+    	
     	if( !count ( $response->response ))
     	{
-    		throw new DDeliveryException( implode(',', $response->errorMessage ));
+    		throw new DDeliveryException( $response->errorMessage );
     	}
     	return $response;
     }
