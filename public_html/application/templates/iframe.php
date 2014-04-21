@@ -9,7 +9,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/modernizr.custom.76185.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/jquery.mCustomScrollbar.concat.min.js"></script>
-    <script type="text/javascript" src="<?=$staticURL?>js/jquery.custom-radio-checkbox.js"></script>
+    <script type="text/javascript" src="<?=$staticURL?>js/jquery.custom-radio-checkbox.min.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/jquery.formtips.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/jquery.maskedinput.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.iframe.js"></script>

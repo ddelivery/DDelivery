@@ -16,18 +16,21 @@ var TypeForm = (function(){
         },
         renderData: function (data) {
             var table = $('.map-popup__main__delivery table');
-            console.log(data);
             for(var key in data) {
                 var cur = $('tr.'+key, table);
                 if(data[key].disabled) {
                     cur.addClass('disabled');
+                    $('input', cur).prop('disabled', 1);
                 } else {
                     cur.removeClass('disabled');
-                    console.log($('.min_price', cur));
-                    console.log($('.min_price', data[key].minPrice));
+                    $('input', cur).prop('disabled', false);
                     $('.min_price', cur).html(data[key].minPrice);
                     $('.min_time', cur).html(data[key].minTime);
                 }
+            }
+            $('.radio input').trigger('custom.refresh');
+            if($('.radio input:checked', table).prop('disabled')) {
+                $('.radio input:not([disabled])').click();
             }
         },
         event: function(){
@@ -42,8 +45,8 @@ var TypeForm = (function(){
             });
             mapPopupTableTr.on('click', function (e) {
                 e.preventDefault();
-                var radio = $(this).find('input[type="radio"]');
-                if(!radio.attr('disabled')){
+                if(!$(this).hasClass('disabled')){
+                    var radio = $(this).find('input[type="radio"]');
                     radio.prop('checked', true).change();
                 }
             });
@@ -58,13 +61,14 @@ var TypeForm = (function(){
                 }
             });
 
-
             $(window).on('ddeliveryCityPlace', function(e, data){
 
                 DDeliveryIframe.ajaxData({action: 'typeFormDataOnly', city_id: data.id}, function(data) {
                     TypeForm.renderData(data.data);
                 });
-            })
+            });
+
+
 
         }
     }

@@ -131,23 +131,11 @@ var DDeliveryIframeOld = {
                 return false;
             },
             ajaxRequestInit: function(data) {
-                var radio = $('.map-popup__main__delivery input[type="radio"]');
-                if(radio.length > 0){
-                    radio.Custom({
-                        customStyleClass: 'radio',
-                        customHeight: '20'
-                    });
-                    var mapPopupTableTr = $('.map-popup__main__delivery table tr');
-                    mapPopupTableTr.hover(function () {
-                        $(this).addClass('hover');
-                    }, function () {
-                        $(this).removeClass('hover');
-                    });
-                    mapPopupTableTr.on('click', function (e) {
-                        e.preventDefault();
-                        $(this).find('input[type="radio"]').prop('checked', true).change();
-                    });
-                }
+
+                $('.map-popup__main__delivery input[type="radio"]').Custom({
+                    customStyleClass: 'radio',
+                    customHeight: '20'
+                });
 
                 if($('.map-canvas').length > 0){
                     Delivery.map.init(data);
@@ -206,8 +194,6 @@ var DDeliveryIframeOld = {
                     }
                 });
 
-                // Ссылки
-                $('.map-popup__main__delivery__next a').click(Delivery.typeFormSubmit);
             },
 
             mapAction:{
@@ -217,19 +203,6 @@ var DDeliveryIframeOld = {
                     jQuery('.map-popup__info').toggleClass('wide');
                     //});
                 }
-            },
-            // события
-
-            typeFormSubmit: function(){
-
-                var radio = $('input[type="radio"]:checked').val();
-                if(radio) {
-                    Delivery.ajaxPage({
-                        type: radio,
-                        city_id: $('input[name=ddelivery_city]').val()
-                    });
-                }
-
             }
 
         };
