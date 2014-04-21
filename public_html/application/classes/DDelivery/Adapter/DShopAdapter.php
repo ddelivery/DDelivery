@@ -298,8 +298,8 @@ abstract class DShopAdapter
     /**
      * Перед тем как показать точную информацию о стоимости мы сообщаем информацию
      *
-     * @param \DDelivery\Point\DDeliveryInfo $selfCompanyList
-     * @return \DDelivery\Point\DDeliveryInfo
+     * @param \DDelivery\Point\DDeliveryInfo[] $selfCompanyList
+     * @return \DDelivery\Point\DDeliveryInfo[]
      */
     public function filterSelfInfo($selfCompanyList)
     {

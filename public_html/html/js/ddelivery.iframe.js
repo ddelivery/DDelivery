@@ -34,24 +34,6 @@ var DDeliveryIframe = (function(){
             $.post( componentUrl, data, callBack, 'json');
         },
         render: function(data) {
-            var radio = $('.map-popup__main__delivery input[type="radio"]');
-            if(radio.length > 0){
-                radio.Custom({
-                    customStyleClass: 'radio',
-                    customHeight: '20'
-                });
-                var mapPopupTableTr = $('.map-popup__main__delivery table tr');
-                mapPopupTableTr.hover(function () {
-                    $(this).addClass('hover');
-                }, function () {
-                    $(this).removeClass('hover');
-                });
-                mapPopupTableTr.on('click', function (e) {
-                    e.preventDefault();
-                    $(this).find('input[type="radio"]').prop('checked', true).change();
-                });
-            }
-
             // У всех
             CityPlace.init();
 
@@ -68,6 +50,9 @@ var DDeliveryIframe = (function(){
                         case 'contactForm':
                             ContactForm.init();
                             break;
+                        case 'typeForm':
+                            TypeForm.init();
+                            break;
                     }
                 }
             }
@@ -76,21 +61,7 @@ var DDeliveryIframe = (function(){
                 $this.getData(data.id)
             });*/
 
-            // Ссылки
-            $('.map-popup__main__delivery__next a').click(DDeliveryIframe.typeFormSubmit);
-        },
-        typeFormSubmit: function(){
-
-            var radio = $('input[type="radio"]:checked').val();
-            if(radio) {
-                DDeliveryIframe.ajaxPage({
-                    type: radio,
-                    city_id: $('input[name=ddelivery_city]').val()
-                });
-            }
-
         }
-
     }
 })();
 

@@ -249,6 +249,10 @@ sprites locations are 0 -56px/-20px -56px/-40px -56px/-60px -56px (light) and -8
 .map-popup .map-popup__main__delivery table tr td.col5 { font-size: 14px; color: #6f6f6f; line-height: 16px; }
 .map-popup .map-popup__main__delivery table tr td.col5 strong { font-size: 24px; color: #88417b; line-height: 26px; font-weight: normal; padding-left: 10px; padding-right: 10px; position: relative; top: 4px; }
 .map-popup .map-popup__main__delivery table tr.hover td { background: #eaeff1; }
+.map-popup .map-popup__main__delivery table tr td.col3 .not_support{ display: none; }
+.map-popup .map-popup__main__delivery table tr.disabled td.col3 .not_support{ display: inline; }
+.map-popup .map-popup__main__delivery table tr.disabled td.col4 span, .map-popup .map-popup__main__delivery table tr.disabled td.col5 span{ display: none; }
+.map-popup .map-popup__main__delivery table tr.disabled { opacity: 0.5; filter: "alpha(opacity=50)"; -ms-filter: "alpha(opacity=50)"; /* old ie */ }
 .map-popup .radio { display: inline-block; position: relative; height: 20px; width: 20px; background: url("../img/radio.png") no-repeat; cursor: default; text-align: left; overflow: hidden; }
 .map-popup .radio.disabled { opacity: 0.5; filter: Alpha(opacity="50"); }
 .map-popup .radio input { position: absolute; left: -400px; top: 0px; }

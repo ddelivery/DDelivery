@@ -495,7 +495,7 @@ class DDeliveryUI
      */
     public function getCityByIp( $ip )
     {
-    	$response = $this->sdk->getCityByIp( $ip );
+        $response = $this->sdk->getCityByIp( $ip );
 
     	if( $response->success )
     	{
@@ -637,10 +637,10 @@ class DDeliveryUI
     }
 
     /**
-     *
      * Для удобства перебора сортируем массив объектов deliveryInfo
      *
-     *
+     * @param array $companyInfo
+     * @return Point\DDeliveryInfo[]
      */
     private function _getOrderedDeliveryInfo( $companyInfo )
     {
@@ -1284,6 +1284,9 @@ class DDeliveryUI
             case 'typeForm':
                 echo $this->renderDeliveryTypeForm();
                 break;
+            case 'typeFormDataOnly':
+                echo $this->renderDeliveryTypeForm(true);
+                break;
             case 'contactForm':
                 echo $this->renderContactForm();
                 break;
@@ -1346,57 +1349,88 @@ class DDeliveryUI
 
     /**
      * Возвращает страницу с формой выбора способа доставки
+     * @param bool $dataOnly если передать true, то отдаст данные для обновления верстки через js
      * @return string
      */
-    protected function renderDeliveryTypeForm()
+    protected function renderDeliveryTypeForm($dataOnly = false)
     {
         $cityId = $this->getCityId();
-        $cityList = $this->getCityByDisplay($cityId);
 
         $order = $this->order;
-
-        $order->declaredPrice = $this->shop->getDeclaredPrice($order->getProducts());
-        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $cityId);
-
-        $minSelfPrice = PHP_INT_MAX;
-        $minSelfTime = PHP_INT_MAX;
-        foreach($selfCompanyList as $selfCompany) {
-            if($minSelfPrice > $selfCompany['delivery_price']){
-                $minSelfPrice = $selfCompany['delivery_price'];
-            }
-            if($minSelfTime > $selfCompany['delivery_time_min']){
-                $minSelfTime = $selfCompany['delivery_time_min'];
-            }
-        }
-        $minCourierPrice = PHP_INT_MAX;
-        $minCourierTime = PHP_INT_MAX;
-
-        $courierCompanyList = $this->getCourierPointsForCity($cityId);
-        foreach($courierCompanyList as $courierCompany){
-            $deliveryInfo = $courierCompany->getDeliveryInfo();
-            $deliveryInfo->pickup_price;
-            if($minCourierPrice > $deliveryInfo->delivery_price){
-                $minCourierPrice = $deliveryInfo->delivery_price;
-            }
-            if($minCourierTime > $deliveryInfo->delivery_time_min){
-                $minCourierTime = $deliveryInfo->delivery_time_min;
-            }
-        }
-
-        $this->sdk->calculatorPickupForCity($cityId,
-            $order->getDimensionSide1(), $order->getDimensionSide2(), $order->getDimensionSide3(), $order->getWeight(),
-            $order->declaredPrice
+        $data = array(
+            'self' => array(
+                'minPrice' => 0,
+                'minTime' => 0,
+                'disabled' => true,
+            ),
+            'courier' => array(
+                'minPrice' => 0,
+                'minTime' => 0,
+                'disabled' => true
+            ),
         );
 
-        ob_start();
-        include(__DIR__.'/../../templates/typeForm.php');
-        $content = ob_get_contents();
-        ob_end_clean();
+        $order->declaredPrice = $this->shop->getDeclaredPrice($order);
+        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $cityId);
+        if(!empty($selfCompanyList)){
+            $selfCompanyList = $this->_getOrderedDeliveryInfo( $selfCompanyList );
+            $selfCompanyList = $this->shop->filterSelfInfo($selfCompanyList);
+            if(!empty($selfCompanyList)) {
+                $minPrice = PHP_INT_MAX;
+                $minTime = PHP_INT_MAX;
+                foreach($selfCompanyList as $selfCompany) {
+                    if($minPrice > $selfCompany->total_price){
+                        $minPrice = $selfCompany->total_price;
+                    }
+                    if($minTime > $selfCompany->delivery_time_min){
+                        $minTime = $selfCompany->delivery_time_min;
+                    }
+                }
+                $data['self'] = array(
+                    'minPrice' => $minPrice,
+                    'minTime' => $minTime,
+                    'disabled' => false
+                );
+            }
+        }
+        $courierCompanyList = $this->getCourierPointsForCity($cityId);
+        if(!empty($courierCompanyList)){
+            $courierCompanyList = $this->shop->filterPointsCourier($courierCompanyList, $this->order);
+            if($courierCompanyList){
+                $minPrice = PHP_INT_MAX;
+                $minTime = PHP_INT_MAX;
 
-        return json_encode(array('html'=>$content, 'js'=>'', 'orderId' => $this->order->getId()));
+                foreach($courierCompanyList as $courierCompany){
+                    $deliveryInfo = $courierCompany->getDeliveryInfo();
+                    if($minPrice > $deliveryInfo->total_price){
+                        $minPrice = $deliveryInfo->total_price;
+                    }
+                    if($minTime > $deliveryInfo->delivery_time_min){
+                        $minTime = $deliveryInfo->delivery_time_min;
+                    }
+                }
+                $data['courier'] = array(
+                    'minPrice' => $minPrice,
+                    'minTime' => $minTime,
+                    'disabled' => false
+                );
+            }
+        }
+
+        if(!$dataOnly) {
+            // Рендер html
+            $cityList = $this->getCityByDisplay($cityId);
+
+            ob_start();
+            include(__DIR__.'/../../templates/typeForm.php');
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            return json_encode(array('html'=>$content, 'js'=>'typeForm', 'orderId' => $this->order->getId()));
+        }else{
+            return json_encode(array('data' => $data));
+        }
     }
-
-    //protected function renderDeliveryTypeForm
 
     protected function renderCourier()
     {

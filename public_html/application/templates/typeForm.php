@@ -1,10 +1,7 @@
 <?/**
  * @var array[] $cityList
  * @var \DDelivery\DDeliveryUI $this
- * @var int $minSelfPrice
- * @var int $minSelfTime
- * @var int $minCourierPrice
- * @var int $minCourierTime
+ * @var array $config
  */ ?>
 <div class="map-popup">
     <div class="map-popup__head">
@@ -39,50 +36,52 @@
         <div class="map-popup__main__overlay">&nbsp;</div>
         <div class="map-popup__main__delivery">
             <table>
-                <?if(in_array(\DDelivery\Sdk\DDeliverySDK::TYPE_COURIER,  $this->supportedTypes)):?>
-                    <tr>
-                        <td class="col1">
-                            <input type="radio" name="ddeliveryType" checked value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_COURIER?>"/>
-                        </td>
-                        <td class="col2">
-                            <i class="icon-car">&nbsp;</i>
-                        </td>
-                        <td class="col3">
-                            <p>
-                                <strong>Доставка курьером</strong>
-                                Пара слов о данном способе доставки
-                            </p>
-                        </td>
-                        <td class="col4">
-                            от <strong><?=$minCourierPrice?> <i class="icon-rub">&nbsp;</i></strong>
-                        </td>
-                        <td class="col5">
-                            от <strong><?=$minCourierTime?></strong> дня
-                        </td>
-                    </tr>
-                <?endif;?>
-                <?if(in_array(\DDelivery\Sdk\DDeliverySDK::TYPE_SELF,  $this->supportedTypes)):?>
-                    <tr>
-                        <td class="col1">
-                            <input type="radio" name="ddeliveryType" value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_SELF?>"/>
-                        </td>
-                        <td class="col2">
-                            <i class="icon-pack">&nbsp;</i>
-                        </td>
-                        <td class="col3">
-                            <p>
-                                <strong>Пункт выдачи или ячейка</strong>
-                                Пара слов о данном способе доставки
-                            </p>
-                        </td>
-                        <td class="col4">
-                            от <strong><?=$minSelfPrice?> <i class="icon-rub">&nbsp;</i></strong>
-                        </td>
-                        <td class="col5">
-                            от <strong><?=$minSelfTime?></strong> дня
-                        </td>
-                    </tr>
-                <?endif;?>
+                <?
+                $currentData = $data['courier'];
+                ?>
+                <tr class="courier <?=$currentData['disabled'] ? 'disabled' : ''?>">
+                    <td class="col1">
+                        <input type="radio" <?=$currentData['disabled'] ? 'disabled' : ''?> name="ddeliveryType" checked value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_COURIER?>"/>
+                    </td>
+                    <td class="col2">
+                        <i class="icon-car">&nbsp;</i>
+                    </td>
+                    <td class="col3">
+                        <p>
+                            <strong>Доставка курьером <span class="not_support">не доступна для Вашего города</span></strong>
+                            Пара слов о данном способе доставки
+                        </p>
+                    </td>
+                    <td class="col4">
+                        <span>от <strong><span class="min_price"><?=$currentData['minPrice']?></span> <i class="icon-rub">&nbsp;</i></strong></span>
+                    </td>
+                    <td class="col5">
+                        <span>от <strong><span class="min_time"><?=$currentData['minTime']?></span></strong> дня</span>
+                    </td>
+                </tr>
+                <?
+                $currentData = $data['self'];
+                ?>
+                <tr class="self <?=$currentData['disabled'] ? 'disabled' : ''?>">
+                    <td class="col1">
+                        <input type="radio" <?=$currentData['disabled'] ? 'disabled' : ''?> name="ddeliveryType" value="<?=\DDelivery\Sdk\DDeliverySDK::TYPE_SELF?>"/>
+                    </td>
+                    <td class="col2">
+                        <i class="icon-pack">&nbsp;</i>
+                    </td>
+                    <td class="col3">
+                        <p>
+                            <strong>Пункт выдачи или ячейка <span class="not_support">не доступна для Вашего города</span></strong>
+                            Пара слов о данном способе доставки
+                        </p>
+                    </td>
+                    <td class="col4">
+                        <span>от <strong><span class="min_price"><?=$currentData['minPrice']?></span> <i class="icon-rub">&nbsp;</i></strong></span>
+                    </td>
+                    <td class="col5">
+                        <span>от <strong><span class="min_time"><?=$currentData['minTime']?></span></strong> дня</span>
+                    </td>
+                </tr>
                 <?/*
                 <tr>
                     <td class="col1">
