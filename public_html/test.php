@@ -5,10 +5,10 @@
  * Time: 23:05
  */
 
+
+
 ini_set("display_errors", "1");
 error_reporting(E_ALL);
-
-
 require_once 'application/bootstrap.php';
 //$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('	', true);
 //$result = $DDeliverySDK->getSelfDeliveryPoints('4,6', '4,25');
@@ -119,16 +119,16 @@ print_r( json_encode($funki));
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
+$order->city = 151185;
+$selfPoints = $DDeliveryUI->getCourierPointsForCity(151185, $order);
 
-$selfpoint = $DDeliveryUI->getSelfPoints(151184);
-
-
-
+print_r($selfPoints);
+/*
 $order->city = 151184;
 $order->localId = 1;
 $order->type = 2;
 
-$order->setPoint($selfpoint[0]);
+//$order->setPoint($selfPoints[0]);
 $order->firstName = 'Дима';
 $order->secondName = 'Грушин';
 $order->toPhone = '9999999999';
@@ -136,16 +136,21 @@ $order->toPhone = '9999999999';
 $order->toStreet = 'Вознесенская';
 $order->toHouse = '1а';
 $order->toFlat = '42';
-$order->toEmail = '';	
+$order->toEmail = '';
+*/
+//$DDeliveryUI->getDDStatusByLocal( $ddStatus = 20 );
+//print_r( $DDeliveryUI->getDDOrderStatus(1007) );
 
-$id = $DDeliveryUI->saveFullOrder($order);
-$DDeliveryUI->onCmsOrderFinish($order->localId, $shopOrderID = 5);
+//$id = $DDeliveryUI->saveFullOrder($order);
+//echo $id;
 
-$DDeliveryUI->changeOrderStatus( 5 );
+//$DDeliveryUI->onCmsOrderFinish($order->localId, $shopOrderID = 5);
 
-$data = $DDeliveryUI->getAllOrders();
-//print_r($data);
+//$DDeliveryUI->changeOrderStatus( 5 );
 
+//$data = $DDeliveryUI->getAllOrders();
+///print_r($data);
+//$DDeliveryUI->getOrderStatus();
 //$data = $DDeliveryUI->getAllOrders();
 
 //print_r($data);

@@ -9,7 +9,6 @@ class DDeliveryOrderTest extends PHPUnit_Framework_TestCase
     			                                             1, 100, 2, 'Пиджак' );
     	$products[] = new \DDelivery\Order\DDeliveryProduct( 2, 3, 1,  
     			                                             1, 1, 200, 1,'Куртка кожанная') ;
-    	
 		$this->fixture = new DDelivery\Order\DDeliveryOrder( $products );
 	}
 	
