@@ -98,7 +98,6 @@ class DDeliveryUI
     }
     
     /**
-     * 
      * Обработчик смены статуса заказа
      * 
      */
@@ -109,17 +108,20 @@ class DDeliveryUI
         $ids = array( $data[0]->id );
         
         $orderArr = $this->initIntermediateOrder($ids);
-        $order = $orderArr[0];
-       
-        $this->getDDOrderStatus($order->ddeliveryID);
+        if(!empty($orderArr)){
+            $order = $orderArr[0];
+            $this->getDDOrderStatus($order->ddeliveryID);
+        }
     }
+
     /**
-     * 
+     *
      * Проверяет статус заказа на сервере DD
-     * 
-     * @param $orderID id заказа на сервере DD
-     * 
-     * return 
+     *
+     * @param int $orderID id заказа на сервере DD
+     *
+     * return
+     * @return \DDelivery\Sdk\DDeliverySDKResponse|null
      */
     public function getDDOrderStatus( $orderID )
     {
@@ -134,15 +136,17 @@ class DDeliveryUI
     	}
     	return $response;
     }
+
     /**
-     * После окончания оформления заказа в cms вызывается для 
+     * После окончания оформления заказа в cms вызывается для
      * дальнейшей обработки заказа
      *
      * @param int $id id заказа в локальной БД SQLLite
      * @param int $shopOrderID id заказа в CMS
-     * 
+     *
+     * @throws DDeliveryException
      * @todo
-     * 
+     *
      * @return bool
      */
     public function onCmsOrderFinish( $id, $shopOrderID)
@@ -166,15 +170,13 @@ class DDeliveryUI
         if( $this->shop->isStatusToSendOrder( $shopOrderInfo['status'], $order) )
         {   
         	
-            if( $order->type == 1 )
-            {
-                $ddOrderID = $this->createSelfOrder($order);
+            if( $order->type == 1 ) {
+                $order->ddeliveryID = $this->createSelfOrder($order);
+            } else if( $order->type == 2 ) {
+                $order->ddeliveryID = $this->createCourierOrder($order);
+            }else{
+                throw new DDeliveryException('Not support order type');
             }
-            else if( $order->type == 2 )
-            {
-                $ddOrderID = $this->createCourierOrder($order);
-            }
-            $order->ddeliveryID = $ddOrderID;
             
         }
         $this->saveFullOrder($order);
@@ -198,12 +200,13 @@ class DDeliveryUI
     	$orderDB = new DataBase\Order();
     	return $orderDB->setShopOrderID($id, $paymentVariant, $status, $shopOrderID);
     }
-    
+
     /**
      * Инициализирует массив заказов из массива id заказов локальной БД
      *
-     * @param int[]  $ids массив с id заказов
+     * @param int[] $ids массив с id заказов
      *
+     * @throws DDeliveryException
      * @return DDeliveryOrder[]
      */
     public function initIntermediateOrder($ids)
@@ -482,9 +485,9 @@ class DDeliveryUI
         } 
         else 
         {
-            $id = $orderDB->insertOrder($packOrder);
+            $this->order->localId = $orderDB->insertOrder($packOrder);
         }
-        return $id;
+        return $this->order->localId;
     }
 
     /**
@@ -657,9 +660,10 @@ class DDeliveryUI
      *
      * Перед отправкой заказа курьеркой на сервер DDelivery проверяется
      * заполнение всех данных для заказа
-     * 
+     *
      * @param DDeliveryOrder $order заказ ddelivery
-     * 
+     *
+     * @throws DDeliveryException
      * @return bool
      */
     public function checkOrderCourierValues( $order )
@@ -735,7 +739,8 @@ class DDeliveryUI
      * заполнение всех данных для заказа
      *
      * @param DDeliveryOrder $order заказ ddelivery
-     * 
+     *
+     * @throws DDeliveryException
      * @return bool
      */
     public function checkOrderSelfValues( $order )
@@ -794,76 +799,18 @@ class DDeliveryUI
     	$orderDB = new DataBase\Order();
     	$id = $orderDB->saveFullOrder( $order );
     	return $id;
-    	/*
-    	$orderDB = new DataBase\Order();
-    	$point = $order->getPoint();
-    	$dimensionSide1 = $order->getDimensionSide1();
-    	$dimensionSide2 = $order->getDimensionSide2();
-    	$dimensionSide3 = $order->getDimensionSide3();
-    	$goods_description = $order->getGoodsDescription();
-    	$weight = $order->getWeight();
-    	$to_city = $order->city;
-    	$delivery_company = $point->getDeliveryInfo()->get('delivery_company');
-    	$confirmed = $order->getConfirmed();
-    	$to_name = $order->getToName();
-    	$to_phone = $order->getToPhone();
-    	$declaredPrice = $order->declaredPrice;
-    	$orderPrice = $point->getDeliveryInfo()->get('total_price');
-    	$paymentPrice = $this->shop->getPaymentPrice($order, $orderPrice);
-    	$ddeliveryID = $order->ddeliveryID;
-    	$localId = $order->localId;
-    	$productString = $order->getSerializedProducts();
-    	
-    	$localStatus = $order->localStatus;
-    	$ddStatus = $order->ddStatus;
-    	$shop_refnum = $order->shopRefnum;
-    	
-    	$firstName = $order->firstName;
-    	$secondName = $order->secondName;
-    	$pointDB = serialize($point);
-    	//echo $shop_refnum;
-    	if( $order->type == 1 )
-    	{   
-    	    
-    	    $pointID = $point->get('_id');
-    	    $id = $orderDB->saveFullSelfOrder( $localId, $pointID, $dimensionSide1, $dimensionSide2, 
-    	    		                           $dimensionSide3, $shop_refnum, $confirmed, $weight, 
-    	    		                           $to_name, $to_phone, $goods_description, $declaredPrice,
-    	 			                           $paymentPrice, $ddeliveryID, $to_city, $delivery_company,
-    	                                       $productString, $localStatus, $ddStatus, $firstName, 
-    	    		                           $secondName, $pointDB );
-    	 }
-    	 else if( $this->order->type == 2 )
-    	 {  
-    	 	
-    	    $to_street = $this->order->toStreet;
-    	    $to_house = $this->order->toHouse;
-    	    $to_flat = $this->order->toFlat;
-    	    
-    	    $id = $orderDB->saveFullCourierOrder( $localId, $to_city, $delivery_company, $dimensionSide1, 
-    	    		                              $dimensionSide2, $dimensionSide3, $shop_refnum, $confirmed, 
-    	    		                              $weight, $to_name, $to_phone, $goods_description, $declaredPrice,
-    	 			                              $paymentPrice, $to_street, $to_house, $to_flat, $ddeliveryID, 
-    	    		                              $productString, $localStatus, $ddStatus, $firstName, $secondName, $pointDB );
-    	 }
-
-    	 return $id;
-         */
     }
 
     /**
      *
      * отправить заказ на курьерку
      * 
-     * @param DDeliveryOrder
+     * @param DDeliveryOrder $order
      * 
      * @return int
      */
     public function createCourierOrder( $order )
-    {   
-    	
-    	
-    	
+    {
     	/** @var DDeliveryPointCourier $point */
     	try
     	{
@@ -930,7 +877,7 @@ class DDeliveryUI
      *
      * отправить заказ на самовывоз
      * 
-     * @param DDeliveryOrder
+     * @param DDeliveryOrder $order
      * 
      * @return int
      *
@@ -1178,12 +1125,11 @@ class DDeliveryUI
      * Вызывается для рендера текущей странички
      * @param array $request
      * @throws DDeliveryException
-     * @todo метод не финальный
      */
     public function render($request)
     {
-        if(!empty($request['orderId'])) {
-            $this->initIntermediateOrder($request['orderId']);
+        if(!empty($request['order_id'])) {
+            $this->initIntermediateOrder(array($request['order_id']));
         }
 
         if(isset($request['action'])) {
@@ -1274,6 +1220,8 @@ class DDeliveryUI
             }
         }
 
+        $this->saveIntermediateOrder();
+
         switch($request['action']) {
             case 'map':
                 echo $this->renderMap();
@@ -1294,6 +1242,9 @@ class DDeliveryUI
                 throw new DDeliveryException('Not support action');
                 break;
         }
+
+
+
     }
 
     /**
@@ -1344,7 +1295,7 @@ class DDeliveryUI
         include(__DIR__ . '/../../templates/map.php');
         $content = ob_get_contents();
         ob_end_clean();
-        return json_encode(array('html'=>$content, 'js'=>'map', 'points' => $pointsJs, 'orderId' => $this->order->getId()));
+        return json_encode(array('html'=>$content, 'js'=>'map', 'points' => $pointsJs, 'orderId' => $this->order->localId));
     }
 
     /**
@@ -1426,7 +1377,7 @@ class DDeliveryUI
             $content = ob_get_contents();
             ob_end_clean();
 
-            return json_encode(array('html'=>$content, 'js'=>'typeForm', 'orderId' => $this->order->getId()));
+            return json_encode(array('html'=>$content, 'js'=>'typeForm', 'orderId' => $this->order->localId));
         }else{
             return json_encode(array('data' => $data));
         }
@@ -1451,7 +1402,7 @@ class DDeliveryUI
         $content = ob_get_contents();
         ob_end_clean();
 
-        return json_encode(array('html'=>$content, 'js'=>'courier', 'orderId' => $this->order->getId()));
+        return json_encode(array('html'=>$content, 'js'=>'courier', 'orderId' => $this->order->localId));
     }
 
     private function renderContactForm()
@@ -1500,7 +1451,7 @@ class DDeliveryUI
         $content = ob_get_contents();
         ob_end_clean();
 
-        return json_encode(array('html'=>$content, 'js'=>'contactForm', 'orderId' => $this->order->getId()));
+        return json_encode(array('html'=>$content, 'js'=>'contactForm', 'orderId' => $this->order->localId));
     }
 
     /**
