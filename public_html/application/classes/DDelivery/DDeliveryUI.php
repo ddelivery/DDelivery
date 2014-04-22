@@ -11,6 +11,7 @@ use DDelivery\DataBase\City;
 use DDelivery\DataBase\Order;
 use DDelivery\DataBase\SQLite;
 use DDelivery\Point\DDeliveryPointSelf;
+use DDelivery\Sdk\DCache;
 use DDelivery\Sdk\DDeliverySDK;
 use DDelivery\Order\DDeliveryOrder;
 use DDelivery\Adapter\DShopAdapterImpl;
@@ -79,8 +80,7 @@ class DDeliveryUI
         $this->order = new DDeliveryOrder( $productList );
         
         $this->order->amount = $this->shop->getAmount();
-        $this->order->paymentVariant = $this->shop->getPaymentVariant();
-        
+
         $this->messager = new Sdk\DDeliveryMessager($this->shop->isTestMode());
     }
    
@@ -94,8 +94,10 @@ class DDeliveryUI
      */
     public function update()
     {
-    
+        echo 'update';
     }
+
+
 
     /**
      *
@@ -286,6 +288,10 @@ class DDeliveryUI
         }
         return $orderList;
     }
+
+
+
+
     /**
      * Инициализировать заказ в контексте текущего заказа
      *
@@ -646,6 +652,29 @@ class DDeliveryUI
     	}
     }
 
+    public function testOzk()
+    {
+        return $this->renderCache('getSelfPointsDetail', array( 151185, null ) );
+    }
+    public function renderCache( $method, $params = array() )
+    {
+        if(  method_exists($this, $method ) )
+        {
+
+            $sig = $method . '_' . $params[0] . '_' . $params[1];
+            if( $result = DCache::load( $sig ) )
+            {
+                return $result;
+            }
+            else
+            {
+                $result  =  $this->$method( $params[0], $params[1] );
+                $expired = 'xxxxxx';
+                DCache::save( $sig, $result, $expired);
+                return $result;
+            }
+        }
+    }
     /**
      * Получить компании самовывоза  для города с их полным описанием, и координатами их филиалов
      * @param DDeliveryOrder $order
@@ -659,7 +688,9 @@ class DDeliveryUI
         // Есть ли необходимость искать точки на сервере ddelivery
         if( $this->shop->preGoToFindPoints( $order ))
         {
-            $points = $this->getSelfPointsForCityAndCompany(null, $order->city); /** cache **/
+            //$points =  $this->renderCache('getSelfPointsDetail', array( $order->city ) ); /** cache **/
+
+            $points = $this->getSelfPointsDetail( $order->city );
 
             $companyInfo = $this->getSelfDeliveryInfoForCity( $order );
 
@@ -1060,7 +1091,7 @@ class DDeliveryUI
      *
      * @return DDeliveryPointSelf[]
      */
-    public function getSelfPointsForCityAndCompany( $companyIDs, $cityID )
+    public function getSelfPointsDetail( $cityID, $companyIDs = null )
     {
 
     	$points = array();

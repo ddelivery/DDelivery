@@ -126,10 +126,11 @@ $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
 $order->city = 151185;
-$pointself = $DDeliveryUI->getSelfPoints($order);
+//$pointself = $DDeliveryUI->getSelfPoints($order);
 
-$courierpoints = $DDeliveryUI->getCourierPointsForCity($order);
+//$courierpoints = $DDeliveryUI->getCourierPointsForCity($order);
 
+print_r( $DDeliveryUI->testOzk() );
 //$city = $DDeliveryUI->get
 
 //print_r($pointself);
