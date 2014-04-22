@@ -133,7 +133,7 @@ class DDeliveryUI
             return false;
         }
         $ddStatus = $this->getDDOrderStatus($order->ddeliveryID);
-        if( $response == 0 )
+        if( $ddStatus == 0 )
         {
             return false;
         }
@@ -232,6 +232,29 @@ class DDeliveryUI
     }
 
     /**
+     * Инициализирует заказ по id из заказов локальной БД, в контексте текущего UI
+     *
+     * @param int $id массив с id заказов
+     *
+     * @throws DDeliveryException
+     *
+     * @return DDeliveryOrder[]
+     */
+    public function initIntermediateOrder( $id )
+    {
+        $orderDB = new DataBase\Order();
+        if(!$id)
+            return false;
+        $orders = $orderDB->getOrderList(array( $id ));
+        if( count($orders) )
+        {
+            $item = $orders[0];
+            $this->_initOrderInfo( $this->order,  $item);
+        }
+        return true;
+    }
+
+    /**
      * Инициализирует массив заказов из массива id заказов локальной БД
      *
      * @param int[] $ids массив с id заказов
@@ -240,7 +263,7 @@ class DDeliveryUI
      *
      * @return DDeliveryOrder[]
      */
-    public function initIntermediateOrder($ids)
+    public function initOrder( $ids )
     {   
     	$orderDB = new DataBase\Order();
         $orderList = array();
@@ -254,31 +277,7 @@ class DDeliveryUI
             {   
             	$productList = unserialize( $item->products );
                 $currentOrder = new DDeliveryOrder( $productList );
-                $currentOrder->type = $item->type;
-                $currentOrder->localId = $item->id;
-                $currentOrder->confirmed = $item->confirmed;
-                $currentOrder->amount = $item->amount;
-                $currentOrder->city = $item->to_city;
-                $currentOrder->localStatus = $item->local_status;
-                $currentOrder->ddStatus = $item->dd_status;
-                $currentOrder->shopRefnum = $item->shop_refnum;
-                $currentOrder->ddeliveryID = $item->ddeliveryorder_id;
-                if( $item->point != null )
-                {
-                	$currentOrder->setPoint(unserialize( $item->point ));
-                } 
-                $currentOrder->firstName = $item->first_name;
-                $currentOrder->secondName = $item->second_name;
-                $currentOrder->shopRefnum = $item->shop_refnum;
-                $currentOrder->declared_price = $item->declared_price;
-                $currentOrder->paymentPrice = $item->payment_price;
-                $currentOrder->toName = $item->to_name;
-                $currentOrder->toPhone = $item->to_phone;
-                $currentOrder->goodsDescription = $item->goods_description;
-                $currentOrder->toStreet = $item->to_street;
-                $currentOrder->toHouse = $item->to_house;
-                $currentOrder->toFlat = $item->to_flat;
-                $currentOrder->toEmail = $item->to_email;
+                $this->_initOrderInfo( $currentOrder, $item );
             	$orderList[] = $currentOrder;
             }    
         }
@@ -292,6 +291,8 @@ class DDeliveryUI
      * Инициализировать заказ в контексте текущего заказа
      *
      * Вызывается всегда при инициализации объекта заказа
+     *
+     * @deprecated
      *
      * @param $id
      * @return void
@@ -505,6 +506,8 @@ class DDeliveryUI
      *
      * Вызывать вручную при завершении обработки запроса
      *
+     * @deprecated
+     *
      * @return int;
      */
     public function saveIntermediateOrder()
@@ -715,8 +718,8 @@ class DDeliveryUI
     /**
      * Получить информацию о самовывозе для точки
      *
-     * @param $pointID
-     * @param $order
+     * @param int $pointID
+     * @param DDeliveryOrder $order
      *
      * @return DDeliveryInfo
      */
@@ -887,7 +890,7 @@ class DDeliveryUI
 
     /**
      *
-     * Сохранить в локальную БД заказ при отправке на сервер DDelivery
+     * Сохранить в локальную БД заказ
      *
      * @param DDeliveryOrder $order заказ ddelivery
      *
@@ -899,7 +902,8 @@ class DDeliveryUI
     {   
     	$orderDB = new DataBase\Order();
     	$id = $orderDB->saveFullOrder( $order );
-    	return $id;
+        $order->localId = $id;
+    	return $order->localId;
     }
 
     /**
@@ -1222,7 +1226,7 @@ class DDeliveryUI
                     return;
                 case 'mapGetPoint':
                     if(!empty($request['id'])) {
-                        $deliveryInfo = $this->getDeliveryInfoForPointID($request['id']);
+                        $deliveryInfo = $this->getDeliveryInfoForPointID($request['id'], $this->order);
 
                         //$this->order->getPoint();
 
@@ -1243,7 +1247,7 @@ class DDeliveryUI
             $this->order->city = $this->getCityId();
         }
         if(!empty($request['point'])) {
-            $this->order->setPoint($this->getDeliveryInfoForPointID($request['point']));
+            $this->order->setPoint($this->getDeliveryInfoForPointID($request['point']), $this->order);
         }
 
         if(isset($request['iframe'])) {
@@ -1354,7 +1358,7 @@ class DDeliveryUI
             $pointsJs[] = $point->toJson();
         }
         $staticURL = $this->shop->getStaticPath();
-        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $cityId);
+        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $cityId );
 
 
         ob_start();
@@ -1552,6 +1556,42 @@ class DDeliveryUI
             30 => array('name' => 'EMS', 'ico' => 'ems'),
             31 => array('name' => 'Grastin', 'ico' => 'pack'),
         );
+    }
+
+    /**
+     *
+     * Инициализирует свойства объекта DDeliveryOrder из stdClass полученный из
+     * запроса БД SQLite
+     *
+     * @param DDeliveryOrder $currentOrder
+     * @param \stdClass $item
+     */
+    public function _initOrderInfo($currentOrder, $item)
+    {
+        $currentOrder->type = $item->type;
+        $currentOrder->localId = $item->id;
+        $currentOrder->confirmed = $item->confirmed;
+        $currentOrder->amount = $item->amount;
+        $currentOrder->city = $item->to_city;
+        $currentOrder->localStatus = $item->local_status;
+        $currentOrder->ddStatus = $item->dd_status;
+        $currentOrder->shopRefnum = $item->shop_refnum;
+        $currentOrder->ddeliveryID = $item->ddeliveryorder_id;
+        if ($item->point != null) {
+            $currentOrder->setPoint(unserialize($item->point));
+        }
+        $currentOrder->firstName = $item->first_name;
+        $currentOrder->secondName = $item->second_name;
+        $currentOrder->shopRefnum = $item->shop_refnum;
+        $currentOrder->declared_price = $item->declared_price;
+        $currentOrder->paymentPrice = $item->payment_price;
+        $currentOrder->toName = $item->to_name;
+        $currentOrder->toPhone = $item->to_phone;
+        $currentOrder->goodsDescription = $item->goods_description;
+        $currentOrder->toStreet = $item->to_street;
+        $currentOrder->toHouse = $item->to_house;
+        $currentOrder->toFlat = $item->to_flat;
+        $currentOrder->toEmail = $item->to_email;
     }
 
 
