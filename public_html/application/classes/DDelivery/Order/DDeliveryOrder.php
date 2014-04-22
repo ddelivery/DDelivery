@@ -8,6 +8,7 @@
 namespace DDelivery\Order;
 
 use DDelivery\Adapter\DShopAdapter;
+use DDelivery\DDeliveryException;
 use DDelivery\Point\DDeliveryAbstractPoint;
 use DDelivery\DataBase\SQLite;
 
@@ -179,15 +180,16 @@ class DDeliveryOrder
         $this->getProductParams();
 		
     }
-    
+
     /**
-     * 
+     *
      * получить параметры товара
-     * 
+     *
      * Сторона 1: сумма минимальных сторон товаров в Заказе
      * Сторона 2: максимальная сторона товара в Заказе
-     * Сторона 3: следующая за максимальной стороной товара в Заказе 
-     * 
+     * Сторона 3: следующая за максимальной стороной товара в Заказе
+     *
+     * @throws DDeliveryOrderException
      * @return void
      */
     public function getProductParams()
@@ -199,21 +201,24 @@ class DDeliveryOrder
         $dimensionSide1 = 0;
         $dimensionSide2 = 0;
         $dimensionSide3 = 0;
-        
-        foreach ($this->productList as $product) {
-        	$description[] = $product->getName() . ' ' . $product->getQuantity() . 'шт.';
-        	$weight += ($product->getQuantity() * $product->getWeight());
-        	$currentSizes = array( $product->getWidth(), $product->getHeight(), $product->getLength()  );
-        	sort($currentSizes);
-        	$minValue = array_shift($currentSizes);
-        	$dimensionSide1 += ( $minValue * $product->getQuantity() );
-        	$items = array_merge($items, $currentSizes);
-        	array_push($productIDs, $product->getID());
+        if(!empty($this->productList)){
+            foreach ($this->productList as $product) {
+                $description[] = $product->getName() . ' ' . $product->getQuantity() . 'шт.';
+                $weight += ($product->getQuantity() * $product->getWeight());
+                $currentSizes = array( $product->getWidth(), $product->getHeight(), $product->getLength()  );
+                sort($currentSizes);
+                $minValue = array_shift($currentSizes);
+                $dimensionSide1 += ( $minValue * $product->getQuantity() );
+                $items = array_merge($items, $currentSizes);
+                array_push($productIDs, $product->getID());
+            }
+            sort($items);
+
+            $dimensionSide2 = array_pop( $items );
+            $dimensionSide3 = array_pop( $items );
+        }else{
+            throw new DDeliveryOrderException("Корзина пуста");
         }
-        sort($items);
-        $dimensionSide2 = array_pop( $items );
-        $dimensionSide3 = array_pop( $items );
-		
         $this->weight = $weight;
         $this->goodsDescription = implode( ', ', $description );
         $this->dimensionSide1 = $dimensionSide1;
