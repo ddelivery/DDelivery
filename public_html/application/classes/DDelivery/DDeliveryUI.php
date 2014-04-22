@@ -138,7 +138,7 @@ class DDeliveryUI
             return false;
         }
         $order->ddStatus = $ddStatus;
-        $order->localStatus = $this->shop->getLocalStatusByDD( $response['status'] );
+        $order->localStatus = $this->shop->getLocalStatusByDD( $order->ddStatus );
         $this->saveFullOrder($order);
         $this->shop->setCmsOrderStatus($order->shopRefnum, $order->localStatus);
         return true;
@@ -1247,7 +1247,7 @@ class DDeliveryUI
             $this->order->city = $this->getCityId();
         }
         if(!empty($request['point'])) {
-            $this->order->setPoint($this->getDeliveryInfoForPointID($request['point']), $this->order);
+            $this->order->setPoint($this->getDeliveryInfoForPointID($request['point'], $this->order));
         }
 
         if(isset($request['iframe'])) {
