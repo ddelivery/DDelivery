@@ -56,24 +56,24 @@ class DDeliveryPointSelf extends DDeliveryAbstractPoint{
     		'schedule', 'longitude', 'latitude', 'type', 'status', 
     		'has_fitting_room', 'is_cash', 'is_card' );
     
-    public function __construct( $initParams = array() )
-    {   
-    	
+    public function init( $initParams = array() )
+    {
         if(is_array($initParams))
-    	{
-    		foreach ( $initParams as $key => $value)
-    		{
-    			try
-    			{
-    				$this->set($key, $value);
-    			}
-    			catch (DDeliveryPointException $e)
-    			{
-    				echo $e->getMessage();
-    			}
-    		}
-    	}
+        {
+            foreach ( $initParams as $key => $value)
+            {
+                try
+                {
+                    $this->set($key, $value);
+                }
+                catch (DDeliveryPointException $e)
+                {
+                    echo $e->getMessage();
+                }
+            }
+        }
     }
+
     
     public function set( $paramName, $paramValue)
     {

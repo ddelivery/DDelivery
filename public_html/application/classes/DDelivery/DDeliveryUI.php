@@ -598,7 +598,7 @@ class DDeliveryUI
     		    {
     			    foreach ($response->response as $p)
     			    {
-    				    $point = new \DDelivery\Point\DDeliveryPointCourier();
+    				    $point = new \DDelivery\Point\DDeliveryPointCourier( false );
     				    $deliveryInfo = new \DDelivery\Point\DDeliveryInfo( $p );
     				    $point->setDeliveryInfo($deliveryInfo);
     				    $point->pointID = $deliveryInfo->get('delivery_company');
@@ -1068,7 +1068,9 @@ class DDeliveryUI
     	{
     		foreach ( $response->response as $p )
     		{
-    			    $points[] = new DDeliveryPointSelf( $p );
+    			$point = new DDeliveryPointSelf( false );
+                $point->init( $p );
+                $points[] = $point;
     		}
     	}
 
