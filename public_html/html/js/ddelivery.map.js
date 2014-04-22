@@ -311,11 +311,15 @@ Map = (function () {
 
             var geoObjects = [];
             points = data.points;
+            if(points.length == 0){
+                DDeliveryIframe.ajaxPage({});
+                return;
+            }
+
             for (var pointKey in points) {
                 initPoint(points[pointKey]);
                 geoObjects.push(points[pointKey].placemark);
             }
-            console.log(geoObjects);
             clusterer.add(geoObjects);
             filter.hideCompany = [];
             Map.filterPoints(); // Фильтр покажет все точки
