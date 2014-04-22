@@ -472,25 +472,27 @@ class DDeliveryUI
 
     /**
      * Получить минимальный период и цену поставки курьером для города
-     * @var int $cityID
+     *
+     * @param DDeliveryOrder $order
      *
      * @return array;
      */
-    public function getMinPriceAndPeriodCourier( $cityID )
+    public function getMinPriceAndPeriodCourier( $order )
     {
-    	$deliveryInfo = $this->getCourierDeliveryInfoForCity($cityID);
+    	$deliveryInfo = $this->getCourierDeliveryInfoForCity($order);
     	return $this->_getMinMaxPriceAndPeriod( $deliveryInfo );
     }
 
     /**
      * Получить минимальный период и цену поставки самовывоза для города
-     * @var int $cityID
+     *
+     * @param DDeliveryOrder $order
      *
      * @return array;
      */
-    public function getMinPriceAndPeriodSelf( $cityID )
+    public function getMinPriceAndPeriodSelf( $order )
     {
-        $deliveryInfo = $this->getSelfDeliveryInfoForCity($cityID);
+        $deliveryInfo = $this->getSelfDeliveryInfoForCity($order);
 
         return $this->_getMinMaxPriceAndPeriod( $deliveryInfo );
     }
@@ -551,23 +553,38 @@ class DDeliveryUI
         return $this->order;
     }
 
-
+    /**
+     * Проверяем на валидность $order для получение точек доставки
+     *
+     * @param $order
+     *
+     * @return bool
+     */
+    public function _validateOrderToGetPoints( $order )
+    {
+        if( count($order->getProducts()) > 0 && $order->city )
+        {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Получить курьерские точки для города
      *
-     * @param int $cityID id города
-     * @param $order
-     *
+     * @param DDeliveryOrder $order
+     * @throws DDeliveryException
      * @return array DDeliveryPointCourier[]
      */
-    public function getCourierPointsForCity( $cityID, $order )
+    public function getCourierPointsForCity( $order )
     {
+        if(!$this->_validateOrderToGetPoints($order))
+            throw new DDeliveryException('Для получения списка необходимо корректный order');
         $points = array();
     	// Есть ли необходимость искать точки на сервере ddelivery
     	if( $this->shop->preGoToFindPoints( $this->order ))
     	{
-    	    $response = $this->sdk->calculatorCourier( $cityID, $order->getDimensionSide1(),
+    	    $response = $this->sdk->calculatorCourier( $order->city, $order->getDimensionSide1(),
                                                        $order->getDimensionSide2(),
                                                        $order->getDimensionSide3(),
                                                        $order->getWeight(), 0 );
@@ -602,13 +619,15 @@ class DDeliveryUI
 
     /**
      * Получить компании самовывоза для города
-     * @param int $cityID
-     * @param $order
+     * @param DDeliveryOrder $order
+     * @throws DDeliveryException
      * @return array;
      */
-    public function getCourierDeliveryInfoForCity( $cityID, $order )
+    public function getCourierDeliveryInfoForCity( $order )
     {
-    	$response = $this->sdk->calculatorCourier( $cityID, $order->getDimensionSide1(),
+        if(!$this->_validateOrderToGetPoints($order))
+            throw new DDeliveryException('Для получения списка необходимо корректный order');
+    	$response = $this->sdk->calculatorCourier( $order->city, $order->getDimensionSide1(),
     			                                   $order->getDimensionSide2(),
     			                                   $order->getDimensionSide3(),
     			                                   $order->getWeight(), 0 );
@@ -621,19 +640,64 @@ class DDeliveryUI
     		return 0;
     	}
     }
+
+    /**
+     * Получить компании самовывоза  для города с их полным описанием, и координатами их филиалов
+     * @param DDeliveryOrder $order
+     * @throws DDeliveryException
+     * @return DDeliveryPointSelf[]
+     */
+    public function getSelfPoints( $order )
+    {
+        if(!$this->_validateOrderToGetPoints($order))
+            throw new DDeliveryException('Для получения списка необходимо корректный order');
+        // Есть ли необходимость искать точки на сервере ddelivery
+        if( $this->shop->preGoToFindPoints( $order ))
+        {
+            $points = $this->getSelfPointsForCityAndCompany(null, $order->city);
+
+            $companyInfo = $this->getSelfDeliveryInfoForCity( $order );
+
+            $deliveryInfo = $this->_getOrderedDeliveryInfo( $companyInfo );
+
+            if( count( $points ) )
+            {
+                foreach ( $points as $item )
+                {
+                    $companyID = $item->get('company_id');
+
+                    if( array_key_exists( $companyID, $deliveryInfo ) )
+                    {
+                        $item->setDeliveryInfo( $deliveryInfo[$companyID] );
+                        $item->pointID = $item->get('_id');
+                    }
+                }
+            }
+        }else{
+            $points = array();
+        }
+        $points = $this->shop->filterPointsSelf( $points, $order, $order->city );
+
+        return $points;
+
+    }
+
+
     /**
      * Получить компании самовывоза для города
-     * @var int $cityID
+     *
+     * @param DDeliveryOrder $order
+     * @throws DDeliveryException
      *
      * @return array;
      */
-    public function getSelfDeliveryInfoForCity( $cityID )
+    public function getSelfDeliveryInfoForCity( $order )
     {
 
-    	$response = $this->sdk->calculatorPickupForCity( $cityID, $this->order->getDimensionSide1(),
-                                                         $this->order->getDimensionSide2(),
-    			                                         $this->order->getDimensionSide3(),
-                                                         $this->order->getWeight(), 0 );
+    	$response = $this->sdk->calculatorPickupForCity( $order->city, $order->getDimensionSide1(),
+                                                         $order->getDimensionSide2(),
+                                                         $order->getDimensionSide3(),
+                                                         $order->getWeight(), 0 );
         
     	if( $response->success )
     	{
@@ -645,26 +709,29 @@ class DDeliveryUI
     	}
     }
 
+
     /**
      * Получить информацию о самовывозе для точки
-     * @var int $cityID
      *
-     * @return Point\DDeliveryInfo;
+     * @param $pointID
+     * @param $order
+     *
+     * @return DDeliveryInfo
      */
-    public function getDeliveryInfoForPointID( $pointID )
+    public function getDeliveryInfoForPointID( $pointID, $order )
     {
 
-    	$response = $this->sdk->calculatorPickupForPoint( $pointID, $this->order->getDimensionSide1(),
-    			$this->order->getDimensionSide2(),
-    			$this->order->getDimensionSide3(),
-    			$this->order->getWeight(), 0 );
+    	$response = $this->sdk->calculatorPickupForPoint( $pointID, $order->getDimensionSide1(),
+                                                          $order->getDimensionSide2(),
+                                                          $order->getDimensionSide3(),
+                                                          $order->getWeight(), 0 );
     	if( $response->success )
     	{
     		return new Point\DDeliveryInfo( $response->response );
     	}
     	else
     	{
-    		return false;
+    		return null;
     	}
     }
 
@@ -978,47 +1045,7 @@ class DDeliveryUI
     	return $orderDB->selectAll();
     }
 
-    /**
-     * Получить компании самовывоза  для города с их полным описанием, и координатами их филиалов
-     *
-     * @param int $cityID
-     *
-     *
-     * @throws DDeliveryException
-     * @return DDeliveryPointSelf[]
-     */
-    public function getSelfPoints( $cityID )
-    {
-    	// Есть ли необходимость искать точки на сервере ddelivery
-    	if( $this->shop->preGoToFindPoints( $this->order ))
-    	{
-    	    $points = $this->getSelfPointsForCityAndCompany(null, $cityID);
 
-    	    $companyInfo = $this->getSelfDeliveryInfoForCity( $cityID );
-
-    	    $deliveryInfo = $this->_getOrderedDeliveryInfo( $companyInfo );
-
-    	    if( count( $points ) )
-    	    {
-    		    foreach ( $points as $item )
-    		    {
-    			    $companyID = $item->get('company_id');
-
-    			    if( array_key_exists( $companyID, $deliveryInfo ) )
-    			    {
-    				    $item->setDeliveryInfo( $deliveryInfo[$companyID] );
-    				    $item->pointID = $item->get('_id');
-    			    }
-    		    }
-    	    }
-    	}else{
-            $points = array();
-        }
-    	$points = $this->shop->filterPointsSelf( $points, $this->order, $cityID );
-
-    	return $points;
-
-    }
 
 
     /**

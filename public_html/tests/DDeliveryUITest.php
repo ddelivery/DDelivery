@@ -9,20 +9,8 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 	{	
 		$shopAdapter = new \DDelivery\Adapter\DShopAdapterTest();
 		$this->fixture = new \DDelivery\DDeliveryUI( $shopAdapter );
-	}
-
-
-    public function testGetCourierPointsForCity()
-    {
-        $points = $this->fixture->getCourierPointsForCity(151185);
-        $this->assertGreaterThan( 0, count( $points ) );
-    }
-
-    public function testSaveFullOrder()
-    {
         $order = $this->fixture->getOrder();
         $order->city = 151184;
-        $order->localId = 1;
         $order->type = 2;
         $order->firstName = 'Дима';
         $order->secondName = 'Грушин';
@@ -31,6 +19,29 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
         $order->toHouse = '1а';
         $order->toFlat = '42';
         $order->toEmail = '';
+	}
+
+
+    public function testGetCourierPointsForCity()
+    {
+        $order = $this->fixture->getOrder();
+        $order->city = 151185;
+        $points = $this->fixture->getCourierPointsForCity( $order );
+        $this->assertGreaterThan( 0, count( $points ) );
+
+    }
+
+    public function testGetSelfPoints()
+    {
+        $order = $this->fixture->getOrder();
+        $order->city = 151185;
+        $selfpoints = $this->fixture->getSelfPoints( $order );
+        $this->assertGreaterThan( 0, count($selfpoints) );
+    }
+
+    public function testSaveFullOrder()
+    {
+        $order = $this->fixture->getOrder();
         $id = $this->fixture->saveFullOrder($order);
         $this->assertGreaterThan( 0, $id );
     }
@@ -41,8 +52,45 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
     }
     public function testGetDDOrderStatus()
     {
-
+        $orderStatus = $this->fixture->getDDOrderStatus(947);
+        $this->assertGreaterThan( 0, $orderStatus );
     }
+
+    public function testInitIntermediateOrder()
+    {
+        $orderList = $this->fixture->initIntermediateOrder(array(1,2));
+        $this->assertEquals(2, count($orderList));
+    }
+    public function testGetMinMaxPriceAndPeriodDelivery()
+    {
+        $order = $this->fixture->getOrder();
+        $selfPoints = $this->fixture->getCourierPointsForCity( $order );
+        $info = $this->fixture->getMinMaxPriceAndPeriodDelivery( $selfPoints );
+        $this->assertGreaterThan( 0, $info['max_price'] );
+    }
+
+    public function testGetMinPriceAndPeriodCourier()
+    {
+        $order = $this->fixture->getOrder();
+        $info = $this->fixture->getMinPriceAndPeriodCourier( $order );
+        $this->assertGreaterThan( 0, $info['max_price'] );
+    }
+
+    public function testGetMinPriceAndPeriodSelf()
+    {
+        $order = $this->fixture->getOrder();
+        $info = $this->fixture->getMinPriceAndPeriodSelf( $order );
+        $this->assertGreaterThan( 0, $info['max_price'] );
+    }
+
+    public function testValidateOrderToGetPoints()
+    {
+        $order = $this->fixture->getOrder();
+        $order->city = 0;
+        $notValid = $this->fixture->_validateOrderToGetPoints( $order );
+        $this->assertGreaterFalse( $notValid );
+    }
+
     public function testChangeOrderStatus()
     {
 

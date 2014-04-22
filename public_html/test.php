@@ -120,9 +120,12 @@ $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
 $order->city = 151185;
-$selfPoints = $DDeliveryUI->getCourierPointsForCity(151185, $order);
+$selfPoints = $DDeliveryUI->getCourierPointsForCity( $order );
 
-print_r($selfPoints);
+$minAndMax = $DDeliveryUI->getMinPriceAndPeriodCourier( $order );
+$minAndMaxSelf = $DDeliveryUI->getMinPriceAndPeriodSelf( $order );
+print_r($minAndMax);
+print_r($minAndMaxSelf);
 /*
 $order->city = 151184;
 $order->localId = 1;
