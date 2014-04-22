@@ -69,7 +69,7 @@ class Order {
 	{
 		$this->pdo->exec("CREATE TABLE IF NOT EXISTS orders (
                           id INTEGER PRIMARY KEY AUTOINCREMENT,
-				          paymen_variant TEXT,
+				          payment_variant TEXT,
 				          shop_refnum INTEGER,
 				          local_status INTEGER,
 				          dd_status INTEGER,
@@ -188,29 +188,38 @@ class Order {
 	    $wasUpdate = 0;
 	    
 	    $point = $order->getPoint();
+        $pointDB = '';
+        $delivery_company = 0;
+        $deliveryPrice = 0;
+        if( $point !== null )
+        {
+            $delivery_company = $point->getDeliveryInfo()->get('delivery_company');
+            $deliveryPrice = $point->getDeliveryInfo()->get('total_price');
+            $pointDB = serialize($point);
+        }
 	    $dimensionSide1 = $order->getDimensionSide1();
 	    $dimensionSide2 = $order->getDimensionSide2();
 	    $dimensionSide3 = $order->getDimensionSide3();
 	    $goods_description = $order->getGoodsDescription();
 	    $weight = $order->getWeight();
 	    $to_city = $order->city;
-	    $delivery_company = $point->getDeliveryInfo()->get('delivery_company');
+
 	    $confirmed = $order->getConfirmed();
 	    $to_name = $order->getToName();
 	    $to_phone = $order->getToPhone();
 	    $declaredPrice = $order->declaredPrice;
-	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
 	    $paymentPrice = $order->paymentPrice;
 	    $ddeliveryID = $order->ddeliveryID;
 	    $localId = $order->localId;
-	    $paymen_variant = $order->paymentVariant;
+
+	    $payment_variant = $order->paymentVariant;
 	    $localStatus = $order->localStatus;
 	    $ddStatus = $order->ddStatus;
 	    $shop_refnum = $order->shopRefnum;
 	    $firstName = $order->firstName;
 	    $secondName = $order->secondName;
 	    $amount = $order->amount;
-	    $pointDB = serialize($point);
+
 	    $productString = $order->getSerializedProducts();
 	    $toStreet = $order->toStreet;
 	    $toHouse = $order->toHouse;
@@ -220,7 +229,7 @@ class Order {
 	    $this->pdo->beginTransaction();
 	    if( $this->isRecordExist($localId) )
 	    {
-	    	$query = 'UPDATE orders SET paymen_variant = :paymen_variant, type = :type, amount =:amount,
+	    	$query = 'UPDATE orders SET payment_variant = :payment_variant, type = :type, amount =:amount,
 	    			  to_city = :to_city, 
 	    			  ddeliveryorder_id = :ddeliveryorder_id, delivery_company = :delivery_company, 
 	    			  dimension_side1 = :dimension_side1, dimension_side2 = :dimension_side2, 
@@ -233,28 +242,29 @@ class Order {
 	    			  point = :point  WHERE id=:id';
 	    	$stmt = $this->pdo->prepare($query);
 	    	$stmt->bindParam( ':id', $localId );
+            $wasUpdate = 1;
 	    }
 	    else 
 	    {
-	    	$query = 'INSERT INTO orders (paymen_variant, type, amount, to_city, ddeliveryorder_id, 
+	    	$query = 'INSERT INTO orders ( payment_variant, type, amount, to_city, ddeliveryorder_id,
 	    			  delivery_company, dimension_side1,
                       dimension_side2, dimension_side3, confirmed, weight, declared_price, 
 	    			  payment_price, to_name, to_phone, goods_description, to_flat, to_house, 
 	    			  to_street, to_phone, date, shop_refnum, products, local_status, dd_status, 
 	    			  first_name, second_name, point)
-	                  VALUES(:paymen_variant, :type, :amount, :to_city, :ddeliveryorder_id, :delivery_company, 
+	                  VALUES( :payment_variant, :type, :amount, :to_city, :ddeliveryorder_id, :delivery_company,
 	    			  :dimension_side1, :dimension_side2, :dimension_side3, :confirmed, :weight, 
 	    			  :declared_price, :payment_price, :to_name, :to_phone, :goods_description, 
 	    			  :to_flat, :to_house, :to_street, :to_phone, :date, :shop_refnum, :products, 
 	    			  :local_status, :dd_status, :first_name, :second_name, :point )';
 	    	$stmt = $this->pdo->prepare($query);
 	    }
-	    $stmt->bindParam( ':paymen_variant', $paymen_variant );
+	    $stmt->bindParam( ':payment_variant', $payment_variant  );
 	    $stmt->bindParam( ':type', $type );
 	    $stmt->bindParam( ':amount', $amount );
 	    $dateTime = date( "Y-m-d H:i:s" );
 	    $stmt->bindParam( ':to_city', $to_city );
-	    $stmt->bindParam( ':ddeliveryorder_id', $ddeliveryOrderID );
+	    $stmt->bindParam( ':ddeliveryorder_id', $ddeliveryID );
 	    $stmt->bindParam( ':delivery_company', $delivery_company );
 	    $stmt->bindParam( ':dimension_side1', $dimensionSide1 );
 	    $stmt->bindParam( ':dimension_side2', $dimensionSide2 );
@@ -279,6 +289,7 @@ class Order {
 	    $stmt->bindParam( ':point', $pointDB );
 	    $stmt->execute();
 	    $this->pdo->commit();
+
 	    if( $wasUpdate )
 	    {
 	    	return $localId;

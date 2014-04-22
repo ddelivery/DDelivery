@@ -9,7 +9,9 @@
 namespace DDelivery\Adapter;
 
 use DDelivery\Order\DDeliveryOrder;
+use DDelivery\Order\DDeliveryOrderStatus;
 use DDelivery\Order\DDeliveryProduct;
+use DDelivery\Order\DDStatusProvider;
 use DDelivery\Point\DDeliveryAbstractPoint;
 use DDelivery\Point\DDeliveryPointCourier;
 use DDelivery\Point\DDeliveryPointSelf;
@@ -85,19 +87,7 @@ abstract class DShopAdapter
     private $productsFromCart = null;
     
     /**
-     * Статусы заказов на стороне ddelivery
-     * 
-     * Применяется для связывания статусов заказов на стороне 
-     * ddelivery и на стороне клиента
-     * 
-     * @var array 
-     */
-    private $ddeliveryOrderStatus = array( '10' => 'В обработке', '20' => 'Подтверждена', '30' => 'На складе ИМ',
-                                           '40' => 'Заказ в пути', '50' => 'Заказ доставлен', '60' => 'Заказ получен',
-                                           '70' => 'Возврат заказа', '80' => 'Клиент вернул заказ', '90' => 'Частичный возврат заказа',
-                                           '100' => 'Возвращен в ИМ', '110' => 'Ожидание', '120' => 'Отмена');
-    /**
-     * Статусы заказов на стороне cms 
+     * Сопоставление cтатуса заказов на стороне cms
      * 
      * Значение по умолчанию должно быть переопределено на локальные значения статусов.
      * В массиве должно 12 значений для сопоставления, они могут повторятся по несколько раз
@@ -106,10 +96,21 @@ abstract class DShopAdapter
      * 
      * @var array
      */
-    private $cmsOrderStatus = array( '1' => 'В обработке', '2' => 'Подтверждена', '3' => 'На складе ИМ',
-                                     '4' => 'Заказ в пути', '5' => 'Заказ доставлен', '6' => 'Заказ получен',
-                                     '7' => 'Возврат заказа', '8' => 'Клиент вернул заказ', '9' => 'Частичный возврат заказа',
-                                     '10' => 'Возвращен в ИМ', '11' => 'Ожидание', '12' => 'Отмена' );
+
+    protected  $cmsOrderStatus = array( DDStatusProvider::ORDER_IN_PROGRESS => 'В обработке',
+                                        DDStatusProvider::ORDER_CONFIRMED => 'Подтверждена',
+                                        DDStatusProvider::ORDER_IN_STOCK => 'На складе ИМ',
+                                        DDStatusProvider::ORDER_IN_WAY => 'Заказ в пути',
+                                        DDStatusProvider::ORDER_DELIVERED => 'Заказ доставлен',
+                                        DDStatusProvider::ORDER_RECEIVED => 'Заказ получен',
+                                        DDStatusProvider::ORDER_RETURN => 'Возврат заказа',
+                                        DDStatusProvider::ORDER_CUSTOMER_RETURNED => 'Клиент вернул заказ',
+                                        DDStatusProvider::ORDER_PARTIAL_REFUND => 'Частичный возврат заказа',
+                                        DDStatusProvider::ORDER_RETURNED_MI => 'Возвращен в ИМ',
+                                        DDStatusProvider::ORDER_WAITING => 'Ожидание',
+                                        DDStatusProvider::ORDER_CANCEL => 'Отмена' );
+
+
     /**
      * Возвращает товары находящиеся в корзине пользователя, будет вызван один раз, затем закеширован
      * @return DDeliveryProduct[]
@@ -120,21 +121,46 @@ abstract class DShopAdapter
     /**
      * Меняет статус внутреннего заказа cms
      * 
-     * @param $orderID - id заказа
+     * @param $cmsOrderID - id заказа
      * @param $status - статус заказа для обновления 
      *  
      * @return bool
      */
-    public abstract function setCmsOrderStatus( $orderID, $status );
-    
-    public function getLocalStatusByDD($ddStatus)
+    public abstract function setCmsOrderStatus( $cmsOrderID, $status );
+
+
+    /**
+     *
+     * Используется при отправке заявки на сервер DD для указания стартового статуса
+     *
+     * Если true то заявка будет выставлена в статус "Подтверждена",
+     * если false то то заявка будет выставлена в статус "В обработке"
+     *
+     * @param DDeliveryOrder $order
+     *
+     * @return bool
+     */
+    public function isConfirmedStatus( $order )
     {
-    	$ddeliveryOrderStatus = array_keys($this->ddeliveryOrderStatus);
-    	$indexDD = array_search($ddStatus, $ddeliveryOrderStatus);
-    	$cmsOrderStatus = array_keys($this->cmsOrderStatus);
-    	$indexLocal = $cmsOrderStatus[$indexDD];
-    	return $this->cmsOrderStatus[$indexLocal];
+        return true;
     }
+
+    /**
+     * Получить статус cms по статусу DDelivery
+     *
+     * @param string $ddStatus
+     * @return mixed;
+     *
+     */
+    public function getLocalStatusByDD( $ddStatus  )
+    {
+        if( !empty($this->cmsOrderStatus[$ddStatus]) )
+        {
+            return $this->cmsOrderStatus[$ddStatus];
+        }
+        return 0;
+    }
+
     /**
      * Проверяет статус заказа, при определенном статусе отправляем заказ на сервер dd
      * 
@@ -161,6 +187,8 @@ abstract class DShopAdapter
      * @return array
      */
     public abstract function getShopOrderInfo( $orderID );
+
+
     /**
      * Возвращает товары находящиеся в корзине пользователя, реализует кеширование getProductsFromCart
      * @return DDeliveryProduct[]
@@ -197,7 +225,7 @@ abstract class DShopAdapter
      */
     public function isTestMode()
     {
-        return false;
+        return true;
     }
 
     /**

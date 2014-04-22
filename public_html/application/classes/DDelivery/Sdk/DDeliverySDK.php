@@ -40,14 +40,14 @@ class DDeliverySDK {
 	 * @param string $apiKey ключ полученный для магазина
 	 * @param bool $testMode тестовый шлюз
 	 */
-    public function __construct($apiKey, $testMode = false)
+    public function __construct($apiKey, $testMode = true)
     {
-        if(!$testMode){
+
+        if($testMode){
             $this->server = 'stage';
         }else{
             $this->server = 'dev';
         }
-        
         $this->requestProvider = new RequestProvider( $apiKey, $this->server );
         $this->requestProvider->setKeepActive( true );
     }
@@ -73,6 +73,8 @@ class DDeliverySDK {
      * @param String  $to_flat
      * @param String  $to_email
      *
+     * @throws DDeliveryException
+     *
      * @return DDeliverySDKResponse
      */
     public function addCourierOrder( $to_city, $delivery_company, $dimensionSide1, 
@@ -81,27 +83,28 @@ class DDeliverySDK {
     		                         $declaredPrice, $paymentPrice, $to_street, $to_house, $to_flat,
                                      $to_email = '' )
     {
-    	$params = array(
-    			'type' => self::TYPE_COURIER,
-    			'to_city' => $to_city,
-    			'delivery_company' => $delivery_company,
-    			'dimension_side1' => $dimensionSide1,
-    			'dimension_side2' => $dimensionSide2,
-    			'dimension_side3' => $dimensionSide3,
-    			'shop_refnum' =>  $shop_refnum,
-    			'weight' => $weight,
-    			'confirmed' => $confirmed,
-    			'to_name' => $to_name,
-    			'to_phone' => $to_phone,
-    			'goods_description' => $goods_description,
-    			'declared_price' => $declaredPrice,
-    			'payment_price' => $paymentPrice,
-    			'to_street' => $to_street,
-    			'to_house' => $to_house,
-    			'to_flat' => $to_flat,
-    			'to_email' => $to_email
-    	);
-    	$response = $this->requestProvider->request( 'order_create', $params,'post' );
+        $params = array(
+            'type' => 2,
+            'to_city' => 151185,
+            'delivery_company' => 17,
+            'dimension_side1' => 10,
+            'dimension_side2' => 10,
+            'dimension_side3' => 10,
+            'shop_refnum' =>  12,
+            'weight' => 1,
+            'confirmed' => 'true',
+            'to_name' => 'Пяточкин Петр Петрович',
+            'to_phone' => '9999999999',
+            'goods_description' => 'Трос 1шт, Пробка от бутылки 2шт.',
+            'declared_price' => 1000,
+            'payment_price' => 1000,
+            'to_street' => 'Вознесенская',
+            'to_house' => '1а',
+            'to_flat' => '42',
+            'to_email' => 'mrozk2012@gmail.com'
+        );
+    	$response = $this->requestProvider->request( 'order_create', $params, 'post' );
+
     	if( !count ( $response->response ))
     	{
     		throw new DDeliveryException( implode(',', $response->errorMessage ));
@@ -112,8 +115,11 @@ class DDeliverySDK {
     /**
      * Получить статус заказа 
      *
-     * @param int $orderID  id заказа на DDelivery 
+     * @param int $orderID  id заказа на DDelivery
      *
+     * @throws \DDelivery\DDeliveryException
+     *
+     * @return DDeliverySDKResponse
      */
     public function getOrderStatus( $orderID )
     {
@@ -121,7 +127,7 @@ class DDeliverySDK {
     	$response = $this->requestProvider->request( 'order_status', $params,'get' );
     	
     	if( !count ( $response->response ))
-    	{
+    	{   
     		throw new DDeliveryException( $response->errorMessage );
     	}
     	return $response;
@@ -141,9 +147,10 @@ class DDeliverySDK {
      * @param String $goods_description Описание посылки
      * @param float $declaredPrice Оценочная стоимость (руб)
      * @param float $paymentPrice Наложенный платеж (руб)
-     * @param $shop_refnum
+     * @param $shop_refnum id заказа cms
      *
      * @throws \DDelivery\DDeliveryException
+     *
      * @return DDeliverySDKResponse
      */
     public function addSelfOrder( $delivery_point, $dimensionSide1, $dimensionSide2, $dimensionSide3,
