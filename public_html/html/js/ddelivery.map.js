@@ -21,7 +21,7 @@ Map = (function () {
     };
     var staticUrl;
 
-    var initPoint = function(point) {
+    var initPoint = function (point) {
         point.display = true;
         point.placemark = new ymaps.Placemark([point.latitude, point.longitude], {
                 hintContent: point.address,
@@ -171,16 +171,16 @@ Map = (function () {
             var pointsAdd = [];
             var point, display;
             // В рамках функции красивей решается
-            var isDisplayPoint = function(point) {
+            var isDisplayPoint = function (point) {
                 // Если не удовлетворяет одному из вариантов
                 if (!((filter.card && point.is_card) || (filter.cash && point.is_cash))) {
                     return false;
                 }
 
-                if(point.type == 1 && !filter.type1) {
+                if (point.type == 1 && !filter.type1) {
                     return false;
                 }
-                if(point.type == 2 && !filter.type2) {
+                if (point.type == 2 && !filter.type2) {
                     return false;
                 }
 
@@ -190,7 +190,7 @@ Map = (function () {
                 if (filter.has_fitting_room && !point.has_fitting_room) {
                     return false;
                 }
-                if(filter.hideCompany.indexOf(point.company_id) != -1){
+                if (filter.hideCompany.indexOf(point.company_id) != -1) {
                     return false;
                 }
                 return true;
@@ -233,10 +233,10 @@ Map = (function () {
                 $th.toggleClass('border');
                 var filterName = $th.data('filter');
                 filter[filterName] = $th.hasClass('border');
-                if(filter[filterName]) {
-                    $('.filters a[data-filter='+filterName+']').addClass('border');
-                }else{
-                    $('.filters a[data-filter='+filterName+']').removeClass('border');
+                if (filter[filterName]) {
+                    $('.filters a[data-filter=' + filterName + ']').addClass('border');
+                } else {
+                    $('.filters a[data-filter=' + filterName + ']').removeClass('border');
                 }
                 Map.filterPoints();
             });
@@ -251,7 +251,7 @@ Map = (function () {
                 });
             });
 
-            $(window).on('ddeliveryCityPlace', function(e, city){
+            $(window).on('ddeliveryCityPlace', function (e, city) {
 
                 ymaps.geocode(city.title, {results: 1})
                     .then(function (res) {
@@ -262,7 +262,7 @@ Map = (function () {
 
                 $('.map-popup__main__right .places').html('').addClass('info-open');
 
-                DDeliveryIframe.ajaxData({action: 'mapDataOnly', city_id: city.id}, function(data) {
+                DDeliveryIframe.ajaxData({action: 'mapDataOnly', city_id: city.id}, function (data) {
                     Map.renderData(data);
                 });
 
@@ -270,7 +270,7 @@ Map = (function () {
                 var pointsRemove = [];
                 for (var pointKey in points) {
                     var point = points[pointKey];
-                    if(point.display) {
+                    if (point.display) {
                         pointsRemove.push(point);
                     }
                 }
@@ -279,24 +279,24 @@ Map = (function () {
             });
             this.placeEvent();
         },
-        placeEvent: function(){
-            $('.map-popup__main__right .places a').click(function(){
-                if(current_points.length > 0) {
+        placeEvent: function () {
+            $('.map-popup__main__right .places a').click(function () {
+                if (current_points.length > 0) {
                     var id = parseInt($(this).data('id'));
-                    if(current_point.company_id != parseInt($(this).data('id'))) {
-                        for(var i =0 ; i < current_points.length; i++) {
-                            if(current_points[i].company_id == id) {
-                                Map.renderInfo(current_points[i] , current_points);
+                    if (current_point.company_id != parseInt($(this).data('id'))) {
+                        for (var i = 0; i < current_points.length; i++) {
+                            if (current_points[i].company_id == id) {
+                                Map.renderInfo(current_points[i], current_points);
                                 break;
                             }
                         }
                     }
-                }else{
+                } else {
                     var check = $(this).hasClass('border');
-                    if(check) {
+                    if (check) {
                         $(this).removeClass('border').addClass('hasinfo');
                         filter.hideCompany.push(parseInt($(this).data('id')));
-                    }else{
+                    } else {
                         $(this).addClass('border').removeClass('hasinfo');
                         filter.hideCompany.splice(filter.hideCompany.indexOf(parseInt($(this).data('id'))), 1);
                     }
@@ -305,13 +305,13 @@ Map = (function () {
             });
         },
         // Рендерим то что к нам пришло по ajax
-        renderData: function(data) {
+        renderData: function (data) {
 
             $('.map-popup__main__right .places').removeClass('info-open').html(data.html);
 
             var geoObjects = [];
             points = data.points;
-            if(points.length == 0){
+            if (points.length == 0) {
                 DDeliveryIframe.ajaxPage({});
                 return;
             }
@@ -331,29 +331,29 @@ Map = (function () {
             $('.map-popup__main__right .places a').removeClass('active').removeClass('hasinfo');
 
             //cp = points;
-            if(!points){
+            if (!points) {
                 points = [];
             }
 
             current_points = points;
             current_point = point;
 
-            if(points.length > 1){
+            if (points.length > 1) {
                 $('.map-popup__info__title .more').show();
-                for(var i=0;i<points.length;i++){
-                    $('.map-popup__main__right .places a[data-id='+points[i].company_id+']').addClass('hasinfo');
+                for (var i = 0; i < points.length; i++) {
+                    $('.map-popup__main__right .places a[data-id=' + points[i].company_id + ']').addClass('hasinfo');
                 }
-                $('.map-popup__main__right .places a[data-id='+point.company_id+']').addClass('active');
-            }else{
+                $('.map-popup__main__right .places a[data-id=' + point.company_id + ']').addClass('active');
+            } else {
                 $('.map-popup__info__title .more').hide();
-                $('.map-popup__main__right .places a[data-id='+point.company_id+']').addClass('active').addClass('hasinfo');
+                $('.map-popup__main__right .places a[data-id=' + point.company_id + ']').addClass('active').addClass('hasinfo');
             }
 
             if (!point.name) {
                 point.name = point.company + ' #' + point._id;
             }
             $('.map-popup__info__title h2').html(point.name);
-            $('.map-popup__info__table .rub').html('<img src="'+DDeliveryIframe.staticUrl+'/img/ajax_loader_min.gif"/> ');
+            $('.map-popup__info__table .rub').html('<img src="' + DDeliveryIframe.staticUrl + '/img/ajax_loader_min.gif"/> ');
             var payType = [];
             if (point.is_cash) {
                 payType.push('Наличными');
@@ -379,7 +379,7 @@ Map = (function () {
 
             DDeliveryIframe.ajaxData(
                 {action: 'mapGetPoint', id: point._id},
-                function(data) {
+                function (data) {
                     //console.log(data);
                 }
             );

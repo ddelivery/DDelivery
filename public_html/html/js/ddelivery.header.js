@@ -1,14 +1,15 @@
 /**
  * Created by DnAp on 09.04.14.
+ * Оживляет шапку с выбором типа оплаты и поиска города.
  */
-var CityPlace = (function(){
+var Header = (function () {
     var el;
     var componentUrl, staticUrl;
 
     return {
-        init: function(){
+        init: function () {
             el = $('.delivery-place');
-            if(el.length > 0) {
+            if (el.length > 0) {
                 this.render();
                 this.event();
             }
@@ -18,16 +19,16 @@ var CityPlace = (function(){
             // Вырубаем все старые евенты, подпишитесь заново
             $(window).off('ddeliveryCityPlace');
         },
-        render: function(){
+        render: function () {
             $('.map-popup__info__more__text, .delivery-place__drop_i').mCustomScrollbar({
                 scrollInertia: 0
             });
         },
-        event: function(){
+        event: function () {
             function citySelectEvent() {
                 var cityId = $(this).data('id');
 
-                if($('input[name=ddelivery_city]').val() == cityId) {
+                if ($('input[name=ddelivery_city]').val() == cityId) {
                     return false;
                 }
 
@@ -57,13 +58,13 @@ var CityPlace = (function(){
                         }
                     });
                 })
-                .keyup(function(){
+                .keyup(function () {
                     var title = $(this).val();
                     var input = $(this);
-                    if(title.length >= 2){
-                        $('.delivery-place__drop_i ul.search').html('<img class="loader_search" src="'+staticUrl+'/img/ajax_loader.gif"/>');
-                        DDeliveryIframe.ajaxData({action: 'searchCity', name: title}, function(data){
-                            if(data.request.name == input.val()){
+                    if (title.length >= 2) {
+                        $('.delivery-place__drop_i ul.search').html('<img class="loader_search" src="' + staticUrl + '/img/ajax_loader.gif"/>');
+                        DDeliveryIframe.ajaxData({action: 'searchCity', name: title}, function (data) {
+                            if (data.request.name == input.val()) {
                                 $('.delivery-place__drop_i .pop').hide();
                                 $('.delivery-place__drop_i .search').show();
                                 $('.delivery-place__drop_i ul.search').html(data.html);
