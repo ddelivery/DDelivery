@@ -7,6 +7,7 @@
 
 namespace DDelivery\DataBase;
 
+use DDelivery\Order\DDeliveryOrder;
 use PDO;
 
 /**
@@ -14,28 +15,28 @@ use PDO;
  * @package DDelivery\DataBase
  */
 class Order {
-	
+
 	/**
 	 * @var PDO
 	 */
 	public $pdo;
-	
-	
+
+
 	public function __construct()
 	{
 		$this->pdo = SQLite::getPDO();
 		$this->createTable();
 	}
-	
+
 	/**
 	 * Создаем таблицу orders
-	 * 
+	 *
 	 * Описание к полям таблицы:
-	 * 
+	 *
 	 * paymen_variant способ оплаты
 	 * shop_refnum id заказа на стороне CMS
 	 * local_status статус заказа на стороне CMS
-	 * dd_status статус заказа на стороне ddelivery       
+	 * dd_status статус заказа на стороне ddelivery
 	 * type тип заказа
 	 * amount сума заказа
 	 * products сериализированный массив с продуктами
@@ -45,16 +46,16 @@ class Order {
 	 * point_id id точки
 	 * delivery_company id компании
 	 * dimension_side1 сторона заказа 1
-	 * dimension_side2 строна заказа 2 
-	 * dimension_side3 сторона заказа 3 
+	 * dimension_side2 строна заказа 2
+	 * dimension_side3 сторона заказа 3
 	 * confirmed подтвержден заказ
 	 * weight вес
 	 * declared_price свойство заказа dd
 	 * payment_price  свойство заказа dd
-	 * to_name    ФИО клиента 
+	 * to_name    ФИО клиента
 	 * to_phone телефон клиента
 	 * goods_description описание товаров
-	 * to_street  улица   
+	 * to_street  улица
 	 * to_house дом
 	 * to_flat квартира
 	 * to_email емейл
@@ -62,7 +63,7 @@ class Order {
 	 * secondName Фамилия
 	 * serilize упакованый order
 	 * point сериализированный объект точки
-	 * 
+	 *
 	 */
 	public function createTable()
 	{
@@ -71,14 +72,14 @@ class Order {
 				          paymen_variant TEXT,
 				          shop_refnum INTEGER,
 				          local_status INTEGER,
-				          dd_status INTEGER,          
+				          dd_status INTEGER,
 					      type INTEGER,
 				          amount REAL,
 				          products TEXT,
 					      to_city INTEGER,
 				          date TEXT,
 				          ddeliveryorder_id INTEGER,
-				          point_id INTEGER,  
+				          point_id INTEGER,
 					      delivery_company INTEGER,
 					      dimension_side1 INTEGER,
 				 	      dimension_side2 INTEGER,
@@ -90,7 +91,7 @@ class Order {
 					      to_name TEXT,
 					      to_phone TEXT,
 					      goods_description TEXT,
-				          to_street  TEXT,    
+				          to_street  TEXT,
 				          to_house TEXT,
 				          to_flat TEXT,
 				          to_email TEXT,
@@ -102,43 +103,43 @@ class Order {
 	}
 	/**
 	 * Получить заказ по его cms ID
-	 * 
-	 * @param array $cmsOrderID - id заказа внутри cms 
-	 * 
+	 *
+	 * @param array $cmsOrderID - id заказа внутри cms
+	 *
 	 */
 	public function getOrderByCmsOrderID( $cmsOrderID )
 	{
 		$query = 'SELECT id FROM orders WHERE shop_refnum = ' . $cmsOrderID;
 		$sth = $this->pdo->query( $query );
 		$result = $sth->fetchAll(PDO::FETCH_OBJ);
-		
+
 		return $result;
 	}
-	
+
 	/**
 	 * Получить список заказов
-	 * 
+	 *
 	 * @param array $ids массив с  заказов
-	 * 
+	 *
 	 * return stdClass[]
-	 * 
+	 *
 	 */
 	public function getOrderList( $ids )
-	{   
+	{
 		$idWhere = implode(',', $ids);
         $query = 'SELECT * FROM orders WHERE id IN(' .$idWhere . ')';
         $sth = $this->pdo->query( $query );
         $result = $sth->fetchAll(PDO::FETCH_OBJ);
-        
+
         return $result;
 	}
-	
+
 	/**
-	 * Устанавливаем для заказа в БД SQLLite id заказа в CMS 
+	 * Устанавливаем для заказа в БД SQLLite id заказа в CMS
 	 *
 	 * @param int $id id локальной БД SQLLite
 	 * @param int $shopOrderID id заказа в CMS
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function setShopOrderID( $id, $shopOrderID )
@@ -169,7 +170,7 @@ class Order {
 	{
         $id = (int)$id;
         if(!$id) return 0;
-        
+
 		$sth = $this->pdo->prepare('SELECT id FROM orders WHERE id = :id');
 		$sth->bindParam( ':id', $id );
 		$sth->execute();
@@ -177,10 +178,12 @@ class Order {
 		$result = (count($data))?1:0;
 		return $result;
 	}
-	/**
-	 * @param DDeliveryOrder $order
-	 */
-	public function saveFullOrder( $order )
+
+    /**
+     * @param DDeliveryOrder $order
+     * @return int
+     */
+	public function saveFullOrder( DDeliveryOrder $order )
 	{
 	    $wasUpdate = 0;
 	    

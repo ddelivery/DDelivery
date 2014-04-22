@@ -277,6 +277,16 @@ Map = (function () {
                 });
             });
 
+            $(window).on('ddeliveryCityPlace', function(e, data){
+                DDeliveryIframe.ajaxData({action: 'mapDataOnly', city_id: data.id}, function(data) {
+                    TypeForm.renderData(data.data);
+                });
+            });
+        },
+        // Рендерим то что к нам пришло по ajax
+        renderData: function()
+        {
+
         },
         renderInfo: function (point, points) {
 

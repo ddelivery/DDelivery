@@ -94,37 +94,7 @@
             <h2>Пункты:</h2>
 
             <div class="places">
-                <ul class="clearfix">
-                    <?
-                    $companySubInfo = $this->getCompanySubInfo();
-                    foreach($selfCompanyList as $selfCompany):
-
-                        $ico = isset($companySubInfo[$selfCompany['delivery_company']]) ? $companySubInfo[$selfCompany['delivery_company']]['ico'] : 'pack';
-                        ?>
-                        <li>
-                            <a title="<?=$selfCompany['delivery_company_name']?>" href="javascript:void(0)" data-id="<?=$selfCompany['delivery_company']?>" class="clearfix border <?//hasinfo?>">
-                                <span class="img">
-                                    <img src="<?=$staticURL?>img/logo/<?=$ico?>_1.png" alt="<?=$selfCompany['delivery_company_name']?>"/>
-                                    <img class="big" src="<?=$staticURL?>img/logo/<?=$ico?>.png" alt="<?=$selfCompany['delivery_company_name']?>"/>
-                                </span>
-
-                                <span class="price"><?=floor($selfCompany['total_price'])?> <i class="icon-rub">&nbsp;</i></span>
-
-                                <div style="display: none;
-                                    background-image: url(<?=$staticURL?>img/logo/<?=$ico?>_1.png);
-                                    height: 37px;
-                                    background-repeat: no-repeat;
-                                    background-position: left top;
-                                    background-position-y: 1px;
-                                    background-position-x: 1px;">
-
-                                </div>
-                                <span class="date">от <strong><?=$selfCompany['delivery_time_min']?></strong> <?=\DDelivery\Utils::plural($selfCompany['delivery_time_min'], 'дня', 'дней', 'дней', 'дней', false)?></span>
-                                <i class="shadow">&nbsp;</i>
-                            </a>
-                        </li>
-                    <?endforeach;?>
-                </ul>
+                <?require(__DIR__.DIRECTORY_SEPARATOR.'mapCompanyHelper.php');?>
             </div>
             <!--places end-->
 

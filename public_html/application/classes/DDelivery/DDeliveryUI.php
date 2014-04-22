@@ -472,6 +472,7 @@ class DDeliveryUI
      *
      * Вызывать вручную при завершении обработки запроса
      *
+     * @deprecated
      * @return int;
      */
     public function saveIntermediateOrder()
@@ -482,8 +483,8 @@ class DDeliveryUI
         $id = $this->order->localId;
         if($this->order->localId) {
             $orderDB->updateOrder( $id, $packOrder );
-        } 
-        else 
+        }
+        else
         {
             $this->order->localId = $orderDB->insertOrder($packOrder);
         }
@@ -668,10 +669,10 @@ class DDeliveryUI
      */
     public function checkOrderCourierValues( $order )
     {
-    	
+
     	$errors = array();
     	$point = $order->getPoint();
-        
+
         if( $point == null )
         {
         	$errors[] = "Укажите пожалуйста точку";
@@ -711,17 +712,17 @@ class DDeliveryUI
             	$errors[] = "Укажите пожалуйста email в верном формате";
             }
         }
-        
+
         if( empty( $order->paymentVariant ) )
         {
         		$errors[] = "Не указан способ оплаты в CMS";
         }
-        
+
         if( empty( $order->localStatus ) )
         {
         	$errors[] = "Не указан статус заказа в CMS";
         }
-        
+
         if( ! $order->shopRefnum )
         {
         	$errors[] = "Не найден id заказа в CMS";
@@ -744,10 +745,10 @@ class DDeliveryUI
      * @return bool
      */
     public function checkOrderSelfValues( $order )
-    {   
+    {
     	$errors = array();
     	$point = $order->getPoint();
-    	
+
         if( $point == null )
         {
         	$errors[] = "Укажите пожалуйста точку";
@@ -764,22 +765,22 @@ class DDeliveryUI
         {
         	$errors[] = "Не верный тип доставки";
         }
-        
+
         if( empty( $order->paymentVariant ) )
         {
         	$errors[] = "Не указан способ оплаты в CMS";
         }
-        
+
         if( empty( $order->status ) )
         {
         	$errors[] = "Не указан статус заказа в CMS";
         }
-        
+
         if( ! $order->shopRefnum )
         {
         	$errors[] = "Не найден id заказа в CMS";
         }
-        
+
         if(count($errors))
         {
         	throw new DDeliveryException(implode(', ', $errors));
@@ -794,19 +795,20 @@ class DDeliveryUI
      *
      * @return int
      */
-    public function saveFullOrder( $order )
-    {   
+    public function saveFullOrder( DDeliveryOrder $order )
+    {
     	$orderDB = new DataBase\Order();
     	$id = $orderDB->saveFullOrder( $order );
+        $order->localId = $id;
     	return $id;
     }
 
     /**
      *
      * отправить заказ на курьерку
-     * 
+     *
      * @param DDeliveryOrder $order
-     * 
+     *
      * @return int
      */
     public function createCourierOrder( $order )
@@ -821,9 +823,9 @@ class DDeliveryUI
     		$this->messager->pushMessage( $e->getMessage() );
     		return 0;
     	}
-    	
+
     	$ddeliveryOrderID = 0;
-    	
+
     	if( $this->shop->sendOrderToDDeliveryServer($order) )
     	{
     	    $point = $order->getPoint();
@@ -841,9 +843,9 @@ class DDeliveryUI
 
     	    $to_name = $order->getToName();
     	    $to_phone = $order->getToPhone();
-            
+
     	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
-    	    
+
     	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
     	    $paymentPrice = $this->shop->getPaymentPrice( $order, $orderPrice );
 
@@ -851,14 +853,14 @@ class DDeliveryUI
     	    $to_house = $order->toHouse;
     	    $to_flat = $order->toFlat;
     	    $shop_refnum = $order->shopRefnum;
-    	    
+
             try
             {
     	        $response = $this->sdk->addCourierOrder( $to_city, $delivery_company, $dimensionSide1, $dimensionSide2,
-    			                                         $dimensionSide3, $shop_refnum, $confirmed, $weight, 
-    	        		                                 $to_name, $to_phone, $goods_description, $declaredPrice, 
+    			                                         $dimensionSide3, $shop_refnum, $confirmed, $weight,
+    	        		                                 $to_name, $to_phone, $goods_description, $declaredPrice,
     	          	                                     $paymentPrice, $to_street, $to_house, $to_flat );
-                
+
             }
             catch ( DDeliveryException $e )
             {
@@ -876,9 +878,9 @@ class DDeliveryUI
     /**
      *
      * отправить заказ на самовывоз
-     * 
+     *
      * @param DDeliveryOrder $order
-     * 
+     *
      * @return int
      *
      */
@@ -910,9 +912,9 @@ class DDeliveryUI
     	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
     	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
     	    $paymentPrice = $this->shop->getPaymentPrice( $order, $orderPrice );
-    	    
+
     	    $shop_refnum = $order->shopRefnum;
-    	    
+
     	    try
     	    {
     	        $response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
@@ -1224,11 +1226,14 @@ class DDeliveryUI
             }
         }
 
-        $this->saveIntermediateOrder();
+        $this->saveFullOrder($this->order);
 
         switch($request['action']) {
             case 'map':
                 echo $this->renderMap();
+                break;
+            case 'dataOnly':
+                echo $this->renderMap(true);
                 break;
             case 'courier':
                 echo $this->renderCourier();
@@ -1280,12 +1285,13 @@ class DDeliveryUI
 
     /**
      * Страница с картой
+     *
+     * @param bool $dataOnly ajax
      * @return string
      */
-    protected function renderMap()
+    protected function renderMap($dataOnly = false)
     {
         $cityId = $this->getCityId();
-        $cityList = $this->getCityByDisplay($cityId);
 
         $points = $this->getSelfPoints($cityId);
         $pointsJs = array();
@@ -1296,12 +1302,20 @@ class DDeliveryUI
         $staticURL = $this->shop->getStaticPath();
         $selfCompanyList = $this->getSelfDeliveryInfoForCity( $cityId);
 
-
-        ob_start();
-        include(__DIR__ . '/../../templates/map.php');
-        $content = ob_get_contents();
-        ob_end_clean();
-        return json_encode(array('html'=>$content, 'js'=>'map', 'points' => $pointsJs, 'orderId' => $this->order->localId));
+        if($dataOnly) {
+            ob_start();
+            include(__DIR__ . '/../../templates/mapCompanyHelper.php');
+            $content = ob_get_contents();
+            ob_end_clean();
+            return json_encode(array('html'=>$content, 'points' => $pointsJs, 'orderId' => $this->order->localId));
+        } else {
+            $cityList = $this->getCityByDisplay($cityId);
+            ob_start();
+            include(__DIR__ . '/../../templates/map.php');
+            $content = ob_get_contents();
+            ob_end_clean();
+            return json_encode(array('html'=>$content, 'js'=>'map', 'points' => $pointsJs, 'orderId' => $this->order->localId));
+        }
     }
 
     /**
@@ -1393,6 +1407,9 @@ class DDeliveryUI
         }
     }
 
+    /**
+     * @return string
+     */
     protected function renderCourier()
     {
         $cityId = $this->getCityId();
@@ -1415,6 +1432,9 @@ class DDeliveryUI
         return json_encode(array('html'=>$content, 'js'=>'courier', 'orderId' => $this->order->localId));
     }
 
+    /**
+     * @return string
+     */
     private function renderContactForm()
     {
         // @todo хардкодим курьера
