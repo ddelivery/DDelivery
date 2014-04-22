@@ -43,7 +43,7 @@ var CityPlace = (function(){
                 $('.delivery-place__drop').slideUp(function () {
                     $('.map-popup__main').removeClass('show-drop-2');
                 });
-                $(window).trigger('ddeliveryCityPlace', {id: cityId});
+                $(window).trigger('ddeliveryCityPlace', {id: cityId, title: title});
 
                 return false;
             }

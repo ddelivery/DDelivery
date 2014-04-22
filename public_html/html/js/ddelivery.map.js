@@ -19,8 +19,22 @@ Map = (function () {
         type2: true,
         hideCompany: []
     };
-
     var staticUrl;
+
+    var initPoint = function(point) {
+        point.display = true;
+        point.placemark = new ymaps.Placemark([point.latitude, point.longitude], {
+                hintContent: point.address,
+                point: point
+            }, {
+                iconLayout: 'default#image',
+                iconImageHref: staticUrl + '/img/point_75x75.png',
+                iconImageSize: [50, 50],
+                iconImageOffset: [-22, -46]
+            }
+        );
+        return point;
+    };
 
     return {
         init: function (data) {
@@ -95,25 +109,9 @@ Map = (function () {
             });
 
             var geoObjects = [];
-            var point;
-
             for (var pointKey in points) {
-                point = points[pointKey];
-                point.display = true;
-                //console.log(point);
-                point.placemark = new ymaps.Placemark([point.latitude, point.longitude], {
-                        hintContent: point.address,
-                        point: point
-                    }, {
-                        iconLayout: 'default#image',
-                        iconImageHref: staticUrl + '/img/point_75x75.png',
-                        iconImageSize: [50, 50],
-                        iconImageOffset: [-22, -46]
-                    }
-                );
-
-                geoObjects.push(point.placemark);
-                //yamap.geoObjects.add(myPlacemark);
+                initPoint(points[pointKey]);
+                geoObjects.push(points[pointKey].placemark);
             }
 
             clusterer.add(geoObjects);
@@ -243,6 +241,45 @@ Map = (function () {
                 Map.filterPoints();
             });
 
+            $('.map-popup__info__more__btn').on('click', function (e) {
+                e.preventDefault();
+                var el = $(this).toggleClass('open');
+                el.closest('.map-popup__info__more').find('.map-popup__info__more__text').slideToggle(function () {
+                    if ($('.no-touch').length) {
+                        $(this).mCustomScrollbar('update');
+                    }
+                });
+            });
+
+            $(window).on('ddeliveryCityPlace', function(e, city){
+
+                ymaps.geocode(city.title, {results: 1})
+                    .then(function (res) {
+                        // Выбираем первый результат геокодирования.
+                        renderGeoObject = res.geoObjects.get(0);
+                        yamap.setBounds(renderGeoObject.properties.get('boundedBy'));
+                    });
+
+                $('.map-popup__main__right .places').html('').addClass('info-open');
+
+                DDeliveryIframe.ajaxData({action: 'mapDataOnly', city_id: city.id}, function(data) {
+                    Map.renderData(data);
+                });
+
+                // Удаляем старые поинты, какраз пока ждем ответа ajax
+                var pointsRemove = [];
+                for (var pointKey in points) {
+                    var point = points[pointKey];
+                    if(point.display) {
+                        pointsRemove.push(point);
+                    }
+                }
+                clusterer.remove(pointsRemove);
+
+            });
+            this.placeEvent();
+        },
+        placeEvent: function(){
             $('.map-popup__main__right .places a').click(function(){
                 if(current_points.length > 0) {
                     var id = parseInt($(this).data('id'));
@@ -266,34 +303,30 @@ Map = (function () {
                     Map.filterPoints();
                 }
             });
-
-            $('.map-popup__info__more__btn').on('click', function (e) {
-                e.preventDefault();
-                var el = $(this).toggleClass('open');
-                el.closest('.map-popup__info__more').find('.map-popup__info__more__text').slideToggle(function () {
-                    if ($('.no-touch').length) {
-                        $(this).mCustomScrollbar('update');
-                    }
-                });
-            });
-
-            $(window).on('ddeliveryCityPlace', function(e, data){
-                DDeliveryIframe.ajaxData({action: 'mapDataOnly', city_id: data.id}, function(data) {
-                    TypeForm.renderData(data.data);
-                });
-            });
         },
         // Рендерим то что к нам пришло по ajax
-        renderData: function()
-        {
+        renderData: function(data) {
 
+            $('.map-popup__main__right .places').removeClass('info-open').html(data.html);
+
+            var geoObjects = [];
+            points = data.points;
+            for (var pointKey in points) {
+                initPoint(points[pointKey]);
+                geoObjects.push(points[pointKey].placemark);
+            }
+            console.log(geoObjects);
+            clusterer.add(geoObjects);
+            filter.hideCompany = [];
+            Map.filterPoints(); // Фильтр покажет все точки
+            Map.placeEvent();
         },
         renderInfo: function (point, points) {
 
             $('.map-popup__main__right .places').addClass('info-open');
             $('.map-popup__main__right .places a').removeClass('active').removeClass('hasinfo');
 
-            cp = points;
+            //cp = points;
             if(!points){
                 points = [];
             }

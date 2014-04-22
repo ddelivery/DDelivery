@@ -721,7 +721,7 @@ class DDeliveryUI
      *
      * @return DDeliveryInfo
      */
-    public function getDeliveryInfoForPointID( $pointID, $order )
+    public function getDeliveryInfoForPointID( $pointID, DDeliveryOrder $order )
     {
 
     	$response = $this->sdk->calculatorPickupForPoint( $pointID, $order->getDimensionSide1(),
@@ -1196,7 +1196,7 @@ class DDeliveryUI
     public function render($request)
     {
         if(!empty($request['order_id'])) {
-            $this->initIntermediateOrder(array($request['order_id']));
+            $this->initIntermediateOrder($request['order_id']);
         }
 
         if(isset($request['action'])) {
@@ -1240,15 +1240,14 @@ class DDeliveryUI
             }
         }
 
-        $cityId = (int) (isset($request['city_id']) ? $request['city_id'] : 0);
-        if($cityId) {
-            $this->order->city = $cityId;
+        if(!empty($request['city_id'])) {
+            $this->order->city = $request['city_id'];
         }
         if(!$this->order->city ) {
             $this->order->city = $this->getCityId();
         }
         if(!empty($request['point'])) {
-            $this->order->setPoint($this->getDeliveryInfoForPointID($request['point'], $this->order));
+            //$this->order->setPoint($this->getDeliveryInfoForPointID($request['point'], $this->order));
         }
 
         if(isset($request['iframe'])) {
@@ -1291,13 +1290,13 @@ class DDeliveryUI
             }
         }
 
-        //$this->saveFullOrder($this->order);
+        $this->order->localId = $this->saveFullOrder($this->order);
 
         switch($request['action']) {
             case 'map':
                 echo $this->renderMap();
                 break;
-            case 'dataOnly':
+            case 'mapDataOnly':
                 echo $this->renderMap(true);
                 break;
             case 'courier':
