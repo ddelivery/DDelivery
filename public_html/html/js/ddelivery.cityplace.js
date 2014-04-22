@@ -24,8 +24,7 @@ var CityPlace = (function(){
             });
         },
         event: function(){
-
-            function citySelectEvent(){
+            function citySelectEvent() {
                 var cityId = $(this).data('id');
 
                 if($('input[name=ddelivery_city]').val() == cityId) {
