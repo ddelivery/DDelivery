@@ -88,7 +88,7 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
         $order = $this->fixture->getOrder();
         $order->city = 0;
         $notValid = $this->fixture->_validateOrderToGetPoints( $order );
-        $this->assertGreaterFalse( $notValid );
+        $this->assertFalse( $notValid );
     }
 
     public function testChangeOrderStatus()
