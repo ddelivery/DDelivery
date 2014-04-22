@@ -127,10 +127,9 @@ $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
 $order->city = 151185;
-$id = $DDeliveryUI->saveFullOrder($order);
 
-$DDeliveryUI->initIntermediateOrder(2);
-print_r($DDeliveryUI->getOrder());
+$pointself = $DDeliveryUI->getSelfPoints($order);
+courierpoints = $DDeliveryUI->getCourierPoints($order);
 //echo $id;
 
 /*
