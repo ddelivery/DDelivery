@@ -24,6 +24,10 @@ namespace DDelivery\Point;
  * "return_partial_price": 236, - цена частичного возврата
  * "total_price": 276.86 – Суммарная цена доставки
  *
+ * @property float delivery_price цена доставки
+ * @property int delivery_time_min минимальное время доставки
+ * @property float pickup_price цена забора
+ * @property float total_price Суммарная цена доставки
  * @package  DDelivery.Point
  */
 class DDeliveryInfo

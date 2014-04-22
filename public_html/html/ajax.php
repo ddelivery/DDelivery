@@ -6,7 +6,7 @@
  */
 
 ini_set("display_errors", "1");
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ALL);
 
 $_SERVER['REMOTE_ADDR'] = '88.201.177.120';
 
@@ -79,6 +79,12 @@ class ShopAdapter extends DShopAdapter
         return '/html/ajax.php';
     }
 
+    public function filterSelfInfo($selfCompanyList)
+    {
+        //return false;
+        return parent::filterSelfInfo($selfCompanyList);
+    }
+
     /**
      * Возвращает стоимоть заказа
      * @return float
@@ -117,6 +123,19 @@ class ShopAdapter extends DShopAdapter
     public function getShopOrderInfo($orderID)
     {
         // TODO: Implement getShopOrderInfo() method.
+    }
+
+    /**
+     * Меняет статус внутреннего заказа cms
+     *
+     * @param $orderID - id заказа
+     * @param $status - статус заказа для обновления
+     *
+     * @return bool
+     */
+    public function setCmsOrderStatus($orderID, $status)
+    {
+        // TODO: Implement setCmsOrderStatus() method.
     }
 }
 

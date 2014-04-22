@@ -14,7 +14,8 @@
  * @author  mrozk <mrozk2012@gmail.com>
  */
 
-header('Content-Type: text/html; charset=utf-8');
+namespace DDelivery;
+
 /**
  * Для поиска недостающих классов, сканируем
  * на содержание пакетов в названиях классов
@@ -23,35 +24,16 @@ header('Content-Type: text/html; charset=utf-8');
  *
  *
  */
-function autoloadClasses( $className ) {
-	$classPath = '';	
+spl_autoload_register(function ( $className ) {
+    if(strpos($className, __NAMESPACE__) === 0) {
+        $classPath = implode(DIRECTORY_SEPARATOR, explode('\\', $className));
 
-    if( (strpos($className, '\\')) > 0 )
-    {
-        $pathPieces = explode('\\', $className);
-        for ($i = 0; $i < count($pathPieces); $i++)
+        $filename = __DIR__ . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR . $classPath . ".php";
+
+        if (is_readable($filename) && file_exists($filename))
         {
-            $classPath .= ( DIRECTORY_SEPARATOR . $pathPieces[$i] );
+            require_once $filename;
         }
-    	          		
+        // Тут не должно быть ошибок чтоб работали другие автолоадеры
     }
-    else 
-    {
-    	$classPath = DIRECTORY_SEPARATOR . $className;
-    }
-	
-    $base = __DIR__ . DIRECTORY_SEPARATOR ;
-    $filename = $base . "/classes" . $classPath . ".php";
-    
-    if (is_readable($filename) && file_exists($filename)) 
-    {
-        require_once $filename;
-    }
-    else
-    {
-        //var_dump(debug_backtrace()[2]);
-        die('Error loading libs ' . $filename .' on '.$classPath.'.php');
-    }
-}
-
-spl_autoload_register("autoloadClasses");
+});
