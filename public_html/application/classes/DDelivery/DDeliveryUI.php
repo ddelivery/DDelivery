@@ -1139,6 +1139,10 @@ class DDeliveryUI
                         $cityList = $this->sdk->getAutoCompleteCity($request['name']);
 
                         $cityList = $cityList->response;
+                        foreach($cityList as $key => $city){
+                            $cityList[$key]['name'] = Utils::firstWordLiterUppercase($city['name']);
+                        }
+
                         $cityId = $this->order->city;
                         ob_start();
                         include(__DIR__ . '/../../templates/cityHelper.php');
@@ -1266,8 +1270,10 @@ class DDeliveryUI
         }else{
             array_unshift($cityList, $cityDB->getCityById($cityId));
         }
-        foreach($cityList as $key => $cityData){
-            $cityList[$key]['display_name'] = $cityDB->getDisplayCityName($cityData);
+        foreach($cityList as &$cityData){
+            // Костыль, на сервере города начинаются с маленькой буквы
+            $cityData['name'] = Utils::firstWordLiterUppercase($cityData['name']);
+            $cityData['display_name'] = $cityDB->getDisplayCityName($cityData);
         }
         return $cityList;
     }
@@ -1312,11 +1318,13 @@ class DDeliveryUI
             'self' => array(
                 'minPrice' => 0,
                 'minTime' => 0,
+                'timeStr' => '',
                 'disabled' => true,
             ),
             'courier' => array(
                 'minPrice' => 0,
                 'minTime' => 0,
+                'timeStr' => '',
                 'disabled' => true
             ),
         );
@@ -1340,6 +1348,7 @@ class DDeliveryUI
                 $data['self'] = array(
                     'minPrice' => $minPrice,
                     'minTime' => $minTime,
+                    'timeStr' => Utils::plural($minTime, 'дня', 'дней', 'дней', 'дней', false),
                     'disabled' => false
                 );
             }
@@ -1363,6 +1372,7 @@ class DDeliveryUI
                 $data['courier'] = array(
                     'minPrice' => $minPrice,
                     'minTime' => $minTime,
+                    'timeStr' => Utils::plural($minTime, 'дня', 'дней', 'дней', 'дней', false),
                     'disabled' => false
                 );
             }

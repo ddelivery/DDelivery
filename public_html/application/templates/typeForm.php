@@ -57,7 +57,7 @@
                         <span>от <strong><span class="min_price"><?=$currentData['minPrice']?></span> <i class="icon-rub">&nbsp;</i></strong></span>
                     </td>
                     <td class="col5">
-                        <span>от <strong><span class="min_time"><?=$currentData['minTime']?></span></strong> дня</span>
+                        <span>от <strong><span class="min_time"><?=$currentData['minTime']?></span></strong> <span class="time_str"><?=$currentData['timeStr']?></span></span>
                     </td>
                 </tr>
                 <?
@@ -81,7 +81,7 @@
                         <span>от <strong><span class="min_price"><?=$currentData['minPrice']?></span> <i class="icon-rub">&nbsp;</i></strong></span>
                     </td>
                     <td class="col5">
-                        <span>от <strong><span class="min_time"><?=$currentData['minTime']?></span></strong> дня</span>
+                        <span>от <strong><span class="min_time"><?=$currentData['minTime']?></span></strong> <span class="time_str"><?=$currentData['timeStr']?></span></span>
                     </td>
                 </tr>
                 <?/*

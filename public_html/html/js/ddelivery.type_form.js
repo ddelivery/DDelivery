@@ -26,6 +26,7 @@ var TypeForm = (function(){
                     $('input', cur).prop('disabled', false);
                     $('.min_price', cur).html(data[key].minPrice);
                     $('.min_time', cur).html(data[key].minTime);
+                    $('.time_str', cur).html(data[key].timeStr);
                 }
             }
             $('.radio input').trigger('custom.refresh');
