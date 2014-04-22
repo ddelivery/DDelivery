@@ -74,7 +74,6 @@ class DDeliveryUI
         $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), $this->shop->isTestMode());
 
         SQLite::$dbUri = $dShopAdapter->getPathByDB();
-
         // Формируем объект заказа
         $productList = $this->shop->getProductsFromCart();
         $this->order = new DDeliveryOrder( $productList );
@@ -234,7 +233,7 @@ class DDeliveryUI
     /**
      * Инициализирует заказ по id из заказов локальной БД, в контексте текущего UI
      *
-     * @param int $id массив с id заказов
+     * @param int $id id заказа
      *
      * @throws DDeliveryException
      *

@@ -84,24 +84,24 @@ class DDeliverySDK {
                                      $to_email = '' )
     {
         $params = array(
-            'type' => 2,
-            'to_city' => 151185,
-            'delivery_company' => 17,
-            'dimension_side1' => 10,
-            'dimension_side2' => 10,
-            'dimension_side3' => 10,
-            'shop_refnum' =>  12,
-            'weight' => 1,
-            'confirmed' => 'true',
-            'to_name' => 'Пяточкин Петр Петрович',
-            'to_phone' => '9999999999',
-            'goods_description' => 'Трос 1шт, Пробка от бутылки 2шт.',
-            'declared_price' => 1000,
-            'payment_price' => 1000,
-            'to_street' => 'Вознесенская',
-            'to_house' => '1а',
-            'to_flat' => '42',
-            'to_email' => 'mrozk2012@gmail.com'
+            'type' => self::TYPE_COURIER,
+            'to_city' => $to_city,
+            'delivery_company' => $delivery_company,
+            'dimension_side1' => $dimensionSide1,
+            'dimension_side2' => $dimensionSide2,
+            'dimension_side3' => $dimensionSide3,
+            'shop_refnum' =>  $shop_refnum,
+            'weight' => $weight,
+            'confirmed' => $confirmed,
+            'to_name' => $to_name,
+            'to_phone' => $to_phone,
+            'goods_description' => $goods_description,
+            'declared_price' => $declaredPrice,
+            'payment_price' => $paymentPrice,
+            'to_street' => $to_street,
+            'to_house' => $to_house,
+            'to_flat' => $to_flat,
+            'to_email' => $to_email
         );
     	$response = $this->requestProvider->request( 'order_create', $params, 'post' );
 
@@ -176,7 +176,7 @@ class DDeliverySDK {
         $response = $this->requestProvider->request( 'order_create', $params,'post' );
         if( !count ( $response->response ))
         {
-        	throw new DDeliveryException( implode(',', $response->errorMessage ));
+        	throw new DDeliveryException( $response->errorMessage );
         }
         return $response;
     }
@@ -238,8 +238,8 @@ class DDeliverySDK {
      * @return DDeliverySDKResponse
      */
     public function calculatorPickupForCity( $deliveryCity, $dimensionSide1,
-    		$dimensionSide2, $dimensionSide3, $weight,
-    		$declaredPrice, $paymentPrice = null )
+                                            $dimensionSide2, $dimensionSide3, $weight,
+                                            $declaredPrice, $paymentPrice = null )
     {
     	$params = array(
     			'type' => self::TYPE_SELF,

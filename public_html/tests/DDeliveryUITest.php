@@ -58,8 +58,8 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 
     public function testInitIntermediateOrder()
     {
-        $orderList = $this->fixture->initIntermediateOrder(array(1,2));
-        $this->assertEquals(2, count($orderList));
+        $orderList = $this->fixture->initIntermediateOrder(1);
+        $this->assertEquals(1, count($orderList));
     }
     public function testGetMinMaxPriceAndPeriodDelivery()
     {

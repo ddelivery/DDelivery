@@ -6,7 +6,7 @@
  */
 
 
-
+header('Content-type: text/html; charset=utf-8');
 ini_set("display_errors", "1");
 error_reporting(E_ALL);
 require_once 'application/bootstrap.php';
@@ -114,18 +114,35 @@ foreach ($selfpoint->response as $res)
 print_r( json_encode($funki));
 
 */
-
+/*
+$fixture = new \DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', true);
+$result = $fixture->addSelfOrder( 50, 10,
+    10, 10,true, 1, 'Дима Грушин', '9999999999',
+    'Товар 1, шт', 0, 0, 12);
+print_r($result);
+$result = $fixture->calculatorPickupForPoint(50, 10, 10,  10, 1, 0);
+*/
 
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
 $order->city = 151185;
+$id = $DDeliveryUI->saveFullOrder($order);
+
+$DDeliveryUI->initIntermediateOrder(2);
+print_r($DDeliveryUI->getOrder());
+//echo $id;
+
+/*
 $selfPoints = $DDeliveryUI->getCourierPointsForCity( $order );
 
 $minAndMax = $DDeliveryUI->getMinPriceAndPeriodCourier( $order );
 $minAndMaxSelf = $DDeliveryUI->getMinPriceAndPeriodSelf( $order );
+
 print_r($minAndMax);
 print_r($minAndMaxSelf);
+*/
+
 /*
 $order->city = 151184;
 $order->localId = 1;

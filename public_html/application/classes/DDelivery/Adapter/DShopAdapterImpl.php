@@ -14,6 +14,10 @@ class DShopAdapterImpl extends DShopAdapter
 	}
 	
 	public function getPathByDB(){
+        if(!is_dir($_SERVER['DOCUMENT_ROOT'] . '/ddelivery/application/data/'))
+        {
+            mkdir($_SERVER['DOCUMENT_ROOT'] . '/ddelivery/application/data/', 0777);
+        }
 		return $_SERVER['DOCUMENT_ROOT'] . '/ddelivery/application/data/ddelivery.db';
 	}
 

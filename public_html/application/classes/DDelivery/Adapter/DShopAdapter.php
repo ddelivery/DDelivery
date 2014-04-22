@@ -224,7 +224,7 @@ abstract class DShopAdapter
      */
     public function isTestMode()
     {
-        return true;
+        return false;
     }
 
     /**

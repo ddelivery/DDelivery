@@ -126,6 +126,7 @@ class Order {
 	 */
 	public function getOrderList( $ids )
 	{
+
 		$idWhere = implode(',', $ids);
         $query = 'SELECT * FROM orders WHERE id IN(' .$idWhere . ')';
         $sth = $this->pdo->query( $query );

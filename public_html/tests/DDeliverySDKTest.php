@@ -34,8 +34,7 @@ class DDeliverySDKTest extends PHPUnit_Framework_TestCase
     }
     public function testCalculatorPickupForPoint()
     {
-    	$result = $this->fixture->calculatorPickupForPoint(50, 10, 
-    			   10,  10, 1, 0);
+    	$result = $this->fixture->calculatorPickupForPoint(50, 10, 10,  10, 1, 0);
     	$this->assertTrue( $result->success );
     }
     public function testCalculatorPickupForCity()
@@ -77,7 +76,7 @@ class DDeliverySDKTest extends PHPUnit_Framework_TestCase
 
     public function testCalculatorCurier()
     {
-    	$result = $this->fixture->calculatorCourier( 151185, 10, 10, 10, 1, 0 );
+    	$result = $this->fixture->calculatorCourier( 151185, 10, 10, 10, 1, 1000 );
     	$this->assertEquals($result->success, 1);
     }
     
