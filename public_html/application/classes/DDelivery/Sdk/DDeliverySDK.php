@@ -44,9 +44,9 @@ class DDeliverySDK {
     {
 
         if($testMode){
-            $this->server = 'stage';
-        }else{
             $this->server = 'dev';
+        }else{
+            $this->server = 'stage';
         }
         $this->requestProvider = new RequestProvider( $apiKey, $this->server );
         $this->requestProvider->setKeepActive( true );

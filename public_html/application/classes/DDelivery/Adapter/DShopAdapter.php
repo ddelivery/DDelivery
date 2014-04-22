@@ -9,9 +9,8 @@
 namespace DDelivery\Adapter;
 
 use DDelivery\Order\DDeliveryOrder;
-use DDelivery\Order\DDeliveryOrderStatus;
 use DDelivery\Order\DDeliveryProduct;
-use DDelivery\Order\DDStatusProvider;
+use DDelivery\Adapter\DDStatusProvider;
 use DDelivery\Point\DDeliveryAbstractPoint;
 use DDelivery\Point\DDeliveryPointCourier;
 use DDelivery\Point\DDeliveryPointSelf;

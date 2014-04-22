@@ -77,7 +77,6 @@
     </div>
     <!--map-popup__head end-->
     <div class="map-popup__main">
-    <?//var_dump($selfCompanyList);?>
         <div class="map-popup__main__overlay">&nbsp;</div>
         <div class="map">
             <div class="map-canvas" style="width: 1000px; height: 568px"></div>

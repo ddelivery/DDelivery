@@ -336,7 +336,7 @@ class DDeliveryUI
     	        	    	// Либо для самовывоза, либо для курьерки
     	        	    	if( $jsonOrder->type == 1 )
     	        	    	{
-    	        	    		$points = $this->getSelfPoints( $this->order->city );
+    	        	    		$points = $this->getSelfPoints( $this->order );
     	        	    		foreach ( $points as $p )
     	        	    		{
     	        	    			if( $p->pointID == $jsonOrder->point_id )
@@ -348,7 +348,7 @@ class DDeliveryUI
     	        	    	}
     	        	    	else if( $jsonOrder->type == 2 )
     	        	    	{
-    	        	    		$points = $this->getCourierPointsForCity( $this->order->city );
+    	        	    		$points = $this->getCourierPointsForCity( $this->order );
     	        	    		foreach ( $points as $p )
     	        	    		{
     	        	    		    if( $p->pointID == $jsonOrder->point_id )
@@ -560,11 +560,11 @@ class DDeliveryUI
     /**
      * Проверяем на валидность $order для получение точек доставки
      *
-     * @param $order
+     * @param DDeliveryOrder $order
      *
      * @return bool
      */
-    public function _validateOrderToGetPoints( $order )
+    public function _validateOrderToGetPoints( DDeliveryOrder $order )
     {
         if( count($order->getProducts()) > 0 && $order->city )
         {
@@ -580,7 +580,7 @@ class DDeliveryUI
      * @throws DDeliveryException
      * @return array DDeliveryPointCourier[]
      */
-    public function getCourierPointsForCity( $order )
+    public function getCourierPointsForCity( DDeliveryOrder $order )
     {
         if(!$this->_validateOrderToGetPoints($order))
             throw new DDeliveryException('Для получения списка необходимо корректный order');
@@ -627,7 +627,7 @@ class DDeliveryUI
      * @throws DDeliveryException
      * @return array;
      */
-    public function getCourierDeliveryInfoForCity( $order )
+    public function getCourierDeliveryInfoForCity( DDeliveryOrder $order )
     {
         if(!$this->_validateOrderToGetPoints($order))
             throw new DDeliveryException('Для получения списка необходимо корректный order');
@@ -651,9 +651,9 @@ class DDeliveryUI
      * @throws DDeliveryException
      * @return DDeliveryPointSelf[]
      */
-    public function getSelfPoints( $order )
+    public function getSelfPoints( DDeliveryOrder $order )
     {
-        if(!$this->_validateOrderToGetPoints($order))
+        if(!$this->_validateOrderToGetPoints( $order))
             throw new DDeliveryException('Для получения списка необходимо корректный order');
         // Есть ли необходимость искать точки на сервере ddelivery
         if( $this->shop->preGoToFindPoints( $order ))
@@ -695,7 +695,7 @@ class DDeliveryUI
      *
      * @return array;
      */
-    public function getSelfDeliveryInfoForCity( $order )
+    public function getSelfDeliveryInfoForCity( DDeliveryOrder $order )
     {
 
     	$response = $this->sdk->calculatorPickupForCity( $order->city, $order->getDimensionSide1(),
@@ -1290,7 +1290,7 @@ class DDeliveryUI
             }
         }
 
-        $this->saveFullOrder($this->order);
+        //$this->saveFullOrder($this->order);
 
         switch($request['action']) {
             case 'map':
@@ -1355,16 +1355,16 @@ class DDeliveryUI
      */
     protected function renderMap($dataOnly = false)
     {
-        $cityId = $this->getCityId();
+        $cityId = $this->order->city;
 
-        $points = $this->getSelfPoints($cityId);
+        $points = $this->getSelfPoints($this->order);
         $pointsJs = array();
 
         foreach($points as $point) {
             $pointsJs[] = $point->toJson();
         }
         $staticURL = $this->shop->getStaticPath();
-        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $cityId );
+        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $this->order );
 
         if($dataOnly) {
             ob_start();
@@ -1389,9 +1389,10 @@ class DDeliveryUI
      */
     protected function renderDeliveryTypeForm($dataOnly = false)
     {
-        $cityId = $this->getCityId();
+        $cityId = $this->order->city;
 
         $order = $this->order;
+        $order->city = $cityId;
         $data = array(
             'self' => array(
                 'minPrice' => 0,
@@ -1408,7 +1409,7 @@ class DDeliveryUI
         );
 
         $order->declaredPrice = $this->shop->getDeclaredPrice($order);
-        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $cityId);
+        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $this->order );
         if(!empty($selfCompanyList)){
             $selfCompanyList = $this->_getOrderedDeliveryInfo( $selfCompanyList );
             $selfCompanyList = $this->shop->filterSelfInfo($selfCompanyList);
@@ -1431,7 +1432,7 @@ class DDeliveryUI
                 );
             }
         }
-        $courierCompanyList = $this->getCourierPointsForCity($cityId);
+        $courierCompanyList = $this->getCourierPointsForCity($this->order);
         if(!empty($courierCompanyList)){
             $courierCompanyList = $this->shop->filterPointsCourier($courierCompanyList, $this->order);
             if($courierCompanyList){
@@ -1476,10 +1477,10 @@ class DDeliveryUI
      */
     protected function renderCourier()
     {
-        $cityId = $this->getCityId();
+        $cityId = $this->order->city;
         $cityList = $this->getCityByDisplay($cityId);
         $companies = $this->getCompanySubInfo();
-        $courierCompanyList = $this->getCourierPointsForCity($cityId);
+        $courierCompanyList = $this->getCourierPointsForCity($this->order);
 
         foreach($courierCompanyList as $courierCompany) {
             $this->shop->preDisplayCourierPoint($courierCompany, $this->order);
