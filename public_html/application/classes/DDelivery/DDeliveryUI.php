@@ -587,10 +587,11 @@ class DDeliveryUI
     	// Есть ли необходимость искать точки на сервере ddelivery
     	if( $this->shop->preGoToFindPoints( $this->order ))
     	{
+            $declared_price = $this->shop->getDeclaredPrice($order);
     	    $response = $this->sdk->calculatorCourier( $order->city, $order->getDimensionSide1(),
                                                        $order->getDimensionSide2(),
                                                        $order->getDimensionSide3(),
-                                                       $order->getWeight(), 0 );
+                                                       $order->getWeight(), $declared_price );
     	    if( $response->success )
             {
 
@@ -628,12 +629,13 @@ class DDeliveryUI
      */
     public function getCourierDeliveryInfoForCity( DDeliveryOrder $order )
     {
+        $declared_price = $this->shop->getDeclaredPrice($order);
         if(!$this->_validateOrderToGetPoints($order))
             throw new DDeliveryException('Для получения списка необходимо корректный order');
     	$response = $this->sdk->calculatorCourier( $order->city, $order->getDimensionSide1(),
     			                                   $order->getDimensionSide2(),
     			                                   $order->getDimensionSide3(),
-    			                                   $order->getWeight(), 0 );
+    			                                   $order->getWeight(), $declared_price );
     	if( $response->success )
     	{
     		return $response->response;
@@ -657,7 +659,7 @@ class DDeliveryUI
         // Есть ли необходимость искать точки на сервере ddelivery
         if( $this->shop->preGoToFindPoints( $order ))
         {
-            $points = $this->getSelfPointsForCityAndCompany(null, $order->city);
+            $points = $this->getSelfPointsForCityAndCompany(null, $order->city); /** cache **/
 
             $companyInfo = $this->getSelfDeliveryInfoForCity( $order );
 
@@ -696,11 +698,11 @@ class DDeliveryUI
      */
     public function getSelfDeliveryInfoForCity( DDeliveryOrder $order )
     {
-
+        $declared_price = $this->shop->getDeclaredPrice($order);
     	$response = $this->sdk->calculatorPickupForCity( $order->city, $order->getDimensionSide1(),
                                                          $order->getDimensionSide2(),
                                                          $order->getDimensionSide3(),
-                                                         $order->getWeight(), 0 );
+                                                         $order->getWeight(), $declared_price );
         
     	if( $response->success )
     	{
@@ -724,10 +726,11 @@ class DDeliveryUI
     public function getDeliveryInfoForPointID( $pointID, DDeliveryOrder $order )
     {
 
+        $declared_price = $this->shop->getDeclaredPrice($order);
     	$response = $this->sdk->calculatorPickupForPoint( $pointID, $order->getDimensionSide1(),
                                                           $order->getDimensionSide2(),
                                                           $order->getDimensionSide3(),
-                                                          $order->getWeight(), 0 );
+                                                          $order->getWeight(), $declared_price );
     	if( $response->success )
     	{
     		return new Point\DDeliveryInfo( $response->response );
@@ -1372,7 +1375,8 @@ class DDeliveryUI
             $content = ob_get_contents();
             ob_end_clean();
             return json_encode(array('html'=>$content, 'points' => $pointsJs, 'orderId' => $this->order->localId));
-        } else {
+        } else
+        {
             $cityList = $this->getCityByDisplay($cityId);
             ob_start();
             include(__DIR__ . '/../../templates/map.php');
@@ -1387,7 +1391,7 @@ class DDeliveryUI
      * @param bool $dataOnly если передать true, то отдаст данные для обновления верстки через js
      * @return string
      */
-    protected function renderDeliveryTypeForm($dataOnly = false)
+    protected function renderDeliveryTypeForm( $dataOnly = false )
     {
         $cityId = $this->order->city;
 

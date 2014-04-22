@@ -122,7 +122,19 @@ $result = $fixture->addSelfOrder( 50, 10,
 print_r($result);
 $result = $fixture->calculatorPickupForPoint(50, 10, 10,  10, 1, 0);
 */
+$shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
+$DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
+$order = $DDeliveryUI->getOrder();
+$order->city = 151185;
+$pointself = $DDeliveryUI->getSelfPoints($order);
 
+$courierpoints = $DDeliveryUI->getCourierPointsForCity($order);
+
+//$city = $DDeliveryUI->get
+
+//print_r($pointself);
+//print_r($courierpoints);
+/*
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
@@ -130,6 +142,7 @@ $order->city = 151185;
 
 $pointself = $DDeliveryUI->getSelfPoints($order);
 courierpoints = $DDeliveryUI->getCourierPoints($order);
+*/
 //echo $id;
 
 /*

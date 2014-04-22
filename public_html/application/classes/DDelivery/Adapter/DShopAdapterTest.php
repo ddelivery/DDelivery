@@ -89,5 +89,11 @@ class DShopAdapterTest extends DShopAdapter
     {
         return array('id' => $orderID, 'status' => 4,'payment' => 6 );
     }
+
+
+    public function isTestMode()
+    {
+        return false;
+    }
 }
 ?>
