@@ -659,35 +659,7 @@ class DDeliveryUI
     	}
     }
 
-    /*
-    public function renderCache( $method, $params = array() )
-    {
-        if(  method_exists($this, $method ) )
-        {
-            $sig = $method . '_' . implode('_', $params);
-            if( $result = DCache::load( $sig ) )
-            {
-                echo 'FROM Cache';
-                return $result;
-            }
-            else
-            {
-                $reflectionMethod = new \ReflectionMethod($this, $method);
-                $result  =  $reflectionMethod->invoke($this, $params );
-                echo 'save';
-                $expired = 2;
-                DCache::save( $sig, $result, $expired);
 
-                return $result;
-            }
-        }
-        else
-        {
-            throw new DDeliveryException('Cache: method not Exists');
-        }
-
-    }
-    */
     /**
      * Получить компании самовывоза  для города с их полным описанием, и координатами их филиалов
      * @param DDeliveryOrder $order
@@ -701,8 +673,7 @@ class DDeliveryUI
         // Есть ли необходимость искать точки на сервере ddelivery
         if( $this->shop->preGoToFindPoints( $order ))
         {
-            //$points =  $this->renderCache('getSelfPointsDetail', array( $order->city ) ); /** cache **/
-            $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) );
+            $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) ); /** cache **/
             //$points = $this->getSelfPointsDetail( $order->city ); /** cache **/
 
             $companyInfo = $this->getSelfDeliveryInfoForCity( $order );

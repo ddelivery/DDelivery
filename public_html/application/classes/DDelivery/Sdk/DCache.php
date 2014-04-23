@@ -60,17 +60,14 @@ class DCache
         if(  method_exists( $this->context, $method ) )
         {
             $sig = $method . '_' . implode('_', $params);
-            echo $sig;
             if( $result = $this->_load( $sig ) && $this->enabled )
             {
-                echo 'FROM Cache';
                 return $result;
             }
             else
             {
                 $reflectionMethod = new \ReflectionMethod($this->context, $method);
                 $result  =  $reflectionMethod->invokeArgs($this->context, $params );
-                echo 'save';
                 $this->_save( $sig, $result, $this->expired);
                 return $result;
             }
@@ -96,7 +93,7 @@ class DCache
     private function _load( $sig )
     {
         $cache = new Cache();
-        if( $data_container = $cache->getCacheRec($key) )
+        if( $data_container = $cache->getCacheRec($sig) )
         {
             return unserialize($data_container);
         }
