@@ -7,7 +7,7 @@
     <img src="<?=$staticURL?>img/icons/icon-courier.png"/>забрать курьером от <span class="price"></span> руб<span class="arrow"><i>&nbsp;</i></span>
 </div>
 <div class="delivery-type__title self">
-    <img src="<?=$staticURL?>img/icons/icon-courier.png"/>забрать самовывозом от <span class="price"></span> руб<span class="arrow"><i>&nbsp;</i></span>
+    <img src="<?=$staticURL?>img/icons/shipping-grey.png"/>забрать самовывозом от <span class="price"></span> руб<span class="arrow"><i>&nbsp;</i></span>
 </div>
 <div class="delivery-type__drop">
     <ul>
