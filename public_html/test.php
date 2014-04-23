@@ -130,7 +130,7 @@ $order->city = 151185;
 
 //$courierpoints = $DDeliveryUI->getCourierPointsForCity($order);
 
-print_r( $DDeliveryUI->testOzk() );
+$DDeliveryUI->getSelfPoints($order) ;
 //$city = $DDeliveryUI->get
 
 //print_r($pointself);

@@ -111,6 +111,24 @@ abstract class DShopAdapter
 
 
     /**
+     * Возвращает время истечения кэша в днях
+     * @return int
+     */
+    public function getCacheExpired()
+    {
+        return 2;
+    }
+
+    /**
+     * Включить кэш
+     * @return bool
+     */
+    public function isCacheEnabled()
+    {
+        return true;
+    }
+
+    /**
      * Возвращает товары находящиеся в корзине пользователя, будет вызван один раз, затем закеширован
      * @return DDeliveryProduct[]
      */
