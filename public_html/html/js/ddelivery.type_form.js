@@ -65,7 +65,7 @@ var TypeForm = (function () {
             $(window).on('ddeliveryCityPlace', function (e, data) {
 
                 DDeliveryIframe.ajaxData({action: 'typeFormDataOnly', city_id: data.id}, function (data) {
-                    TypeForm.renderData(data.data);
+                    TypeForm.renderData(data.typeData);
                 });
             });
 

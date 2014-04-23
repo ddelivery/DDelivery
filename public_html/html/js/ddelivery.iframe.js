@@ -12,6 +12,8 @@ var DDeliveryIframe = (function () {
             // Инициализация модуля. В ней мы инициализируем все остальные модули на странице
             this.componentUrl = componentUrl = _componentUrl;
             this.staticUrl = staticUrl = _staticUrl;
+            // Да, нужно его подрубить тут
+            Header.init();
             this.ajaxPage({});
         },
         ajaxPage: function (data) {
@@ -19,6 +21,7 @@ var DDeliveryIframe = (function () {
             if (this.orderId)
                 data.order_id = this.orderId;
             $('#ddelivery').html('<img class="loader" src="' + staticUrl + '/img/ajax_loader.gif"/>');
+
             $.post(componentUrl, data, function (dataHtml) {
                 $('#ddelivery').html(dataHtml.html);
 
@@ -26,14 +29,20 @@ var DDeliveryIframe = (function () {
                     th.orderId = dataHtml.orderId;
                 }
 
+                $(window).trigger('ajaxPageRender', {params: data, result: dataHtml});
+
                 th.render(dataHtml);
+
             }, 'json');
-            $(window).trigger('ajaxPage');
+            $(window).trigger('ajaxPageRequest', {params: data});
         },
         ajaxData: function (data, callBack) {
             if (this.orderId)
                 data.order_id = this.orderId;
-            $.post(componentUrl, data, callBack, 'json');
+            $.post(componentUrl, data, function(result){
+                $(window).trigger('ajaxDataResult', {params: data, result: result});
+                callBack(result);
+            }, 'json');
         },
         render: function (data) {
             // У всех
