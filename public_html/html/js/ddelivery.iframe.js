@@ -9,6 +9,9 @@ var DDeliveryIframe = (function () {
         staticUrl: null,
         orderId: null,
         init: function (_componentUrl, _staticUrl) {
+            if(!window.parent || window.parent == window) {
+                document.location.href='http://www.ddelivery.ru/';
+            }
             // Инициализация модуля. В ней мы инициализируем все остальные модули на странице
             this.componentUrl = componentUrl = _componentUrl;
             this.staticUrl = staticUrl = _staticUrl;
@@ -72,6 +75,13 @@ var DDeliveryIframe = (function () {
              $this.getData(data.id)
              });*/
 
+        },
+        postMessage: function(action, data) {
+            // Отправляем сообщение родительскому окну
+            window.parent.postMessage({action:action, data: data}, '*');
+        },
+        close: function(){
+            DDeliveryIframe.postMessage('close', {});
         }
     }
 })();

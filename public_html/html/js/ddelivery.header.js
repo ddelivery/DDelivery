@@ -41,6 +41,11 @@ var Header = (function () {
                 $(window).on('ajaxPageRender', eventAjaxPageRender);
                 $(window).on('ajaxDataResult', eventAjaxPageRender);
             }
+
+            $('.map-popup__head__close').click(function(){
+                DDeliveryIframe.close();
+            });
+
         },
         renderType: function() {
 
