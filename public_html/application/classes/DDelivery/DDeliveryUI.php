@@ -64,6 +64,11 @@ class DDeliveryUI
      */
     private $messager;
 
+    /**
+     *  Кэш
+     *  @var DCache
+     */
+    private $cache;
 
     /**
      * @param DShopAdapter $dShopAdapter
@@ -82,6 +87,8 @@ class DDeliveryUI
         $this->order->amount = $this->shop->getAmount();
 
         $this->messager = new Sdk\DDeliveryMessager($this->shop->isTestMode());
+
+        $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled() );
     }
    
     /**
@@ -652,29 +659,7 @@ class DDeliveryUI
     	}
     }
 
-    public function testOzk()
-    {
-        return $this->renderCache('getSelfPointsDetail', array( 151185, null ) );
-    }
-    public function renderCache( $method, $params = array() )
-    {
-        if(  method_exists($this, $method ) )
-        {
 
-            $sig = $method . '_' . $params[0] . '_' . $params[1];
-            if( $result = DCache::load( $sig ) )
-            {
-                return $result;
-            }
-            else
-            {
-                $result  =  $this->$method( $params[0], $params[1] );
-                $expired = 'xxxxxx';
-                DCache::save( $sig, $result, $expired);
-                return $result;
-            }
-        }
-    }
     /**
      * Получить компании самовывоза  для города с их полным описанием, и координатами их филиалов
      * @param DDeliveryOrder $order
@@ -688,9 +673,8 @@ class DDeliveryUI
         // Есть ли необходимость искать точки на сервере ddelivery
         if( $this->shop->preGoToFindPoints( $order ))
         {
-            //$points =  $this->renderCache('getSelfPointsDetail', array( $order->city ) ); /** cache **/
-
-            $points = $this->getSelfPointsDetail( $order->city );
+            $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) ); /** cache **/
+            //$points = $this->getSelfPointsDetail( $order->city ); /** cache **/
 
             $companyInfo = $this->getSelfDeliveryInfoForCity( $order );
 
