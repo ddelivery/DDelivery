@@ -14,7 +14,7 @@ namespace DDelivery\Point;
 abstract class DDeliveryAbstractPoint {
 	
 	/**
-	 * Инфа по ID компаний
+	 * Инфа по ID точки
 	 * 
 	 * Для компаний типа самовывоз - это id точки
 	 * Для компаний типа доставки курьером это id компании

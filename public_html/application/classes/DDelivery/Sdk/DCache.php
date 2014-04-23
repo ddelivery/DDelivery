@@ -60,12 +60,15 @@ class DCache
         if(  method_exists( $this->context, $method ) )
         {
             $sig = $method . '_' . implode('_', $params);
-            if( $result = $this->_load( $sig ) && $this->enabled )
+
+            if( ($result = $this->_load( $sig )) && $this->enabled )
             {
+                echo 'from cache';
                 return $result;
             }
             else
             {
+                echo 'save';
                 $reflectionMethod = new \ReflectionMethod($this->context, $method);
                 $result  =  $reflectionMethod->invokeArgs($this->context, $params );
                 $this->_save( $sig, $result, $this->expired);
@@ -95,6 +98,7 @@ class DCache
         $cache = new Cache();
         if( $data_container = $cache->getCacheRec($sig) )
         {
+
             return unserialize($data_container);
         }
         else

@@ -659,6 +659,17 @@ class DDeliveryUI
     	}
     }
 
+    public function getSelfPointByID( $pointID, $order )
+    {
+        if(!$this->_validateOrderToGetPoints( $order))
+            throw new DDeliveryException('Для получения списка необходимо корректный order');
+        $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) );
+        print_r($points);
+        foreach( $points AS $p )
+        {
+            echo $p->_id;
+        }
+    }
 
     /**
      * Получить компании самовывоза  для города с их полным описанием, и координатами их филиалов
