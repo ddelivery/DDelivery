@@ -42,10 +42,12 @@ class DDeliverySDK {
 	 */
     public function __construct($apiKey, $testMode = true)
     {
-
-        if($testMode){
+        if($testMode)
+        {
             $this->server = 'dev';
-        }else{
+        }
+        else
+        {
             $this->server = 'stage';
         }
         $this->requestProvider = new RequestProvider( $apiKey, $this->server );

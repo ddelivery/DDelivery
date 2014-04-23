@@ -11,6 +11,7 @@ use DDelivery\DataBase\City;
 use DDelivery\DataBase\Order;
 use DDelivery\DataBase\SQLite;
 use DDelivery\Point\DDeliveryPointSelf;
+use DDelivery\Sdk\DCache;
 use DDelivery\Sdk\DDeliverySDK;
 use DDelivery\Order\DDeliveryOrder;
 use DDelivery\Adapter\DShopAdapterImpl;
@@ -79,8 +80,7 @@ class DDeliveryUI
         $this->order = new DDeliveryOrder( $productList );
         
         $this->order->amount = $this->shop->getAmount();
-        $this->order->paymentVariant = $this->shop->getPaymentVariant();
-        
+
         $this->messager = new Sdk\DDeliveryMessager($this->shop->isTestMode());
     }
    
@@ -94,8 +94,10 @@ class DDeliveryUI
      */
     public function update()
     {
-    
+        echo 'update';
     }
+
+
 
     /**
      *
@@ -286,6 +288,10 @@ class DDeliveryUI
         }
         return $orderList;
     }
+
+
+
+
     /**
      * Инициализировать заказ в контексте текущего заказа
      *
@@ -587,10 +593,11 @@ class DDeliveryUI
     	// Есть ли необходимость искать точки на сервере ddelivery
     	if( $this->shop->preGoToFindPoints( $this->order ))
     	{
+            $declared_price = $this->shop->getDeclaredPrice($order);
     	    $response = $this->sdk->calculatorCourier( $order->city, $order->getDimensionSide1(),
                                                        $order->getDimensionSide2(),
                                                        $order->getDimensionSide3(),
-                                                       $order->getWeight(), 0 );
+                                                       $order->getWeight(), $declared_price );
     	    if( $response->success )
             {
 
@@ -628,12 +635,13 @@ class DDeliveryUI
      */
     public function getCourierDeliveryInfoForCity( DDeliveryOrder $order )
     {
+        $declared_price = $this->shop->getDeclaredPrice($order);
         if(!$this->_validateOrderToGetPoints($order))
             throw new DDeliveryException('Для получения списка необходимо корректный order');
     	$response = $this->sdk->calculatorCourier( $order->city, $order->getDimensionSide1(),
     			                                   $order->getDimensionSide2(),
     			                                   $order->getDimensionSide3(),
-    			                                   $order->getWeight(), 0 );
+    			                                   $order->getWeight(), $declared_price );
     	if( $response->success )
     	{
     		return $response->response;
@@ -644,6 +652,29 @@ class DDeliveryUI
     	}
     }
 
+    public function testOzk()
+    {
+        return $this->renderCache('getSelfPointsDetail', array( 151185, null ) );
+    }
+    public function renderCache( $method, $params = array() )
+    {
+        if(  method_exists($this, $method ) )
+        {
+
+            $sig = $method . '_' . $params[0] . '_' . $params[1];
+            if( $result = DCache::load( $sig ) )
+            {
+                return $result;
+            }
+            else
+            {
+                $result  =  $this->$method( $params[0], $params[1] );
+                $expired = 'xxxxxx';
+                DCache::save( $sig, $result, $expired);
+                return $result;
+            }
+        }
+    }
     /**
      * Получить компании самовывоза  для города с их полным описанием, и координатами их филиалов
      * @param DDeliveryOrder $order
@@ -657,7 +688,9 @@ class DDeliveryUI
         // Есть ли необходимость искать точки на сервере ddelivery
         if( $this->shop->preGoToFindPoints( $order ))
         {
-            $points = $this->getSelfPointsForCityAndCompany(null, $order->city);
+            //$points =  $this->renderCache('getSelfPointsDetail', array( $order->city ) ); /** cache **/
+
+            $points = $this->getSelfPointsDetail( $order->city );
 
             $companyInfo = $this->getSelfDeliveryInfoForCity( $order );
 
@@ -696,11 +729,11 @@ class DDeliveryUI
      */
     public function getSelfDeliveryInfoForCity( DDeliveryOrder $order )
     {
-
+        $declared_price = $this->shop->getDeclaredPrice($order);
     	$response = $this->sdk->calculatorPickupForCity( $order->city, $order->getDimensionSide1(),
                                                          $order->getDimensionSide2(),
                                                          $order->getDimensionSide3(),
-                                                         $order->getWeight(), 0 );
+                                                         $order->getWeight(), $declared_price );
         
     	if( $response->success )
     	{
@@ -724,10 +757,11 @@ class DDeliveryUI
     public function getDeliveryInfoForPointID( $pointID, DDeliveryOrder $order )
     {
 
+        $declared_price = $this->shop->getDeclaredPrice($order);
     	$response = $this->sdk->calculatorPickupForPoint( $pointID, $order->getDimensionSide1(),
                                                           $order->getDimensionSide2(),
                                                           $order->getDimensionSide3(),
-                                                          $order->getWeight(), 0 );
+                                                          $order->getWeight(), $declared_price );
     	if( $response->success )
     	{
     		return new Point\DDeliveryInfo( $response->response );
@@ -1057,7 +1091,7 @@ class DDeliveryUI
      *
      * @return DDeliveryPointSelf[]
      */
-    public function getSelfPointsForCityAndCompany( $companyIDs, $cityID )
+    public function getSelfPointsDetail( $cityID, $companyIDs = null )
     {
 
     	$points = array();
@@ -1372,7 +1406,8 @@ class DDeliveryUI
             $content = ob_get_contents();
             ob_end_clean();
             return json_encode(array('html'=>$content, 'points' => $pointsJs, 'orderId' => $this->order->localId));
-        } else {
+        } else
+        {
             $cityList = $this->getCityByDisplay($cityId);
             ob_start();
             include(__DIR__ . '/../../templates/map.php');
@@ -1387,7 +1422,7 @@ class DDeliveryUI
      * @param bool $dataOnly если передать true, то отдаст данные для обновления верстки через js
      * @return string
      */
-    protected function renderDeliveryTypeForm($dataOnly = false)
+    protected function renderDeliveryTypeForm( $dataOnly = false )
     {
         $cityId = $this->order->city;
 
