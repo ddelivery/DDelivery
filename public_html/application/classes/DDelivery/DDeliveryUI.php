@@ -1426,7 +1426,7 @@ class DDeliveryUI
             include(__DIR__ . '/../../templates/map.php');
             $content = ob_get_contents();
             ob_end_clean();
-            return json_encode(array('html'=>$content, 'js'=>'map', 'points' => $pointsJs, 'orderId' => $this->order->localId));
+            return json_encode(array('html'=>$content, 'js'=>'map', 'points' => $pointsJs, 'orderId' => $this->order->localId, 'type'=>DDeliverySDK::TYPE_SELF));
         }
     }
 
@@ -1514,9 +1514,9 @@ class DDeliveryUI
             $content = ob_get_contents();
             ob_end_clean();
 
-            return json_encode(array('html'=>$content, 'js'=>'typeForm', 'orderId' => $this->order->localId));
+            return json_encode(array('html'=>$content, 'js'=>'typeForm', 'orderId' => $this->order->localId, 'typeData' => $data));
         }else{
-            return json_encode(array('data' => $data));
+            return json_encode(array('typeData' => $data));
         }
     }
 
@@ -1533,7 +1533,7 @@ class DDeliveryUI
         foreach($courierCompanyList as $courierCompany) {
             $this->shop->preDisplayCourierPoint($courierCompany, $this->order);
         }
-        $staticPath = $this->shop->getStaticPath();
+        $staticURL = $this->shop->getStaticPath();
         // Ресетаем ключи.
         $courierCompanyList = array_values($courierCompanyList);
 
@@ -1542,7 +1542,7 @@ class DDeliveryUI
         $content = ob_get_contents();
         ob_end_clean();
 
-        return json_encode(array('html'=>$content, 'js'=>'courier', 'orderId' => $this->order->localId));
+        return json_encode(array('html'=>$content, 'js'=>'courier', 'orderId' => $this->order->localId, 'type'=>DDeliverySDK::TYPE_COURIER));
     }
 
     /**
@@ -1594,7 +1594,7 @@ class DDeliveryUI
         $content = ob_get_contents();
         ob_end_clean();
 
-        return json_encode(array('html'=>$content, 'js'=>'contactForm', 'orderId' => $this->order->localId));
+        return json_encode(array('html'=>$content, 'js'=>'contactForm', 'orderId' => $this->order->localId, 'type'=>DDeliverySDK::TYPE_COURIER));
     }
 
     /**

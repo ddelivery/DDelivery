@@ -106,9 +106,9 @@ class City {
      */
     public function getDisplayCityName($cityData)
     {
-        $displayCityName = $cityData['type'].'. '.$cityData['region'];
+        $displayCityName = $cityData['type'].'. '.$cityData['name'];
         if($cityData['region'] != $cityData['name']) {
-            $displayCityName .= ', '.$cityData['name'];
+            $displayCityName .= ', '.$cityData['region'];
         }
         return $displayCityName;
     }

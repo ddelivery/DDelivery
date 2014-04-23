@@ -20,27 +20,7 @@
         <p>Я хочу</p>
 
         <div class="delivery-type">
-            <div class="delivery-type__title">
-                <img src="img/icons/shipping-grey.png"/>забрать из пункта выдачи<span><i>&nbsp;</i></span>
-            </div>
-            <div class="delivery-type__drop">
-                <ul>
-                    <li>
-                        <a href="#">
-                            <span class="name">Пункт выдачи</span>
-                            <span class="price">100 <i class="icon-rub">&nbsp;</i></span>
-                            <span class="date">от <strong>1</strong> дня</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <span class="name">доаставка курьером</span>
-                            <span class="price">100 <i class="icon-rub">&nbsp;</i></span>
-                            <span class="date">от <strong>1</strong> дня</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            <?require(__DIR__.DIRECTORY_SEPARATOR.'typeHelper.php')?>
         </div>
         <!--delivery-type end-->
 

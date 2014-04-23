@@ -1,15 +1,15 @@
 /**
  * Created by DnAp on 10.04.14.
  */
-var Courier = (function(){
+var Courier = (function () {
     var el;
     var componentUrl, staticUrl;
 
     return {
-        init: function(){
-            $('.map-popup__main__delivery__next a').click(function(){
+        init: function () {
+            $('.map-popup__main__delivery__next a').click(function () {
                 var radio = $('input[type="radio"]:checked').val();
-                if(radio) {
+                if (radio) {
                     DDeliveryIframe.ajaxPage({
                         point: $('input[name=delivery_company]').val(),
                         'action': 'contactForm'
@@ -27,7 +27,7 @@ var Courier = (function(){
 
             var mapPopupTableTr = $('.map-popup__main__delivery table tr');
             mapPopupTableTr.hover(function () {
-                if(!$(this).hasClass('disabled')){
+                if (!$(this).hasClass('disabled')) {
                     $(this).addClass('hover');
                 }
             }, function () {
@@ -35,7 +35,7 @@ var Courier = (function(){
             });
             mapPopupTableTr.on('click', function (e) {
                 e.preventDefault();
-                if(!$(this).hasClass('disabled')){
+                if (!$(this).hasClass('disabled')) {
                     var radio = $(this).find('input[type="radio"]');
                     radio.prop('checked', true).change();
                 }

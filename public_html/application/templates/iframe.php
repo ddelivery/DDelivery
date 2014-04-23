@@ -14,7 +14,7 @@
     <script type="text/javascript" src="<?=$staticURL?>js/jquery.maskedinput.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.iframe.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.map.js"></script>
-    <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.cityplace.js"></script>
+    <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.header.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.courier.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.contact_form.js"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.type_form.js"></script>
