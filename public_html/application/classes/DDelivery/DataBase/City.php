@@ -108,7 +108,7 @@ class City {
     {
         $displayCityName = $cityData['type'].'. '.$cityData['name'];
         if($cityData['region'] != $cityData['name']) {
-            $displayCityName .= ', '.$cityData['region'];
+            $displayCityName .= ', '.$cityData['region'].' обл.';
         }
         return $displayCityName;
     }
