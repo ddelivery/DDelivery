@@ -203,13 +203,13 @@ class DDeliveryUI
         $order->paymentVariant = $shopOrderInfo['payment'];
         $order->shopRefnum = $shopOrderInfo['id'];
         $order->localStatus = $shopOrderInfo['status'];
-       
+
         if( $this->shop->isStatusToSendOrder( $shopOrderInfo['status'], $order) )
         {   
 
-            if( $order->type == 1 ) {
+            if( $order->type == DDeliverySDK::TYPE_SELF ) {
                 $order->ddeliveryID = $this->createSelfOrder($order);
-            } else if( $order->type == 2 ) {
+            } else if( $order->type == DDeliverySDK::TYPE_COURIER ) {
                 $order->ddeliveryID = $this->createCourierOrder($order);
             }else{
                 throw new DDeliveryException('Not support order type');
@@ -655,20 +655,119 @@ class DDeliveryUI
     	}
     	else
     	{
-    		return 0;
+    		return array();
     	}
     }
 
+    /**
+     *
+     * Получить пользовательскую точку по ID
+     *
+     * @param $pointID
+     * @param DDeliveryOrder $order
+     *
+     * @throws DDeliveryException
+     *
+     * @return DDeliveryAbstractPoint
+     *
+     */
+    public function getUserPointByID( $pointID, $order )
+    {
+        $userPoint = null;
+        if( $order->type = DDeliverySDK::TYPE_COURIER )
+        {
+            $points = $this->shop->getUserCourierPoints( $order );
+        }
+        else if( $order->type = DDeliverySDK::TYPE_SELF )
+        {
+            $points = $this->shop->getUserSelfPoints( $order );
+        }
+        if( count($points) )
+        {
+            foreach( $points as $p )
+            {
+                if($p->pointID = $pointID)
+                {
+                    $userPoint = $p;
+                    break;
+                }
+            }
+        }
+
+        if( $userPoint == null )
+        {
+            throw new DDeliveryException('Точка не найдена');
+        }
+        return $userPoint;
+    }
+
+    /**
+     *  Получить курьерскую точку по id компании
+     *
+     * @param $companyID
+     * @param $order
+     *
+     * @return DDeliveryPointCourier|null
+     * @throws DDeliveryException
+     */
+    public function getCourierPointByCompanyID( $companyID, $order )
+    {
+        $deliveryInfo = $this->getCourierDeliveryInfoForCity($order);
+        $courierPoint = null;
+        if(count( $deliveryInfo ))
+        {
+            foreach( $deliveryInfo as $di )
+            {
+                if ( $di['delivery_company'] == $companyID )
+                {
+                    $courierPoint = new DDeliveryPointCourier(false);
+                    $courierPoint->setDeliveryInfo( new DDeliveryInfo($di) );
+                    break;
+                }
+            }
+        }
+        if( $courierPoint == null )
+        {
+            throw new DDeliveryException('Точка не найдена');
+        }
+        return $courierPoint;
+    }
+
+    /**
+     *
+     * Получить всю информацию по точке по ее ID
+     *
+     * @param $pointID id точки
+     * @param DDeliveryOrder $order
+     *
+     * @return DDeliveryPointSelf
+     * @throws DDeliveryException
+     */
     public function getSelfPointByID( $pointID, $order )
     {
         if(!$this->_validateOrderToGetPoints( $order))
             throw new DDeliveryException('Для получения списка необходимо корректный order');
         $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) );
-        print_r($points);
-        foreach( $points AS $p )
+        $selfPoint = null;
+        if(count($points))
         {
-            echo $p->_id;
+            foreach( $points AS $p )
+            {
+                if( $p->_id == $pointID )
+                {
+                    $selfPoint = $p;
+                    break;
+                }
+            }
         }
+        if( $selfPoint == null )
+        {
+            throw new DDeliveryException('Точка не найдена');
+        }
+
+        $deliveryInfo = $this->getDeliveryInfoForPointID( $pointID, $order );
+        $selfPoint->setDeliveryInfo($deliveryInfo);
+        return $selfPoint;
     }
 
     /**
@@ -811,7 +910,7 @@ class DDeliveryUI
         {
         	$errors[] = "Укажите пожалуйста телефон в верном формате";
         }
-        if( $order->type != 2 )
+        if( $order->type != DDeliverySDK::TYPE_COURIER )
         {
         	$errors[] = "Не верный тип доставки";
         }
@@ -888,7 +987,7 @@ class DDeliveryUI
         {
         	$errors[] = "Укажите пожалуйста телефон в верном формате";
         }
-        if( $order->type != 1 )
+        if( $order->type != DDeliverySDK::TYPE_SELF )
         {
         	$errors[] = "Не верный тип доставки";
         }

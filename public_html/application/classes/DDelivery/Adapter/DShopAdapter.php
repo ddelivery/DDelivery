@@ -109,7 +109,29 @@ abstract class DShopAdapter
                                         DDStatusProvider::ORDER_WAITING => 'Ожидание',
                                         DDStatusProvider::ORDER_CANCEL => 'Отмена' );
 
+    /**
+     * Получает список пользовательских курьерских точек
+     *
+     * @param DDeliveryOrder $order
+     *
+     * @return  DDeliveryPointCourier[]
+     */
+    public function getUserCourierPoints( $order )
+    {
+        return null;
+    }
 
+    /**
+     * Получает список пользовательских  точек самовывоза
+     *
+     * @param DDeliveryOrder $order
+     *
+     * @return DDeliveryPointSelf[]
+     */
+    public function getUserSelfPoints( $order )
+    {
+        return null;
+    }
     /**
      * Возвращает время истечения кэша в днях
      * @return int
@@ -188,7 +210,7 @@ abstract class DShopAdapter
      */
     public abstract function isStatusToSendOrder( $status, $order );
     
-    
+
     
     /**
      * Получить необходимую про заказ из CMS 

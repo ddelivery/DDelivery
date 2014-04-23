@@ -104,8 +104,9 @@ class Order {
 	/**
 	 * Получить заказ по его cms ID
 	 *
-	 * @param array $cmsOrderID - id заказа внутри cms
+	 * @param int[] $cmsOrderID - id заказа внутри cms
 	 *
+     * @return array
 	 */
 	public function getOrderByCmsOrderID( $cmsOrderID )
 	{
@@ -119,10 +120,9 @@ class Order {
 	/**
 	 * Получить список заказов
 	 *
-	 * @param array $ids массив с  заказов
+	 * @param int[] $ids массив с  заказов
 	 *
-	 * return stdClass[]
-	 *
+	 * @return array
 	 */
 	public function getOrderList( $ids )
 	{
@@ -535,6 +535,7 @@ class Order {
 	 *
 	 * @param json упакованые параметры промежуточного заказа
 	 *
+     * @return int
 	 */
 	public function insertOrder( $jsonOrder )
 	{
