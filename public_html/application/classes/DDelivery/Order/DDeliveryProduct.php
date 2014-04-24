@@ -7,14 +7,8 @@
 */
 namespace DDelivery\Order;
 
-
 /**
- * DDeliveryProduct - объектное представление товара
- *
- * @package     DDelivery.Order
- */
-/**
- * Class DDeliveryProduct
+ * Class DDeliveryProduct объектное представление товара
  * @package DDelivery\Order
  */
 class DDeliveryProduct
@@ -41,7 +35,7 @@ class DDeliveryProduct
 	 * высота товара в м
 	 * @var float
 	 */
-	private $heigth;
+	private $height;
 	
 	/**
 	 * длина товара в м
@@ -81,13 +75,13 @@ class DDeliveryProduct
     public function __construct( $id, $width, $height, $length,
                                  $weight, $price, $quantity, $name )
     {
-        $this->id = $id;
-        $this->width = $width;
-        $this->heigth = $height;
-        $this->length = $length;
-        $this->weigth = $weight;
-        $this->price = $price;
-        $this->quantity = $quantity;
+        $this->id = (int)$id;
+        $this->width = (float)$width;
+        $this->height = (float)$height;
+        $this->length = (float)$length;
+        $this->weigth = (float)$weight;
+        $this->price = (float)$price;
+        $this->quantity = (int)$quantity;
         $this->name = $name;
     }
     
@@ -96,7 +90,7 @@ class DDeliveryProduct
     /**
      * @return int
      */
-    public function getID()
+    public function getId()
     {
     	return $this->id;
     }
@@ -122,7 +116,7 @@ class DDeliveryProduct
      */
     public function getHeight()
     {
-    	return $this->heigth;
+    	return $this->height;
     }
 
     /**
@@ -155,6 +149,70 @@ class DDeliveryProduct
     public function getQuantity()
     {
     	return $this->quantity;
+    }
+
+    /**
+     * @param float $height
+     */
+    public function setHeight($height)
+    {
+        $this->height = (float)$height;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @param float $length
+     */
+    public function setLength($length)
+    {
+        $this->length = $length;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @param float $price
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+    }
+
+    /**
+     * @param int $quantity
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+    }
+
+    /**
+     * @param float $weigth
+     */
+    public function setWeigth($weigth)
+    {
+        $this->weigth = $weigth;
+    }
+
+    /**
+     * @param float $width
+     */
+    public function setWidth($width)
+    {
+        $this->width = $width;
     }
     
 }    	

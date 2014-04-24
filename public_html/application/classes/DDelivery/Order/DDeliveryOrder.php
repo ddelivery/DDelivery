@@ -210,7 +210,7 @@ class DDeliveryOrder
                 $minValue = array_shift($currentSizes);
                 $dimensionSide1 += ( $minValue * $product->getQuantity() );
                 $items = array_merge($items, $currentSizes);
-                array_push($productIDs, $product->getID());
+                array_push($productIDs, $product->getId());
             }
             sort($items);
 

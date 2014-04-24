@@ -206,11 +206,12 @@ class DDeliverySDK {
     	}
     	return $response;
     }
-    
+
     /**
      * Получить id города по ip
      * @param string $ip ip адрес клиента
      *
+     * @throws \DDelivery\DDeliveryException
      * @return DDeliverySDKResponse
      */
     public function getCityByIp( $ip )
@@ -226,7 +227,7 @@ class DDeliverySDK {
     	}
     	return $response;
     }
-    
+
     /**
      * Расчитать цену самовывоза для компаний города
      * @param int $deliveryCity Идентификатор города
@@ -237,6 +238,7 @@ class DDeliverySDK {
      * @param float|null $declaredPrice Оценочная стоимость (руб)
      * @param float|null $paymentPrice Наложенный платеж (руб)
      *
+     * @throws \DDelivery\DDeliveryException
      * @return DDeliverySDKResponse
      */
     public function calculatorPickupForCity( $deliveryCity, $dimensionSide1,
@@ -274,7 +276,8 @@ class DDeliverySDK {
      * @param float $weight Вес (кг)
      * @param float|null $declaredPrice Оценочная стоимость (руб)
      * @param float|null $paymentPrice Наложенный платеж (руб)
-     * 
+     *
+     * @throws \DDelivery\DDeliveryException
      * @return DDeliverySDKResponse
      */
     public function calculatorPickupForPoint( $deliveryPoint, $dimensionSide1, 
@@ -312,7 +315,8 @@ class DDeliverySDK {
      * @param float $weight Вес (кг)
      * @param float|null $declaredPrice Оценочная стоимость (руб)
      * @param float|null $paymentPrice Наложенный платеж (руб)
-     * 
+     *
+     * @throws \DDelivery\DDeliveryException
      * @return DDeliverySDKResponse
      */
     public function calculatorCourier($cityTo, $dimensionSide1, 
@@ -338,13 +342,14 @@ class DDeliverySDK {
         }
         return $response;
     }
-	
-    
+
+
     /**
      * Получить автокомплит для города
-     * 
+     *
      * @param string $q Часть строки для поиска
-     * 
+     *
+     * @throws \DDelivery\DDeliveryException
      * @return DDeliverySDKResponse
      */
     public function getAutoCompleteCity( $q ) {
@@ -381,15 +386,6 @@ class DDeliverySDK {
             434, // 'Челябинск',
             331, // 'Ростов-на-Дону',
         );
-    }
-
-
-    /**
-     * Получить список пунктов самовывоза
-     * @return DDeliverySDKResponse
-     */
-    public function deliveryPoints() {
-        return $this->requestProvider->request('delivery_points') ;
     }
 
 

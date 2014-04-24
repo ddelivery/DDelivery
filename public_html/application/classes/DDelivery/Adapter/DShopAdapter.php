@@ -109,29 +109,7 @@ abstract class DShopAdapter
                                         DDStatusProvider::ORDER_WAITING => 'Ожидание',
                                         DDStatusProvider::ORDER_CANCEL => 'Отмена' );
 
-    /**
-     * Получает список пользовательских курьерских точек
-     *
-     * @param DDeliveryOrder $order
-     *
-     * @return  DDeliveryPointCourier[]
-     */
-    public function getUserCourierPoints( $order )
-    {
-        return null;
-    }
 
-    /**
-     * Получает список пользовательских  точек самовывоза
-     *
-     * @param DDeliveryOrder $order
-     *
-     * @return DDeliveryPointSelf[]
-     */
-    public function getUserSelfPoints( $order )
-    {
-        return null;
-    }
     /**
      * Возвращает время истечения кэша в днях
      * @return int
@@ -209,24 +187,6 @@ abstract class DShopAdapter
      * @return bool
      */
     public abstract function isStatusToSendOrder( $status, $order );
-    
-
-    
-    /**
-     * Получить необходимую про заказ из CMS 
-     *
-     * Когда заказ в CMS закончил оформлятся нужно получить информацию для отправки на dd
-     * отдавать информацию необходимо в формате
-     * array( 'id' => 'id заказа', 'status' => 'Статус заказа', 'payment' => 'Способ оплаты').
-     * Типы данных 'status'  и 'payment' выбираются интегратором произвольные, в дальнейшем 
-     * интегратор будет их обрабатывать
-     * 
-     * @param string $orderID
-     *
-     * @return array
-     */
-    public abstract function getShopOrderInfo( $orderID );
-
 
     /**
      * Возвращает товары находящиеся в корзине пользователя, реализует кеширование getProductsFromCart
@@ -473,7 +433,7 @@ abstract class DShopAdapter
      * @return float
      */
     public function getDeclaredPrice( $order ) {
-    	$declaredPrice = $order->amount;
+    	$declaredPrice = $order->getAmount();
         return $declaredPrice;
     }
 

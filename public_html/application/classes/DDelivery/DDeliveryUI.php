@@ -124,7 +124,7 @@ class DDeliveryUI
      *
      * Обработчик изменения статуса заказа
      *
-     * @param $cmsOrderID id заказа в cms
+     * @param int $cmsOrderID id заказа в cms
      *
      * @return bool
      *
@@ -156,15 +156,15 @@ class DDeliveryUI
      *
      * Получает статус заказа на сервере DD
      *
-     * @param $orderID
+     * @param $ddeliveryOrderID
      *
      * @return int
      */
-    public function getDDOrderStatus( $orderID )
+    public function getDDOrderStatus( $ddeliveryOrderID )
     {   
     	try
     	{
-            $response = $this->sdk->getOrderStatus($orderID);
+            $response = $this->sdk->getOrderStatus($ddeliveryOrderID);
     	}
     	catch (DDeliveryException $e)
     	{   
@@ -175,41 +175,32 @@ class DDeliveryUI
     }
 
     /**
-     * После окончания оформления заказа в cms вызывается для
-     * дальнейшей обработки заказа
+     * После окончания оформления заказа вызывается в cms и передает заказ на обработку в DDelivery
      *
      * @param int $id id заказа в локальной БД SQLLite
-     * @param int $shopOrderID id заказа в CMS
-     *
+     * @param string $shopOrderID id заказа в CMS
+     * @param int $status выбираются интегратором произвольные
+     * @param int $payment выбираются интегратором произвольные
      * @throws DDeliveryException
-     * @todo
      *
      * @return bool
      */
-    public function onCmsOrderFinish( $id, $shopOrderID)
+    public function onCmsOrderFinish( $id, $shopOrderID, $status, $payment)
     {   
-        try
-        {
-            $orderArr = $this->initIntermediateOrder( array($id) );
-        }
-        catch (DDeliveryException $e)
-        {
-            $this->messager->pushMessage( $e->getMessage() );
+        if(!$this->initIntermediateOrder( $id )) {
             return false;
         }
-        $order = $orderArr[0]; 
-        $shopOrderInfo = $this->shop->getShopOrderInfo( $shopOrderID );	
-        //$this->setShopOrderID( $id, $shopOrderInfo['payment'], $shopOrderInfo['status'], $shopOrderInfo['id']);
-        $order->paymentVariant = $shopOrderInfo['payment'];
-        $order->shopRefnum = $shopOrderInfo['id'];
-        $order->localStatus = $shopOrderInfo['status'];
+        $order = $this->getOrder();
+        $order->paymentVariant = (int)$payment;
+        $order->shopRefnum = $shopOrderID;
+        $order->localStatus = (int)$status;
 
-        if( $this->shop->isStatusToSendOrder( $shopOrderInfo['status'], $order) )
+        if( $this->shop->isStatusToSendOrder( $status, $order) )
         {   
 
-            if( $order->type == DDeliverySDK::TYPE_SELF ) {
+            if( $order->type == 1 ) {
                 $order->ddeliveryID = $this->createSelfOrder($order);
-            } else if( $order->type == DDeliverySDK::TYPE_COURIER ) {
+            } else if( $order->type == 2 ) {
                 $order->ddeliveryID = $this->createCourierOrder($order);
             }else{
                 throw new DDeliveryException('Not support order type');
