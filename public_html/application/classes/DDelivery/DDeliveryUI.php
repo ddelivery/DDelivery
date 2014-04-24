@@ -205,7 +205,8 @@ class DDeliveryUI
             }else{
                 throw new DDeliveryException('Not support order type');
             }
-            
+            $this->saveFullOrder($order);
+            return (bool)$order->ddeliveryID;
         }
         
         $this->saveFullOrder($order);
@@ -1056,7 +1057,7 @@ class DDeliveryUI
 
     	    $goods_description = $order->getGoodsDescription();
     	    $weight = $order->getWeight();
-    	    $confirmed = $this->shop->isConfirmedStatus($order->localStatus);
+    	    $confirmed = $this->shop->isConfirmedStatus($order);
 
     	    $to_name = $order->getToName();
     	    $to_phone = $order->getToPhone();
@@ -1125,7 +1126,7 @@ class DDeliveryUI
     	    $dimensionSide3 = $order->getDimensionSide3();
     	    $goods_description = $order->getGoodsDescription();
     	    $weight = $order->getWeight();
-    	    $confirmed = $this->shop->isConfirmedStatus($order->localStatus);
+    	    $confirmed = $this->shop->isConfirmedStatus($order);
     	    $to_name = $order->getToName();
     	    $to_phone = $order->getToPhone();
 

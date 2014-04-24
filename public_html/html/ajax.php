@@ -104,25 +104,8 @@ class ShopAdapter extends DShopAdapter
      */
     public function isStatusToSendOrder($status, $order)
     {
+        return true;
         // TODO: Implement isStatusToSendOrder() method.
-    }
-
-    /**
-     * Получить необходимую про заказ из CMS
-     *
-     * Когда заказ в CMS закончил оформлятся нужно получить информацию для отправки на dd
-     * отдавать информацию необходимо в формате
-     * array( 'id' => 'id заказа', 'status' => 'Статус заказа', 'payment' => 'Способ оплаты').
-     * Типы данных 'status'  и 'payment' выбираются интегратором произвольные, в дальнейшем
-     * интегратор будет их обрабатывать
-     *
-     * @param string $orderID
-     *
-     * @return array
-     */
-    public function getShopOrderInfo($orderID)
-    {
-        // TODO: Implement getShopOrderInfo() method.
     }
 
     /**
@@ -136,6 +119,18 @@ class ShopAdapter extends DShopAdapter
     public function setCmsOrderStatus($orderID, $status)
     {
         // TODO: Implement setCmsOrderStatus() method.
+    }
+
+    /**
+     * Метод будет вызван когда пользователь закончит выбор способа доставки
+     *
+     * @param int $orderId
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     * @return void
+     */
+    public function onFinishChange($orderId, \DDelivery\Order\DDeliveryOrder $order)
+    {
+        // TODO: Implement onFinishChange() method.
     }
 }
 

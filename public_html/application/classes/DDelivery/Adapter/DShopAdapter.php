@@ -186,7 +186,10 @@ abstract class DShopAdapter
      * 
      * @return bool
      */
-    public abstract function isStatusToSendOrder( $status, $order );
+    public function isStatusToSendOrder( $status, $order )
+    {
+        return true;
+    }
 
     /**
      * Возвращает товары находящиеся в корзине пользователя, реализует кеширование getProductsFromCart
@@ -334,21 +337,7 @@ abstract class DShopAdapter
     }
 
     /**
-     *
-     * Получить свойство refnum для курьерки
-     *
-     * @param \DDelivery\Order\DDeliveryOrder $order
-     *
-     * @return float
-     */
-    public function getShopRefNum( $order )
-    {
-    	return 'shopRefNum';
-    }
-    
-    /**
-     * Если есть необходимость искать точки на сервере 
-     * ddelivery 
+     * Если есть необходимость искать точки на сервере ddelivery
      * 
      * @param \DDelivery\Order\DDeliveryOrder $order
      * 
@@ -379,6 +368,7 @@ abstract class DShopAdapter
     public function getPaymentVariant( ) {
     	 return null;
     }
+
     /**
      * 
      * Сумма к оплате на точке или курьеру
@@ -433,7 +423,7 @@ abstract class DShopAdapter
      * @return float
      */
     public function getDeclaredPrice( $order ) {
-    	$declaredPrice = $order->getAmount();
+    	$declaredPrice = $order->amount;
         return $declaredPrice;
     }
 
@@ -476,5 +466,15 @@ abstract class DShopAdapter
             | self::FIELD_EDIT_LAST_NAME | self::FIELD_REQUIRED_LAST_NAME
             | self::FIELD_EDIT_PHONE | self::FIELD_REQUIRED_PHONE;
     }
+
+
+    /**
+     * Метод будет вызван когда пользователь закончит выбор способа доставки
+     *
+     * @param int $orderId
+     * @param DDeliveryOrder $order
+     * @return void
+     */
+    abstract public function onFinishChange($orderId, DDeliveryOrder $order);
 
 }
