@@ -227,7 +227,7 @@ abstract class DShopAdapter
      */
     public function isTestMode()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -473,8 +473,8 @@ abstract class DShopAdapter
      *
      * @param int $orderId
      * @param DDeliveryOrder $order
-     * @return void
+     * @return bool
      */
-    abstract public function onFinishChange($orderId, DDeliveryOrder $order);
+    public abstract function onFinishChange($orderId, DDeliveryOrder $order);
 
 }

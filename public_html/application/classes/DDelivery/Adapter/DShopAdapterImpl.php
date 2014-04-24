@@ -4,6 +4,18 @@ namespace DDelivery\Adapter;
 
 class DShopAdapterImpl extends DShopAdapter
 {
+
+    /**
+     * Метод будет вызван когда пользователь закончит выбор способа доставки
+     *
+     * @param int $orderId
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     * @return void
+     */
+    public function onFinishChange($orderId, \DDelivery\Order\DDeliveryOrder $order)
+    {
+        // TODO: Implement onFinishChange() method.
+    }
     /**
      * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
      * @return string
@@ -65,6 +77,11 @@ class DShopAdapterImpl extends DShopAdapter
     public function getPhpScriptURL()
     {
         // TODO: Implement getPhpScriptURL() method.
+    }
+
+    public function isTestMode()
+    {
+        return true;
     }
 
 }

@@ -20,6 +20,9 @@ class DShopAdapterTest extends DShopAdapter
                                        DDStatusProvider::ORDER_CANCEL => 'Отмена' );
 
 
+
+
+
     /**
      * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
      * @return string
@@ -90,5 +93,29 @@ class DShopAdapterTest extends DShopAdapter
     {
         return false;
     }
+    /**
+     * Метод будет вызван когда пользователь закончит выбор способа доставки
+     *
+     * @param int $orderId
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     * @return void
+     */
+    public function onFinishChange($orderId, \DDelivery\Order\DDeliveryOrder $order)
+    {
+        // TODO: Implement onFinishChange() method.
+    }
+    /**
+     * Метод будет вызван когда пользователь закончит выбор способа доставки
+     *
+     * @param int $orderId
+     * @param DDeliveryOrder $order
+     * @return bool
+     */
+    /*
+    public function onFinishChange($orderId, DDeliveryOrder $order)
+    {
+        return true;
+    }
+    */
 }
 ?>
