@@ -729,13 +729,13 @@ class DDeliveryUI
      *
      * Получить всю информацию по точке по ее ID
      *
-     * @param $pointID id точки
+     * @param int $pointId id точки
      * @param DDeliveryOrder $order
      *
      * @return DDeliveryPointSelf
      * @throws DDeliveryException
      */
-    public function getSelfPointByID( $pointID, $order )
+    public function getSelfPointByID( $pointId, $order )
     {
         if(!$this->_validateOrderToGetPoints( $order))
             throw new DDeliveryException('Для получения списка необходимо корректный order');
@@ -745,7 +745,7 @@ class DDeliveryUI
         {
             foreach( $points AS $p )
             {
-                if( $p->_id == $pointID )
+                if( $p->_id == $pointId )
                 {
                     $selfPoint = $p;
                     break;
@@ -756,8 +756,10 @@ class DDeliveryUI
         {
             throw new DDeliveryException('Точка не найдена');
         }
-
-        $deliveryInfo = $this->getDeliveryInfoForPointID( $pointID, $order );
+        /**
+         * @var DDeliveryPointSelf $selfPoint
+         */
+        $deliveryInfo = $this->getDeliveryInfoForPointID( $pointId, $order );
         $selfPoint->setDeliveryInfo($deliveryInfo);
         return $selfPoint;
     }
@@ -850,7 +852,7 @@ class DDeliveryUI
                                                           $order->getWeight(), $declared_price );
     	if( $response->success )
     	{
-    		return new Point\DDeliveryInfo( $response->response );
+    		return new Point\DDeliveryInfo( reset($response->response) );
     	}
     	else
     	{
@@ -1348,12 +1350,16 @@ class DDeliveryUI
                 case 'mapGetPoint':
                     if(!empty($request['id'])) {
                         $deliveryInfo = $this->getDeliveryInfoForPointID($request['id'], $this->order);
-
-                        //$this->order->getPoint();
+                        $pointSelf = $this->getSelfPointByID((int)$request['id'], $this->order);
 
                         // @todo получить подробные данные по точке и отдать их
                         echo json_encode(array(
-                            'point'=>''
+                            'point'=>array(
+                                'description_out' => $pointSelf->description_out,
+                                'total_price' => $pointSelf->getDeliveryInfo()->total_price,
+                                'delivery_time_min' => $pointSelf->getDeliveryInfo()->delivery_time_min,
+                                'delivery_time_min_str' => Utils::plural($pointSelf->getDeliveryInfo()->delivery_time_min, 'дня', 'дней', 'дней', 'дней', false),
+                            ),
                         ));
                     }
                     return;

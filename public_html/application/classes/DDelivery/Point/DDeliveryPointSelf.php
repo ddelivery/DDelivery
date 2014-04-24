@@ -24,8 +24,8 @@ namespace DDelivery\Point;
  * @property int company_id
  * @property int company_code
  * @property int metro 
- * @property int description_in
- * @property int description_out
+ * @property string description_in
+ * @property string description_out
  * @property int indoor_place
  * @property int address
  * @property int schedule

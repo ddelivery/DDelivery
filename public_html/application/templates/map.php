@@ -144,8 +144,12 @@
                         </td>
                     </tr>
                     <tr>
+                        <td class="col1">Время досавки:</td>
+                        <td class="col2 day">от <strong>1</strong> <span>дня</span></td>
+                    </tr>
+                    <tr>
                         <td class="col1">Тип пункта:</td>
-                        <td class="col2 day">от <strong>1</strong> дня</td>
+                        <td class="col2 type"></td>
                     </tr>
                     <tr>
                         <td class="col1">Вариант оплаты:</td>

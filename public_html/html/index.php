@@ -9,7 +9,7 @@
         <div style="width: 100px; height: 300px"></div>
 
         <script>
-            DDelivery.delivery('ddelivery', 'ajax.php', {});
+            DDelivery.delivery('ddelivery', 'ajax.php<?isset($_GET['XDEBUG_SESSION_START'])?'XDEBUG_SESSION_START='.(int)$_GET['XDEBUG_SESSION_START']:''?>', {});
         </script>
     </body>
 </html>
