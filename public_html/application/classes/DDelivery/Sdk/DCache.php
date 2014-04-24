@@ -8,6 +8,7 @@
 
 namespace DDelivery\Sdk;
 use DDelivery\DataBase\Cache;
+use DDelivery\DDeliveryException;
 
 /**
  * Клас для кэширования в контексте объекта
@@ -63,26 +64,17 @@ class DCache
 
             if( ($result = $this->_load( $sig )) && $this->enabled )
             {
-                echo 'from cache';
                 return $result;
             }
             else
             {
-                echo 'save';
                 $reflectionMethod = new \ReflectionMethod($this->context, $method);
                 $result  =  $reflectionMethod->invokeArgs($this->context, $params );
                 $this->_save( $sig, $result, $this->expired);
                 return $result;
             }
-
-
-
         }
-        else
-        {
-            throw new DDeliveryException('Cache: method not Exists');
-        }
-        return null;
+        throw new DDeliveryException('Cache: method not Exists');
     }
 
     /**
