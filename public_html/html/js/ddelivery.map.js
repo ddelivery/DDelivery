@@ -251,6 +251,10 @@ Map = (function () {
                 });
             });
 
+            $('.map-popup__info__btn a').click(function(){
+                DDeliveryIframe.ajaxPage({action:'contactForm', });
+            });
+
             $(window).on('ddeliveryCityPlace', function (e, city) {
 
                 ymaps.geocode(city.title, {results: 1})

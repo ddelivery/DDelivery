@@ -158,7 +158,7 @@
                 </table>
             </div>
             <div class="map-popup__info__btn">
-                <a href="#">Заберу здесь</a>
+                <a href="javascript:void(0)">Заберу здесь</a>
             </div>
             <div class="map-popup__info__more">
                 <div class="map-popup__info__more__btn"><a href="javascript:void(0)">Подробнее<i>&nbsp;</i></a></div>

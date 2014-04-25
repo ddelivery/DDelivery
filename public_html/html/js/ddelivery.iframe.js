@@ -10,7 +10,7 @@ var DDeliveryIframe = (function () {
         orderId: null,
         init: function (_componentUrl, _staticUrl) {
             if(!window.parent || window.parent == window) {
-                document.location.href='http://www.ddelivery.ru/';
+                //document.location.href='http://www.ddelivery.ru/';
             }
             // Инициализация модуля. В ней мы инициализируем все остальные модули на странице
             this.componentUrl = componentUrl = _componentUrl;

@@ -1,7 +1,7 @@
 <?
 /**
  * @var \DDelivery\DDeliveryUI $this
- * @var DDelivery\Point\DDeliveryPointSelf[] $selfCompanyList
+ * @var \DDelivery\Point\DDeliveryInfo[] $selfCompanyList
  * @var string $staticURL
  */
 ?>
@@ -10,18 +10,18 @@
     $companySubInfo = $this->getCompanySubInfo();
     foreach($selfCompanyList as $selfCompany):
 
-        $ico = isset($companySubInfo[$selfCompany['delivery_company']]) ? $companySubInfo[$selfCompany['delivery_company']]['ico'] : 'pack';
+        $ico = isset($companySubInfo[$selfCompany->delivery_company]) ? $companySubInfo[$selfCompany->delivery_company]['ico'] : 'pack';
         ?>
         <li>
-            <a title="<?=$selfCompany['delivery_company_name']?>" href="javascript:void(0)" data-id="<?=$selfCompany['delivery_company']?>" class="clearfix border <?//hasinfo?>">
+            <a title="<?=$selfCompany->delivery_company_name?>" href="javascript:void(0)" data-id="<?=$selfCompany->delivery_company?>" class="clearfix border <?//hasinfo?>">
                                 <span class="img">
-                                    <img src="<?=$staticURL?>img/logo/<?=$ico?>_1.png" alt="<?=$selfCompany['delivery_company_name']?>"/>
-                                    <img class="big" src="<?=$staticURL?>img/logo/<?=$ico?>.png" alt="<?=$selfCompany['delivery_company_name']?>"/>
+                                    <img src="<?=$staticURL?>img/logo/<?=$ico?>_1.png" alt="<?=$selfCompany->delivery_company_name?>"/>
+                                    <img class="big" src="<?=$staticURL?>img/logo/<?=$ico?>.png" alt="<?=$selfCompany->delivery_company_name?>"/>
                                 </span>
 
-                <span class="price"><?=floor($selfCompany['total_price'])?> <i class="icon-rub">&nbsp;</i></span>
+                <span class="price"><?=floor($selfCompany->total_price)?> <i class="icon-rub">&nbsp;</i></span>
 
-                <span class="date">от <strong><?=$selfCompany['delivery_time_min']?></strong> <?=\DDelivery\Utils::plural($selfCompany['delivery_time_min'], 'дня', 'дней', 'дней', 'дней', false)?></span>
+                <span class="date">от <strong><?=$selfCompany->delivery_time_min?></strong> <?=\DDelivery\Utils::plural($selfCompany->delivery_time_min, 'дня', 'дней', 'дней', 'дней', false)?></span>
                 <i class="shadow">&nbsp;</i>
             </a>
         </li>

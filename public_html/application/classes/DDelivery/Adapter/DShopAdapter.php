@@ -382,7 +382,23 @@ abstract class DShopAdapter
      * 
      * @return float
      */
-    public function getPaymentPrice( $order, $orderPrice ) {
+    public function getPaymentPriceCourier( $order, $orderPrice ) {
+    	return 0;
+    }
+
+    /**
+     * Сумма к оплате на точке или курьеру
+     *
+     * Возвращает параметр payment_price для создания заказа
+     * Параметр payment_price необходим для добавления заявки на заказ
+     * По этому параметру в доках интегратору будет написан раздел
+     *
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     * @param float $orderPrice
+     *
+     * @return float
+     */
+    public function getPaymentPriceSelf( $order, $orderPrice ) {
     	return 0;
     }
     /**
@@ -406,13 +422,20 @@ abstract class DShopAdapter
         }
         return 0;
     }
-    
-    
+
+
     /**
      * Возвращает стоимоть заказа
      * @return float
      */
-    public abstract function getAmount();
+    public function getAmount()
+    {
+        $amount = 0.;
+        foreach($this->getProductsFromCart() as $product) {
+            $amount .= $product->getPrice() * $product->getQuantity();
+        }
+        return $amount;
+    }
     
     
     /**
@@ -473,8 +496,9 @@ abstract class DShopAdapter
      *
      * @param int $orderId
      * @param DDeliveryOrder $order
+     * @param bool $customPoint Если true, то заказ обрабатывается магазином
      * @return void
      */
-    abstract public function onFinishChange($orderId, DDeliveryOrder $order);
+    abstract public function onFinishChange($orderId, DDeliveryOrder $order, $customPoint);
 
 }

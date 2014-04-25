@@ -63,7 +63,7 @@ class DDeliveryProduct
 	private $quantity;
 
     /**
-     * @param int $id id заказа в системе и-нет магазина
+     * @param int $id id товара в системе и-нет магазина
      * @param float $width длинна
      * @param float $height высота
      * @param float $length ширина

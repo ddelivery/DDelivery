@@ -813,7 +813,7 @@ class DDeliveryUI
      * @param DDeliveryOrder $order
      * @throws DDeliveryException
      *
-     * @return array;
+     * @return array
      */
     public function getSelfDeliveryInfoForCity( DDeliveryOrder $order )
     {
@@ -1067,7 +1067,7 @@ class DDeliveryUI
     	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
 
     	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
-    	    $paymentPrice = $this->shop->getPaymentPrice( $order, $orderPrice );
+    	    $paymentPrice = $this->shop->getPaymentPriceCourier( $order, $orderPrice );
 
     	    $to_street = $order->toStreet;
     	    $to_house = $order->toHouse;
@@ -1134,7 +1134,7 @@ class DDeliveryUI
 
     	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
     	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
-    	    $paymentPrice = $this->shop->getPaymentPrice( $order, $orderPrice );
+    	    $paymentPrice = $this->shop->getPaymentPriceSelf( $order, $orderPrice );
 
     	    $shop_refnum = $order->shopRefnum;
 
@@ -1349,10 +1349,15 @@ class DDeliveryUI
                     return;
                 case 'mapGetPoint':
                     if(!empty($request['id'])) {
-                        $deliveryInfo = $this->getDeliveryInfoForPointID($request['id'], $this->order);
                         $pointSelf = $this->getSelfPointByID((int)$request['id'], $this->order);
+                        if(empty($pointSelf)) {
+                            echo json_encode(array('point'=>array()));
+                        }
+                        $selfCompanyList = $this->shop->filterSelfInfo(array($pointSelf->getDeliveryInfo()));
+                        if(empty($selfCompanyList)){
+                            echo json_encode(array('point'=>array()));
+                        }
 
-                        // @todo получить подробные данные по точке и отдать их
                         echo json_encode(array(
                             'point'=>array(
                                 'description_out' => $pointSelf->description_out,
@@ -1373,7 +1378,7 @@ class DDeliveryUI
             $this->order->city = $this->getCityId();
         }
         if(!empty($request['point'])) {
-            //$this->order->setPoint($this->getDeliveryInfoForPointID($request['point'], $this->order));
+            $this->order->setPoint($this->getSelfPointByID($request['point'], $this->order));
         }
 
         if(isset($request['iframe'])) {
@@ -1454,9 +1459,7 @@ class DDeliveryUI
     protected function getCityByDisplay($cityId)
     {
         $cityDB = new City();
-        $topCityId = $this->sdk->getTopCityId();
-        $cityList = $cityDB->getCityListById($topCityId, true);
-
+        $cityList = $cityDB->getTopCityList();
         // Складываем массивы получаем текущий город наверху, потом его и выберем
         if(isset($cityList[$cityId])){
             $cityData = $cityList[$cityId];
@@ -1468,7 +1471,14 @@ class DDeliveryUI
         foreach($cityList as &$cityData){
             // Костыль, на сервере города начинаются с маленькой буквы
             $cityData['name'] = Utils::firstWordLiterUppercase($cityData['name']);
-            $cityData['display_name'] = $cityDB->getDisplayCityName($cityData);
+
+            //Собирает строчку с названием города для отображения
+            $displayCityName = $cityData['type'].'. '.$cityData['name'];
+            if($cityData['region'] != $cityData['name']) {
+                $displayCityName .= ', '.$cityData['region'].' обл.';
+            }
+
+            $cityData['display_name'] = $displayCityName;
         }
         return $cityList;
     }
@@ -1491,6 +1501,8 @@ class DDeliveryUI
         }
         $staticURL = $this->shop->getStaticPath();
         $selfCompanyList = $this->getSelfDeliveryInfoForCity( $this->order );
+        $selfCompanyList = $this->_getOrderedDeliveryInfo( $selfCompanyList );
+        $selfCompanyList = $this->shop->filterSelfInfo($selfCompanyList);
 
         if($dataOnly) {
             ob_start();

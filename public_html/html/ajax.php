@@ -8,8 +8,6 @@
 ini_set("display_errors", "1");
 error_reporting(E_ALL);
 
-$_SERVER['REMOTE_ADDR'] = '88.201.177.120';
-
 include_once(implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', 'application', 'bootstrap.php')));
 
 use DDelivery\Adapter\DShopAdapter;
@@ -58,7 +56,7 @@ class ShopAdapter extends DShopAdapter
 
     public function getPathByDB()
     {
-        return __DIR__.'/db.sqlite';
+        return __DIR__.'/../db/db.sqlite';
     }
 
     /**
@@ -121,14 +119,16 @@ class ShopAdapter extends DShopAdapter
         // TODO: Implement setCmsOrderStatus() method.
     }
 
+
     /**
      * Метод будет вызван когда пользователь закончит выбор способа доставки
      *
      * @param int $orderId
      * @param \DDelivery\Order\DDeliveryOrder $order
+     * @param bool $customPoint Если true, то заказ обрабатывается магазином
      * @return void
      */
-    public function onFinishChange($orderId, \DDelivery\Order\DDeliveryOrder $order)
+    public function onFinishChange($orderId, \DDelivery\Order\DDeliveryOrder $order, $customPoint)
     {
         // TODO: Implement onFinishChange() method.
     }

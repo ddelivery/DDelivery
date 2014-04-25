@@ -5,7 +5,7 @@
  * Time: 18:13
  */
 
-namespace DDelivery\Base;
+namespace DDelivery\Adapter;
 
 
 use DDelivery\Adapter\DShopAdapter;
@@ -81,15 +81,79 @@ abstract class PluginFilters extends DShopAdapter
         return $ddeliveryPointCourier;
     }
 
-    public function getPaymentPrice()
+    /**
+     *
+     * Сумма к оплате на точке или курьеру
+     *
+     * Возвращает параметр payment_price для создания заказа
+     * Параметр payment_price необходим для добавления заявки на заказ
+     * По этому параметру в доках интегратору будет написан раздел
+     *
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     * @param float $orderPrice
+     *
+     * @return float
+     */
+    public function getPaymentPriceCourier($order, $orderPrice)
     {
         $filterByPayment = $this->filterPointByPaymentTypeCourier();
         if($filterByPayment == self::PAYMENT_POST_PAYMENT){
             return $this->getAmount();
         }
-        //if(!$filterByPayment || $filterByPayment == self::PAYMENT_PREPAYMENT){
         return 0;
     }
+
+    /**
+     * Сумма к оплате на точке или курьеру
+     *
+     * Возвращает параметр payment_price для создания заказа
+     * Параметр payment_price необходим для добавления заявки на заказ
+     * По этому параметру в доках интегратору будет написан раздел
+     *
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     * @param float $orderPrice
+     *
+     * @return float
+     */
+    public function getPaymentPriceSelf( $order, $orderPrice )
+    {
+        $filterByPayment = $this->filterPointByPaymentTypeCourier();
+        if($filterByPayment == self::PAYMENT_POST_PAYMENT){
+            return $this->getAmount();
+        }
+        return 0;
+    }
+
+    /**
+     * Возвращает стоимоть заказа
+     * @return float
+     */
+    public function getAmount()
+    {
+        $amount = 0.;
+        foreach($this->getProductsFromCart() as $product) {
+            $amount += $product->getPrice() * $product->getQuantity();
+        }
+        return $amount;
+    }
+
+    /**
+     * Если true, то не учитывает цену забора
+     * @return bool
+     */
+    abstract public function isPayPickup();
+
+    /**
+     * Какой процент от стоимости страхуется
+     * @return float
+     */
+    abstract public function getDeclaredPercent();
+
+    public function getDeclaredPrice($order)
+    {
+        return ($this->getAmount() / 100) * $this->getDeclaredPercent();
+    }
+
 
     /**
      * @param $price
