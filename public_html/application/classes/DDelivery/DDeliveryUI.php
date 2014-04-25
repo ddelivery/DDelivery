@@ -198,9 +198,9 @@ class DDeliveryUI
         if( $this->shop->isStatusToSendOrder( $status, $order) )
         {   
 
-            if( $order->type == 1 ) {
+            if( $order->type == DDeliverySDK::TYPE_SELF ) {
                 $order->ddeliveryID = $this->createSelfOrder($order);
-            } else if( $order->type == 2 ) {
+            } else if( $order->type == DDeliverySDK::TYPE_COURIER ) {
                 $order->ddeliveryID = $this->createCourierOrder($order);
             }else{
                 throw new DDeliveryException('Not support order type');
@@ -991,7 +991,7 @@ class DDeliveryUI
         	$errors[] = "Не указан способ оплаты в CMS";
         }
 
-        if( empty( $order->status ) )
+        if( empty( $order->localStatus ) )
         {
         	$errors[] = "Не указан статус заказа в CMS";
         }

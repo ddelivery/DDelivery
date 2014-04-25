@@ -497,7 +497,7 @@ abstract class DShopAdapter
      * @param int $orderId
      * @param DDeliveryOrder $order
      * @param bool $customPoint Если true, то заказ обрабатывается магазином
-     * @return void
+     * @return bool
      */
     abstract public function onFinishChange($orderId, DDeliveryOrder $order, $customPoint);
 

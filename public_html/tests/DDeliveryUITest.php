@@ -11,7 +11,7 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 		$this->fixture = new \DDelivery\DDeliveryUI( $shopAdapter );
         $order = $this->fixture->getOrder();
         $order->city = 151184;
-        $order->type = 2;
+        $order->type = 1;
         $order->firstName = 'Дима';
         $order->secondName = 'Грушин';
         $order->toPhone = '9999999999';
@@ -19,6 +19,14 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
         $order->toHouse = '1а';
         $order->toFlat = '42';
         $order->toEmail = '';
+        $order->localId = 2;
+        $order->localId = 2;
+        $order->paymentVariant = 'cash';
+        $order->localStatus = 'xxx';
+        $order->shopRefnum = 14;
+
+
+
 	}
 
 
@@ -89,6 +97,33 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
         $order->city = 0;
         $notValid = $this->fixture->_validateOrderToGetPoints( $order );
         $this->assertFalse( $notValid );
+    }
+
+    public function testCreateSelfOrder()
+    {
+        $order = $this->fixture->getOrder();
+        $pointself = $this->fixture->getSelfPoints($order);
+        $order->setPoint($pointself[0]);
+        $order->type = 1;
+        $ddID = $this->fixture->createSelfOrder($order);
+        $this->assertGreaterThan( 0, $ddID );
+    }
+
+    public function testCreateCourierOrder()
+    {
+        $order = $this->fixture->getOrder();
+        $pointcoirier = $this->fixture->getCourierPointsForCity($order);
+        $order->setPoint($pointcoirier[0]);
+        $order->type = 2;
+        $ddID = $this->fixture->createCourierOrder($order);
+        $this->assertGreaterThan( 0, $ddID );
+    }
+
+	public function testSaveIntermediateOrder()
+	{
+        $order = $this->fixture->getOrder();
+        $id = $this->fixture->saveIntermediateOrder($order);
+        $this->assertGreaterThan( 0, $id );
     }
 
     public function testChangeOrderStatus()

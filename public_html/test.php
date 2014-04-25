@@ -125,13 +125,32 @@ $result = $fixture->calculatorPickupForPoint(50, 10, 10,  10, 1, 0);
 $shopAdapter = new DDelivery\Adapter\DShopAdapterImpl();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
-$order->city = 151185;
+
+$order->city = 151184;
+$order->type = 1;
+$order->firstName = 'Дима';
+$order->secondName = 'Грушин';
+$order->toPhone = '9999999999';
+$order->toStreet = 'Вознесенская';
+$order->toHouse = '1а';
+$order->toFlat = '42';
+$order->toEmail = '';
+$order->localId = 2;
+$order->paymentVariant = 'cash';
+$order->localStatus = 'xxx';
+$order->shopRefnum = 14;
+
+$pointself = $DDeliveryUI->getSelfPoints($order);
+$order->setPoint($pointself[0]);
+
+
+echo $DDeliveryUI->createSelfOrder( $order );
 //$pointself = $DDeliveryUI->getSelfPoints($order);
 
 //$courierpoints = $DDeliveryUI->getCourierPointsForCity($order);
 
-$pointself = $DDeliveryUI->getCourierPointByCompanyID( 17, $order ) ;
-print_r($pointself);
+//$pointself = $DDeliveryUI->getCourierPointByCompanyID( 17, $order ) ;
+//print_r($pointself);
 //$city = $DDeliveryUI->get
 
 //print_r($pointself);

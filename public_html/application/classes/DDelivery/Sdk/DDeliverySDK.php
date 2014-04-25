@@ -44,7 +44,7 @@ class DDeliverySDK {
     {
         if($testMode)
         {
-            $this->server = 'dev';
+            $this->server = 'stage';
         }
         else
         {
