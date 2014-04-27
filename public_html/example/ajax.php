@@ -176,7 +176,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function isPayPickup()
     {
-        return false;
+        return true;
         // TODO: Implement isPayPickup() method.
     }
 
@@ -195,6 +195,24 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
         );
     }
 
+    /**
+     * Тип округления
+     * @return int
+     */
+    public function aroundPriceType()
+    {
+        return self::AROUND_MATH; // self::AROUND_MIN, self::AROUND_MAX
+    }
+
+    /**
+     * Шаг округления
+     * @return float
+     */
+    public function aroundPriceStep()
+    {
+        return 0.5; // До 50 копеек
+        // TODO: Implement aroundPriceStep() method.
+    }
 }
 
 

@@ -53,6 +53,20 @@ abstract class PluginFilters extends DShopAdapter
      */
     const PAYMENT_POST_PAYMENT = 2;
 
+    /**
+     * Округлять цену в математически(просто round)
+     */
+    const AROUND_MATH = 1;
+
+    /**
+     * Округлять в меньшую сторону
+     */
+    const AROUND_MIN = 2;
+
+    /**
+     * Округлять в большую сторону
+     */
+    const AROUND_MAX = 3;
 
     /**
      * @todo все исправить
@@ -156,6 +170,31 @@ abstract class PluginFilters extends DShopAdapter
 
 
     /**
+     * Округляет стоимость согласно настройкам
+     * @param float $price
+     * @return float
+     */
+    public function aroundPrice($price)
+    {
+        $step = $this->aroundPriceStep();
+        $type = $this->aroundPriceType();
+
+        $priceCount = $price / $step;
+        if($priceCount == (int)$priceCount) {
+            return $price;
+        }
+        switch ($type) {
+            case self::AROUND_MATH:
+                return $step*round($priceCount);
+            case self::AROUND_MIN:
+                return $step*floor($priceCount);
+            case self::AROUND_MAX:
+                return $step*ceil($priceCount);
+        }
+        return $price;
+    }
+
+    /**
      * @param $price
      * @return bool|int
      */
@@ -221,11 +260,11 @@ abstract class PluginFilters extends DShopAdapter
                 unset($courierPoints[$key]);
                 continue;
             }
-
+            $info = $courierPoint->getDeliveryInfo();
             if($pickup) { // Не учитывать цену забора
-                $info = $courierPoint->getDeliveryInfo();
                 $info->clientPrice = $info->total_price - $info->pickup_price;
             }
+            $info->clientPrice = $this->aroundPrice($info->total_price);
         }
 
         return $courierPoints;
@@ -257,6 +296,7 @@ abstract class PluginFilters extends DShopAdapter
             if($pickup) { // Не учитывать цену забора
                 $company->clientPrice = $company->total_price - $company->pickup_price;
             }
+            $company->clientPrice = $this->aroundPrice($company->total_price);
 
         }
 
@@ -294,11 +334,24 @@ abstract class PluginFilters extends DShopAdapter
             if($pickup) { // Не учитывать цену забора
                 $courierPoint->getDeliveryInfo()->clientPrice = $courierPoint->total_price - $courierPoint->pickup_price;
             }
+            $courierPoint->getDeliveryInfo()->clientPrice = $this->aroundPrice($courierPoint->getDeliveryInfo()->total_price);
         }
 
 
         return $courierPoints;
     }
+
+    /**
+     * Тип округления
+     * @return int
+     */
+    abstract public function aroundPriceType();
+
+    /**
+     * Шаг округления
+     * @return float
+     */
+    abstract public function aroundPriceStep();
 
     /**
      * Должен вернуть те компании которые НЕ показываются в курьерке
