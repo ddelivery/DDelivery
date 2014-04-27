@@ -62,7 +62,7 @@
                         </p>
                     </td>
                     <td class="col4">
-                        от <strong><?=$courierCompany->delivery_price?> <i class="icon-rub">&nbsp;</i></strong>
+                        от <strong><?=$courierCompany->getDeliveryInfo()->clientPrice?> <i class="icon-rub">&nbsp;</i></strong>
                     </td>
                     <td class="col5">
                         <strong><?=$courierCompany->delivery_time_min?></strong> дня

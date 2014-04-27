@@ -383,18 +383,18 @@ class DDeliveryUI
         	$minPrice  = -1;
         	$maxPeriod = 0;
         	$maxPrice = 0;
-            foreach ($points as $p)
+            foreach ($points as $point)
             {
-            	$deliveryInf = $p->getDeliveryInfo();
+            	$deliveryInf = $point->getDeliveryInfo();
 
                 if( $minPeriod == -1 )
                 {
 
                 	$minPeriod = $deliveryInf->get('delivery_time_avg');
-                	$minPrice = $deliveryInf->get('total_price');
+                	$minPrice = $deliveryInf->clientPrice;
 
                 	$maxPeriod = $deliveryInf->get('delivery_time_avg');
-                	$maxPrice = $deliveryInf->get('total_price');
+                	$maxPrice = $deliveryInf->clientPrice;
                 }
                 else
                 {
@@ -402,17 +402,17 @@ class DDeliveryUI
                     {
                     	$minPeriod = $deliveryInf->get('delivery_time_avg');
                     }
-                    if( $deliveryInf->get('total_price') < $minPrice )
+                    if( $deliveryInf->clientPrice < $minPrice )
                     {
-                    	$minPrice  = $deliveryInf->get('total_price');
+                    	$minPrice  = $deliveryInf->clientPrice;
                     }
                     if( $deliveryInf->get('delivery_time_avg') > $maxPeriod )
                     {
                     	$maxPeriod = $deliveryInf->get('delivery_time_avg');
                     }
-                    if( $deliveryInf->get('total_price') > $minPrice )
+                    if( $$deliveryInf->clientPrice > $minPrice )
                     {
-                    	$maxPrice  = $deliveryInf->get('total_price');
+                    	$maxPrice  = $deliveryInf->clientPrice;
                     }
                 }
 
@@ -429,7 +429,7 @@ class DDeliveryUI
      *
      * @return array;
      */
-    public function _getMinMaxPriceAndPeriod( $deliveryInfo )
+    protected function _getMinMaxPriceAndPeriod( $deliveryInfo )
     {
     	if( count( $deliveryInfo ) )
     	{
@@ -444,10 +444,10 @@ class DDeliveryUI
     			if( $minPeriod == -1 )
     			{
     				$minPeriod = $p['delivery_time_avg'];
-    				$minPrice = $p['total_price'];
+    				$minPrice = $p->clientPrice;
 
     				$maxPeriod = $p['delivery_time_avg'];
-    				$maxPrice = $p['total_price'];
+    				$maxPrice = $p->clientPrice;
     			}
     			else
     			{
@@ -457,7 +457,7 @@ class DDeliveryUI
     				}
     				if( $p['total_price'] < $minPrice )
     				{
-    					$minPrice  = $p['total_price'];
+    					$minPrice  = $p->clientPrice;
     				}
 
     				if( $p['delivery_time_avg'] > $maxPeriod )
@@ -466,7 +466,7 @@ class DDeliveryUI
     				}
     				if( $p['total_price'] > $maxPrice )
     				{
-    					$maxPrice  = $p['total_price'];
+    					$maxPrice  = $p->clientPrice;
     				}
     			}
     		}
@@ -1064,7 +1064,7 @@ class DDeliveryUI
     	    $to_name = $order->getToName();
     	    $to_phone = $order->getToPhone();
 
-    	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
+    	    $orderPrice = $point->getDeliveryInfo()->clientPrice;
 
     	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
     	    $paymentPrice = $this->shop->getPaymentPriceCourier( $order, $orderPrice );
@@ -1132,7 +1132,7 @@ class DDeliveryUI
     	    $to_name = $order->getToName();
     	    $to_phone = $order->getToPhone();
 
-    	    $orderPrice = $point->getDeliveryInfo()->get('total_price');
+    	    $orderPrice = $point->getDeliveryInfo()->clientPrice;
     	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
     	    $paymentPrice = $this->shop->getPaymentPriceSelf( $order, $orderPrice );
 
@@ -1361,7 +1361,7 @@ class DDeliveryUI
                         echo json_encode(array(
                             'point'=>array(
                                 'description_out' => $pointSelf->description_out,
-                                'total_price' => $pointSelf->getDeliveryInfo()->total_price,
+                                'total_price' => $pointSelf->getDeliveryInfo()->clientPrice,
                                 'delivery_time_min' => $pointSelf->getDeliveryInfo()->delivery_time_min,
                                 'delivery_time_min_str' => Utils::plural($pointSelf->getDeliveryInfo()->delivery_time_min, 'дня', 'дней', 'дней', 'дней', false),
                             ),
@@ -1556,8 +1556,8 @@ class DDeliveryUI
                 $minPrice = PHP_INT_MAX;
                 $minTime = PHP_INT_MAX;
                 foreach($selfCompanyList as $selfCompany) {
-                    if($minPrice > $selfCompany->total_price){
-                        $minPrice = $selfCompany->total_price;
+                    if($minPrice > $selfCompany->clientPrice){
+                        $minPrice = $selfCompany->clientPrice;
                     }
                     if($minTime > $selfCompany->delivery_time_min){
                         $minTime = $selfCompany->delivery_time_min;
@@ -1580,10 +1580,10 @@ class DDeliveryUI
 
                 foreach($courierCompanyList as $courierCompany){
                     $deliveryInfo = $courierCompany->getDeliveryInfo();
-                    if($minPrice > $deliveryInfo->total_price){
-                        $minPrice = $deliveryInfo->total_price;
+                    if($minPrice > $deliveryInfo->clientPrice) {
+                        $minPrice = $deliveryInfo->clientPrice;
                     }
-                    if($minTime > $deliveryInfo->delivery_time_min){
+                    if($minTime > $deliveryInfo->delivery_time_min) {
                         $minTime = $deliveryInfo->delivery_time_min;
                     }
                 }

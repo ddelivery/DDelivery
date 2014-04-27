@@ -43,5 +43,4 @@ class DDeliveryPointCourier extends DDeliveryAbstractPoint {
     {
         $this->deliveryInfo->set($name, $value);
     }
-
 }

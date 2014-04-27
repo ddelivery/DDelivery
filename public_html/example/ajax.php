@@ -119,7 +119,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function filterCompanyPointCourier()
     {
-        return array(1,2,3);
+        return array(4,32);
         // TODO: Implement filterCompanyPointCourier() method.
     }
 
@@ -130,7 +130,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function filterCompanyPointSelf()
     {
-        return array(1,2,3);
+        return array(4, 32);
         // TODO: Implement filterCompanyPointSelf() method.
     }
 
@@ -176,17 +176,13 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function isPayPickup()
     {
-        if(empty($this->_isPayPickup)) {
-            $this->_isPayPickup=!rand(0,1);
-        }
-        return $this->_isPayPickup;
+        return false;
         // TODO: Implement isPayPickup() method.
     }
 
     /**
      * Метод возвращает настройки оплаты фильтра которые должны быть собраны из админки
      *
-     * @throws DDeliveryException
      * @return array
      */
     public function getIntervalsByPoint()
@@ -205,7 +201,6 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
 
 
 $IntegratorShop = new IntegratorShop();
-
 
 $ddeliveryUI = new DDeliveryUI($IntegratorShop);
 // В зависимости от параметров может выводить полноценный html или json

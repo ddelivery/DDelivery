@@ -31,8 +31,14 @@ namespace DDelivery\Point;
  * @package  DDelivery.Point
  */
 class DDeliveryInfo
-{   
-	
+{
+
+    /**
+     * Реально отображаемая цена.
+     * @var float
+     */
+    public $clientPrice;
+
 	/**
      * Массив с параметрами объекта
      * @var array
@@ -48,26 +54,21 @@ class DDeliveryInfo
 			'declared_price_fee', 'delivery_time_min', 'delivery_time_max', 
 			'delivery_time_avg', 'return_price', 'return_client_price', 'return_partial_price', 
 			'total_price');
-	
-	/**
-	 * 
-	 * @param array $initParams - массив со значениями для инициализации
-	 */
+
+    /**
+     *
+     * @param array $initParams - массив со значениями для инициализации
+     * @throws DDeliveryPointException
+     */
 	public function __construct( $initParams = array() )
 	{
 		if(is_array($initParams))
 		{
 			foreach ( $initParams as $key => $value)
 			{
-				try
-				{
-					$this->set($key, $value);
-				}
-				catch (DDeliveryPointException $e)
-				{
-					echo $e->getMessage();
-				}
+                $this->set($key, $value);
 			}
+            $this->clientPrice = $this->total_price;
 		}
 	}
 	

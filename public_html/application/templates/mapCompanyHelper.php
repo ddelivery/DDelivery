@@ -19,7 +19,7 @@
                                     <img class="big" src="<?=$staticURL?>img/logo/<?=$ico?>.png" alt="<?=$selfCompany->delivery_company_name?>"/>
                                 </span>
 
-                <span class="price"><?=floor($selfCompany->total_price)?> <i class="icon-rub">&nbsp;</i></span>
+                <span class="price"><?=floor($selfCompany->clientPrice)?> <i class="icon-rub">&nbsp;</i></span>
 
                 <span class="date">от <strong><?=$selfCompany->delivery_time_min?></strong> <?=\DDelivery\Utils::plural($selfCompany->delivery_time_min, 'дня', 'дней', 'дней', 'дней', false)?></span>
                 <i class="shadow">&nbsp;</i>

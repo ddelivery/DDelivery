@@ -161,7 +161,7 @@ abstract class PluginFilters extends DShopAdapter
      */
     private function preDisplayPointCalc($price)
     {
-        $intervals = self::getIntervalsByPoint();
+        $intervals = $this->getIntervalsByPoint();
 
         $priceReturn = $price;
 
@@ -204,15 +204,27 @@ abstract class PluginFilters extends DShopAdapter
      */
     public function filterPointsSelf($courierPoints, DDeliveryOrder $order)
     {
+        if(empty($courierPoints)) {
+            return array();
+        }
+
         $filterCompany = $this->filterCompanyPointSelf();
         if(!is_array($filterCompany) || empty($filterCompany)) {
-            return $courierPoints;
+            $filterCompany = array();
         }
+
+        $pickup = $this->isPayPickup();
 
         foreach($courierPoints as $key => $courierPoint) {
             // Удаляем те компании которые есть в фильтре
             if(in_array($courierPoint->company_id, $filterCompany)) {
                 unset($courierPoints[$key]);
+                continue;
+            }
+
+            if($pickup) { // Не учитывать цену забора
+                $info = $courierPoint->getDeliveryInfo();
+                $info->clientPrice = $info->total_price - $info->pickup_price;
             }
         }
 
@@ -230,8 +242,10 @@ abstract class PluginFilters extends DShopAdapter
     {
         $filterCompany = $this->filterCompanyPointSelf();
         if(!is_array($filterCompany) || empty($filterCompany)) {
-            return $selfCompanyList;
+            $filterCompany = array();
         }
+
+        $pickup = $this->isPayPickup();
 
         foreach($selfCompanyList as $key => $company) {
             // Удаляем те компании которые есть в фильтре
@@ -239,6 +253,11 @@ abstract class PluginFilters extends DShopAdapter
             if(in_array($company->delivery_company, $filterCompany)) {
                 unset($selfCompanyList[$key]);
             }
+
+            if($pickup) { // Не учитывать цену забора
+                $company->clientPrice = $company->total_price - $company->pickup_price;
+            }
+
         }
 
         return $selfCompanyList;
@@ -255,15 +274,25 @@ abstract class PluginFilters extends DShopAdapter
      */
     public function filterPointsCourier($courierPoints, DDeliveryOrder $order)
     {
+        if(empty($courierPoints)) {
+            return array();
+        }
+
         $filterCompany = $this->filterCompanyPointCourier();
         if(!is_array($filterCompany) || empty($filterCompany)) {
-            return $courierPoints;
+            $filterCompany = array();
         }
+
+        $pickup = $this->isPayPickup();
 
         foreach($courierPoints as $key => $courierPoint) {
             // Удаляем те компании которые есть в фильтре
             if(in_array($courierPoint->delivery_company, $filterCompany)) {
                 unset($courierPoints[$key]);
+            }
+
+            if($pickup) { // Не учитывать цену забора
+                $courierPoint->getDeliveryInfo()->clientPrice = $courierPoint->total_price - $courierPoint->pickup_price;
             }
         }
 
