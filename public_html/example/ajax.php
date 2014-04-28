@@ -201,7 +201,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function aroundPriceType()
     {
-        return self::AROUND_MATH; // self::AROUND_MIN, self::AROUND_MAX
+        return self::AROUND_ROUND; // self::AROUND_FLOOR, self::AROUND_CEIL
     }
 
     /**

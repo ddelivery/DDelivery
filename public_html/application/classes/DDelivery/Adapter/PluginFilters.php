@@ -56,17 +56,17 @@ abstract class PluginFilters extends DShopAdapter
     /**
      * Округлять цену в математически(просто round)
      */
-    const AROUND_MATH = 1;
+    const AROUND_ROUND = 1;
 
     /**
      * Округлять в меньшую сторону
      */
-    const AROUND_MIN = 2;
+    const AROUND_FLOOR = 2;
 
     /**
      * Округлять в большую сторону
      */
-    const AROUND_MAX = 3;
+    const AROUND_CEIL = 3;
 
     /**
      * @todo все исправить
