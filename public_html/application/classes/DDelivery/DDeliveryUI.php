@@ -879,8 +879,7 @@ class DDeliveryUI
 
     /**
      *
-     * Перед отправкой заказа курьеркой на сервер DDelivery проверяется
-     * заполнение всех данных для заказа
+     * Здесь проверяется заполнение всех данных для заказа
      *
      * @param DDeliveryOrder $order заказ ddelivery
      * @throws DDeliveryException
@@ -1377,8 +1376,12 @@ class DDeliveryUI
         if(!$this->order->city ) {
             $this->order->city = $this->getCityId();
         }
-        if(!empty($request['point'])) {
-            $this->order->setPoint($this->getSelfPointByID($request['point'], $this->order));
+        if(!empty($request['point']) && isset($request['type'])) {
+            if ( $request['type'] == DDeliverySDK::TYPE_SELF ) {
+                $this->order->setPoint($this->getSelfPointByID($request['point'], $this->order));
+            }elseif($request['type'] == DDeliverySDK::TYPE_COURIER){
+                $this->order->setPoint($this->getCourierPointByCompanyID($request['point'], $this->order));
+            }
         }
 
         if(isset($request['iframe'])) {
@@ -1641,10 +1644,22 @@ class DDeliveryUI
      */
     private function renderContactForm()
     {
-        // @todo хардкодим курьера
-        $deliveryType = DDeliverySDK::TYPE_COURIER;
-        if($deliveryType == DDeliverySDK::TYPE_COURIER){
+        $point = $this->getOrder()->getPoint();
+        if(!$point){
+            return '';
+        }
+        if ($point instanceof DDeliveryPointSelf) {
+            $deliveryType = DDeliverySDK::TYPE_SELF;
+        } elseif($point instanceof DDeliveryPointCourier) {
+            $deliveryType = DDeliverySDK::TYPE_COURIER;
+        }else{
+            return '';
+        }
+
+        if($deliveryType == DDeliverySDK::TYPE_COURIER) {
             $requiredFieldMask = $this->shop->getCourierRequiredFields();
+        }else{
+            $requiredFieldMask = $this->shop->getSelfRequiredFields();
         }
 
         $order = $this->order;
@@ -1654,11 +1669,9 @@ class DDeliveryUI
             $order->setToName($this->shop->getClientFirstName());
 
 
-        /** @todo Фамилия
-        $fieldValue = $order->getToLastName();
+        $fieldValue = $order->secondName;
         if(!$fieldValue)
-        $order->setToLastName($this->shop->getClientLastName());
-         */
+            $order->secondName = $this->shop->getClientLastName();
 
         $fieldValue = $order->getToPhone();
         if(!$fieldValue)

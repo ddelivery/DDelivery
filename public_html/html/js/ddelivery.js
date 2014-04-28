@@ -15,6 +15,7 @@ var DDelivery = {
         }
         iframe.src = componentUrl;
         var object = document.getElementById(objectId);
+        object.innerHTML = '';
         object.appendChild(iframe);
 
         if(typeof(callbacks)!='object'){

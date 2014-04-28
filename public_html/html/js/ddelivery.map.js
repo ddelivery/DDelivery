@@ -252,7 +252,7 @@ Map = (function () {
             });
 
             $('.map-popup__info__btn a').click(function(){
-                DDeliveryIframe.ajaxPage({action:'contactForm', });
+                DDeliveryIframe.ajaxPage({action:'contactForm', point: current_point._id, type:1});
             });
 
             $(window).on('ddeliveryCityPlace', function (e, city) {

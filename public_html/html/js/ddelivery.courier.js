@@ -12,10 +12,10 @@ var Courier = (function () {
                 if (radio) {
                     DDeliveryIframe.ajaxPage({
                         point: $('input[name=delivery_company]').val(),
-                        'action': 'contactForm'
+                        action: 'contactForm',
+                        type: 2
                     });
                 }
-
             });
             $('.map-popup__main__delivery').mCustomScrollbar({
                 scrollInertia: 0

@@ -21,6 +21,9 @@
                 };
                 DDelivery.delivery('ddelivery', 'ajax.php', data);
             }
+            <?if(!empty($_GET['fast'])):?>
+                DDeliveryStart();
+            <?endif;?>
         </script>
     </body>
 </html>

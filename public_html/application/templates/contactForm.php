@@ -16,28 +16,28 @@ use DDelivery\Adapter\DShopAdapter;
     <div class="map-popup__main">
         <form id="main_form" method="post" action="">
             <div class="map-popup__main__form">
-                <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_LAST_NAME || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_LAST_NAME && !$order->getToName() ) ):?>
+                <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_LAST_NAME || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_SECOND_NAME && !$order->secondName) ):?>
                     <div class="row clearfix">
                         <div class="row__title">
-                            <label for="sname">Фамилия</label>
+                            <label for="last_name">Фамилия</label>
                         </div>
                         <div class="row__inp <?//error?>">
-                            <input type="text" title="Иванов" name="first_name" value="<?=$order->getToName()?>"/>
+                            <input type="text" title="Иванов" id="last_name" name="last_name" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_SECOND_NAME):?>required="required"<?endif;?> value="<?=trim($order->secondName)?>"/>
                             <div class="error-box">
                                 <i>&nbsp;</i> Поле обязательное для заполнения
                             </div>
                         </div>
                     </div>
                 <?endif;?>
-                <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_FIRST_NAME || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_FIRST_NAME ) ):?>
+                <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_FIRST_NAME || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_FIRST_NAME && !$order->firstName ) ):?>
                     <div class="row clearfix">
                         <div class="row__title">
-                            <label for="name">Имя</label>
+                            <label for="first_name">Имя</label>
                         </div>
                         <div class="row__inp">
-                            <input type="text" title="Иван" name="last_name"/>
+                            <input type="text" title="Иван" id="first_name" name="first_name" value="<?=trim($order->firstName)?>" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_FIRST_NAME):?>required="required"<?endif;?>/>
                             <div class="error-box">
-                                <i>&nbsp;</i> Вы сделали что-то неверно
+                                <i>&nbsp;</i> Поле обязательное для заполнения
                             </div>
                         </div>
                     </div>
@@ -48,9 +48,9 @@ use DDelivery\Adapter\DShopAdapter;
                             <label for="phone">Мобильный телефон</label>
                         </div>
                         <div class="row__inp">
-                            <input type="tel" class="phone-mask" name="phone" value="<?=$order->getToPhone()?>"/>
+                            <input type="tel" class="phone-mask" id="phone" name="phone" value="<?=trim($order->getToPhone())?>" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_PHONE):?>required="required"<?endif;?>/>
                             <div class="error-box">
-                                <i>&nbsp;</i> Вы сделали что-то неверно
+                                <i>&nbsp;</i> Поле обязательное для заполнения
                             </div>
                         </div>
                     </div>
@@ -61,41 +61,42 @@ use DDelivery\Adapter\DShopAdapter;
                             <label for="address">Адрес</label>
                         </div>
                         <div class="row__inp">
-                            <input type="text" title="Улица" name="address" value="<?=$order->getToStreet()?>"/>
+                            <input type="text" title="Улица" id="address" name="address" value="<?=trim($order->getToStreet())?>" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS):?>required="required"<?endif;?>/>
                             <div class="error-box">
-                                <i>&nbsp;</i> Вы сделали что-то неверно
+                                <i>&nbsp;</i> Поле обязательное для заполнения
                             </div>
                         </div>
                     </div>
                 <?endif;?>
                 <?if(
                     ($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS_HOUSING || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_HOUSING ))
-                    OR ($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS_HOUSE || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_HOUSE && !$order->getToHouse() ))
-                    OR ($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS_FLAT || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_FLAT && !$order->getToFlat() ))
+                    || ($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS_HOUSE || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_HOUSE && !$order->getToHouse() ))
+                    || ($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS_HOUSING || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_HOUSING && !$order->getToHouse() ))
+                    || ($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS_FLAT || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_FLAT && !$order->getToFlat() ))
                 ):?>
                     <div class="row row_pl clearfix">
                         <div class="row__inp">
                             <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS_HOUSE || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_HOUSE && !$order->getToHouse() )):?>
-                                <input type="text" title="Дом" class="small" name="address_house" value="<?=$order->getToHouse()?>"/>
+                                <input type="text" title="Дом" class="small" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_HOUSE):?>required="required"<?endif;?> name="address_house" value="<?=trim($order->getToHouse())?>"/>
                             <?endif;?>
                             <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS_HOUSING || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_HOUSING )):?>
-                                <input type="text" title="Корпус" class="small" name="address_housing" />
+                                <input type="text" title="Корпус" class="small" name="address_housing"  value="<?=trim($order->getToHousing())?>" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_HOUSING):?>required="required"<?endif;?>/>
                             <?endif;?>
                             <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS_FLAT || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_FLAT && !$order->getToFlat() )):?>
-                                <input type="text" title="Квартира" class="small" name="address_flat"  value="<?=$order->getToFlat()?>"/>
+                                <input type="text" title="Квартира" class="small" name="address_flat" value="<?=trim($order->getToFlat())?>" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS_FLAT):?>required="required"<?endif;?>/>
                             <?endif;?>
                             <div class="error-box">
-                                <i>&nbsp;</i> Вы сделали что-то неверно
+                                <i>&nbsp;</i> Поле обязательное для заполнения
                             </div>
                         </div>
                     </div>
                 <?endif;?>
                 <div class="row clearfix">
                     <div class="row__title">
-                        <label for="comments">Коментарий к курьеру</label>
+                        <label for="comment">Коментарий</label>
                     </div>
                     <div class="row__inp">
-                        <textarea id="comments" name="comment" title="Напишите комментарий"></textarea>
+                        <textarea id="comment" name="comment" title="Напишите комментарий"></textarea>
                     </div>
                 </div>
                 <div class="row-btns clearfix">

@@ -114,6 +114,10 @@ class DDeliveryOrder
      * @var string номер квартиры
      */
     public $toFlat;
+    /**
+     * @var string Корпус дома
+     */
+    public $toHousing;
     
     /**
      * @var string описание заказа 
@@ -428,6 +432,22 @@ class DDeliveryOrder
     public function getToEmail()
     {
         return $this->toEmail;
+    }
+
+    /**
+     * @param string $toHosting
+     */
+    public function setToHousing($toHosting)
+    {
+        $this->toHousing = $toHosting;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToHousing()
+    {
+        return $this->toHousing;
     }
 
 }     
