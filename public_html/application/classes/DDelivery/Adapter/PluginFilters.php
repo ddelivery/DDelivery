@@ -397,5 +397,11 @@ abstract class PluginFilters extends DShopAdapter
         );
     }
 
+    /**
+     * описание собственных служб доставки
+     * @return string
+     */
+    public abstract function getCustomPointsString();
+
 
 }

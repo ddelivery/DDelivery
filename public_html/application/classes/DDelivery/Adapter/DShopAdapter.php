@@ -326,7 +326,7 @@ abstract class DShopAdapter
     }
 
     /**
-     * Перед тем как показать точную информацию о стоимости мы сообщаем информацию
+     * Перед тем как показать точную информацию о стоимости мы сообщаем информацю о ней для изменения
      *
      * @param \DDelivery\Point\DDeliveryInfo[] $selfCompanyList
      * @return \DDelivery\Point\DDeliveryInfo[]
@@ -412,6 +412,7 @@ abstract class DShopAdapter
     {
         return array();
     }
+
     /**
      * Верните id города в системе DDelivery
      * @return int
