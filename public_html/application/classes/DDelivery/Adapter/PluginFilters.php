@@ -184,11 +184,11 @@ abstract class PluginFilters extends DShopAdapter
             return $price;
         }
         switch ($type) {
-            case self::AROUND_MATH:
+            case self::AROUND_ROUND:
                 return $step*round($priceCount);
-            case self::AROUND_MIN:
+            case self::AROUND_FLOOR:
                 return $step*floor($priceCount);
-            case self::AROUND_MAX:
+            case self::AROUND_CEIL:
                 return $step*ceil($priceCount);
         }
         return $price;
