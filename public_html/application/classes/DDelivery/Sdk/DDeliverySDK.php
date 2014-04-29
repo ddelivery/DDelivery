@@ -109,8 +109,9 @@ class DDeliverySDK {
 
     	if( !count ( $response->response ))
     	{
-    		throw new DDeliveryException( implode(',', $response->errorMessage ));
-    	}
+            $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            throw new DDeliveryException( $errorMsg );
+        }
     	return $response;
     }
     
@@ -129,8 +130,9 @@ class DDeliverySDK {
     	$response = $this->requestProvider->request( 'order_status', $params,'get' );
     	
     	if( !count ( $response->response ))
-    	{   
-    		throw new DDeliveryException( $response->errorMessage );
+    	{
+            $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            throw new DDeliveryException( $errorMsg );
     	}
     	return $response;
     }
@@ -178,7 +180,8 @@ class DDeliverySDK {
         $response = $this->requestProvider->request( 'order_create', $params,'post' );
         if( !count ( $response->response ))
         {
-        	throw new DDeliveryException( $response->errorMessage );
+            $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            throw new DDeliveryException( $errorMsg );
         }
         return $response;
     }
@@ -202,7 +205,8 @@ class DDeliverySDK {
     	$response = $this->requestProvider->request('geoip', $params, 'get', $this->server . 'node');
     	if( !$response->success )
     	{
-    	    throw new DDeliveryException( $response->errorMessage );
+            $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            throw new DDeliveryException( $errorMsg );
     	}
     	return $response;
     }
@@ -223,7 +227,8 @@ class DDeliverySDK {
     	$response = $this->requestProvider->request('geoip', $params, 'get', 'devnode');
     	if( !$response->success )
     	{
-    	    throw new DDeliveryException( $response->errorMessage );
+            $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            throw new DDeliveryException( $errorMsg );
     	}
     	return $response;
     }
@@ -261,7 +266,8 @@ class DDeliverySDK {
     	$response = $this->requestProvider->request( 'calculator', $params );
     	if( !$response->success )
     	{
-    	    throw new DDeliveryException( $response->errorMessage );
+            $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            throw new DDeliveryException( $errorMsg );
     	}
     	
     	return $response;
@@ -301,7 +307,8 @@ class DDeliverySDK {
         $response = $this->requestProvider->request( 'calculator', $params );
         if( !$response->success )
         {
-        	throw new DDeliveryException( $response->errorMessage );
+            $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            throw new DDeliveryException( $errorMsg );
         }
         return $response;
     }
@@ -338,7 +345,8 @@ class DDeliverySDK {
         $response = $this->requestProvider->request('calculator', $params);
         if( !$response->success )
         {
-        	throw new DDeliveryException( $response->errorMessage );
+            $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            throw new DDeliveryException( $errorMsg );
         }
         return $response;
     }
@@ -362,7 +370,8 @@ class DDeliverySDK {
     											'get', $this->server . 'node') ;
     	if( !$response->success )
         {
-        	throw new DDeliveryException( $response->errorMessage );
+            $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            throw new DDeliveryException( $errorMsg );
         }
         return $response;
     }
