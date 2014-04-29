@@ -243,7 +243,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
     }
 
     /**
-     * Если вы знаете телефон покупателя, сделайте чтобы оно вернулось в этом методе
+     * Если вы знаете телефон покупателя, сделайте чтобы оно вернулось в этом методе. 11 символов, например 79211234567
      * @return string|null
      */
     public function getClientPhone() {
@@ -274,7 +274,10 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function getSupportedType()
     {
-        return array(\DDelivery\Sdk\DDeliverySDK::TYPE_COURIER, \DDelivery\Sdk\DDeliverySDK::TYPE_SELF);
+        return array(
+            \DDelivery\Sdk\DDeliverySDK::TYPE_COURIER,
+            \DDelivery\Sdk\DDeliverySDK::TYPE_SELF
+        );
     }
 
 

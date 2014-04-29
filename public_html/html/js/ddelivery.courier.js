@@ -7,16 +7,7 @@ var Courier = (function () {
 
     return {
         init: function () {
-            $('.map-popup__main__delivery__next a').click(function () {
-                var radio = $('input[type="radio"]:checked').val();
-                if (radio) {
-                    DDeliveryIframe.ajaxPage({
-                        point: $('input[name=delivery_company]').val(),
-                        action: 'contactForm',
-                        type: 2
-                    });
-                }
-            });
+
             $('.map-popup__main__delivery').mCustomScrollbar({
                 scrollInertia: 0
             });
@@ -24,6 +15,11 @@ var Courier = (function () {
                 customStyleClass: 'radio',
                 customHeight: '20'
             });
+
+
+            this.event();
+        },
+        event: function(){
 
             var mapPopupTableTr = $('.map-popup__main__delivery table tr');
             mapPopupTableTr.hover(function () {
@@ -41,6 +37,20 @@ var Courier = (function () {
                 }
             });
 
+            $(window).on('ddeliveryCityPlace', function (e, city) {
+                DDeliveryIframe.ajaxPage({action:'courier', city_id: city.id});
+            });
+
+            $('.map-popup__main__delivery__next a').click(function () {
+                var radio = $('input[type="radio"]:checked').val();
+                if (radio) {
+                    DDeliveryIframe.ajaxPage({
+                        point: $('input[name=delivery_company]').val(),
+                        action: 'contactForm',
+                        type: 2
+                    });
+                }
+            });
         }
     }
 })();

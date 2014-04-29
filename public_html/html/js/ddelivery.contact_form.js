@@ -6,7 +6,7 @@ var ContactForm = (function () {
 
     return {
         init: function () {
-            $('.phone-mask').mask("+9(999)999-99-99");
+            $('.phone-mask').mask("+7(999)999-99-99");
 
             var form = $('#main_form').submit(function () {
 

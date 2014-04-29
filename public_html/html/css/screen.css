@@ -213,6 +213,7 @@ sprites locations are 0 -56px/-20px -56px/-40px -56px/-60px -56px (light) and -8
 .map-popup .map-popup__info__table table tr td.col1 { width: 100px; padding-right: 10px; font-size: 14px; line-height: 20px; color: #666; font-weight: bold; }
 .map-popup .map-popup__info__table table tr td.col2 { font-size: 14px; color: #828080; line-height: 20px; }
 .map-popup .map-popup__info__table table tr td.col2 strong { font-size: 16px; color: #88417b; font-family: Arial, sans-serif; }
+.map-popup .map-popup__info__table table tr td.col2 .rub { font-size: 19px; }
 .map-popup .map-popup__info__btn { padding-bottom: 10px; }
 .map-popup .map-popup__info__btn a { display: inline-block; height: 30px; line-height: 30px; font-size: 14px; font-weight: bold; color: #fff; text-transform: uppercase; padding: 0 25px; background: #3ba94b; -webkit-border-radius: 3px; -moz-border-radius: 3px; -ms-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px; }
 .map-popup .map-popup__info__btn a:hover { color: #fff !important; }

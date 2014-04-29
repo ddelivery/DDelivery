@@ -72,7 +72,7 @@
             <!--places end-->
 
             <div class="filters">
-                <h2>Фильтр</h2>
+                <h2>Фильтр:</h2>
 
                 <div class="filters__small clearfix">
                     <ul>

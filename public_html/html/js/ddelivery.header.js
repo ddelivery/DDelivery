@@ -87,14 +87,14 @@ var Header = (function () {
             $('.delivery-type__title').on('click', slideToggle);
             $('.delivery-type__drop_self').click(function(){
                 slideToggle();
-                if(lastType != 2){
-                    DDeliveryIframe.ajaxPage({type:2});
+                if(lastType != 1) {
+                    DDeliveryIframe.ajaxPage({action: 'map'});
                 }
             });
             $('.delivery-type__drop_courier').click(function(){
                 slideToggle();
-                if(lastType != 1){
-                    DDeliveryIframe.ajaxPage({type:1});
+                if(lastType != 2) {
+                    DDeliveryIframe.ajaxPage({action:'courier'});
                 }
             });
         },
