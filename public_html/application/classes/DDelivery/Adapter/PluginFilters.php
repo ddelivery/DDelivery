@@ -133,12 +133,14 @@ abstract class PluginFilters extends DShopAdapter
      */
     abstract public function isPayPickup();
 
+
     /**
-     * Какой процент от стоимости страхуется
+     * Возвращает оценочную цену для товаров в послыке
+     *
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     *
      * @return float
      */
-    abstract public function getDeclaredPercent();
-
     public function getDeclaredPrice($order)
     {
         return ($this->getAmount() / 100) * $this->getDeclaredPercent();

@@ -357,16 +357,16 @@ abstract class DShopAdapter
     }
 
     /**
-     * 
+     *
      * Сумма к оплате на точке или курьеру
-     * 
+     *
      * Возвращает параметр payment_price для создания заказа
      * Параметр payment_price необходим для добавления заявки на заказ
      * По этому параметру в доках интегратору будет написан раздел
-     * 
+     *
      * @param \DDelivery\Order\DDeliveryOrder $order
      * @param float $orderPrice
-     * 
+     *
      * @return float
      */
     public function getPaymentPriceCourier( $order, $orderPrice ) {
@@ -433,10 +433,7 @@ abstract class DShopAdapter
      * 
      * @return float
      */
-    public function getDeclaredPrice( $order ) {
-    	$declaredPrice = $order->amount;
-        return $declaredPrice;
-    }
+    abstract public function getDeclaredPrice( $order );
 
     /**
      * Возвращает поддерживаемые магазином способы доставки
