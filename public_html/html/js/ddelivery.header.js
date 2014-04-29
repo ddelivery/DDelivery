@@ -73,8 +73,7 @@ var Header = (function () {
 
         },
         eventType: function(){
-
-            $('.delivery-type__title').on('click', function () {
+            var slideToggle = function () {
                 $('.delivery-type__drop').slideToggle(function () {
                     if ($('.delivery-type__drop').css('display') == 'block') {
                         $('.map-popup__main').addClass('show-drop-1');
@@ -84,13 +83,16 @@ var Header = (function () {
                         $('.map-popup__main__overlay').fadeOut();
                     }
                 });
-            });
+            };
+            $('.delivery-type__title').on('click', slideToggle);
             $('.delivery-type__drop_self').click(function(){
+                slideToggle();
                 if(lastType != 2){
                     DDeliveryIframe.ajaxPage({type:2});
                 }
             });
             $('.delivery-type__drop_courier').click(function(){
+                slideToggle();
                 if(lastType != 1){
                     DDeliveryIframe.ajaxPage({type:1});
                 }
@@ -126,6 +128,7 @@ var Header = (function () {
                 return false;
             }
 
+            var searchTimeout = 0;
             $('.delivery-place__title > input[title]')
                 .formtips()
                 .on('focus', function () {
@@ -141,14 +144,18 @@ var Header = (function () {
                     var input = $(this);
                     if (title.length >= 2) {
                         $('.delivery-place__drop_i ul.search').html('<img class="loader_search" src="' + staticUrl + '/img/ajax_loader.gif"/>');
-                        DDeliveryIframe.ajaxData({action: 'searchCity', name: title}, function (data) {
-                            if (data.request.name == input.val()) {
-                                $('.delivery-place__drop_i .pop').hide();
-                                $('.delivery-place__drop_i .search').show();
-                                $('.delivery-place__drop_i ul.search').html(data.html);
-                            }
-                            $('.delivery-place__drop .search li a').on('click', citySelectEvent);
-                        });
+                        if(!searchTimeout)
+                            clearTimeout(searchTimeout);
+                        searchTimeout = setTimeout(function(){
+                            DDeliveryIframe.ajaxData({action: 'searchCity', name: title}, function (data) {
+                                if (data.request.name == input.val()) {
+                                    $('.delivery-place__drop_i .pop').hide();
+                                    $('.delivery-place__drop_i .search').show();
+                                    $('.delivery-place__drop_i ul.search').html(data.html);
+                                }
+                                $('.delivery-place__drop .search li a').on('click', citySelectEvent);
+                            });
+                        }, 300);
                     }
                 });
 
