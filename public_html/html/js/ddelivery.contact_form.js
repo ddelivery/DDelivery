@@ -40,7 +40,7 @@ var ContactForm = (function () {
             });
 
             $('.row-btns a.prev').click(function () {
-                DDeliveryIframe.ajaxPage({});
+                DDeliveryIframe.ajaxPage({type:$(this).data('type')});
             });
 
             $('input[title], textarea[title]', form).formtips();

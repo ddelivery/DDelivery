@@ -1,6 +1,7 @@
 <?/**
  * @var int $requiredFieldMask
  * @var \DDelivery\Order\DDeliveryOrder $order
+ * @var int $deliveryType
  */
 use DDelivery\Adapter\DShopAdapter;
 
@@ -100,7 +101,7 @@ use DDelivery\Adapter\DShopAdapter;
                     </div>
                 </div>
                 <div class="row-btns clearfix">
-                    <a class="prev" href="javascript:void(0)"><i>&nbsp;</i>назад</a>
+                    <a class="prev" href="javascript:void(0)" data-type="<?=$deliveryType?>"><i>&nbsp;</i>назад</a>
                     <a class="next" href="javascript:void(0)"><i>&nbsp;</i>Доставить по этому адресу</a>
                 </div>
 
