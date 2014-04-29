@@ -1383,6 +1383,39 @@ class DDeliveryUI
                 $this->order->setPoint($this->getCourierPointByCompanyID($request['point'], $this->order));
             }
         }
+        if(!empty($request['contact_form']) && is_array($request['contact_form'])){
+            if(!empty($request['contact_form'])) {
+                foreach($request['contact_form'] as $row) {
+                    switch($row['name']){
+                        case 'second_name':
+                            $this->order->secondName = $row['value'];
+                            break;
+                        case 'first_name':
+                            $this->order->firstName = $row['value'];
+                            break;
+                        case 'phone':
+                            $this->order->toPhone = $row['value'];
+                            break;
+                        case 'address':
+                            $this->order->toStreet = $row['value'];
+                            break;
+                        case 'address_house':
+                            $this->order->toHouse = $row['value'];
+                            break;
+                        case 'address_housing':
+                            $this->order->toHousing = $row['value'];
+                            break;
+                        case 'address_flat':
+                            $this->order->toFlat = $row['value'];
+                            break;
+                        case 'comment':
+                            //@todo Комента нет
+                            //$this->order->toHousing = $row['value'];
+                            break;
+                    }
+                }
+            }
+        }
 
         if(isset($request['iframe'])) {
             $staticURL = $this->shop->getStaticPath();
@@ -1444,6 +1477,16 @@ class DDeliveryUI
                 break;
             case 'contactForm':
                 echo $this->renderContactForm();
+                break;
+            case 'change':
+                $comment = '';
+                $point = $this->order->getPoint();
+                if ($point instanceof DDeliveryPointSelf) {
+                    $comment = 'Самовывоз, '.$point->address;
+                } elseif($point instanceof DDeliveryPointCourier) {
+                    $comment = 'Доставка курьером по адресу '.$this->order->getFullAddress();
+                }
+                echo json_encode(array('html'=>'', 'js'=>'change', 'comment'=>htmlspecialchars($comment), 'orderId' => $this->order->localId));
                 break;
             default:
                 throw new DDeliveryException('Not support action');

@@ -67,14 +67,16 @@ var DDeliveryIframe = (function () {
                         case 'typeForm':
                             TypeForm.init();
                             break;
+                        case 'close':
+                            DDeliveryIframe.close();
+                            break;
+                        case 'change':
+                            console.log(data);
+                            DDeliveryIframe.postMessage('change', data);
+                            break;
                     }
                 }
             }
-
-            /*$(window).on('ddeliveryCityPlace', function(e, data){
-             $this.getData(data.id)
-             });*/
-
         },
         postMessage: function(action, data) {
             // Отправляем сообщение родительскому окну

@@ -10,16 +10,19 @@
 
         <script>
             function DDeliveryStart(){
-                var data = {
-                    //orderId: 4, // Если у вас есть id заказа который изменяется, то укажите его в этом параметре
+                var params = {
+                    //orderId: 4 // Если у вас есть id заказа который изменяется, то укажите его в этом параметре
+                };
+                var callback = {
                     close: function(){
                         alert('Окно закрыто');
                     },
-                    change: function(orderId, aboutDdelivery, amount) {
-                        alert('Выбрали '+aboutDdelivery+ ' интернет магазину нужно взять с пользователя '+amount+' руб.');
+                    change: function(data) {
+                        
+                        alert(data.comment+ ' интернет магазину нужно взять с пользователя '+' руб. OrderId: '+data.orderId);
                     }
                 };
-                DDelivery.delivery('ddelivery', 'ajax.php', data);
+                DDelivery.delivery('ddelivery', 'ajax.php', params, callback);
             }
             <?if(!empty($_GET['fast'])):?>
                 DDeliveryStart();

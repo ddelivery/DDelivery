@@ -418,6 +418,19 @@ class DDeliveryOrder
     	return $this->toFlat;
     }
 
+    public function getFullAddress()
+    {
+        $return = $this->toStreet;
+        if($this->toHouse)
+            $return .= ' д.'.$this->toHouse;
+        if($this->toHousing)
+            $return .= ' корп.'.$this->toHousing;
+        if($this->toFlat)
+            $return .= ' кв.'.$this->toFlat;
+
+        return $return;
+    }
+
     /**
      * @param string $toEmail
      */

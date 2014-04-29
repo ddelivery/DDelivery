@@ -26,7 +26,7 @@ var DDelivery = {
             var result;
 
             if (typeof(callbacks[event.data.action]) == 'function') {
-                result = callbacks[event.data.action](event.data);
+                result = callbacks[event.data.action](event.data.data);
             }
             if( result !== false ) {
                 if (event.data.action == 'close') {

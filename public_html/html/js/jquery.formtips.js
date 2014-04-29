@@ -25,7 +25,7 @@
                 // handle focus event
                 $(e).bind('focus', function() {
                     var lv = $(this).attr('title');
-                    if($(this).val() == lv) {
+                    if($(this).val() == lv && $(this).hasClass(settings.tippedClass)) {
                         $(this).val('').removeClass(settings.tippedClass);
                     }
                     return true;
