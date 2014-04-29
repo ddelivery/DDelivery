@@ -148,11 +148,17 @@ Map = (function () {
                             if (bound[0][1] > coord[1])
                                 bound[0][1] = coord[1];
                         }
+
+                        // Вычисляем центр и зум которые нам нужны, отступ 10 - первое число которое указал и оно нормально работает
+                        var centerAndZoom = ymaps.util.bounds.getCenterAndZoom(bound, yamap.container.getSize(), ymaps.projection.wgs84Mercator, {margin:10});
+
                         // Точки эквивалентны в допустимой погрешности и зумить есть куда
                         if (!ymaps.util.math.areEqual(bound[0], bound[1], 0.0002) && yamap.getZoom() != yamap.options.get('maxZoom')) {
-                            yamap.setBounds(bound, {duration: 400});
+                            yamap.setCenter(centerAndZoom.center, centerAndZoom.zoom, {duration: 400});
+                            //yamap.setBounds(bound, {duration: 400});
                         } else {
-                            yamap.setBounds(bound, {duration: 400});
+                            //yamap.setBounds(bound, {duration: 400});
+
                             var myPoints = [];
                             for (var geoKey in geoObjects) {
                                 myPoints.push(geoObjects[geoKey].properties.get('point'));

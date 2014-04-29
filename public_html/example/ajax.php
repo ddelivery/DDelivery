@@ -275,7 +275,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
     public function getSupportedType()
     {
         return array(
-            \DDelivery\Sdk\DDeliverySDK::TYPE_COURIER,
+      //      \DDelivery\Sdk\DDeliverySDK::TYPE_COURIER,
             \DDelivery\Sdk\DDeliverySDK::TYPE_SELF
         );
     }
