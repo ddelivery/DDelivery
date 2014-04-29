@@ -69,33 +69,6 @@ abstract class PluginFilters extends DShopAdapter
     const AROUND_CEIL = 3;
 
     /**
-     * @todo все исправить
-     * @param DDeliveryPointSelf $ddeliveryPointSelf
-     * @param DDeliveryOrder $order
-     * @return DDeliveryPointSelf
-     */
-    public function preDisplaySelfPoint(DDeliveryPointSelf $ddeliveryPointSelf, DDeliveryOrder $order)
-    {
-        if(1)
-            throw new \Exception('Ой, а это еще не работает');
-
-        //$ddeliveryPointSelf->delivery_price = $this->preDisplayPointCalc($ddeliveryPointSelf->delivery_price);
-
-        return $ddeliveryPointSelf;
-    }
-
-    /**
-     * @param DDeliveryPointCourier $ddeliveryPointCourier
-     * @param DDeliveryOrder $order
-     * @return DDeliveryPointCourier
-     */
-    public function preDisplayCourierPoint(DDeliveryPointCourier $ddeliveryPointCourier, DDeliveryOrder $order)
-    {
-        $ddeliveryPointCourier->delivery_price = $this->preDisplayPointCalc($ddeliveryPointCourier->delivery_price);
-        return $ddeliveryPointCourier;
-    }
-
-    /**
      *
      * Сумма к оплате на точке или курьеру
      *
@@ -111,7 +84,10 @@ abstract class PluginFilters extends DShopAdapter
     public function getPaymentPriceCourier($order, $orderPrice)
     {
         $filterByPayment = $this->filterPointByPaymentTypeCourier();
-        if($filterByPayment == self::PAYMENT_POST_PAYMENT){
+        if($filterByPayment == self::PAYMENT_POST_PAYMENT) {
+            if($order->getPoint() && $order->getPoint()->getDeliveryInfo()) {
+                return $this->getAmount() + $order->getPoint()->getDeliveryInfo()->clientPrice;
+            }
             return $this->getAmount();
         }
         return 0;
@@ -288,7 +264,6 @@ abstract class PluginFilters extends DShopAdapter
 
         foreach($selfCompanyList as $key => $company) {
             // Удаляем те компании которые есть в фильтре
-
             if(in_array($company->delivery_company, $filterCompany)) {
                 unset($selfCompanyList[$key]);
             }
@@ -296,6 +271,7 @@ abstract class PluginFilters extends DShopAdapter
             if($pickup) { // Не учитывать цену забора
                 $company->clientPrice = $company->total_price - $company->pickup_price;
             }
+            $company->clientPrice = $this->preDisplayPointCalc($company->clientPrice);
             $company->clientPrice = $this->aroundPrice($company->total_price);
 
         }
@@ -334,6 +310,7 @@ abstract class PluginFilters extends DShopAdapter
             if($pickup) { // Не учитывать цену забора
                 $courierPoint->getDeliveryInfo()->clientPrice = $courierPoint->total_price - $courierPoint->pickup_price;
             }
+            $courierPoint->getDeliveryInfo()->clientPrice = $this->preDisplayPointCalc($courierPoint->getDeliveryInfo()->clientPrice);
             $courierPoint->getDeliveryInfo()->clientPrice = $this->aroundPrice($courierPoint->getDeliveryInfo()->total_price);
         }
 

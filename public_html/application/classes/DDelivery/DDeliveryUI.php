@@ -1667,9 +1667,6 @@ class DDeliveryUI
         $companies = $this->getCompanySubInfo();
         $courierCompanyList = $this->getCourierPointsForCity($this->order);
 
-        foreach($courierCompanyList as $courierCompany) {
-            $this->shop->preDisplayCourierPoint($courierCompany, $this->order);
-        }
         $staticURL = $this->shop->getStaticPath();
         // Ресетаем ключи.
         $courierCompanyList = array_values($courierCompanyList);

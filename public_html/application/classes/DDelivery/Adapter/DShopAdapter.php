@@ -276,21 +276,8 @@ abstract class DShopAdapter
      *
      * @param DDeliveryPointSelf $ddeliveryPointSelf
      * @param DDeliveryOrder $order
-     *
-     * @return \DDelivery\Point\DDeliveryPointSelf
      */
     public function preDisplaySelfPoint( DDeliveryPointSelf $ddeliveryPointSelf, DDeliveryOrder $order) {
-
-    }
-
-    /**
-     * Вызывается перед отображением цены курьера, можно что-то изменить
-     *
-     * @param \DDelivery\Point\DDeliveryPointCourier $DDeliveryPointCourier
-     * @param DDeliveryOrder $order
-     *
-     */
-    public function preDisplayCourierPoint( DDeliveryPointCourier $DDeliveryPointCourier, DDeliveryOrder $order) {
 
     }
 
