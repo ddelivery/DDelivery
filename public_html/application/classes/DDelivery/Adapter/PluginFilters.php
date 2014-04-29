@@ -188,24 +188,23 @@ abstract class PluginFilters extends DShopAdapter
                 continue;
 
 
-            if (isset($interval)) {
-                switch($interval['type']){
-                    case self::INTERVAL_RULES_MARKET_ALL:
+            switch($interval['type']){
+                case self::INTERVAL_RULES_MARKET_ALL:
+                    $priceReturn = 0;
+                    break;
+                case self::INTERVAL_RULES_MARKET_PERCENT:
+                    $priceReturn = $price - ($price / 100 * $interval['amount']);
+                    break;
+                case self::INTERVAL_RULES_MARKET_AMOUNT:
+                    if($price < $interval['amount']) {
                         $priceReturn = 0;
-                        break;
-                    case self::INTERVAL_RULES_MARKET_PERCENT:
-                        $priceReturn = $price - ($price / 100 * $interval['amount']);
-                        break;
-                    case self::INTERVAL_RULES_MARKET_AMOUNT:
-                        if($price < $interval['amount']) {
-                            $priceReturn = 0;
-                        }else{
-                            $priceReturn = $price < $interval['amount'];
-                        }
-                        break;
-                    case self::INTERVAL_RULES_CLIENT_ALL:
-                }
+                    }else{
+                        $priceReturn = $price < $interval['amount'];
+                    }
+                    break;
+                case self::INTERVAL_RULES_CLIENT_ALL:
             }
+
         }
         return $priceReturn;
     }
@@ -272,7 +271,7 @@ abstract class PluginFilters extends DShopAdapter
                 $company->clientPrice = $company->total_price - $company->pickup_price;
             }
             $company->clientPrice = $this->preDisplayPointCalc($company->clientPrice);
-            $company->clientPrice = $this->aroundPrice($company->total_price);
+            $company->clientPrice = $this->aroundPrice($company->clientPrice);
 
         }
 
@@ -311,7 +310,7 @@ abstract class PluginFilters extends DShopAdapter
                 $courierPoint->getDeliveryInfo()->clientPrice = $courierPoint->total_price - $courierPoint->pickup_price;
             }
             $courierPoint->getDeliveryInfo()->clientPrice = $this->preDisplayPointCalc($courierPoint->getDeliveryInfo()->clientPrice);
-            $courierPoint->getDeliveryInfo()->clientPrice = $this->aroundPrice($courierPoint->getDeliveryInfo()->total_price);
+            $courierPoint->getDeliveryInfo()->clientPrice = $this->aroundPrice($courierPoint->getDeliveryInfo()->clientPrice);
         }
 
 
