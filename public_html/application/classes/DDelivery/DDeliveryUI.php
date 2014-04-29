@@ -91,18 +91,6 @@ class DDeliveryUI
         $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled() );
     }
    
-    /**
-     * Жду подтверждение  для необходимости  реализации
-     *
-     * при изменении состояния заказа пересчитать
-     * все возможные парамтры для заказа, цена для доставк на точку
-     *
-     * @return void;
-     */
-    public function update()
-    {
-        echo 'update';
-    }
 
 
 
