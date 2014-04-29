@@ -63,8 +63,14 @@ var TypeForm = (function () {
             });
 
             $(window).on('ddeliveryCityPlace', function (e, data) {
-
+                var table = $('.map-popup__main__delivery table');
+                $('.col4 span', table).css('visibility', 'hidden');
+                $('.col5 span', table).css('visibility', 'hidden');
+                $('.col4 img', table).show();
                 DDeliveryIframe.ajaxData({action: 'typeFormDataOnly', city_id: data.id}, function (data) {
+                    $('.col4 span', table).css('visibility', 'inherit');
+                    $('.col5 span', table).css('visibility', 'inherit');
+                    $('.col4 img', table).hide();
                     TypeForm.renderData(data.typeData);
                 });
             });

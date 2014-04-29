@@ -62,7 +62,7 @@
         </div>
         <!-- map end-->
 
-        <div class="map-popup__main__right">
+        <div class="map-popup__main__right map-popup__main__right_open">
             <div class="map-popup__main__right__btn"><i>&nbsp;</i></div>
             <h2>Пункты:</h2>
 
@@ -106,7 +106,7 @@
 
         </div>
 
-        <div class="map-popup__info">
+        <div class="map-popup__info wide">
             <div class="map-popup__info__close">&nbsp;</div>
             <div class="map-popup__info__title">
                 <p class="more">По данному адресу находится несколько пунктов. Выберите нужный.</p>

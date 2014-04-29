@@ -1574,6 +1574,7 @@ class DDeliveryUI
      */
     protected function renderDeliveryTypeForm( $dataOnly = false )
     {
+        $staticURL = $this->shop->getStaticPath();
         $cityId = $this->order->city;
 
         $order = $this->order;
