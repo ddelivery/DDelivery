@@ -146,6 +146,12 @@ abstract class PluginFilters extends DShopAdapter
         return ($this->getAmount() / 100) * $this->getDeclaredPercent();
     }
 
+    /**
+     * Какой процент от стоимости страхуется
+     * @return float
+     */
+    abstract public function getDeclaredPercent();
+
 
     /**
      * Округляет стоимость согласно настройкам
