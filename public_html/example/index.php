@@ -11,7 +11,7 @@
     <body>
         <script src="../html/js/ddelivery.js"></script>
 
-        <a href="#" class="trigger">Open modal</a>
+        <a href="#" class="trigger">Выбрать способ доставки</a>
 
         <div class="modal" id="test-modal" style="display: none">
             <div id="ddelivery"></div>
