@@ -37,6 +37,9 @@
                 })
             }
             function DDeliveryStart(){
+
+                jQuery('#test-modal').modal().open();
+
                 var params = {
                     //orderId: 4 // Если у вас есть id заказа который изменяется, то укажите его в этом параметре
                 };
@@ -50,7 +53,8 @@
                         alert(data.comment+ ' интернет магазину нужно взять с пользователя '+' руб. OrderId: '+data.orderId);
                     }
                 };
-                DDelivery.delivery('ddelivery', 'ajax.php', params, callback);
+
+                DDelivery.delivery('ddelivery', 'ajax.php?<?isset($_GET['XDEBUG_SESSION_START']) ? 'XDEBUG_SESSION_START='.(int)$_GET['XDEBUG_SESSION_START'] : ''?> ', params, callback);
             }
             <?if(!empty($_GET['fast'])):?>
                 DDeliveryStart();
@@ -58,11 +62,10 @@
         </script>
 
         <script type="text/javascript">
-            jQuery(function($){
+            jQuery(function($) {
                 // bind event handlers to modal triggers
                 $('body').on('click', '.trigger', function(e){
                     e.preventDefault();
-                    $('#test-modal').modal().open();
                     DDeliveryStart();
                 });
             });
