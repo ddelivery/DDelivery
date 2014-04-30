@@ -35,6 +35,7 @@
                 };
                 var callback = {
                     close: function(){
+                        closePopup();
                         alert('Окно закрыто');
                     },
                     change: function(data) {
@@ -50,6 +51,12 @@
         </script>
 
         <script type="text/javascript">
+            function closePopup()
+            {
+                jQuery(function($){
+                        $.modal().close();
+                })
+            }
             jQuery(function($){
                 // attach modal close handler
                 $('.map-popup__head__close').on('click', function(e){
