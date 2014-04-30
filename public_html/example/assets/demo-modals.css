@@ -1,0 +1,30 @@
+/* modal box style, can be anything you want */
+.modal {
+    background: #eee;
+    width: 1000px;
+    margin: 10px auto;
+
+    border: 3px solid #666;
+    padding: 0px;
+}
+
+.modal .close {
+    float: right;
+    text-decoration: none;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+
+/* Page visual styles, these aren't important */
+html {
+	padding: 20px;
+}
+body {
+    font-family: Georgia sans-serif;
+    width: 100%;
+}
+
+li {
+    margin-bottom: 1em;
+}

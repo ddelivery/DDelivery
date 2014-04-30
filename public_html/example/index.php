@@ -2,19 +2,47 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script type="text/javascript" src="assets/jquery.the-modal.js"></script>
+        <link rel="stylesheet" type="text/css" href="assets/the-modal.css" media="all">
+        <link rel="stylesheet" type="text/css" href="assets/demo-modals.css" media="all">
     </head>
     <body>
         <script src="../html/js/ddelivery.js"></script>
-        <div id="ddelivery"></div>
-        <a href="javascript:DDeliveryStart()">Выбрать способ доставки</a>
+
+        <a href="#" class="trigger">Выбрать способ доставки</a>
+
+        <div class="modal" id="test-modal" style="display: none">
+            <div id="ddelivery"></div>
+            <?php
+            /*
+            ?>
+            <a href="javascript:DDeliveryStart()">Выбрать способ доставки</a>
+            <?php
+            */
+            ?>
+        </div>
+
+
+
+
 
         <script>
+            // attach modal close handler
+            function closePopup()
+            {
+                jQuery(function($){
+                    $.modal().close();
+                })
+            }
             function DDeliveryStart(){
                 var params = {
                     //orderId: 4 // Если у вас есть id заказа который изменяется, то укажите его в этом параметре
                 };
                 var callback = {
                     close: function(){
+                        closePopup();
                         alert('Окно закрыто');
                     },
                     change: function(data) {
@@ -28,5 +56,17 @@
                 DDeliveryStart();
             <?endif;?>
         </script>
+
+        <script type="text/javascript">
+            jQuery(function($){
+                // bind event handlers to modal triggers
+                $('body').on('click', '.trigger', function(e){
+                    e.preventDefault();
+                    $('#test-modal').modal().open();
+                    DDeliveryStart();
+                });
+            });
+        </script>
+
     </body>
 </html>
