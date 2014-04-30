@@ -2,6 +2,7 @@
 /**
  * @var string $staticPath
  * @var DDelivery\DDeliveryUI $this
+ * @var array $headerData
  */
 ?>
 <div class="delivery-type__title courier">
@@ -16,8 +17,10 @@
             <li class="delivery-type__drop_courier">
                 <a href="javascript:void(0)">
                     <span class="name">доаставить курьером</span>
-                    <span class="price"><span>100</span> <i class="icon-rub">&nbsp;</i></span>
-                    <span class="date">от <strong>1</strong> дня</span>
+                    <span class="price"><span><?=$headerData['courier']['minPrice']?></span> <i class="icon-rub">&nbsp;</i></span>
+                    <span class="date">от <strong><?=$headerData['courier']['minTime']?></strong>
+                        <?\DDelivery\Utils::plural($headerData['courier']['minTime'], 'дня', 'дней', 'дней', 'дней', false)?>
+                    </span>
                 </a>
             </li>
         <?endif;?>
@@ -25,8 +28,10 @@
             <li class="delivery-type__drop_self">
                 <a href="javascript:void(0)">
                     <span class="name">забрать самовывозом от</span>
-                    <span class="price"><span>100</span> <i class="icon-rub">&nbsp;</i></span>
-                    <span class="date">от <strong>1</strong> <span>дня</span></span>
+                    <span class="price"><span><?=$headerData['self']['minPrice']?></span> <i class="icon-rub">&nbsp;</i></span>
+                    <span class="date">от <strong><?=$headerData['self']['minTime']?></strong>
+                        <?\DDelivery\Utils::plural($headerData['self']['minTime'], 'дня', 'дней', 'дней', 'дней', false)?>
+                    </span>
                 </a>
             </li>
         <?endif;?>

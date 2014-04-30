@@ -1546,9 +1546,9 @@ class DDeliveryUI
             $content = ob_get_contents();
             ob_end_clean();
             return json_encode(array('html'=>$content, 'points' => $pointsJs, 'orderId' => $this->order->localId));
-        } else
-        {
+        } else {
             $cityList = $this->getCityByDisplay($cityId);
+            $headerData = $this->getDataFromHeader();
             ob_start();
             include(__DIR__ . '/../../templates/map.php');
             $content = ob_get_contents();
@@ -1676,7 +1676,7 @@ class DDeliveryUI
         $staticURL = $this->shop->getStaticPath();
         // Ресетаем ключи.
         $courierCompanyList = array_values($courierCompanyList);
-
+        $headerData = $this->getDataFromHeader();
         ob_start();
         include(__DIR__.'/../../templates/couriers.php');
         $content = ob_get_contents();
