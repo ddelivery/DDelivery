@@ -20,8 +20,43 @@ class DShopAdapterTest extends DShopAdapter
                                        DDStatusProvider::ORDER_CANCEL => 'Отмена' );
 
 
+    /**
+     * Возвращает оценочную цену для товаров в послыке
+     *
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     *
+     * @return float
+     */
+    public function getDeclaredPrice($order)
+    {
+        return ($this->getAmount() / 100) * $this->getDeclaredPercent();
+    }
 
+    /**
+     * Какой процент от стоимости страхуется
+     * @return float
+     */
+    public function getDeclaredPercent()
+    {
+        return 100;
+    }
+    /**
+     * Метод будет вызван когда пользователь закончит выбор способа доставки
+     *
+     * @param int $orderId
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     * @param bool $customPoint Если true, то заказ обрабатывается магазином
+     * @return void
+     */
+    public function onFinishChange($orderId, \DDelivery\Order\DDeliveryOrder $order, $customPoint)
+    {
+        if($customPoint){
+            // Это условие говорит о том что нужно обрабатывать заказ средствами CMS
+        }else{
+            // Запомни id заказа
+        }
 
+    }
 
     /**
      * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
@@ -93,29 +128,6 @@ class DShopAdapterTest extends DShopAdapter
     {
         return false;
     }
-    /**
-     * Метод будет вызван когда пользователь закончит выбор способа доставки
-     *
-     * @param int $orderId
-     * @param \DDelivery\Order\DDeliveryOrder $order
-     * @return void
-     */
-    public function onFinishChange($orderId, \DDelivery\Order\DDeliveryOrder $order)
-    {
-        // TODO: Implement onFinishChange() method.
-    }
-    /**
-     * Метод будет вызван когда пользователь закончит выбор способа доставки
-     *
-     * @param int $orderId
-     * @param DDeliveryOrder $order
-     * @return bool
-     */
-    /*
-    public function onFinishChange($orderId, DDeliveryOrder $order)
-    {
-        return true;
-    }
-    */
+
 }
 ?>
