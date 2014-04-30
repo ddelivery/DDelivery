@@ -1531,6 +1531,7 @@ class DDeliveryUI
         $cityId = $this->order->city;
 
         $points = $this->getSelfPoints($this->order);
+        $this->saveFullOrder($this->getOrder());
         $pointsJs = array();
 
         foreach($points as $point) {
@@ -1670,6 +1671,7 @@ class DDeliveryUI
     protected function renderCourier()
     {
         $this->getOrder()->type = DDeliverySDK::TYPE_COURIER;
+        $this->saveFullOrder($this->getOrder());
         $cityId = $this->order->city;
         $cityList = $this->getCityByDisplay($cityId);
         $companies = $this->getCompanySubInfo();
@@ -1704,6 +1706,7 @@ class DDeliveryUI
         }else{
             return '';
         }
+        $deliveryType = $this->getOrder()->type;
 
         $order = $this->order;
         $order->declaredPrice = $this->shop->getDeclaredPrice($order);

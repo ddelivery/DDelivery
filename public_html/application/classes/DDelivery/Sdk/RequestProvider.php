@@ -46,8 +46,8 @@ class RequestProvider
 	 */
 	private $serverUrl = array('stage' => 'http://stage.ddelivery.ru/api/v1/',
 	                           'dev' => 'http://cabinet.ddelivery.ru/api/v1/',
-	                           'devnode' => 'http://dev.ddelivery.ru/daemon/daemon.js',
-			                   'stagenode' => 'http://stage.ddelivery.ru/daemon/daemon.js'
+	                           'devnode' => 'http://stage.ddelivery.ru/daemon/daemon.js',
+			                   'stagenode' => 'http://cabinet.ddelivery.ru/daemon/daemon.js'
 	                           );
 	/**
 	 * Количество проделанных запросов на сервер ddelivery
