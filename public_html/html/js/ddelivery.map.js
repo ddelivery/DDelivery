@@ -391,12 +391,15 @@ Map = (function () {
             DDeliveryIframe.ajaxData(
                 {action: 'mapGetPoint', id: point._id},
                 function (data) {
-
-                    $('.map-popup__info__table .rub').html(data.point.total_price);
-                    var day = $('.map-popup__info__table .day').show();
-                    $('strong', day).html(data.point.delivery_time_min);
-                    $('span', day).html(data.point.delivery_time_min_str);
-                    $('.more', more).html(data.point.description_out);
+                    if(typeof(data.length) == 'undefined') { // object
+                        $('.map-popup__info__table .rub').html(data.point.total_price);
+                        var day = $('.map-popup__info__table .day').show();
+                        $('strong', day).html(data.point.delivery_time_min);
+                        $('span', day).html(data.point.delivery_time_min_str);
+                        $('.more', more).html(data.point.description_out);
+                    }else{
+                        // Если ошибка что-то нужно делать
+                    }
                 }
             );
         },

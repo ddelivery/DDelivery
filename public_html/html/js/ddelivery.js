@@ -30,7 +30,7 @@ var DDelivery = {
             }
             if( result !== false ) {
                 if (event.data.action == 'close') {
-                    iframe.remove();
+                    iframe.parentNode.removeChild(iframe);
                 }
             }
         };

@@ -1344,6 +1344,7 @@ class DDeliveryUI
                         $selfCompanyList = $this->shop->filterSelfInfo(array($pointSelf->getDeliveryInfo()));
                         if(empty($selfCompanyList)){
                             echo json_encode(array('point'=>array()));
+                            return;
                         }
 
                         echo json_encode(array(
@@ -1556,14 +1557,8 @@ class DDeliveryUI
         }
     }
 
-    /**
-     * Возвращает страницу с формой выбора способа доставки
-     * @param bool $dataOnly если передать true, то отдаст данные для обновления верстки через js
-     * @return string
-     */
-    protected function renderDeliveryTypeForm( $dataOnly = false )
+    protected function getDataFromHeader()
     {
-        $staticURL = $this->shop->getStaticPath();
         $cityId = $this->order->city;
 
         $order = $this->order;
@@ -1583,54 +1578,75 @@ class DDeliveryUI
             ),
         );
 
-        $order->declaredPrice = $this->shop->getDeclaredPrice($order);
-        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $this->order );
-        if(!empty($selfCompanyList)){
-            $selfCompanyList = $this->_getOrderedDeliveryInfo( $selfCompanyList );
-            $selfCompanyList = $this->shop->filterSelfInfo($selfCompanyList);
-            if(!empty($selfCompanyList)) {
-                $minPrice = PHP_INT_MAX;
-                $minTime = PHP_INT_MAX;
-                foreach($selfCompanyList as $selfCompany) {
-                    if($minPrice > $selfCompany->clientPrice){
-                        $minPrice = $selfCompany->clientPrice;
+        if(in_array(Sdk\DDeliverySDK::TYPE_SELF, $this->supportedTypes)) {
+            $selfCompanyList = $this->getSelfDeliveryInfoForCity( $this->order );
+            if(!empty($selfCompanyList)){
+                $selfCompanyList = $this->_getOrderedDeliveryInfo( $selfCompanyList );
+                $selfCompanyList = $this->shop->filterSelfInfo($selfCompanyList);
+                if(!empty($selfCompanyList)) {
+                    $minPrice = PHP_INT_MAX;
+                    $minTime = PHP_INT_MAX;
+                    foreach($selfCompanyList as $selfCompany) {
+                        if($minPrice > $selfCompany->clientPrice){
+                            $minPrice = $selfCompany->clientPrice;
+                        }
+                        if($minTime > $selfCompany->delivery_time_min){
+                            $minTime = $selfCompany->delivery_time_min;
+                        }
                     }
-                    if($minTime > $selfCompany->delivery_time_min){
-                        $minTime = $selfCompany->delivery_time_min;
-                    }
+                    $data['self'] = array(
+                        'minPrice' => $minPrice,
+                        'minTime' => $minTime,
+                        'timeStr' => Utils::plural($minTime, 'дня', 'дней', 'дней', 'дней', false),
+                        'disabled' => false
+                    );
                 }
-                $data['self'] = array(
-                    'minPrice' => $minPrice,
-                    'minTime' => $minTime,
-                    'timeStr' => Utils::plural($minTime, 'дня', 'дней', 'дней', 'дней', false),
-                    'disabled' => false
-                );
             }
         }
-        $courierCompanyList = $this->getCourierPointsForCity($this->order);
-        if(!empty($courierCompanyList)){
-            $courierCompanyList = $this->shop->filterPointsCourier($courierCompanyList, $this->order);
-            if($courierCompanyList){
-                $minPrice = PHP_INT_MAX;
-                $minTime = PHP_INT_MAX;
+        if(in_array(Sdk\DDeliverySDK::TYPE_COURIER, $this->supportedTypes)) {
+            $courierCompanyList = $this->getCourierPointsForCity($this->order);
+            if(!empty($courierCompanyList)){
+                $courierCompanyList = $this->shop->filterPointsCourier($courierCompanyList, $this->order);
+                if($courierCompanyList){
+                    $minPrice = PHP_INT_MAX;
+                    $minTime = PHP_INT_MAX;
 
-                foreach($courierCompanyList as $courierCompany){
-                    $deliveryInfo = $courierCompany->getDeliveryInfo();
-                    if($minPrice > $deliveryInfo->clientPrice) {
-                        $minPrice = $deliveryInfo->clientPrice;
+                    foreach($courierCompanyList as $courierCompany){
+                        $deliveryInfo = $courierCompany->getDeliveryInfo();
+                        if($minPrice > $deliveryInfo->clientPrice) {
+                            $minPrice = $deliveryInfo->clientPrice;
+                        }
+                        if($minTime > $deliveryInfo->delivery_time_min) {
+                            $minTime = $deliveryInfo->delivery_time_min;
+                        }
                     }
-                    if($minTime > $deliveryInfo->delivery_time_min) {
-                        $minTime = $deliveryInfo->delivery_time_min;
-                    }
+                    $data['courier'] = array(
+                        'minPrice' => $minPrice,
+                        'minTime' => $minTime,
+                        'timeStr' => Utils::plural($minTime, 'дня', 'дней', 'дней', 'дней', false),
+                        'disabled' => false
+                    );
                 }
-                $data['courier'] = array(
-                    'minPrice' => $minPrice,
-                    'minTime' => $minTime,
-                    'timeStr' => Utils::plural($minTime, 'дня', 'дней', 'дней', 'дней', false),
-                    'disabled' => false
-                );
             }
         }
+        return $data;
+    }
+
+    /**
+     * Возвращает страницу с формой выбора способа доставки
+     * @param bool $dataOnly если передать true, то отдаст данные для обновления верстки через js
+     * @return string
+     */
+    protected function renderDeliveryTypeForm( $dataOnly = false )
+    {
+        $staticURL = $this->shop->getStaticPath();
+        $cityId = $this->order->city;
+
+        $order = $this->order;
+        $order->declaredPrice = $this->shop->getDeclaredPrice($order);
+        $order->city = $cityId;
+
+        $data = $this->getDataFromHeader();
 
         if(!$dataOnly) {
             // Рендер html
