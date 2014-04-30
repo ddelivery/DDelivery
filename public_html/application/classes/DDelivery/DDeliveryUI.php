@@ -775,6 +775,7 @@ class DDeliveryUI
 
             if( count( $points ) )
             {
+                $result_points = array();
                 foreach ( $points as $item )
                 {
                     $companyID = $item->get('company_id');
@@ -783,13 +784,14 @@ class DDeliveryUI
                     {
                         $item->setDeliveryInfo( $deliveryInfo[$companyID] );
                         $item->pointID = $item->get('_id');
+                        $result_points[] = $item;
                     }
                 }
             }
         }else{
-            $points = array();
+            $result_points = array();
         }
-        $points = $this->shop->filterPointsSelf( $points, $order, $order->city );
+        $points = $this->shop->filterPointsSelf( $result_points , $order, $order->city );
 
         return $points;
 
