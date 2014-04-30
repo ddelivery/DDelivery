@@ -108,11 +108,15 @@ var Header = (function () {
             function citySelectEvent() {
                 var cityId = $(this).data('id');
 
+                $('.delivery-place__drop').slideUp(function () {
+                    $('.map-popup__main').removeClass('show-drop-2');
+                });
+
                 if ($('input[name=ddelivery_city]').val() == cityId) {
                     return false;
                 }
 
-                var title = $(this)[0].innerText.trim().replace('\n', ', ');
+                var title = $(this).text().trim().replace(/[ ]{2,}/g, ' ').replace('\n', ', ');
                 $('.delivery-place__title input').val('').attr('title', title).blur();
 
                 $('.delivery-place__drop li a').removeClass('active');
@@ -120,9 +124,7 @@ var Header = (function () {
 
                 $('input[name=ddelivery_city]').val(cityId);
 
-                $('.delivery-place__drop').slideUp(function () {
-                    $('.map-popup__main').removeClass('show-drop-2');
-                });
+
                 $(window).trigger('ddeliveryCityPlace', {id: cityId, title: title});
 
                 return false;
