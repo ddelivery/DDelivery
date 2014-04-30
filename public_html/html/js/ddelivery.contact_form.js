@@ -12,6 +12,7 @@ var ContactForm = (function () {
 
                 return false;
             });
+
             $('input', form).on('required', function() {
                 var el = $(this), val;
                 if(el.hasClass('tipped')){
@@ -19,7 +20,7 @@ var ContactForm = (function () {
                 }else{
                     val = el.val().trim();
                 }
-                if(el.prop('required') && val.length == 0) {
+                if(el.attr('req') && val.length == 0) {
                     el.closest('.row__inp').addClass('error');
                 }else{
                     el.closest('.row__inp').removeClass('error');
