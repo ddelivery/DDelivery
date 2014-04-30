@@ -764,6 +764,7 @@ class DDeliveryUI
         if(!$this->_validateOrderToGetPoints( $order))
             throw new DDeliveryException('Для получения списка необходимо корректный order');
         // Есть ли необходимость искать точки на сервере ddelivery
+        $result_points = array();
         if( $this->shop->preGoToFindPoints( $order ))
         {
             $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) ); /** cache **/
@@ -775,7 +776,6 @@ class DDeliveryUI
 
             if( count( $points ) )
             {
-                $result_points = array();
                 foreach ( $points as $item )
                 {
                     $companyID = $item->get('company_id');
@@ -788,8 +788,6 @@ class DDeliveryUI
                     }
                 }
             }
-        }else{
-            $result_points = array();
         }
         $points = $this->shop->filterPointsSelf( $result_points , $order, $order->city );
 
