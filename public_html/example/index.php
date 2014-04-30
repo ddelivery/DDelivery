@@ -29,6 +29,13 @@
 
 
         <script>
+            // attach modal close handler
+            function closePopup()
+            {
+                jQuery(function($){
+                    $.modal().close();
+                })
+            }
             function DDeliveryStart(){
                 var params = {
                     //orderId: 4 // Если у вас есть id заказа который изменяется, то укажите его в этом параметре
@@ -51,29 +58,12 @@
         </script>
 
         <script type="text/javascript">
-            function closePopup()
-            {
-                jQuery(function($){
-                        $.modal().close();
-                })
-            }
             jQuery(function($){
-                // attach modal close handler
-                $('.map-popup__head__close').on('click', function(e){
-                    e.preventDefault();
-                    $.modal().close();
-                });
                 // bind event handlers to modal triggers
                 $('body').on('click', '.trigger', function(e){
                     e.preventDefault();
                     $('#test-modal').modal().open();
                     DDeliveryStart();
-                });
-
-                // below isn't important (demo-specific things)
-                $('.modal .more-toggle').on('click', function(e){
-                    e.stopPropagation();
-                    $('.modal .more').toggle();
                 });
             });
         </script>
