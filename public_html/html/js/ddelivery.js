@@ -21,8 +21,11 @@ var DDelivery = {
         if(typeof(callbacks)!='object'){
             callbacks = false;
         }
-
         var message = function (event) {
+            // Не наше окно, мы его не слушаем
+            if(iframe.contentWindow != event.source) {
+                return;
+            }
             var result;
 
             if (typeof(callbacks[event.data.action]) == 'function') {
@@ -30,7 +33,7 @@ var DDelivery = {
             }
             if( result !== false ) {
                 if (event.data.action == 'close') {
-                    iframe.parentNode.removeChild(iframe);
+                    //iframe.parentNode.removeChild(iframe);
                 }
             }
         };
