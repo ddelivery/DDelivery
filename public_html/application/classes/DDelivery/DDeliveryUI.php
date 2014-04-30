@@ -1527,6 +1527,7 @@ class DDeliveryUI
      */
     protected function renderMap($dataOnly = false)
     {
+        $this->getOrder()->type = DDeliverySDK::TYPE_SELF;
         $cityId = $this->order->city;
 
         $points = $this->getSelfPoints($this->order);
@@ -1668,6 +1669,7 @@ class DDeliveryUI
      */
     protected function renderCourier()
     {
+        $this->getOrder()->type = DDeliverySDK::TYPE_COURIER;
         $cityId = $this->order->city;
         $cityList = $this->getCityByDisplay($cityId);
         $companies = $this->getCompanySubInfo();
@@ -1694,21 +1696,17 @@ class DDeliveryUI
         if(!$point){
             return '';
         }
-        if ($point instanceof DDeliveryPointSelf) {
-            $deliveryType = DDeliverySDK::TYPE_SELF;
-        } elseif($point instanceof DDeliveryPointCourier) {
-            $deliveryType = DDeliverySDK::TYPE_COURIER;
+
+        if($this->getOrder()->type == DDeliverySDK::TYPE_COURIER) {
+            $requiredFieldMask = $this->shop->getCourierRequiredFields();
+        }elseif($this->getOrder()->type == DDeliverySDK::TYPE_SELF) {
+            $requiredFieldMask = $this->shop->getSelfRequiredFields();
         }else{
             return '';
         }
 
-        if($deliveryType == DDeliverySDK::TYPE_COURIER) {
-            $requiredFieldMask = $this->shop->getCourierRequiredFields();
-        }else{
-            $requiredFieldMask = $this->shop->getSelfRequiredFields();
-        }
-
         $order = $this->order;
+        $order->declaredPrice = $this->shop->getDeclaredPrice($order);
 
         $fieldValue = $order->getToName();
         if(!$fieldValue)

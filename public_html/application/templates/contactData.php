@@ -66,7 +66,7 @@
 
             <div class="row clearfix">
                 <div class="row__title">
-                    <label for="comments">Коментарий к курьеру</label>
+                    <label for="comments">Комментарий к курьеру</label>
                 </div>
                 <div class="row__inp">
                     <textarea id="comments" title="Напишите комментарий"></textarea>
