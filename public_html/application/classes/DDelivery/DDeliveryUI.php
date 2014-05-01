@@ -6,6 +6,7 @@
 * @author  mrozk
 */
 namespace DDelivery;
+use DDelivery\Adapter\DDStatusProvider;
 use DDelivery\Adapter\DShopAdapter;
 use DDelivery\DataBase\City;
 use DDelivery\DataBase\Order;
@@ -1047,7 +1048,7 @@ class DDeliveryUI
 
     	    $goods_description = $order->getGoodsDescription();
     	    $weight = $order->getWeight();
-    	    $confirmed = $this->shop->isConfirmedStatus($order);
+    	    $confirmed = $this->shop->isConfirmedStatus($order->localStatus);
 
     	    $to_name = $order->getToName();
     	    $to_phone = $order->getToPhone();
@@ -1116,16 +1117,13 @@ class DDeliveryUI
     	    $dimensionSide3 = $order->getDimensionSide3();
     	    $goods_description = $order->getGoodsDescription();
     	    $weight = $order->getWeight();
-    	    $confirmed = $this->shop->isConfirmedStatus($order);
+    	    $confirmed = $this->shop->isConfirmedStatus($order->localStatus);
     	    $to_name = $order->getToName();
     	    $to_phone = $order->getToPhone();
-
     	    $orderPrice = $point->getDeliveryInfo()->clientPrice;
     	    $declaredPrice = $this->shop->getDeclaredPrice( $order );
     	    $paymentPrice = $this->shop->getPaymentPriceSelf( $order, $orderPrice );
-
     	    $shop_refnum = $order->shopRefnum;
-
     	    try
     	    {
     	        $response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
@@ -1141,6 +1139,14 @@ class DDeliveryUI
     	    $ddeliveryOrderID = $response->response['order'];
     	}
     	$order->ddeliveryID = $ddeliveryOrderID;
+        if( $confirmed )
+        {
+            $order->ddStatus = DDStatusProvider::ORDER_CONFIRMED;
+        }
+        else
+        {
+            $order->ddStatus = DDStatusProvider::ORDER_IN_PROGRESS;
+        }
 
         $this->saveFullOrder( $order );
 

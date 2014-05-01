@@ -150,15 +150,16 @@ abstract class DShopAdapter
      *
      * Используется при отправке заявки на сервер DD для указания стартового статуса
      *
-     * Если true то заявка будет выставлена в статус "Подтверждена",
-     * если false то то заявка будет выставлена в статус "В обработке"
+     * Если true то заявка в сервисе DDelivery будет выставлена в статус "Подтверждена",
+     * если false то то заявка в сервисе DDelivery будет выставлена в статус "В обработке"
      *
-     * @param DDeliveryOrder $order
+     * @param mixed $localStatus
      *
      * @return bool
      */
-    public function isConfirmedStatus( $order )
+    public function isConfirmedStatus( $localStatus )
     {
+
         return true;
     }
 
@@ -183,7 +184,7 @@ abstract class DShopAdapter
      * 
      * @param string $status
      * @param DDeliveryOrder $order
-     * 
+     * @deprecated
      * @return bool
      */
     public function isStatusToSendOrder( $status, $order )

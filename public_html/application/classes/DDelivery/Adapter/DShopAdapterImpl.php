@@ -2,20 +2,11 @@
 
 namespace DDelivery\Adapter;
 
+use DDelivery\Order\DDeliveryOrder;
+
 class DShopAdapterImpl extends DShopAdapter
 {
 
-    /**
-     * Метод будет вызван когда пользователь закончит выбор способа доставки
-     *
-     * @param int $orderId
-     * @param \DDelivery\Order\DDeliveryOrder $order
-     * @return void
-     */
-    public function onFinishChange($orderId, \DDelivery\Order\DDeliveryOrder $order)
-    {
-        // TODO: Implement onFinishChange() method.
-    }
     /**
      * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
      * @return string
@@ -84,5 +75,30 @@ class DShopAdapterImpl extends DShopAdapter
         return true;
     }
 
+    /**
+     * Метод будет вызван когда пользователь закончит выбор способа доставки
+     *
+     * @param int            $orderId
+     * @param DDeliveryOrder $order
+     * @param bool           $customPoint Если true, то заказ обрабатывается магазином
+     *
+     * @return bool
+     */
+    public function onFinishChange($orderId, DDeliveryOrder $order, $customPoint)
+    {
+        // TODO: Implement onFinishChange() method.
+    }
+
+    /**
+     * Возвращает оценочную цену для товаров в послыке
+     *
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     *
+     * @return float
+     */
+    public function getDeclaredPrice($order)
+    {
+        // TODO: Implement getDeclaredPrice() method.
+    }
 }
 ?>
