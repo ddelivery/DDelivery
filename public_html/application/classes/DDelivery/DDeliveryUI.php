@@ -112,6 +112,31 @@ class DDeliveryUI
 
     /**
      *
+     * Получить объект заказа из БД SQLite по его ID в CMS
+     *
+     * @param int $cmsOrderID id заказа в cms
+     *
+     * @return DDeliveryOrder
+     *
+     */
+    function getOrderByCmsID( $cmsOrderID )
+    {
+        $orderDB = new DataBase\Order();
+        $data = $orderDB->getOrderByCmsOrderID( $cmsOrderID );
+        if( count($data) )
+        {
+            $ids = array( $data[0]->id );
+            $orderArr = $this->initIntermediateOrder($ids);
+            return $orderArr[0];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    /**
+     *
      * Обработчик изменения статуса заказа
      *
      * @param int $cmsOrderID id заказа в cms
@@ -121,25 +146,28 @@ class DDeliveryUI
      */
     public function changeOrderStatus( $cmsOrderID )
     {
-        $orderDB = new DataBase\Order();
-        $data = $orderDB->getOrderByCmsOrderID( $cmsOrderID );
-        $ids = array( $data[0]->id );
-        $orderArr = $this->initIntermediateOrder($ids);
-        $order = $orderArr[0];
-        if( $order->ddeliveryID == 0 )
+        $order = $this->getOrderByCmsID( $cmsOrderID );
+        if( $order )
+        {
+            if( $order->ddeliveryID == 0 )
+            {
+                return false;
+            }
+            $ddStatus = $this->getDDOrderStatus($order->ddeliveryID);
+            if( $ddStatus == 0 )
+            {
+                return false;
+            }
+            $order->ddStatus = $ddStatus;
+            $order->localStatus = $this->shop->getLocalStatusByDD( $order->ddStatus );
+            $this->saveFullOrder($order);
+            $this->shop->setCmsOrderStatus($order->shopRefnum, $order->localStatus);
+            return true;
+        }
+        else
         {
             return false;
         }
-        $ddStatus = $this->getDDOrderStatus($order->ddeliveryID);
-        if( $ddStatus == 0 )
-        {
-            return false;
-        }
-        $order->ddStatus = $ddStatus;
-        $order->localStatus = $this->shop->getLocalStatusByDD( $order->ddStatus );
-        $this->saveFullOrder($order);
-        $this->shop->setCmsOrderStatus($order->shopRefnum, $order->localStatus);
-        return true;
     }
 
     /**
