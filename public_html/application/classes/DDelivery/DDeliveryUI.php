@@ -1836,6 +1836,7 @@ class DDeliveryUI
     public function _initOrderInfo($currentOrder, $item)
     {
         $currentOrder->type = $item->type;
+        $currentOrder->paymentVariant = $item->payment_variant;
         $currentOrder->localId = $item->id;
         $currentOrder->confirmed = $item->confirmed;
         $currentOrder->amount = $item->amount;
