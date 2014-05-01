@@ -123,10 +123,11 @@ class DDeliveryUI
     {
         $orderDB = new DataBase\Order();
         $data = $orderDB->getOrderByCmsOrderID( $cmsOrderID );
+
         if( count($data) )
         {
             $ids = array( $data[0]->id );
-            $orderArr = $this->initIntermediateOrder($ids);
+            $orderArr = $this->initOrder($ids);
             return $orderArr[0];
         }
         else
