@@ -1080,7 +1080,14 @@ class DDeliveryUI
     	    $ddeliveryOrderID = $response->response['order'];
     	}
     	$order->ddeliveryID = $ddeliveryOrderID;
-
+        if( $confirmed )
+        {
+            $order->ddStatus = DDStatusProvider::ORDER_CONFIRMED;
+        }
+        else
+        {
+            $order->ddStatus = DDStatusProvider::ORDER_IN_PROGRESS;
+        }
     	$this->saveFullOrder( $order );
 
     	return $ddeliveryOrderID;
