@@ -185,6 +185,7 @@ class DDeliveryUI
         $order->shopRefnum = $shopOrderID;
         $order->localStatus = (int)$status;
 
+        /*
         if( $this->shop->isStatusToSendOrder( $status, $order) )
         {   
 
@@ -198,9 +199,9 @@ class DDeliveryUI
             $this->saveFullOrder($order);
             return (bool)$order->ddeliveryID;
         }
-        
-        $this->saveFullOrder($order);
-        return true;
+        */
+        $id = $this->saveFullOrder($order);
+        return (bool)$id;
     }
     
     
