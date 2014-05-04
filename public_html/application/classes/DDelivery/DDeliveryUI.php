@@ -72,9 +72,13 @@ class DDeliveryUI
     private $cache;
 
     /**
-     * @param DShopAdapter $dShopAdapter
+     * Запускает движок SDK
+     *
+     * @param DShopAdapter $dShopAdapter адаптер интегратора
+     * @param bool $skipOrder запустить движок без инициализации заказа  из корзины
+     *
      */
-    public function __construct(DShopAdapter $dShopAdapter)
+    public function __construct(DShopAdapter $dShopAdapter, $skipOrder = false)
     {
         $this->shop = $dShopAdapter;
 
@@ -82,13 +86,13 @@ class DDeliveryUI
 
         SQLite::$dbUri = $dShopAdapter->getPathByDB();
         // Формируем объект заказа
-        $productList = $this->shop->getProductsFromCart();
-        $this->order = new DDeliveryOrder( $productList );
-        
-        $this->order->amount = $this->shop->getAmount();
-
+        if(!$skipOrder)
+        {
+            $productList = $this->shop->getProductsFromCart();
+            $this->order = new DDeliveryOrder( $productList );
+            $this->order->amount = $this->shop->getAmount();
+        }
         $this->messager = new Sdk\DDeliveryMessager($this->shop->isTestMode());
-
         $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled() );
     }
 
