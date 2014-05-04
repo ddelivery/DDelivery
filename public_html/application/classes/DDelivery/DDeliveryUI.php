@@ -91,9 +91,6 @@ class DDeliveryUI
 
         $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled() );
     }
-   
-
-
 
 
     /**
@@ -109,6 +106,29 @@ class DDeliveryUI
         return $this->shop->getLocalStatusByDD( $ddStatus );
     }
 
+
+    /**
+     * Получить все пользовательские поля по ID в БД SQLite
+     *
+     * Необходимо для того чтобы выставлять заглушки в полях
+     * CMS если были заполнены поля DD формы. При обращении Нужно
+     * будет конвертировать в json и отправлять
+     *
+     * @param int $localOrderID
+     *
+     * @return array
+     */
+    public function getDDUserInfo( $localOrderID )
+    {
+        $ids = array( (int)$localOrderID );
+        $orderArr = $this->initOrder($ids);
+        $order = $orderArr[0];
+        return array('firstName' => $order->firstName, 'secondName' => $order->secondName,
+                     'toPhone' => $order->toPhone, 'toEmail' => $order->toEmail,
+                     'toStreet' => $order->toStreet, 'toHouse' => $order->toHouse,
+                     'toFlat' => $order->toFlat
+        );
+    }
 
     /**
      *

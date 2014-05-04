@@ -122,7 +122,8 @@ $result = $fixture->addSelfOrder( 50, 10,
 print_r($result);
 $result = $fixture->calculatorPickupForPoint(50, 10, 10,  10, 1, 0);
 */
-$shopAdapter = new DDelivery\Adapter\DShopAdapterTest();
+include 'mrozk/IntegratorShop.php';
+$shopAdapter = new IntegratorShop();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
 $order->city = 151184;
@@ -139,8 +140,10 @@ $order->paymentVariant = 'cash';
 $order->localStatus = 'xxx';
 $order->shopRefnum = 14;
 
-$pointself = $DDeliveryUI->getSelfPoints($order);
-print_r($pointself);
+print_r( $DDeliveryUI->getDDUserInfo(18) );
+
+//$pointself = $DDeliveryUI->getSelfPoints($order);
+//print_r($pointself);
 //$order->setPoint($pointself[0]);
 
 
