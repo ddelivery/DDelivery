@@ -50,6 +50,7 @@ class DDeliverySDK {
         {
             $this->server = 'cabinet';
         }
+
         $this->requestProvider = new RequestProvider( $apiKey, $this->server );
         $this->requestProvider->setKeepActive( true );
     }
