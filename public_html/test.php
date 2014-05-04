@@ -139,8 +139,12 @@ $order->localId = 2;
 $order->paymentVariant = 'cash';
 $order->localStatus = 'xxx';
 $order->shopRefnum = 14;
-
-print_r( $DDeliveryUI->getDeliveryPrice(18) );
+$order->comment = 'Олег Царьов';
+$id = $DDeliveryUI->saveFullOrder( $order );
+echo $id;
+$order2 = $DDeliveryUI->initOrder(array($id));
+print_r( $order2 );
+//print_r( $DDeliveryUI->getDeliveryPrice(18) );
 
 //$pointself = $DDeliveryUI->getSelfPoints($order);
 //print_r($pointself);

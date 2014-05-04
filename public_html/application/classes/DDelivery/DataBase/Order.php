@@ -67,7 +67,8 @@ class Order {
 	 */
 	public function createTable()
 	{
-		$this->pdo->exec("CREATE TABLE IF NOT EXISTS orders (
+
+        $this->pdo->exec("CREATE TABLE IF NOT EXISTS orders (
                           id INTEGER PRIMARY KEY AUTOINCREMENT,
 				          payment_variant TEXT,
 				          shop_refnum INTEGER,
