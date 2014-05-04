@@ -45,9 +45,9 @@ class RequestProvider
 	 * @var string
 	 */
 	private $serverUrl = array('stage' => 'http://stage.ddelivery.ru/api/v1/',
-	                           'dev' => 'http://cabinet.ddelivery.ru/api/v1/',
-	                           'devnode' => 'http://stage.ddelivery.ru/daemon/daemon.js',
-			                   'stagenode' => 'http://cabinet.ddelivery.ru/daemon/daemon.js'
+	                           'cabinet' => 'http://cabinet.ddelivery.ru/api/v1/',
+	                           'stagenode' => 'http://stage.ddelivery.ru/daemon/daemon.js',
+			                   'cabinetnode' => 'http://cabinet.ddelivery.ru/daemon/daemon.js'
 	                           );
 	/**
 	 * Количество проделанных запросов на сервер ddelivery
@@ -158,14 +158,14 @@ class RequestProvider
 	 */
 	private function _setSpecificOptionsToRequest($method, $action, $server, $urlSuffix)
 	{
-		if( $method == 'get' && ($server == 'dev' || $server == 'stage') )
+		if( $method == 'get' && ($server == 'cabinet' || $server == 'stage') )
 		{
 			$url = $this->serverUrl[$server] . urlencode($this->apiKey) .'/' . urlencode($action) . '.json?';
 			$url .= $urlSuffix;
 			
 			curl_setopt($this->curl[$server], CURLOPT_URL, $url);
 		}
-		else if( $method == 'get' && ( $server == 'devnode' || $server == 'stagenode')  ) 
+		else if( $method == 'get' && ( $server == 'cabinetnode' || $server == 'stagenode')  )
 		{
 			
 			$url = $this->serverUrl[$server] . '?';

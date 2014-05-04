@@ -48,7 +48,7 @@ class DDeliverySDK {
         }
         else
         {
-            $this->server = 'stage';
+            $this->server = 'cabinet';
         }
         $this->requestProvider = new RequestProvider( $apiKey, $this->server );
         $this->requestProvider->setKeepActive( true );
@@ -224,7 +224,7 @@ class DDeliverySDK {
             '_action' => 'geoip',
             'ip' => $ip
         );
-    	$response = $this->requestProvider->request('geoip', $params, 'get', 'devnode');
+    	$response = $this->requestProvider->request('geoip', $params, 'get', $this->server . 'node');
     	if( !$response->success )
     	{
             $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
