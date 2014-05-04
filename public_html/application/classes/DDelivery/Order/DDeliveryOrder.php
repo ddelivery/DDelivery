@@ -164,6 +164,10 @@ class DDeliveryOrder
      * @var int id заказа на стороне сервера ddelivery
      */
     public $ddeliveryID = 0;
+
+
+    public $comment;
+
     /**
      * @param DDeliveryProduct[] $productList
      * @throws DDeliveryOrderException

@@ -1903,6 +1903,7 @@ class DDeliveryUI
         $currentOrder->toHouse = $item->to_house;
         $currentOrder->toFlat = $item->to_flat;
         $currentOrder->toEmail = $item->to_email;
+        $currentOrder->comment = $item->comment;
     }
 
 
