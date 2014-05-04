@@ -130,6 +130,29 @@ class DDeliveryUI
         );
     }
 
+
+    /**
+     *
+     * Получить стоимость доставки по ID заказа в БД SQLite
+     *
+     * @param $localOrderID
+     *
+     * @throws DDeliveryException
+     *
+     * @return float
+     */
+    public function getDeliveryPrice( $localOrderID )
+    {
+        $ids = array( (int)$localOrderID );
+        $orderArr = $this->initOrder($ids);
+        $order = $orderArr[0];
+        if( $order->getPoint() == null )
+        {
+            throw new DDeliveryException('Точка не найдена');
+        }
+        return $order->getPoint()->getDeliveryInfo()->clientPrice;
+    }
+
     /**
      *
      * Получить объект заказа из БД SQLite по его ID в CMS

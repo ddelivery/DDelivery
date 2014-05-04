@@ -140,7 +140,7 @@ $order->paymentVariant = 'cash';
 $order->localStatus = 'xxx';
 $order->shopRefnum = 14;
 
-print_r( $DDeliveryUI->getDDUserInfo(18) );
+print_r( $DDeliveryUI->getDeliveryPrice(18) );
 
 //$pointself = $DDeliveryUI->getSelfPoints($order);
 //print_r($pointself);
