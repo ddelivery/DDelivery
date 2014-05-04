@@ -1098,6 +1098,7 @@ class DDeliveryUI
     	/** @var DDeliveryPointCourier $point */
     	try
     	{
+            $order->toPhone = $this->formatPhone( $order->toPhone );
     		$this->checkOrderCourierValues( $order );
     	}
     	catch (DDeliveryException $e)
@@ -1180,7 +1181,8 @@ class DDeliveryUI
         /** @var DDeliveryPointSelf $point */
     	try
     	{
-    		$this->checkOrderSelfValues( $order );
+            $order->toPhone = $this->formatPhone( $order->toPhone );
+            $this->checkOrderSelfValues( $order );
     	}
     	catch (DDeliveryException $e)
     	{
@@ -1287,6 +1289,18 @@ class DDeliveryUI
         	return true;
         }
         return false;
+    }
+
+    /**
+     * Вырезаем из номера телефона ненужные символы
+     *
+     * @param string $phone
+     *
+     * @return string
+     */
+    public function formatPhone( $phone )
+    {
+        return preg_replace( array('/-/', '/\(/', '/\)/', '/\+7/', '/\s\s+/'), '', $phone );
     }
 
     /**
