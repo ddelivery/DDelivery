@@ -389,7 +389,7 @@ class DDeliveryOrder
     
     public function getToName()
     {
-    	return $this->firstName . ' ' . $this->secondName;
+    	return trim($this->firstName . ' ' . $this->secondName);
     }
     
     public function getToStreet()
