@@ -411,7 +411,22 @@ Map = (function () {
                         var day = $('.map-popup__info__table .day').show();
                         $('strong', day).html(data.point.delivery_time_min);
                         $('span', day).html(data.point.delivery_time_min_str);
-                        $('.more', more).html(data.point.description_out);
+                        if(data.point.indoor_place)
+                            $('.address', more).html(point.address + ', ' + data.point.indoor_place);
+
+
+                        $('.schedule', more).html(data.point.schedule.replace(/\n/g, "<br>"));
+
+                        var description = (data.point.description_out + '<br/>' + data.point.description_out).replace(/\n/g, '<br/>');
+                        $('.more', more).html(description);
+
+                        if(!data.point.metro) {
+                            $('.metro_row', more).hide();
+                        }else{
+                            $('.metro_row', more).show();
+                            $('.metro_row .col2', more).html(data.point.metro);
+                        }
+
                     }else{
                         // Если ошибка что-то нужно делать
                     }

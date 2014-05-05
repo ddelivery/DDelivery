@@ -224,6 +224,7 @@ sprites locations are 0 -56px/-20px -56px/-40px -56px/-60px -56px (light) and -8
 .map-popup .map-popup__info__more__btn a:hover { border-color: transparent; color: #7f7f7f !important; }
 .map-popup .map-popup__info__more__btn.open a i { background: url('../img/icons-sdcb5931be9.png') 0 -676px no-repeat; width: 9px; height: 6px; }
 .map-popup .map-popup__info__more__text_i { padding-right: 20px; }
+.map-popup .map-popup__info__more__text_i tr.metro_row { display: none; }
 .map-popup .map-popup__info__more__text { display: none; height: 260px; overflow: hidden; }
 .map-popup .map-popup__info__more__text table { width: 100%; }
 .map-popup .map-popup__info__more__text table tr td { padding-bottom: 15px; }

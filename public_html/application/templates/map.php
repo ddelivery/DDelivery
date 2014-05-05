@@ -163,6 +163,10 @@
                                 <td class="col1">Адрес:</td>
                                 <td class="col2 address"></td>
                             </tr>
+                            <tr class="metro_row">
+                                <td class="col1">Метро:</td>
+                                <td class="col2"></td>
+                            </tr>
                             <tr>
                                 <td class="col1">Расписание работы:</td>
                                 <td class="col2 schedule"></td>

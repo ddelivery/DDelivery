@@ -23,14 +23,14 @@ namespace DDelivery\Point;
  * @property int company
  * @property int company_id
  * @property int company_code
- * @property int metro 
+ * @property string metro
  * @property string description_in
  * @property string description_out
- * @property int indoor_place
- * @property int address
- * @property int schedule
- * @property int longitude
- * @property int latitude
+ * @property string indoor_place
+ * @property string address
+ * @property string schedule
+ * @property float longitude
+ * @property float latitude
  * @property int type 1 - ячейка, 2 - живой пункт
  * @property int status
  * @property int has_fitting_room

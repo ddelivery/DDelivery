@@ -1453,7 +1453,11 @@ class DDeliveryUI
 
                         echo json_encode(array(
                             'point'=>array(
+                                'description_in' => $pointSelf->description_in,
                                 'description_out' => $pointSelf->description_out,
+                                'indoor_place' => $pointSelf->indoor_place,
+                                'metro' => trim($pointSelf->metro),
+                                'schedule' => $pointSelf->schedule,
                                 'total_price' => $pointSelf->getDeliveryInfo()->clientPrice,
                                 'delivery_time_min' => $pointSelf->getDeliveryInfo()->delivery_time_min,
                                 'delivery_time_min_str' => Utils::plural($pointSelf->getDeliveryInfo()->delivery_time_min, 'дня', 'дней', 'дней', 'дней', false),
