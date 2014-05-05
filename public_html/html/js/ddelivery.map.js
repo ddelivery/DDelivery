@@ -294,6 +294,9 @@ Map = (function () {
         },
         placeEvent: function () {
             $('.map-popup__main__right .places a').click(function () {
+                if($('.map-popup__main__right .places').hasClass('info-open')){
+                    return;
+                }
                 if (current_points.length > 0) {
                     var id = parseInt($(this).data('id'));
                     if (current_point.company_id != parseInt($(this).data('id'))) {
