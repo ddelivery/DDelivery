@@ -1584,7 +1584,13 @@ class DDeliveryUI
                 } elseif($point instanceof DDeliveryPointCourier) {
                     $comment = 'Доставка курьером по адресу '.$this->order->getFullAddress();
                 }
-                echo json_encode(array('html'=>'', 'js'=>'change', 'comment'=>htmlspecialchars($comment), 'orderId' => $this->order->localId));
+                echo json_encode(array(
+                    'html'=>'',
+                    'js'=>'change',
+                    'comment'=>htmlspecialchars($comment),
+                    'orderId' => $this->order->localId,
+                    'clientPrice'=>$point->getDeliveryInfo()->clientPrice
+                ));
                 break;
             default:
                 throw new DDeliveryException('Not support action');

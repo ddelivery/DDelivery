@@ -50,7 +50,7 @@
                     },
                     change: function(data) {
                         
-                        alert(data.comment+ ' интернет магазину нужно взять с пользователя '+' руб. OrderId: '+data.orderId);
+                        alert(data.comment+ ' интернет магазину нужно взять с пользователя за доставку '+data.clientPrice+' руб. OrderId: '+data.orderId);
                     }
                 };
 
