@@ -272,6 +272,9 @@ Map = (function () {
 
                 $('.map-popup__main__right .places').html('').addClass('info-open');
 
+                $('.delivery-type__drop ul').hide();
+                $('.map-popup .delivery-type__drop p.loader_center').show();
+
                 DDeliveryIframe.ajaxData({action: 'mapDataOnly', city_id: city.id}, function (data) {
                     Map.renderData(data);
                 });
@@ -334,6 +337,18 @@ Map = (function () {
             filter.hideCompany = [];
             Map.filterPoints(); // Фильтр покажет все точки
             Map.placeEvent();
+
+            if(typeof(data.headerData) != 'undefined') {
+                for(var key in data.headerData ) {
+                    var headerData = data.headerData[key];
+                    $('.delivery-type__drop_'+key+' .price span').html(headerData.minPrice);
+                    $('.delivery-type__drop_'+key+' .date strong').html(headerData.minTime);
+                    $('.delivery-type__drop_'+key+' .date span').html(headerData.timeStr);
+                }
+            }
+            $('.delivery-type__drop ul').show();
+            $('.map-popup .delivery-type__drop p.loader_center').hide();
+
         },
         renderInfo: function (point, points) {
 

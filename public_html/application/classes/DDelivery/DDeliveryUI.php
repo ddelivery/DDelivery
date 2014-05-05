@@ -1651,7 +1651,9 @@ class DDeliveryUI
             include(__DIR__ . '/../../templates/mapCompanyHelper.php');
             $content = ob_get_contents();
             ob_end_clean();
-            return json_encode(array('html'=>$content, 'points' => $pointsJs, 'orderId' => $this->order->localId));
+            $dataFromHeader = $this->getDataFromHeader();
+
+            return json_encode(array('html'=>$content, 'points' => $pointsJs, 'orderId' => $this->order->localId, 'headerData' => $dataFromHeader));
         } else {
             $cityList = $this->getCityByDisplay($cityId);
             $headerData = $this->getDataFromHeader();

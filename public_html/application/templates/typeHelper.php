@@ -12,6 +12,9 @@
     <img src="<?=$staticURL?>img/icons/shipping-grey.png"/>забрать самовывозом <i>&nbsp;</i></span>
 </div>
 <div class="delivery-type__drop">
+    <p class="loader_center">
+        <img src="<?=$staticURL?>img/ajax_loader_horizont.gif"/>
+    </p>
     <ul>
         <?if(in_array(DDelivery\Sdk\DDeliverySDK::TYPE_COURIER, $this->supportedTypes)):?>
             <li class="delivery-type__drop_courier">
@@ -19,7 +22,7 @@
                     <span class="name">доаставить курьером</span>
                     <span class="price"><span><?=$headerData['courier']['minPrice']?></span> <i class="icon-rub">&nbsp;</i></span>
                     <span class="date">от <strong><?=$headerData['courier']['minTime']?></strong>
-                        <?\DDelivery\Utils::plural($headerData['courier']['minTime'], 'дня', 'дней', 'дней', 'дней', false)?>
+                        <span><?=\DDelivery\Utils::plural($headerData['courier']['minTime'], 'дня', 'дней', 'дней', 'дней', false)?></span>
                     </span>
                 </a>
             </li>
@@ -30,7 +33,7 @@
                     <span class="name">забрать самовывозом от</span>
                     <span class="price"><span><?=$headerData['self']['minPrice']?></span> <i class="icon-rub">&nbsp;</i></span>
                     <span class="date">от <strong><?=$headerData['self']['minTime']?></strong>
-                        <?\DDelivery\Utils::plural($headerData['self']['minTime'], 'дня', 'дней', 'дней', 'дней', false)?>
+                        <span><?=\DDelivery\Utils::plural($headerData['self']['minTime'], 'дня', 'дней', 'дней', 'дней', false)?></span>
                     </span>
                 </a>
             </li>

@@ -116,6 +116,7 @@ sprites locations are 0 -56px/-20px -56px/-40px -56px/-60px -56px (light) and -8
 .map-popup .delivery-type__drop ul li a .price { display: inline-block; font-size: 18px; color: #88417b; width: 69px; }
 .map-popup .delivery-type__drop ul li a .date { display: inline-block; font-size: 14px; color: #6f6f6f; width: 80px; text-align: center; }
 .map-popup .delivery-type__drop ul li a .date strong { padding: 0 5px; font-weight: normal; font-size: 18px; color: #88417b; }
+.map-popup .delivery-type__drop p.loader_center { text-align: center; display: none; }
 .map-popup .delivery-place { float: left; position: relative; }
 .map-popup .delivery-place__title { cursor: pointer; width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; position: relative; padding-left: 40px; height: 36px; line-height: 36px; overflow: hidden; white-space: nowrap; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; -ms-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.4); -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.4); box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.4); }
 .map-popup .delivery-place__title > input[type="text"] { border: 0; background: none; height: 36px; line-height: 36px; color: #545555; font-size: 15px; width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; outline: none; }
