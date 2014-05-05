@@ -162,12 +162,7 @@ var Header = (function () {
                 });
 
             $('.delivery-place__title > span').on('click', function () {
-                $(this).parent().parent().find('.delivery-place__drop').slideToggle(function () {
-                    $('.map-popup__main').toggleClass('show-drop-2');
-                    if ($('.no-touch').length) {
-                        $(this).find('.delivery-place__drop_i').mCustomScrollbar('update');
-                    }
-                });
+                $(this).parent().parent().find('input').focus();
             });
             $('.delivery-place__drop li a').on('click', citySelectEvent);
 
