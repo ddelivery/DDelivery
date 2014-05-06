@@ -23,7 +23,7 @@ var DDeliveryIframe = (function () {
             var th = this;
             if (this.orderId)
                 data.order_id = this.orderId;
-            $('#ddelivery').html('<img class="loader" src="' + staticUrl + '/img/ajax_loader.gif"/>');
+            $('#ddelivery').html('<img class="loader" src="' + staticUrl + '/img/ajax_loader_horizont.gif"/>');
 
             $.post(componentUrl, data, function (dataHtml) {
                 $('#ddelivery').html(dataHtml.html);

@@ -65,7 +65,7 @@
                         от <strong><?=$courierCompany->getDeliveryInfo()->clientPrice?> <i class="icon-rub">&nbsp;</i></strong>
                     </td>
                     <td class="col5">
-                        <strong><?=$courierCompany->delivery_time_min?></strong> дня
+                        <strong><?=$courierCompany->delivery_time_min?></strong> <?=\DDelivery\Utils::plural($courierCompany->delivery_time_min, 'дня', 'дней', 'дней', 'дней', false);?>
                     </td>
                 </tr>
             <?endforeach;?>
