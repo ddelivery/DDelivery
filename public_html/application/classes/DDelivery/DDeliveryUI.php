@@ -600,19 +600,23 @@ class DDeliveryUI
      * Получить город по ip адресу
      * @var string $ip
      *
-     * @return array;
+     * @return array|null;
      */
     public function getCityByIp( $ip )
     {
-        $response = $this->sdk->getCityByIp( $ip );
-
+        try{
+            // Ошибка с падением geoIp не критичная, можем работать дальше
+            $response = $this->sdk->getCityByIp( $ip );
+        }catch (DDeliveryException $e){
+            return null;
+        }
     	if( $response->success )
     	{
     		return $response->response;
     	}
     	else
     	{
-    		return 0;
+    		return null;
     	}
 
     }
@@ -1390,9 +1394,9 @@ class DDeliveryUI
         $cityId = (int)$this->shop->getClientCityId();
 
         if(!$cityId){
-            $sdkResponse = $this->sdk->getCityByIp($_SERVER['REMOTE_ADDR']);
-            if($sdkResponse && $sdkResponse->success && isset($sdkResponse->response['city_id'])) {
-                $cityId = (int)$sdkResponse->response['city_id'];
+            $cityRaw = $this->getCityByIp($_SERVER['REMOTE_ADDR']);
+            if($cityRaw && $cityRaw['city_id']) {
+                $cityId = (int)$cityRaw['city_id'];
             }
             if(!$cityId) {
                 $topCityId = $this->sdk->getTopCityId();
@@ -1416,6 +1420,7 @@ class DDeliveryUI
         if(isset($request['action'])) {
             switch($request['action']) {
                 case 'searchCity':
+                case 'searchCityMap':
                     if(isset($request['name']) && mb_strlen($request['name']) >= 3){
                         $cityList = $this->sdk->getAutoCompleteCity($request['name']);
 
@@ -1425,13 +1430,30 @@ class DDeliveryUI
                         }
 
                         $cityId = $this->order->city;
-                        ob_start();
-                        include(__DIR__ . '/../../templates/cityHelper.php');
-                        $content = ob_get_contents();
-                        ob_end_clean();
+                        $displayData = array();
+                        $content = '';
+                        if($request['action'] == 'searchCity'){
+                            ob_start();
+                            include(__DIR__ . '/../../templates/cityHelper.php');
+                            $content = ob_get_contents();
+                            ob_end_clean();
+                        }else{ // searchCityMap
+                            foreach($cityList as $cityData){
+                                $displayDataCur = array(
+                                    'id'=>$cityData['_id'],
+                                    'name'=>$cityData['type'].'. '.$cityData['name'],
+                                );
+
+                                if($cityData['name'] != $cityData['region']) {
+                                    $displayDataCur['name'] .= ', '.$cityData['region'].' обл.';
+                                }
+                                $displayData[] = $displayDataCur;
+                            }
+                        }
 
                         echo json_encode(array(
                             'html'=>$content,
+                            'displayData'=>$displayData,
                             'request'=>array(
                                 'name'=>$request['name'],
                                 'action'=>'searchCity'

@@ -441,24 +441,50 @@ Map = (function () {
             var input = $('.map__search input[type=text]')[0];
             if (input.value.length < 3)
                 return;
-            ymaps.geocode(input.value, {results: 5}).then(function (res) {
+
+            // Область видимости геообъекта.
+            var bounds = renderGeoObject.properties.get('boundedBy');
+            console.log(renderGeoObject)
+            var options = {
+                results: 5,
+                boundedBy: bounds,
+                strictBounds: true
+            };
+            ymaps.geocode(input.value, options).then(function (res) {
                 if (res.metaData.geocoder.request == input.value) {
                     var html = '';
-                    var boundList = [];
+                    var geoObjectList = [];
                     for (var i = 0; i < res.geoObjects.getLength(); i++) {
                         var geoObject = res.geoObjects.get(i);
-                        html += '<a data-id="' + i + '" href="javascript:void(0)">' + geoObject.properties.get('text') + '</a><br>';
-                        boundList.push(geoObject.properties.get('boundedBy'));
+                        html += '<a data-id="' + i + '" href="javascript:void(0)">' + geoObject.properties.get('name') + '</a><br>';
+                        geoObjectList.push(geoObject.properties.get('boundedBy'));
                     }
+
                     var dropDown = $('div.map__search_dropdown');
-                    dropDown.html(html).slideDown(300);
+
+                    if(res.geoObjects.getLength() < 5){
+                        DDeliveryIframe.ajaxData({action: 'searchCityMap', name: res.metaData.geocoder.request}, function (data) {
+                            if (data.request.name == input.value) {
+                                console.log(data.displayData);
+                                for(var row in data.displayData) {
+                                    html += '<a data-id="' + i + '" href="javascript:void(0)">' + row.name + '</a><br>';
+                                }
+
+                            }
+                            dropDown.html(html).slideDown(300);
+                        });
+                    }else{
+                        dropDown.html(html).slideDown(300);
+                    }
+
+
                     $('a', dropDown).click(function () {
-                        yamap.setBounds(boundList[parseInt($(this).data('id'))], {
+                        yamap.setBounds(geoObjectList[parseInt($(this).data('id'))], {
                             checkZoomRange: true // проверяем наличие тайлов на данном масштабе.
                         });
                         dropDown.slideUp(300);
                     });
-                    dropDown[0].bound = boundList;
+                    dropDown[0].bound = geoObjectList;
                 }
             });
         }
