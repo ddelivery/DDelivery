@@ -32,7 +32,7 @@ class DDStatusProvider
 
     const ORDER_CANCEL = 120;
 
-    public $ddeliveryOrderStatus = array( self::ORDER_IN_PROGRESS => 'В обработке', self::ORDER_CONFIRMED => 'Подтверждена',
+    public $ddeliveryOrderStatus = array(  self::ORDER_IN_PROGRESS => 'В обработке', self::ORDER_CONFIRMED => 'Подтверждена',
                                            self::ORDER_IN_STOCK => 'На складе ИМ', self::ORDER_IN_WAY => 'Заказ в пути',
                                            self::ORDER_DELIVERED => 'Заказ доставлен', self::ORDER_RECEIVED => 'Заказ получен',
                                            self::ORDER_RETURN => 'Возврат заказа', self::ORDER_CUSTOMER_RETURNED => 'Клиент вернул заказ',

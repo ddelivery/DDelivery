@@ -7,6 +7,7 @@
 
 namespace DDelivery\DataBase;
 
+use DDelivery\Adapter\DDStatusProvider;
 use DDelivery\Order\DDeliveryOrder;
 use PDO;
 
@@ -115,9 +116,26 @@ class Order {
 		$query = 'SELECT id FROM orders WHERE shop_refnum = ' . $cmsOrderID;
 		$sth = $this->pdo->query( $query );
 		$result = $sth->fetchAll(PDO::FETCH_OBJ);
-
 		return $result;
 	}
+
+    public function getNotFinishedOrders()
+    {
+        $query = 'SELECT id FROM orders WHERE  dd_status <> :dd_status AND dd_status <> :dd_status2
+                  AND shop_refnum <> :shop_refnum';
+        $sth = $this->pdo->prepare( $query );
+        $dd_status = DDStatusProvider::ORDER_RECEIVED;
+        $dd_status2 = DDStatusProvider::ORDER_RETURNED_MI;
+        $shop_refnum = 0;
+        $sth->bindParam( ':dd_status', $dd_status );
+        $sth->bindParam( ':dd_status2', $dd_status2 );
+        $sth->bindParam( ':shop_refnum', $shop_refnum );
+        $sth->execute();
+        $data = $sth->fetchAll(PDO::FETCH_OBJ);
+        return $data;
+
+    }
+
 
 	/**
 	 * Получить список заказов
@@ -129,6 +147,7 @@ class Order {
 	public function getOrderList( $ids )
 	{
 		$idWhere = implode(',', $ids);
+
         $query = 'SELECT * FROM orders WHERE id IN(' .$idWhere . ')';
         $sth = $this->pdo->query( $query );
         $result = $sth->fetchAll(PDO::FETCH_OBJ);

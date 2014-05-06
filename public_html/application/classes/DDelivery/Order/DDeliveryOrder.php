@@ -158,7 +158,7 @@ class DDeliveryOrder
      * @var string id статус заказа на стороне DD
      *
      */
-    public $ddStatus;
+    public $ddStatus = 0;
     /**
      *
      * @var int id заказа на стороне сервера ddelivery

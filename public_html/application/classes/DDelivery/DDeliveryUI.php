@@ -134,6 +134,70 @@ class DDeliveryUI
         );
     }
 
+    /**
+     *
+     * Получить заказы которые еще не окончили обработку
+     * @return DDeliveryOrder[]
+     *
+     */
+    public function getUnfinishedOrders()
+    {
+        $orderDB = new DataBase\Order();
+        $data = $orderDB->getNotFinishedOrders();
+        $orderIDs = array();
+        $orders = array();
+        if(count( $data ))
+        {
+            foreach( $data as $item )
+            {
+                $orderIDs[] = $item->id;
+            }
+
+            $orders = $this->initOrder( $orderIDs );
+        }
+        return $orders;
+    }
+    /**
+     * Создать пул заявок по заказам которые еще не закончены
+     * и на  которых заявки не созданы
+     */
+    public function createPullOrders()
+    {
+        $orders = $this->getUnfinishedOrders();
+        if( count( $orders ) )
+        {
+            foreach ( $orders as $item)
+            {
+                    if(!$item->ddeliveryID)
+                    {
+
+                        if( $item->type == DDeliverySDK::TYPE_SELF)
+                        {
+                            $ddId = $this->createSelfOrder($item);
+                        }
+                        else if( $item->type == DDeliverySDK::TYPE_COURIER )
+                        {
+                            $ddId = $this->createCourierOrder($item);
+                        }
+                    }
+            }
+        }
+    }
+    /**
+     * Получить статусы для пула заказов которые еще не закончены
+     */
+    public function getPullOrdersStatus()
+    {
+        $orders = $this->getUnfinishedOrders();
+        if( count( $orders ) )
+        {
+            foreach ( $orders as $item)
+            {
+                $this->changeOrderStatus( $item->shopRefnum );
+            }
+        }
+        return true;
+    }
 
     /**
      *
@@ -207,6 +271,7 @@ class DDeliveryUI
                 return false;
             }
             $order->ddStatus = $ddStatus;
+            echo $ddStatus;
             $order->localStatus = $this->shop->getLocalStatusByDD( $order->ddStatus );
             $this->saveFullOrder($order);
             $this->shop->setCmsOrderStatus($order->shopRefnum, $order->localStatus);
