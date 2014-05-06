@@ -262,36 +262,39 @@ Map = (function () {
             });
 
             $(window).on('ddeliveryCityPlace', function (e, city) {
-
-                ymaps.geocode(city.title, {results: 1})
-                    .then(function (res) {
-                        // Выбираем первый результат геокодирования.
-                        renderGeoObject = res.geoObjects.get(0);
-                        yamap.setBounds(renderGeoObject.properties.get('boundedBy'));
-                    });
-
-                $('.map-popup__main__right .places').html('').addClass('info-open');
-
-                $('.delivery-type__drop ul').hide();
-                $('.map-popup .delivery-type__drop p.loader_center').show();
-
-                DDeliveryIframe.ajaxData({action: 'mapDataOnly', city_id: city.id}, function (data) {
-                    Map.renderData(data);
-                });
-
-                // Удаляем старые поинты, какраз пока ждем ответа ajax
-                var pointsRemove = [];
-                for (var pointKey in points) {
-                    var point = points[pointKey];
-                    if (point.display) {
-                        pointsRemove.push(point);
-                    }
-                }
-                clusterer.remove(pointsRemove);
-
+                Map.changeCity(city.id, city.title);
             });
             this.placeEvent();
         },
+
+        changeCity: function(cityId, cityFullName) {
+            ymaps.geocode(cityFullName, {results: 1})
+                .then(function (res) {
+                    // Выбираем первый результат геокодирования.
+                    renderGeoObject = res.geoObjects.get(0);
+                    yamap.setBounds(renderGeoObject.properties.get('boundedBy'));
+                });
+
+            $('.map-popup__main__right .places').html('').addClass('info-open');
+
+            $('.delivery-type__drop ul').hide();
+            $('.map-popup .delivery-type__drop p.loader_center').show();
+
+            DDeliveryIframe.ajaxData({action: 'mapDataOnly', city_id: cityId}, function (data) {
+                Map.renderData(data);
+            });
+
+            // Удаляем старые поинты, какраз пока ждем ответа ajax
+            var pointsRemove = [];
+            for (var pointKey in points) {
+                var point = points[pointKey];
+                if (point.display) {
+                    pointsRemove.push(point);
+                }
+            }
+            clusterer.remove(pointsRemove);
+        },
+
         placeEvent: function () {
             $('.map-popup__main__right .places a').click(function () {
                 if($('.map-popup__main__right .places').hasClass('info-open')){
@@ -439,12 +442,11 @@ Map = (function () {
 
         citySearch: function () {
             var input = $('.map__search input[type=text]')[0];
-            if (input.value.length < 3)
+            if (input.value.length < 5)
                 return;
 
             // Область видимости геообъекта.
             var bounds = renderGeoObject.properties.get('boundedBy');
-            console.log(renderGeoObject)
             var options = {
                 results: 5,
                 boundedBy: bounds,
@@ -456,34 +458,45 @@ Map = (function () {
                     var geoObjectList = [];
                     for (var i = 0; i < res.geoObjects.getLength(); i++) {
                         var geoObject = res.geoObjects.get(i);
-                        html += '<a data-id="' + i + '" href="javascript:void(0)">' + geoObject.properties.get('name') + '</a><br>';
+                        html += '<a data-id="' + i + '" href="javascript:void(0)">' + geoObject.properties.get('name')+' ' + geoObject.properties.get('description') + '</a><br>';
                         geoObjectList.push(geoObject.properties.get('boundedBy'));
                     }
 
                     var dropDown = $('div.map__search_dropdown');
+                    var aBindClick = function(){
+                        $('a', dropDown).click(function () {
 
+                            dropDown.slideUp(300);
+                            var cityId = $(this).data('cityid');
+                            if(cityId) {
+                                Map.changeCity(cityId, $(this).html());
+                                return;
+                            }
+
+                            yamap.setBounds(geoObjectList[parseInt($(this).data('id'))], {
+                                checkZoomRange: true // проверяем наличие тайлов на данном масштабе.
+                            });
+                        });
+                    };
                     if(res.geoObjects.getLength() < 5){
                         DDeliveryIframe.ajaxData({action: 'searchCityMap', name: res.metaData.geocoder.request}, function (data) {
                             if (data.request.name == input.value) {
-                                console.log(data.displayData);
                                 for(var row in data.displayData) {
-                                    html += '<a data-id="' + i + '" href="javascript:void(0)">' + row.name + '</a><br>';
+                                    if(row == 5)
+                                        break;
+                                    html += '<a data-cityid="' + data.displayData[row].id + '" href="javascript:void(0)">' + data.displayData[row].name + '</a><br>';
                                 }
 
                             }
                             dropDown.html(html).slideDown(300);
+                            aBindClick();
                         });
                     }else{
                         dropDown.html(html).slideDown(300);
+                        aBindClick();
                     }
 
 
-                    $('a', dropDown).click(function () {
-                        yamap.setBounds(geoObjectList[parseInt($(this).data('id'))], {
-                            checkZoomRange: true // проверяем наличие тайлов на данном масштабе.
-                        });
-                        dropDown.slideUp(300);
-                    });
                     dropDown[0].bound = geoObjectList;
                 }
             });

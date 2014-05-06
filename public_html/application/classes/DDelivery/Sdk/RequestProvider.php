@@ -106,8 +106,9 @@ class RequestProvider
 	    $this->_setSpecificOptionsToRequest( $method, $action, $server, $urlSuffix );
 		
 	    $result = curl_exec($this->curl[$server]);
-	   
-	    $response = new DDeliverySDKResponse( $result );
+
+
+	    $response = new DDeliverySDKResponse( $result, $this->curl[$server] );
 	    
 	    if(!$this->keepActive)
 	    {
@@ -135,7 +136,7 @@ class RequestProvider
 			curl_setopt($this->curl[$server], CURLOPT_HEADER, 0);
 			curl_setopt($this->curl[$server], CURLOPT_FOLLOWLOCATION, 1);
             // В реальных интернетах за пинг в секунду убивают
-            //curl_setopt($this->curl[$server], CURLOPT_TIMEOUT, 10);
+            curl_setopt($this->curl[$server], CURLOPT_TIMEOUT, 3);
 		}
 		 
 		$urlSuffix = '';

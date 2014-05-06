@@ -32,9 +32,15 @@ class DDeliverySDKResponse {
 
     /**
      * @param string $jsonRaw
+     * @param $curlRes
      */
-    public function __construct( $jsonRaw )
-    {	
+    public function __construct( $jsonRaw, $curlRes )
+    {
+        if(strlen($jsonRaw) == 0 && curl_errno($curlRes)) {
+            $this->success = false;
+            $this->errorMessage = 'Curl error: '.curl_errno($curlRes).' '.curl_error($curlRes);;
+            return;
+        }
         $jsonData = json_decode($jsonRaw, true);
         
         if(!$jsonData) {
