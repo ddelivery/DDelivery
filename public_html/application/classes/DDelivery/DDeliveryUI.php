@@ -1589,7 +1589,8 @@ class DDeliveryUI
                     'js'=>'change',
                     'comment'=>htmlspecialchars($comment),
                     'orderId' => $this->order->localId,
-                    'clientPrice'=>$point->getDeliveryInfo()->clientPrice
+                    'clientPrice'=>$point->getDeliveryInfo()->clientPrice,
+                    'userInfo' => $this->getDDUserInfo($this->order->localId),
                 ));
                 break;
             default:
