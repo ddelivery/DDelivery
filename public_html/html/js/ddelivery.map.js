@@ -442,7 +442,7 @@ Map = (function () {
 
         citySearch: function () {
             var input = $('.map__search input[type=text]')[0];
-            if (input.value.length < 5)
+            if (input.value.length < 3)
                 return;
 
             // Область видимости геообъекта.
@@ -458,43 +458,19 @@ Map = (function () {
                     var geoObjectList = [];
                     for (var i = 0; i < res.geoObjects.getLength(); i++) {
                         var geoObject = res.geoObjects.get(i);
-                        html += '<a data-id="' + i + '" href="javascript:void(0)">' + geoObject.properties.get('name')+' ' + geoObject.properties.get('description') + '</a><br>';
+                        html += '<a data-id="' + i + '" href="javascript:void(0)">' + geoObject.properties.get('name')+', ' + geoObject.properties.get('description') + '</a><br>';
                         geoObjectList.push(geoObject.properties.get('boundedBy'));
                     }
 
                     var dropDown = $('div.map__search_dropdown');
-                    var aBindClick = function(){
-                        $('a', dropDown).click(function () {
+                    dropDown.html(html).slideDown(300);
 
-                            dropDown.slideUp(300);
-                            var cityId = $(this).data('cityid');
-                            if(cityId) {
-                                Map.changeCity(cityId, $(this).html());
-                                return;
-                            }
-
-                            yamap.setBounds(geoObjectList[parseInt($(this).data('id'))], {
-                                checkZoomRange: true // проверяем наличие тайлов на данном масштабе.
-                            });
+                    $('a', dropDown).click(function () {
+                        yamap.setBounds(geoObjectList[parseInt($(this).data('id'))], {
+                            checkZoomRange: true // проверяем наличие тайлов на данном масштабе.
                         });
-                    };
-                    if(res.geoObjects.getLength() < 5){
-                        DDeliveryIframe.ajaxData({action: 'searchCityMap', name: res.metaData.geocoder.request}, function (data) {
-                            if (data.request.name == input.value) {
-                                for(var row in data.displayData) {
-                                    if(row == 5)
-                                        break;
-                                    html += '<a data-cityid="' + data.displayData[row].id + '" href="javascript:void(0)">' + data.displayData[row].name + '</a><br>';
-                                }
-
-                            }
-                            dropDown.html(html).slideDown(300);
-                            aBindClick();
-                        });
-                    }else{
-                        dropDown.html(html).slideDown(300);
-                        aBindClick();
-                    }
+                        dropDown.slideUp(300);
+                    });
 
 
                     dropDown[0].bound = geoObjectList;
