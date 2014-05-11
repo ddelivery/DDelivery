@@ -368,7 +368,7 @@ class DDeliverySDK {
     			'q' => $q
     	);
     	$response = $this->requestProvider->request('autocomplete', $params,
-    											'get', $this->server . 'node') ;
+    											    'get', $this->server . 'node') ;
     	if( !$response->success )
         {
             $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;

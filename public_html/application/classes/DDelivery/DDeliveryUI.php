@@ -135,6 +135,34 @@ class DDeliveryUI
     }
 
     /**
+     * Функция вызывается при изменении статуса внутри cms для отправки
+     *
+     * @param $cmsID
+     * @param $cmsStatus
+     *
+     * @return int
+     */
+    public function onCmsChangeStatus( $cmsID, $cmsStatus )
+    {
+        $order = $this->getOrderByCmsID( $cmsID );
+        if( $order )
+        {
+            $order->localStatus = $cmsStatus;
+            if( $this->shop->isStatusToSendOrder($cmsStatus) && $order->ddeliveryID == 0 )
+            {
+                if($order->type == DDeliverySDK::TYPE_SELF)
+                {
+                    return $this->createSelfOrder($order);
+                }
+                elseif( $order->type == DDeliverySDK::TYPE_COURIER )
+                {
+                    return $this->createCourierOrder($order);
+                }
+            }
+        }
+
+    }
+    /**
      *
      * Получить заказы которые еще не окончили обработку
      * @return DDeliveryOrder[]
@@ -317,15 +345,16 @@ class DDeliveryUI
      * @return bool
      */
     public function onCmsOrderFinish( $id, $shopOrderID, $status, $payment)
-    {   
-        if(!$this->initIntermediateOrder( $id )) {
+    {
+        $orders = $this->initOrder( array($id) );
+        if(!count($orders))
+        {
             return false;
         }
-        $order = $this->getOrder();
-        $order->paymentVariant = (int)$payment;
+        $order = $orders[0];
+        $order->paymentVariant = $payment;
         $order->shopRefnum = $shopOrderID;
-        $order->localStatus = (int)$status;
-
+        $order->localStatus = $status;
         /*
         if( $this->shop->isStatusToSendOrder( $status, $order) )
         {   

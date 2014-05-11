@@ -86,9 +86,9 @@ abstract class PluginFilters extends DShopAdapter
         $filterByPayment = $this->filterPointByPaymentTypeCourier();
         if($filterByPayment == self::PAYMENT_POST_PAYMENT) {
             if($order->getPoint() && $order->getPoint()->getDeliveryInfo()) {
-                return $this->getAmount() + $order->getPoint()->getDeliveryInfo()->clientPrice;
+                return $order->amount + $order->getPoint()->getDeliveryInfo()->clientPrice;
             }
-            return $this->getAmount();
+            return $order->amount;
         }
         return 0;
     }
@@ -109,7 +109,7 @@ abstract class PluginFilters extends DShopAdapter
     {
         $filterByPayment = $this->filterPointByPaymentTypeCourier();
         if($filterByPayment == self::PAYMENT_POST_PAYMENT){
-            return $this->getAmount();
+            return $order->amount;
         }
         return 0;
     }
@@ -143,7 +143,7 @@ abstract class PluginFilters extends DShopAdapter
      */
     public function getDeclaredPrice($order)
     {
-        return ($this->getAmount() / 100) * $this->getDeclaredPercent();
+        return ($order->amount / 100) * $this->getDeclaredPercent();
     }
 
     /**

@@ -183,11 +183,9 @@ abstract class DShopAdapter
      * Проверяет статус заказа, при определенном статусе отправляем заказ на сервер dd
      * 
      * @param string $status
-     * @param DDeliveryOrder $order
-     * @deprecated
      * @return bool
      */
-    public function isStatusToSendOrder( $status, $order )
+    public function isStatusToSendOrder( $status )
     {
         return true;
     }
