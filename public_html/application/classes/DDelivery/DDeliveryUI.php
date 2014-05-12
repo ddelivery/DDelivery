@@ -6,7 +6,7 @@
 * @author  mrozk
 */
 namespace DDelivery;
-use DDelivery\Adapter\DDStatusProvider;
+use DDelivery\Order\DDStatusProvider;
 use DDelivery\Adapter\DShopAdapter;
 use DDelivery\DataBase\City;
 use DDelivery\DataBase\Order;

@@ -4,7 +4,7 @@
  * Date: 19.04.14
  * Time: 13:20
  */
-namespace DDelivery\Adapter;
+namespace DDelivery\Order;
 
 class DDStatusProvider
 {
