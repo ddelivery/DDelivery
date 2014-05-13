@@ -145,8 +145,18 @@ abstract class DShopAdapter
      */
     public abstract function setCmsOrderStatus( $cmsOrderID, $status );
 
-
     /**
+     * Метод взамодейсвует с  настройками. Возвращает массив с ID заказов
+     * со стороны CMS у которых статус заказа такой как указан в настройках
+     *
+     * @return array
+     */
+    public function getOrderIDsByStatus()
+    {
+        return array();
+    }
+
+        /**
      *
      * Используется при отправке заявки на сервер DD для указания стартового статуса
      *
@@ -179,14 +189,13 @@ abstract class DShopAdapter
     }
 
     /**
-     * Проверяет статус заказа, при определенном статусе отправляем заказ на сервер dd
+     * Получает статус заказа, при определенном статусе отправляем заказ на сервер ddelivery
      * 
-     * @param string $status
-     * @return bool
+     * @return $mixed
      */
-    public function isStatusToSendOrder( $status )
+    public function getStatusToSendOrder()
     {
-        return true;
+        return 1;
     }
 
     /**

@@ -122,16 +122,19 @@ class Order {
     public function getNotFinishedOrders()
     {
         $query = 'SELECT id FROM orders WHERE  dd_status <> :dd_status AND dd_status <> :dd_status2
-                  AND shop_refnum <> :shop_refnum';
+                  AND shop_refnum <> :shop_refnum AND ddeliveryorder_id <> :ddeliveryorder_id';
         $sth = $this->pdo->prepare( $query );
         $dd_status = DDStatusProvider::ORDER_RECEIVED;
         $dd_status2 = DDStatusProvider::ORDER_RETURNED_MI;
         $shop_refnum = 0;
+        $ddeliveryorder_id = 0;
+        $sth->bindParam( ':ddeliveryorder_id', $ddeliveryorder_id );
         $sth->bindParam( ':dd_status', $dd_status );
         $sth->bindParam( ':dd_status2', $dd_status2 );
         $sth->bindParam( ':shop_refnum', $shop_refnum );
         $sth->execute();
         $data = $sth->fetchAll(PDO::FETCH_OBJ);
+
         return $data;
 
     }
