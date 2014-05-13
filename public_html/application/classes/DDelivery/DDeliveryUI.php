@@ -1719,6 +1719,7 @@ class DDeliveryUI
                 } elseif($point instanceof DDeliveryPointCourier) {
                     $comment = 'Доставка курьером по адресу '.$this->order->getFullAddress();
                 }
+                $this->shop->onFinishChange($this->order->localId, $this->order, $point);
                 echo json_encode(array(
                     'html'=>'',
                     'js'=>'change',

@@ -71,7 +71,6 @@ var DDeliveryIframe = (function () {
                             DDeliveryIframe.close();
                             break;
                         case 'change':
-                            console.log(data);
                             DDeliveryIframe.postMessage('change', data);
                             break;
                     }
