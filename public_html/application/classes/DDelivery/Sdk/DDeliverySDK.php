@@ -377,6 +377,15 @@ class DDeliverySDK {
         return $response;
     }
 
+    /**
+     * Возвращает true если ключ валиден
+     * @return bool
+     */
+    function checkApiKey()
+    {
+        $result = $this->requestProvider->request('order_status');
+        return $result->errorMessage != 'Shop not found!';
+    }
 
     /**
      * Возвращает id городов с болшим кол-вом людей, может когда-нибудь будет на сервере
