@@ -7,7 +7,7 @@
 
 namespace DDelivery\DataBase;
 
-use DDelivery\Adapter\DDStatusProvider;
+use DDelivery\Order\DDStatusProvider;
 use DDelivery\Order\DDeliveryOrder;
 use PDO;
 

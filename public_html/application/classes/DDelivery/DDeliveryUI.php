@@ -6,7 +6,7 @@
 * @author  mrozk
 */
 namespace DDelivery;
-use DDelivery\Adapter\DDStatusProvider;
+use DDelivery\Order\DDStatusProvider;
 use DDelivery\Adapter\DShopAdapter;
 use DDelivery\DataBase\City;
 use DDelivery\DataBase\Order;
@@ -221,7 +221,7 @@ class DDeliveryUI
         {
             foreach ( $orders as $item)
             {
-                $this->changeOrderStatus( $item->shopRefnum );
+                $this->changeOrderStatus( $item );
             }
         }
         return true;
@@ -279,14 +279,13 @@ class DDeliveryUI
      *
      * Обработчик изменения статуса заказа
      *
-     * @param int $cmsOrderID id заказа в cms
+     * @param DDeliveryOrder $order  заказа в cms
      *
      * @return bool
      *
      */
-    public function changeOrderStatus( $cmsOrderID )
+    public function changeOrderStatus( $order )
     {
-        $order = $this->getOrderByCmsID( $cmsOrderID );
         if( $order )
         {
             if( $order->ddeliveryID == 0 )
