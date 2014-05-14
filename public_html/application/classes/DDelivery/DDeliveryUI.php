@@ -1964,9 +1964,9 @@ class DDeliveryUI
         $order = $this->order;
         $order->declaredPrice = $this->shop->getDeclaredPrice($order);
 
-        $fieldValue = $order->getToName();
+        $fieldValue = $order->firstName;
         if(!$fieldValue)
-            $order->setToName($this->shop->getClientFirstName());
+            $order->firstName = $this->shop->getClientFirstName();
 
 
         $fieldValue = $order->secondName;
