@@ -188,16 +188,24 @@ class DDeliveryUI
     /**
      * Создать пул заявок по заказам которые еще не закончены
      * и на  которых заявки не созданы
+     *
+     * @return array
      */
     public function createPullOrders()
     {
-        $orders = $this->getUnfinishedOrders();
-        if( count( $orders ) )
+        $orderIDs = $this->shop->getOrderIDsByStatus();
+
+        if(is_array( $orderIDs ) && count($orderIDs))
         {
-            foreach ( $orders as $item)
+            $result = array();
+            foreach( $orderIDs as $el )
             {
-                    if(!$item->ddeliveryID)
-                    {
+                $item = $this->getOrderByCmsID($el);
+
+                if( $item && !$item->ddeliveryID )
+                {
+
+                        $item->localStatus = $this->shop->getStatusToSendOrder();
 
                         if( $item->type == DDeliverySDK::TYPE_SELF)
                         {
@@ -207,24 +215,35 @@ class DDeliveryUI
                         {
                             $ddId = $this->createCourierOrder($item);
                         }
-                    }
+
+                        $result[] = array('ddId' => $ddId, 'localID' => $item->shopRefnum);
+
+                }
             }
+            return $result;
         }
     }
     /**
      * Получить статусы для пула заказов которые еще не закончены
+     *
+     * @return array
      */
     public function getPullOrdersStatus()
     {
         $orders = $this->getUnfinishedOrders();
+        $statusReport = array();
         if( count( $orders ) )
         {
             foreach ( $orders as $item)
             {
-                $this->changeOrderStatus( $item );
+                $rep = $this->changeOrderStatus( $item );
+                if( count( $rep ) )
+                {
+                    $statusReport[] = $rep;
+                }
             }
         }
-        return true;
+        return $statusReport;
     }
 
     /**
@@ -281,7 +300,7 @@ class DDeliveryUI
      *
      * @param DDeliveryOrder $order  заказа в cms
      *
-     * @return bool
+     * @return array
      *
      */
     public function changeOrderStatus( $order )
@@ -290,23 +309,24 @@ class DDeliveryUI
         {
             if( $order->ddeliveryID == 0 )
             {
-                return false;
+                return array();
             }
             $ddStatus = $this->getDDOrderStatus($order->ddeliveryID);
+
             if( $ddStatus == 0 )
             {
-                return false;
+                return array();
             }
             $order->ddStatus = $ddStatus;
-            echo $ddStatus;
             $order->localStatus = $this->shop->getLocalStatusByDD( $order->ddStatus );
             $this->saveFullOrder($order);
             $this->shop->setCmsOrderStatus($order->shopRefnum, $order->localStatus);
-            return true;
+            return array('cms_order_id' => $order->shopRefnum, 'ddStatus' => $order->ddStatus,
+                         'localStatus' => $order->localStatus );
         }
         else
         {
-            return false;
+            return array();
         }
     }
 
