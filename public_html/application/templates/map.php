@@ -92,7 +92,7 @@
                             href="javascript:void(0)" class="border" data-filter="card">Карта</a>
                     </p>
 
-                    <p><strong>Доп услуги</strong><a
+                    <p><strong>Доп. услуги</strong><a
                             href="javascript:void(0)" class="" data-filter="time">24 часа</a><a
                             href="javascript:void(0)" class="" data-filter="has_fitting_room">Примерочная</a></p>
 

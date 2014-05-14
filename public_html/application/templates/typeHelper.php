@@ -19,7 +19,7 @@
         <?if(in_array(DDelivery\Sdk\DDeliverySDK::TYPE_COURIER, $this->supportedTypes)):?>
             <li class="delivery-type__drop_courier">
                 <a href="javascript:void(0)">
-                    <span class="name">доаставить курьером</span>
+                    <span class="name">доставить курьером</span>
                     <span class="price"><span><?=$headerData['courier']['minPrice']?></span> <i class="icon-rub">&nbsp;</i></span>
                     <span class="date">от <strong><?=$headerData['courier']['minTime']?></strong>
                         <span><?=\DDelivery\Utils::plural($headerData['courier']['minTime'], 'дня', 'дней', 'дней', 'дней', false)?></span>

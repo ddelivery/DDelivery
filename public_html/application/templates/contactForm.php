@@ -94,7 +94,7 @@ use DDelivery\Adapter\DShopAdapter;
                 <?endif;?>
                 <div class="row clearfix">
                     <div class="row__title">
-                        <label for="comment">Коментарий</label>
+                        <label for="comment">Комментарий</label>
                     </div>
                     <div class="row__inp">
                         <textarea id="comment" name="comment" title="Напишите комментарий"></textarea>
