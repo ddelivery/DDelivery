@@ -122,7 +122,8 @@ $result = $fixture->addSelfOrder( 50, 10,
 print_r($result);
 $result = $fixture->calculatorPickupForPoint(50, 10, 10,  10, 1, 0);
 */
-include 'mrozk/IntegratorShop.php';
+include 'example/IntegratorShop.php';
+
 $shopAdapter = new IntegratorShop();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
@@ -142,8 +143,13 @@ $order->shopRefnum = 14;
 $order->comment = 'Олег Царьов';
 //$id = $DDeliveryUI->saveFullOrder( $order );
 //echo $id;
+print_r( $DDeliveryUI->getSelfPoints($order) );
+
+/*
 $order2 = $DDeliveryUI->formatPhone('+7(1       00)100-10-01');
 echo $order2;
+*/
+
 ///print_r( $order2 );
 //print_r( $DDeliveryUI->getDeliveryPrice(18) );
 
