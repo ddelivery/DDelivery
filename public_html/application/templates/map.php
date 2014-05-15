@@ -138,7 +138,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="col1">Время досавки:</td>
+                        <td class="col1">Время доставки:</td>
                         <td class="col2 day">от <strong>1</strong> <span>дня</span></td>
                     </tr>
                     <tr>
