@@ -6,7 +6,7 @@ class DDeliverySDKTest extends PHPUnit_Framework_TestCase
 	
     protected function setUp()
     {
-        $this->fixture = new \DDelivery\Sdk\DDeliverySDK('4bf43a2cd2be3538bf4e35ad8191365d', false);
+        $this->fixture = new \DDelivery\Sdk\DDeliverySDK('73e402bc645d73e91721ecbc123e121d', true);
     }
 	
     protected function tearDown()
