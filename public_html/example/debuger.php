@@ -9,7 +9,7 @@
  * debuger.php?task=unfinished - список незавершенных заказов
  * debuger.php?task=createpull - создать пулл заказов
  * debuger.php?task=statuspull - получить пул статусов
- *
+ * debuger.php?task=products - получить дамп текущего заказа( при наличии товара в корзине )
  *
  */
 
@@ -27,6 +27,13 @@ if(function_exists($task))
 else
 {
     dumpOrders();
+}
+
+function products()
+{
+    $shopAdapter = new IntegratorShop();
+    $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
+    print_r($DDeliveryUI->getOrder());
 }
 
 function dumpOrders()
