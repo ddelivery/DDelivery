@@ -7,9 +7,26 @@
  */
 
 use DDelivery\Order\DDeliveryProduct;
+use DDelivery\Order\DDStatusProvider;
 
 class IntegratorShop extends \DDelivery\Adapter\PluginFilters
 {
+    /**
+     * Синхронизация локальных статусов
+     * @var array
+     */
+    protected  $cmsOrderStatus = array( DDStatusProvider::ORDER_IN_PROGRESS => 0,
+                                        DDStatusProvider::ORDER_CONFIRMED => 23,
+                                        DDStatusProvider::ORDER_IN_STOCK => 14,
+                                        DDStatusProvider::ORDER_IN_WAY => 15,
+                                        DDStatusProvider::ORDER_DELIVERED => 16,
+                                        DDStatusProvider::ORDER_RECEIVED => 17,
+                                        DDStatusProvider::ORDER_RETURN => 20,
+                                        DDStatusProvider::ORDER_CUSTOMER_RETURNED => 21,
+                                        DDStatusProvider::ORDER_PARTIAL_REFUND => 22,
+                                        DDStatusProvider::ORDER_RETURNED_MI => 2,
+                                        DDStatusProvider::ORDER_WAITING => 25,
+                                        DDStatusProvider::ORDER_CANCEL => 26 );
     /**
      * Верните true если нужно использовать тестовый(stage) сервер
      * @return bool

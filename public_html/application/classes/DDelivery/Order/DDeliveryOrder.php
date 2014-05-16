@@ -248,7 +248,7 @@ class DDeliveryOrder
     /**
      *
      * Упаковать данные заказа для сохранения в БД
-     * 
+     * @deprecated
      * @return array
      */
     public function packOrder()

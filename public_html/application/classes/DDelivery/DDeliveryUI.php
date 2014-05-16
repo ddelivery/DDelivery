@@ -553,6 +553,7 @@ class DDeliveryUI
     /**
      * Получить  минимальный и максимальные период и цену поставки для массива точек
      * @param DDeliveryAbstractPoint[] $points
+     * @deprecated
      * @return array;
      */
     public function getMinMaxPriceAndPeriodDelivery( $points )
@@ -590,7 +591,7 @@ class DDeliveryUI
                     {
                     	$maxPeriod = $deliveryInf->get('delivery_time_avg');
                     }
-                    if( $$deliveryInf->clientPrice > $minPrice )
+                    if( $deliveryInf->clientPrice > $minPrice )
                     {
                     	$maxPrice  = $deliveryInf->clientPrice;
                     }
@@ -606,7 +607,7 @@ class DDeliveryUI
     /**
      * Получить минимальный и максимальные период и цену поставки для массива
      * @var array $deliveryInfo
-     *
+     * @deprecated
      * @return array;
      */
     protected function _getMinMaxPriceAndPeriod( $deliveryInfo )
@@ -624,10 +625,10 @@ class DDeliveryUI
     			if( $minPeriod == -1 )
     			{
     				$minPeriod = $p['delivery_time_avg'];
-    				$minPrice = $p->clientPrice;
+    				$minPrice = $p['total_price'];
 
     				$maxPeriod = $p['delivery_time_avg'];
-    				$maxPrice = $p->clientPrice;
+    				$maxPrice = $p['total_price'];
     			}
     			else
     			{
@@ -637,7 +638,7 @@ class DDeliveryUI
     				}
     				if( $p['total_price'] < $minPrice )
     				{
-    					$minPrice  = $p->clientPrice;
+    					$minPrice  = $p['total_price'];
     				}
 
     				if( $p['delivery_time_avg'] > $maxPeriod )
@@ -646,7 +647,7 @@ class DDeliveryUI
     				}
     				if( $p['total_price'] > $maxPrice )
     				{
-    					$maxPrice  = $p->clientPrice;
+    					$maxPrice  = $p['total_price'];
     				}
     			}
     		}
@@ -661,7 +662,7 @@ class DDeliveryUI
      * Получить минимальный период и цену поставки курьером для города
      *
      * @param DDeliveryOrder $order
-     *
+     * @deprecated
      * @return array;
      */
     public function getMinPriceAndPeriodCourier( $order )
@@ -674,7 +675,7 @@ class DDeliveryUI
      * Получить минимальный период и цену поставки самовывоза для города
      *
      * @param DDeliveryOrder $order
-     *
+     * @deprecated
      * @return array;
      */
     public function getMinPriceAndPeriodSelf( $order )

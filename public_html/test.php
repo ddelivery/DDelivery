@@ -143,7 +143,7 @@ $order->shopRefnum = 14;
 $order->comment = 'Олег Царьов';
 //$id = $DDeliveryUI->saveFullOrder( $order );
 //echo $id;
-print_r( $DDeliveryUI->getSelfPoints($order) );
+print_r( $DDeliveryUI->getMinPriceAndPeriodCourier($order) );
 
 /*
 $order2 = $DDeliveryUI->formatPhone('+7(1       00)100-10-01');

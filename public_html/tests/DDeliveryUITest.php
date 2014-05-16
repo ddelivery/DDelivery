@@ -1,6 +1,8 @@
 <?php
 // setShopOrderId
-include_once('IntegratorShop.php');
+use DDelivery\Order\DDeliveryProduct;
+include_once(__DIR__ .'/../example/IntegratorShop.php');
+
 
 class DDeliveryUITest extends PHPUnit_Framework_TestCase
 {
@@ -29,7 +31,6 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
     }
 	protected function setUp()
 	{	
-
         $shopAdapter = new IntegratorShop();
 		$this->fixture = new \DDelivery\DDeliveryUI( $shopAdapter, true );
 
@@ -70,7 +71,73 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 
 	}
 
+    public function testGetCourierPointsForCity()
+    {
+        $points = $this->fixture->getCourierPointsForCity( $this->courierOrder );
+        $this->assertGreaterThan( 0, count( $points ) );
+    }
 
+    public function testGetSelfPoints()
+    {
+
+        $selfpoints = $this->fixture->getSelfPoints( $this->selfOrder );
+        $this->assertGreaterThan( 0, count($selfpoints) );
+    }
+
+    public function testSaveFullOrder()
+    {
+        $id = $this->fixture->saveFullOrder($this->courierOrder);
+        $this->assertGreaterThan( 0, $id );
+    }
+
+    public function testGetDDOrderStatus()
+    {
+        $orderStatus = $this->fixture->getDDOrderStatus(1188);
+        $this->assertGreaterThan( 0, $orderStatus );
+    }
+
+    public function testGetLocalStatusByDD()
+    {
+        $status = $this->fixture->getLocalStatusByDD(20);
+        $this->assertGreaterThan( 0, $status );
+    }
+
+    public function testGetMinMaxPriceAndPeriodDelivery()
+    {
+        $selfPoints = $this->fixture->getCourierPointsForCity( $this->courierOrder );
+        $info = $this->fixture->getMinMaxPriceAndPeriodDelivery( $selfPoints );
+        $this->assertGreaterThan( 0, $info['max_price'] );
+    }
+
+    public function testGetMinPriceAndPeriodCourier()
+    {
+        $info = $this->fixture->getMinPriceAndPeriodCourier( $this->courierOrder );
+        $this->assertGreaterThan( 0, $info['max_price'] );
+    }
+
+    public function testGetMinPriceAndPeriodSelf()
+    {
+        $info = $this->fixture->getMinPriceAndPeriodSelf( $this->selfOrder );
+        $this->assertGreaterThan( 0, $info['max_price'] );
+    }
+
+    public function testValidateOrderToGetPoints()
+    {
+        $order = $this->fixture->getOrder();
+        $order->city = 0;
+        $notValid = $this->fixture->_validateOrderToGetPoints( $order );
+        $this->assertFalse( $notValid );
+    }
+
+    public function testCreateSelfOrder()
+    {
+        $pointself = $this->fixture->getSelfPoints($this->selfOrder);
+        $this->selfOrder->setPoint($pointself[0]);
+        $ddID = $this->fixture->createSelfOrder($this->selfOrder);
+        $this->assertGreaterThan( 0, $ddID );
+    }
+
+    /*
     public function testGetCourierPointsForCity()
     {
         $order = $this->fixture->getOrder();
