@@ -96,6 +96,13 @@ class DDeliveryUI
         $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled() );
     }
 
+    /**
+     * Чистим кэш
+     */
+    public function cleanCache()
+    {
+        $this->cache->clean();
+    }
 
     /**
      *

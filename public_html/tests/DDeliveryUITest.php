@@ -102,24 +102,7 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
         $this->assertGreaterThan( 0, $status );
     }
 
-    public function testGetMinMaxPriceAndPeriodDelivery()
-    {
-        $selfPoints = $this->fixture->getCourierPointsForCity( $this->courierOrder );
-        $info = $this->fixture->getMinMaxPriceAndPeriodDelivery( $selfPoints );
-        $this->assertGreaterThan( 0, $info['max_price'] );
-    }
 
-    public function testGetMinPriceAndPeriodCourier()
-    {
-        $info = $this->fixture->getMinPriceAndPeriodCourier( $this->courierOrder );
-        $this->assertGreaterThan( 0, $info['max_price'] );
-    }
-
-    public function testGetMinPriceAndPeriodSelf()
-    {
-        $info = $this->fixture->getMinPriceAndPeriodSelf( $this->selfOrder );
-        $this->assertGreaterThan( 0, $info['max_price'] );
-    }
 
     public function testValidateOrderToGetPoints()
     {
