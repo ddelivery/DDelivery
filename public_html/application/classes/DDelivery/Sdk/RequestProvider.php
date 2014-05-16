@@ -144,7 +144,9 @@ class RequestProvider
 		foreach($params as $key => $value) {
 			$urlSuffix .= urlencode($key).'='.urlencode($value) . '&';
 		}
-		
+
+        $urlSuffix .= 'sdk_ver='.include(dirname(dirname(dirname(__DIR__))).'/version.php');
+
 		return $urlSuffix;
 	}
 	
