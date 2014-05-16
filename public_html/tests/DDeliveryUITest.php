@@ -46,8 +46,7 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
         $this->selfOrder->toHouse = '1а';
         $this->selfOrder->toFlat = '42';
         $this->selfOrder->toEmail = '';
-        $this->selfOrder->localId = 2;
-        $this->selfOrder->localId = 2;
+        $this->selfOrder->localId = 1;
         $this->selfOrder->paymentVariant = 'cash';
         $this->selfOrder->localStatus = 'xxx';
         $this->selfOrder->shopRefnum = 14;
@@ -62,7 +61,6 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
         $this->courierOrder->toHouse = '1а';
         $this->courierOrder->toFlat = '42';
         $this->courierOrder->toEmail = '';
-        $this->courierOrder->localId = 2;
         $this->courierOrder->localId = 2;
         $this->courierOrder->paymentVariant = 'cash';
         $this->courierOrder->localStatus = 'xxx';
@@ -106,9 +104,8 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
 
     public function testValidateOrderToGetPoints()
     {
-        $order = $this->fixture->getOrder();
-        $order->city = 0;
-        $notValid = $this->fixture->_validateOrderToGetPoints( $order );
+        $this->selfOrder->city = 0;
+        $notValid = $this->fixture->_validateOrderToGetPoints( $this->selfOrder );
         $this->assertFalse( $notValid );
     }
 
@@ -117,9 +114,25 @@ class DDeliveryUITest extends PHPUnit_Framework_TestCase
         $pointself = $this->fixture->getSelfPoints($this->selfOrder);
         $this->selfOrder->setPoint($pointself[0]);
         $ddID = $this->fixture->createSelfOrder($this->selfOrder);
+
         $this->assertGreaterThan( 0, $ddID );
     }
 
+
+    public function testCreateCourierOrder()
+    {
+        $pointcoirier = $this->fixture->getCourierPointsForCity($this->courierOrder);
+        $this->courierOrder->setPoint($pointcoirier[0]);
+        $ddID = $this->fixture->createCourierOrder($this->courierOrder);
+        $this->assertGreaterThan( 0, $ddID );
+    }
+
+    public function testGetPullOrdersStatus()
+    {
+        $pointcoirier = $this->fixture->getCourierPointsForCity($this->courierOrder);
+        $this->courierOrder->setPoint($pointcoirier[0]);
+        $ddID = $this->fixture->createCourierOrder($this->courierOrder);
+    }
     /*
     public function testGetCourierPointsForCity()
     {
