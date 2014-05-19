@@ -769,11 +769,19 @@ class DDeliveryUI
     public function getSelfDeliveryInfoForCity( DDeliveryOrder $order )
     {
         $declared_price = $this->shop->getDeclaredPrice($order);
-    	$response = $this->sdk->calculatorPickupForCity( $order->city, $order->getDimensionSide1(),
-                                                         $order->getDimensionSide2(),
-                                                         $order->getDimensionSide3(),
-                                                         $order->getWeight(), $declared_price );
-        
+        $params = array(
+            $order->city, $order->getDimensionSide1(), $order->getDimensionSide2(),
+            $order->getDimensionSide3(), $order->getWeight(), $declared_price
+        );
+
+        $sig = '::calculatorPickupForCity_' . implode('_', $params);
+
+        $this->cache->
+
+
+
+        $this->sdk->calculatorPickupForCity( $cityId, $size1, $size2, $size3, $weight, $declared_price);
+
     	if( $response->success )
     	{
     		return $response->response;
@@ -782,6 +790,11 @@ class DDeliveryUI
     	{
     		return 0;
     	}
+    }
+
+    private function calculatorPickupForCity($cityId, $size1, $size2, $size3, $weight, $declared_price)
+    {
+        return $this->sdk->calculatorPickupForCity( $cityId, $size1, $size2, $size3, $weight, $declared_price);
     }
 
 
