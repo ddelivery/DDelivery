@@ -119,9 +119,9 @@ class Cache {
     /**
      * Сохранить данные в кэш
      *
-     * @param $sig ключ
-     * @param $data_container данные
-     * @param $expired время истечения в днях
+     * @param string $sig ключ
+     * @param mixed $data_container данные
+     * @param int $expired время истечения в минутах
      *
      * @return bool
      */
@@ -132,14 +132,14 @@ class Cache {
         if( $this->isRecordExist( $sig ) )
         {
             $query = 'UPDATE cache SET data_container = :data_container,
-                      expired = datetime("now", "+' . $expired . ' day") WHERE sig = :sig';
+                      expired = datetime("now", "+' . $expired . ' minutes") WHERE sig = :sig';
             $sth = $this->pdo->prepare( $query );
         }
         else
         {
 
             $query = 'INSERT INTO cache (sig, data_container, expired) VALUES
-                          (:sig, :data_container, datetime("now", "+' . $expired . ' day"))';
+                          (:sig, :data_container, datetime("now", "+' . $expired . ' minutes"))';
             $sth = $this->pdo->prepare( $query );
         }
 

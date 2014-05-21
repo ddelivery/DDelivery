@@ -111,12 +111,12 @@ abstract class DShopAdapter
 
 
     /**
-     * Возвращает время истечения кэша в днях
+     * Возвращает время истечения кэша в минутах
      * @return int
      */
     public function getCacheExpired()
     {
-        return 2;
+        return 1440; // 60*24
     }
 
     /**
