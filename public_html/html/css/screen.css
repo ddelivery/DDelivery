@@ -2,6 +2,7 @@
 /* --------------- reset.css --------------- */
 body{ padding: 0; margin: 0;}
 #ddelivery .loader{ padding-left: 390px; padding-top: 100px;}
+#ddelivery .load_error{ padding-left: 373px; padding-top: 100px;}
 .h{ display: none; }
 .map-popup { /* --------------- /reset.css --------------- */ }
 .map-popup div, .map-popup span, .map-popup h1, .map-popup h2, .map-popup h3, .map-popup h4, .map-popup h5, .map-popup h6, .map-popup p, .map-popup em, .map-popup img, .map-popup strong, .map-popup sub, .map-popup sup, .map-popup b, .map-popup u, .map-popup i, .map-popup dl, .map-popup dt, .map-popup dd, .map-popup ol, .map-popup ul, .map-popup li, .map-popup fieldset, .map-popup form, .map-popup label, .map-popup table, .map-popup tbody, .map-popup tfoot, .map-popup thead, .map-popup tr, .map-popup th, .map-popup td { margin: 0; padding: 0; border: 0; outline: 0; vertical-align: baseline; background: transparent; font-family: "PT Sans", sans-serif !important; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; }

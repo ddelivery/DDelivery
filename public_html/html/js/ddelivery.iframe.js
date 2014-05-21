@@ -1,8 +1,11 @@
 var DDeliveryIframe = (function () {
     //Тут можно определить приватные переменные и методы
 
-    var componentUrl, staticUrl;
+    var componentUrl, staticUrl, lastData;
 
+    function repeatLastQuery() {
+        DDeliveryIframe.ajaxPage(lastData);
+    }
     //Объект, содержащий публичное API
     return {
         componentUrl: null,
@@ -20,6 +23,7 @@ var DDeliveryIframe = (function () {
             this.ajaxPage({});
         },
         ajaxPage: function (data) {
+            lastData = data;
             var th = this;
             if (this.orderId)
                 data.order_id = this.orderId;
@@ -36,7 +40,13 @@ var DDeliveryIframe = (function () {
 
                 th.render(dataHtml);
 
-            }, 'json');
+            }, 'json').fail(function(responce, errorType) {
+                if(typeof(console.log) != 'undefined')
+                    console.log(responce.responseText);
+                var a = $('<a href="javascript:void(0)">повторить запрос</a>').click(repeatLastQuery);
+                $('#ddelivery').html('<p class="load_error">Произошла ошибка, </p>')
+                $('#ddelivery p').append(a);
+            });
             $(window).trigger('ajaxPageRequest', {params: data});
         },
         ajaxData: function (data, callBack) {
