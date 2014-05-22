@@ -1376,6 +1376,14 @@ class DDeliveryUI
             }
         }
 
+        if(isset($request['iframe'])) {
+            $staticURL = $this->shop->getStaticPath();
+            $scriptURL = $this->shop->getPhpScriptURL();
+            $version = include(__DIR__ . '/../../version.php');
+            include(__DIR__ . '/../../templates/iframe.php');
+            return;
+        }
+
         if(!empty($request['city_id'])) {
             $this->order->city = $request['city_id'];
         }
@@ -1389,7 +1397,7 @@ class DDeliveryUI
                 $this->order->setPoint($this->getCourierPointByCompanyID($request['point'], $this->order));
             }
         }
-        if(!empty($request['contact_form']) && is_array($request['contact_form'])){
+        if(!empty($request['contact_form']) && is_array($request['contact_form'])) {
             if(!empty($request['contact_form'])) {
                 foreach($request['contact_form'] as $row) {
                     switch($row['name']){
@@ -1423,12 +1431,6 @@ class DDeliveryUI
             }
         }
 
-        if(isset($request['iframe'])) {
-            $staticURL = $this->shop->getStaticPath();
-            $scriptURL = $this->shop->getPhpScriptURL();
-            include(__DIR__ . '/../../templates/iframe.php');
-            return;
-        }
 
         $supportedTypes = $this->shop->getSupportedType();
 

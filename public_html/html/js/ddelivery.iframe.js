@@ -21,16 +21,23 @@ var DDeliveryIframe = (function () {
             // Да, нужно его подрубить тут
             Header.init();
             this.ajaxPage({});
+
+            $('#ddelivery_loader .load_error a').click(repeatLastQuery);
         },
         ajaxPage: function (data) {
             lastData = data;
             var th = this;
             if (this.orderId)
                 data.order_id = this.orderId;
-            $('#ddelivery').html('<img class="loader" src="' + staticUrl + '/img/ajax_loader_horizont.gif"/>');
+            $('#ddelivery').hide();
+            $('#ddelivery_loader').show();
+
+            $('#ddelivery_loader .loader').show();
+            $('#ddelivery_loader .load_error').hide();
 
             $.post(componentUrl, data, function (dataHtml) {
-                $('#ddelivery').html(dataHtml.html);
+                $('#ddelivery_loader').hide();
+                $('#ddelivery').html(dataHtml.html).show();
 
                 if (typeof(dataHtml.orderId) != 'undefined' && dataHtml.orderId) {
                     th.orderId = dataHtml.orderId;
@@ -43,9 +50,8 @@ var DDeliveryIframe = (function () {
             }, 'json').fail(function(responce, errorType) {
                 if(typeof(console.log) != 'undefined')
                     console.log(responce.responseText);
-                var a = $('<a href="javascript:void(0)">повторить запрос</a>').click(repeatLastQuery);
-                $('#ddelivery').html('<p class="load_error">Произошла ошибка, </p>')
-                $('#ddelivery p').append(a);
+                $('#ddelivery_loader .loader').hide();
+                $('#ddelivery_loader .load_error').show();
             });
             $(window).trigger('ajaxPageRequest', {params: data});
         },

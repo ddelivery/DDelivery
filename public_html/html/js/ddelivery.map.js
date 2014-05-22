@@ -149,8 +149,8 @@ Map = (function () {
                                 bound[0][1] = coord[1];
                         }
 
-                        // Вычисляем центр и зум которые нам нужны, отступ 10 - первое число которое указал и оно нормально работает
-                        var centerAndZoom = ymaps.util.bounds.getCenterAndZoom(bound, yamap.container.getSize(), ymaps.projection.wgs84Mercator, {margin:10});
+                        // Вычисляем центр и зум которые нам нужны, отступ 20 - первое число которое указал и оно нормально работает
+                        var centerAndZoom = ymaps.util.bounds.getCenterAndZoom(bound, yamap.container.getSize(), ymaps.projection.wgs84Mercator, {margin:20});
 
                         // Точки эквивалентны в допустимой погрешности и зумить есть куда
                         if (!ymaps.util.math.areEqual(bound[0], bound[1], 0.0002) && yamap.getZoom() != yamap.options.get('maxZoom')) {

@@ -17,7 +17,7 @@ use DDelivery\Adapter\DShopAdapter;
     <div class="map-popup__main">
         <form id="main_form" method="post" action="">
             <div class="map-popup__main__form">
-                <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_LAST_NAME || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_SECOND_NAME && !$order->secondName) ):?>
+                <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_SECOND_NAME || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_SECOND_NAME && !$order->secondName) ):?>
                     <div class="row clearfix">
                         <div class="row__title">
                             <label for="second_name">Фамилия</label>
