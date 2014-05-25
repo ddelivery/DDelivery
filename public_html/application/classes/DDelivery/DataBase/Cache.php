@@ -90,6 +90,7 @@ class Cache {
         $query = 'SELECT data_container FROM cache WHERE sig = :sig';
         $sth = $this->pdo->prepare( $query );
         $sth->bindParam( ':sig', $sig );
+        $sth->execute();
         $result = $sth->fetchAll(PDO::FETCH_OBJ);
 
         if( count( $result ) )
