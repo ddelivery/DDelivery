@@ -174,7 +174,7 @@ class Order {
 			$query = 'UPDATE orders SET order_id = :order_id WHERE id=:id';
 			$sth = $this->pdo->prepare( $query );
 			$sth->bindParam( ':id', $id );
-			$sth->bindParam( ':order_id', $id );
+			$sth->bindParam( ':order_id', $shopOrderID );
 			if( $sth->execute() )
 			{
 				return true;
