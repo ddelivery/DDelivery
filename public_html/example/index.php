@@ -49,7 +49,7 @@
                         alert('Окно закрыто');
                     },
                     change: function(data) {
-                        
+                        closePopup();
                         alert(data.comment+ ' интернет магазину нужно взять с пользователя за доставку '+data.clientPrice+' руб. OrderId: '+data.orderId);
                     }
                 };
