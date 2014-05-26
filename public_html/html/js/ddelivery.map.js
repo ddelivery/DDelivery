@@ -128,7 +128,6 @@ Map = (function () {
                 })
                 .add('click', function (e) {
                     var target = e.get('target');
-                    t = target;
                     // Вернет все геобъекты
                     var geoObjects = target.properties.get('geoObjects');
                     if (geoObjects) { // Клик по кластеру
@@ -297,10 +296,11 @@ Map = (function () {
 
         placeEvent: function () {
             $('.map-popup__main__right .places a').click(function () {
-                if($('.map-popup__main__right .places').hasClass('info-open')){
-                    return;
-                }
                 if (current_points.length > 0) {
+                    if(current_points.length == 1){
+                        return;
+                    }
+
                     var id = parseInt($(this).data('id'));
                     if (current_point.company_id != parseInt($(this).data('id'))) {
                         for (var i = 0; i < current_points.length; i++) {

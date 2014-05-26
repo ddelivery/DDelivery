@@ -95,7 +95,8 @@ var DDeliveryIframe = (function () {
         },
         postMessage: function(action, data) {
             // Отправляем сообщение родительскому окну
-            window.parent.postMessage({action:action, data: data}, '*');
+            var dataJSON = $.toJSON({action:action, data: data});
+            window.parent.postMessage(dataJSON, '*');
         },
         close: function(){
             DDeliveryIframe.postMessage('close', {});

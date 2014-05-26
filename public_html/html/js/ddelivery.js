@@ -23,17 +23,19 @@ var DDelivery = {
             callbacks = false;
         }
         var message = function (event) {
+
             // Не наше окно, мы его не слушаем
             if(iframe.contentWindow != event.source) {
                 return;
             }
+            var data;
+            eval('data = '+event.data);
             var result;
-
-            if (typeof(callbacks[event.data.action]) == 'function') {
-                result = callbacks[event.data.action](event.data.data);
+            if (typeof(callbacks[data.action]) == 'function') {
+                result = callbacks[data.action](data.data);
             }
             if( result !== false ) {
-                if (event.data.action == 'close') {
+                if (data.action == 'close') {
                     //iframe.parentNode.removeChild(iframe);
                 }
             }
