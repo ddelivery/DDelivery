@@ -147,7 +147,7 @@ class DDeliveryUI
      * @param $cmsID
      * @param $cmsStatus
      *
-     * @return int
+     * @return int|false
      */
     public function onCmsChangeStatus( $cmsID, $cmsStatus )
     {
@@ -167,7 +167,7 @@ class DDeliveryUI
                 }
             }
         }
-
+        return false;
     }
     /**
      *
