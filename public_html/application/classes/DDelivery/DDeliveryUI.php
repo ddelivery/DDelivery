@@ -1727,6 +1727,15 @@ class DDeliveryUI
             return '';
         }
 
+        $cityDB = new City();
+        $currentCity = $cityDB->getCityById($this->getOrder()->city);
+
+        //Собирает строчку с названием города для отображения
+        $displayCityName = $currentCity['type'].'. '.$currentCity['name'];
+        if($currentCity['region'] != $currentCity['name']) {
+            $displayCityName .= ', '.$currentCity['region'].' обл.';
+        }
+        $type = $this->getOrder()->type;
         if($this->getOrder()->type == DDeliverySDK::TYPE_COURIER) {
             $requiredFieldMask = $this->shop->getCourierRequiredFields();
         }elseif($this->getOrder()->type == DDeliverySDK::TYPE_SELF) {

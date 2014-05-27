@@ -9,7 +9,7 @@ use DDelivery\Adapter\DShopAdapter;
 <div class="map-popup">
 
     <div class="map-popup__head">
-        <p>Уточнение улицы</p>
+        <p><?if($type == \DDelivery\Sdk\DDeliverySDK::TYPE_COURIER):?>Курьерская доставка в<?else:?>Самовывоз из <?endif;?> <?=$displayCityName?></p>
 
         <div class="map-popup__head__close">&nbsp;</div>
     </div>
@@ -59,7 +59,7 @@ use DDelivery\Adapter\DShopAdapter;
                 <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS && !$order->getToStreet() ) ):?>
                     <div class="row clearfix">
                         <div class="row__title">
-                            <label for="address">Адрес</label>
+                            <label for="address">Улица</label>
                         </div>
                         <div class="row__inp">
                             <input type="text" title="Улица" id="address" name="address" value="<?=htmlspecialchars(trim($order->getToStreet()))?>" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS):?>req="req"<?endif;?>/>
