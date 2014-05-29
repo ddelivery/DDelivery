@@ -1709,12 +1709,14 @@ class DDeliveryUI
         // Ресетаем ключи.
         $courierCompanyList = array_values($courierCompanyList);
         $headerData = $this->getDataFromHeader();
+
         ob_start();
         include(__DIR__.'/../../templates/couriers.php');
         $content = ob_get_contents();
         ob_end_clean();
 
-        return json_encode(array('html'=>$content, 'js'=>'courier', 'orderId' => $this->order->localId, 'type'=>DDeliverySDK::TYPE_COURIER));
+        return json_encode(array('html'=>$content, 'js'=>'courier', 'orderId' => $this->order->localId,
+            'type'=>DDeliverySDK::TYPE_COURIER, 'typeData' => $headerData));
     }
 
     /**
