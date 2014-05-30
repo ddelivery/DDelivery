@@ -1791,7 +1791,7 @@ class DDeliveryUI
      * Возвращает дополнительную информацию по компаниям доставки
      * @return array
      */
-    public function getCompanySubInfo()
+    static public function getCompanySubInfo()
     {
         // pack забита для тех у кого нет иконки
         return array(
