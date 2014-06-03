@@ -694,7 +694,6 @@ class DDeliveryUI
             throw new DDeliveryException('Для получения списка необходимо корректный order');
         $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) );
         $selfPoint = null;
-        $points = $this->shop->filterPointsSelf($selfPoint, $this->getOrder());
         if(count($points))
         {
             foreach( $points AS $p )
@@ -1407,7 +1406,19 @@ class DDeliveryUI
         }
         if(!empty($request['point']) && isset($request['type'])) {
             if ( $request['type'] == DDeliverySDK::TYPE_SELF ) {
-                $this->order->setPoint($this->getSelfPointByID($request['point'], $this->order));
+                if(isset($request['custom']) && $request['custom']) {
+                    $points = $this->shop->filterPointsSelf(array(), $this->getOrder());
+                    $pointSelf = false;
+                    foreach($points as $point) {
+                        if($point->_id == $request['point']) {
+                            $pointSelf = $point;
+                            break;
+                        }
+                    }
+                }else{
+                    $pointSelf = $this->getSelfPointByID((int)$request['point'], $this->order);
+                }
+                $this->order->setPoint($pointSelf);
             }elseif($request['type'] == DDeliverySDK::TYPE_COURIER){
                 $this->order->setPoint($this->getCourierPointByCompanyID($request['point'], $this->order));
             }

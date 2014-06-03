@@ -281,7 +281,7 @@ Map = (function () {
             });
 
             $('.map-popup__info__btn a').click(function(){
-                DDeliveryIframe.ajaxPage({action:'contactForm', point: current_point._id, type:1});
+                DDeliveryIframe.ajaxPage({action:'contactForm', point: current_point._id, type:1, custom: current_point.is_custom ? 1 : ''});
             });
 
             $(window).on('ddeliveryCityPlace', function (e, city) {
