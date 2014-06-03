@@ -274,12 +274,12 @@ class Order {
 	    			  delivery_company, dimension_side1,
                       dimension_side2, dimension_side3, confirmed, weight, declared_price, 
 	    			  payment_price, to_name, to_phone, goods_description, to_flat, to_house, 
-	    			  to_street, to_phone, date, shop_refnum, products, local_status, dd_status, 
+	    			  to_street, date, shop_refnum, products, local_status, dd_status,
 	    			  first_name, second_name, point)
 	                  VALUES( :comment, :payment_variant, :type, :amount, :to_city, :ddeliveryorder_id, :delivery_company,
 	    			  :dimension_side1, :dimension_side2, :dimension_side3, :confirmed, :weight, 
 	    			  :declared_price, :payment_price, :to_name, :to_phone, :goods_description, 
-	    			  :to_flat, :to_house, :to_street, :to_phone, :date, :shop_refnum, :products, 
+	    			  :to_flat, :to_house, :to_street,  :date, :shop_refnum, :products,
 	    			  :local_status, :dd_status, :first_name, :second_name, :point )';
 	    	$stmt = $this->pdo->prepare($query);
 	    }
