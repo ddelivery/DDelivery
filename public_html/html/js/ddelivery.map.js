@@ -434,7 +434,7 @@ Map = (function () {
             $('.map-popup__info').fadeIn();
 
             DDeliveryIframe.ajaxData(
-                {action: 'mapGetPoint', id: point._id},
+                {action: 'mapGetPoint', id: point._id, 'custom': point.is_custom ? 1 : ''},
                 function (data) {
                     if(typeof(data.length) == 'undefined') { // object
                         $('.map-popup__info__table .rub').html(data.point.total_price);

@@ -694,6 +694,7 @@ class DDeliveryUI
             throw new DDeliveryException('Для получения списка необходимо корректный order');
         $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) );
         $selfPoint = null;
+        $points = $this->shop->filterPointsSelf($selfPoint, $this->getOrder());
         if(count($points))
         {
             foreach( $points AS $p )
@@ -1349,14 +1350,28 @@ class DDeliveryUI
                     return;
                 case 'mapGetPoint':
                     if(!empty($request['id'])) {
-                        $pointSelf = $this->getSelfPointByID((int)$request['id'], $this->order);
+                        if(isset($request['custom']) && $request['custom']) {
+                            $points = $this->shop->filterPointsSelf(array(), $this->getOrder());
+                            $pointSelf = false;
+                            foreach($points as $point) {
+                                if($point->_id == $request['id']) {
+                                    $pointSelf = $point;
+                                    break;
+                                }
+                            }
+                        }else{
+                            $pointSelf = $this->getSelfPointByID((int)$request['id'], $this->order);
+                        }
                         if(empty($pointSelf)) {
                             echo json_encode(array('point'=>array()));
-                        }
-                        $selfCompanyList = $this->shop->filterSelfInfo(array($pointSelf->getDeliveryInfo()));
-                        if(empty($selfCompanyList)){
-                            echo json_encode(array('point'=>array()));
                             return;
+                        }
+                        if(empty($pointSelf->is_custom)) {
+                            $selfCompanyList = $this->shop->filterSelfInfo(array($pointSelf->getDeliveryInfo()));
+                            if(empty($selfCompanyList)){
+                                echo json_encode(array('point'=>array()));
+                                return;
+                            }
                         }
 
                         echo json_encode(array(

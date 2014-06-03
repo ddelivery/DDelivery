@@ -33,7 +33,7 @@
                 <div class="map-popup__main__overlay">&nbsp;</div>
                 <div class="map-popup__main__delivery">
                     <div class="loader">
-                        <p>Подождите, ищется лучший маршрут...</p>
+                        <p>Подождите пожалуйста, мы ищем лучшие предложения</p>
                         <img src="<?=$staticURL?>/img/ajax_loader_horizont.gif"/>
                     </div>
                     <div>

@@ -36,6 +36,7 @@ namespace DDelivery\Point;
  * @property int has_fitting_room
  * @property int is_cash
  * @property int is_card 
+ * @property bool is_custom Точка создана интегратором
  *
  * @package  DDelivery.Point
  */
@@ -54,8 +55,16 @@ class DDeliveryPointSelf extends DDeliveryAbstractPoint{
     		'company_id', 'company_code', 'metro', 'description_in', 
     		'description_out', 'indoor_place','address', 
     		'schedule', 'longitude', 'latitude', 'type', 'status', 
-    		'has_fitting_room', 'is_cash', 'is_card' );
-    
+    		'has_fitting_room', 'is_cash', 'is_card', 'is_custom' );
+
+    /**
+     * @param bool $isCustom Точка создана интегратором
+     */
+    public function __construct( $isCustom = true )
+    {
+        $this->is_custom = (bool)$isCustom;
+    }
+
     public function init( $initParams = array() )
     {
         if(is_array($initParams))
@@ -115,7 +124,7 @@ class DDeliveryPointSelf extends DDeliveryAbstractPoint{
     public function toJson()
     {
         $params = array('_id', 'name', 'longitude', 'latitude', 'schedule', 'is_cash', 'is_card',
-            'has_fitting_room', 'company', 'company_id', 'address', 'type');
+            'has_fitting_room', 'company', 'company_id', 'address', 'type', 'is_custom');
         $result = array();
         foreach($params as $param){
             $result[$param] = $this->get($param);

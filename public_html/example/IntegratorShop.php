@@ -6,6 +6,7 @@
  * Time: 23:14
  */
 
+use DDelivery\Order\DDeliveryOrder;
 use DDelivery\Order\DDeliveryProduct;
 use DDelivery\Order\DDStatusProvider;
 
@@ -293,6 +294,28 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
             \DDelivery\Sdk\DDeliverySDK::TYPE_COURIER,
             \DDelivery\Sdk\DDeliverySDK::TYPE_SELF
         );
+    }
+
+    /**
+     * Если необходимо фильтрует пункты самовывоза и добавляет новые
+     *
+     * @param \DDelivery\Point\DDeliveryPointSelf[] $courierPoints
+     * @param DDeliveryOrder $order
+     * @return \DDelivery\Point\DDeliveryPointSelf[]
+     */
+    public function filterPointsSelf($courierPoints, DDeliveryOrder $order)
+    {
+
+        $courierPoints = parent::filterPointsSelf($courierPoints, $order);
+        /* пример установки собственного магазина на карту
+        $myCourier = new \DDelivery\Point\PointSelfCustom(
+            1, 'Моя компания', 'Петропавловская крепость, 8',
+            59.950236, 30.31537, 100, 0, 'Ежедневно с 10 до 22',
+            '', ''
+        );
+        $courierPoints[] = $myCourier;
+        */
+        return $courierPoints;
     }
 
 

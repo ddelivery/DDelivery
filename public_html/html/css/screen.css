@@ -21,7 +21,7 @@ body{ padding: 0; margin: 0;}
 .map-popup .clearfix { zoom: 1; }
 .map-popup label, .map-popup input[type="button"], .map-popup input[type="submit"], .map-popup button { cursor: pointer; }
 
-#ddelivery_loader .loader p { padding-left: 374px; padding-top: 100px; }
+#ddelivery_loader .loader p { padding-left: 316px; padding-top: 100px; }
 #ddelivery_loader .loader img { padding-left: 390px; padding-top: 10px;}
 #ddelivery_loader .load_error { padding-top: 100px; padding-left: 374px; display: none; }
 #ddelivery_loader .load_error a { text-decoration: underline; }

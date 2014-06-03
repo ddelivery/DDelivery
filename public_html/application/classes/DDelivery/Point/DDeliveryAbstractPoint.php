@@ -30,20 +30,6 @@ abstract class DDeliveryAbstractPoint {
 	 */
 	protected $deliveryInfo = null;
 
-    /**
-     * Точка создана интегратором
-     * @var bool $isCustom
-     */
-    public $isCustom;
-
-    /**
-     * Точка создана интегратором
-     * @param bool $isCustom
-     */
-    public function __construct( $isCustom = true )
-    {
-        $this->isCustom = $isCustom;
-    }
 
     /**
      * @param $deliveryInfo
