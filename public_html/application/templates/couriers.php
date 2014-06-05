@@ -47,6 +47,7 @@
     <div class="map-popup__main__overlay">&nbsp;</div>
     <div class="map-popup__main__delivery small">
         <table>
+
             <?foreach($courierCompanyList as $key => $courierCompany):
                 ?>
                 <tr>
@@ -54,7 +55,9 @@
                         <input type="radio" name="delivery_company" value="<?=$courierCompany->delivery_company?>" <?if($key==0):?>checked="checked"<?endif;?>/>
                     </td>
                     <td class="col2">
-                        <img src="<?=$staticURL?>img/logo/<?=$companies[$courierCompany->delivery_company]['ico']?>.png" alt="title"/>
+                        <img src="<?=$staticURL?>img/logo/<?php
+                        echo ((isset(  $companies[$courierCompany->delivery_company]['ico'] ) )?$companies[$courierCompany->delivery_company]['ico']:'pack');
+                        ?>.png" alt="title"/>
                     </td>
                     <td class="col3">
                         <p>
