@@ -299,23 +299,23 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
     /**
      * Если необходимо фильтрует пункты самовывоза и добавляет новые
      *
-     * @param \DDelivery\Point\DDeliveryPointSelf[] $courierPoints
+     * @param \DDelivery\Point\DDeliveryPointSelf[] $selfPoints
      * @param DDeliveryOrder $order
      * @return \DDelivery\Point\DDeliveryPointSelf[]
      */
-    public function filterPointsSelf($courierPoints, DDeliveryOrder $order)
+    public function filterPointsSelf($selfPoints, DDeliveryOrder $order)
     {
 
-        $courierPoints = parent::filterPointsSelf($courierPoints, $order);
+        $selfPoints = parent::filterPointsSelf($selfPoints, $order);
         /* пример установки собственного магазина на карту
         $myCourier = new \DDelivery\Point\PointSelfCustom(
             1, 'Моя компания', 'Петропавловская крепость, 8',
             59.950236, 30.31537, 100, 0, 'Ежедневно с 10 до 22',
             '', ''
         );
-        $courierPoints[] = $myCourier;
-        */
-        return $courierPoints;
+        $selfPoints[] = $myCourier;
+        /*/
+        return $selfPoints;
     }
 
 

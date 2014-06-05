@@ -220,13 +220,13 @@ abstract class PluginFilters extends DShopAdapter
     /**
      * Если необходимо фильтрует пункты самовывоза и добавляет новые
      *
-     * @param \DDelivery\Point\DDeliveryPointSelf[] $courierPoints
+     * @param \DDelivery\Point\DDeliveryPointSelf[] $selfPoints
      * @param DDeliveryOrder $order
      * @return \DDelivery\Point\DDeliveryPointSelf[]
      */
-    public function filterPointsSelf($courierPoints, DDeliveryOrder $order)
+    public function filterPointsSelf($selfPoints, DDeliveryOrder $order)
     {
-        if(empty($courierPoints)) {
+        if(empty($selfPoints)) {
             return array();
         }
 
@@ -237,20 +237,20 @@ abstract class PluginFilters extends DShopAdapter
 
         $pickup = $this->isPayPickup();
 
-        foreach($courierPoints as $key => $courierPoint) {
+        foreach($selfPoints as $key => $selfPoint) {
             // Удаляем те компании которые есть в фильтре
-            if(in_array($courierPoint->company_id, $filterCompany)) {
-                unset($courierPoints[$key]);
+            if(in_array($selfPoint->company_id, $filterCompany)) {
+                unset($selfPoints[$key]);
                 continue;
             }
-            $info = $courierPoint->getDeliveryInfo();
+            $info = $selfPoint->getDeliveryInfo();
             if($pickup) { // Не учитывать цену забора
                 $info->clientPrice = $info->total_price - $info->pickup_price;
             }
             $info->clientPrice = $this->aroundPrice($info->total_price);
         }
 
-        return $courierPoints;
+        return $selfPoints;
     }
 
 

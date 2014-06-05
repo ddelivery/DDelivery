@@ -316,12 +316,12 @@ abstract class DShopAdapter
     /**
      * Если необходимо фильтрует пункты самовывоза и добавляет новых
      *
-     * @param DDeliveryPointSelf[] $courierPoints
+     * @param DDeliveryPointSelf[] $selfPoints
      * @param \DDelivery\Order\DDeliveryOrder $order
      * @return \DDelivery\Point\DDeliveryPointSelf[]
      */
-    public function filterPointsSelf($courierPoints, DDeliveryOrder $order) {
-        return $courierPoints;
+    public function filterPointsSelf($selfPoints, DDeliveryOrder $order) {
+        return $selfPoints;
     }
 
     /**

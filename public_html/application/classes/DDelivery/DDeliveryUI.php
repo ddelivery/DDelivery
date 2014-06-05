@@ -675,6 +675,8 @@ class DDeliveryUI
         {
             throw new DDeliveryException('Точка не найдена');
         }
+
+        $this->shop->filterPointsCourier(array($courierPoint), $this->getOrder());
         return $courierPoint;
     }
 
@@ -1662,27 +1664,25 @@ class DDeliveryUI
         if(in_array(Sdk\DDeliverySDK::TYPE_COURIER, $this->supportedTypes)) {
             $courierCompanyList = $this->getCourierPointsForCity($this->order);
             if(!empty($courierCompanyList)){
-                $courierCompanyList = $this->shop->filterPointsCourier($courierCompanyList, $this->order);
-                if($courierCompanyList){
-                    $minPrice = PHP_INT_MAX;
-                    $minTime = PHP_INT_MAX;
+                $minPrice = PHP_INT_MAX;
+                $minTime = PHP_INT_MAX;
 
-                    foreach($courierCompanyList as $courierCompany){
-                        $deliveryInfo = $courierCompany->getDeliveryInfo();
-                        if($minPrice > $deliveryInfo->clientPrice) {
-                            $minPrice = $deliveryInfo->clientPrice;
-                        }
-                        if($minTime > $deliveryInfo->delivery_time_min) {
-                            $minTime = $deliveryInfo->delivery_time_min;
-                        }
+                foreach($courierCompanyList as $courierCompany){
+                    $deliveryInfo = $courierCompany->getDeliveryInfo();
+                    if($minPrice > $deliveryInfo->clientPrice) {
+                        $minPrice = $deliveryInfo->clientPrice;
                     }
-                    $data['courier'] = array(
-                        'minPrice' => $minPrice,
-                        'minTime' => $minTime,
-                        'timeStr' => Utils::plural($minTime, 'дня', 'дней', 'дней', 'дней', false),
-                        'disabled' => false
-                    );
+                    if($minTime > $deliveryInfo->delivery_time_min) {
+                        $minTime = $deliveryInfo->delivery_time_min;
+                    }
                 }
+                $data['courier'] = array(
+                    'minPrice' => $minPrice,
+                    'minTime' => $minTime,
+                    'timeStr' => Utils::plural($minTime, 'дня', 'дней', 'дней', 'дней', false),
+                    'disabled' => false
+                );
+
             }
         }
         return $data;

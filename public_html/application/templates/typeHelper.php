@@ -30,7 +30,7 @@
         <?if(in_array(DDelivery\Sdk\DDeliverySDK::TYPE_SELF, $this->supportedTypes)):?>
             <li class="delivery-type__drop_self">
                 <a href="javascript:void(0)">
-                    <span class="name">забрать самовывозом от</span>
+                    <span class="name">забрать самовывозом</span>
                     <span class="price"><span><?=$headerData['self']['minPrice']?></span> <i class="icon-rub">&nbsp;</i></span>
                     <span class="date">от <strong><?=$headerData['self']['minTime']?></strong>
                         <span><?=\DDelivery\Utils::plural($headerData['self']['minTime'], 'дня', 'дней', 'дней', 'дней', false)?></span>
