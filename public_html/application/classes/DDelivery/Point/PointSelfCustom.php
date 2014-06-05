@@ -21,6 +21,8 @@ class PointSelfCustom extends DDeliveryPointSelf {
         $this->schedule = $schedule;
         $this->description_in = $descriptionIn;
         $this->description_out = $descriptionOut;
+        $this->is_card = 1;
+        $this->is_cash = 1;
         $this->setDeliveryInfo(new DDeliveryInfo(array('total_price' => $totalPrice, 'pickup_price'=>0, 'delivery_time_min'=>$deliveryTimeMin)));
     }
 }

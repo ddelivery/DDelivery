@@ -308,14 +308,8 @@ Map = (function () {
             });
 
             // Удаляем старые поинты, какраз пока ждем ответа ajax
-            var pointsRemove = [];
-            for (var pointKey in points) {
-                var point = points[pointKey];
-                if (point.display) {
-                    pointsRemove.push(point);
-                }
-            }
-            clusterer.remove(pointsRemove);
+            points = [];
+            clusterer.removeAll();
         },
 
         placeEvent: function () {
