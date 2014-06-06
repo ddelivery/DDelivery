@@ -45,7 +45,7 @@ var Courier = (function () {
                 var radio = $('input[type="radio"]:checked').val();
                 if (radio) {
                     DDeliveryIframe.ajaxPage({
-                        point: $('input[name=delivery_company]').val(),
+                        point: radio,
                         action: 'contactForm',
                         type: 2
                     });
