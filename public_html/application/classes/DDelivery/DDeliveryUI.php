@@ -143,6 +143,7 @@ class DDeliveryUI
 
     /**
      * Функция вызывается при изменении статуса внутри cms для отправки
+     * @deprecated Не работает.
      *
      * @param $cmsID
      * @param $cmsStatus
@@ -169,6 +170,31 @@ class DDeliveryUI
         }
         return false;
     }
+
+    /**
+     * Отправить order в DD
+     * @param DDeliveryOrder $order
+     * @param string $cmsID
+     * @param int $paymentType
+     * @return bool|int
+     */
+    public function sendOrderToDD($order, $cmsID, $paymentType)
+    {
+        if(!$order)
+            return false;
+        $order->shopRefnum = $cmsID;
+        $order->paymentVariant = $paymentType;
+        if($order->type == DDeliverySDK::TYPE_SELF)
+        {
+            return $this->createSelfOrder($order);
+        }
+        elseif( $order->type == DDeliverySDK::TYPE_COURIER )
+        {
+            return $this->createCourierOrder($order);
+        }
+        return false;
+    }
+
     /**
      *
      * Получить заказы которые еще не окончили обработку
@@ -1085,9 +1111,9 @@ class DDeliveryUI
     		$this->messager->pushMessage($e->getMessage());
     	    return 0;
     	}
-    	$ddeliveryOrderID = 0;
-    	if( $this->shop->sendOrderToDDeliveryServer($order) )
-    	{
+    	if(! $this->shop->sendOrderToDDeliveryServer($order) ) {
+            return 0;
+        } else {
     	    $point = $order->getPoint();
     	    $pointID = $point->get('_id');
     	    $dimensionSide1 = $order->getDimensionSide1();
