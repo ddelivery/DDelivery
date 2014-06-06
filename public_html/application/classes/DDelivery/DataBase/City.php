@@ -8,6 +8,7 @@
 namespace DDelivery\DataBase;
 
 
+use DDelivery\Adapter\DShopAdapter;
 use PDO;
 
 /**
@@ -20,10 +21,20 @@ class City {
      * @var PDO
      */
     public $pdo;
+    /**
+     * @var int
+     */
+    public $pdoType;
 
-    function __construct()
+    function __construct(\PDO $pdo, $prefix = '')
     {
-        $this->pdo = SQLite::getPDO();
+        $this->pdo = $pdo;
+        $this->prefix = $prefix;
+        if($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME) == 'sqlite') {
+            $this->pdoType = DShopAdapter::DB_SQLITE;
+        }else{
+            $this->pdoType = DShopAdapter::DB_MYSQL;
+        }
     }
 
     /**
@@ -34,9 +45,12 @@ class City {
      */
     public function getCityById($cityId)
     {
-        $cityId = (int)$cityId;
-       
-        $sth = $this->pdo->query("SELECT * FROM ps_dd_cities WHERE _id = $cityId");
+        $query = "SELECT * FROM ".$this->prefix."ps_dd_cities WHERE _id = :id";
+
+        $sth = $this->pdo->prepare( $query );
+        $sth->bindParam( ':id', $cityId );
+        $sth->execute();
+
         $result = $sth->fetch(PDO::FETCH_ASSOC);
         return $result;
     }
