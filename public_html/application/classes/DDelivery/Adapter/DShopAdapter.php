@@ -114,6 +114,17 @@ abstract class DShopAdapter
                                         DDStatusProvider::ORDER_WAITING => 'Ожидание',
                                         DDStatusProvider::ORDER_CANCEL => 'Отмена' );
 
+    /**
+     * Возвращает true если статус $cmsStatus равен
+     * статусу в настройках
+     *
+     * @param $cmsStatus mixed
+     * @return bool
+     */
+    public function isStatusToSendOrder( $cmsStatus )
+    {
+        return false;
+    }
 
     /**
      * Возвращает время истечения кэша в минутах
