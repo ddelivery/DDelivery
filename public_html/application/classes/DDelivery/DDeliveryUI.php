@@ -1541,30 +1541,32 @@ class DDeliveryUI
                 echo $this->renderContactForm();
                 break;
             case 'change':
-                $comment = '';
-                $point = $this->order->getPoint();
-                if ($point instanceof DDeliveryPointSelf) {
-                    $comment = 'Самовывоз, '.$point->address;
-                } elseif($point instanceof DDeliveryPointCourier) {
-                    $comment = 'Доставка курьером по адресу '.$this->order->getFullAddress();
-                }
-                $this->shop->onFinishChange($this->order->localId, $this->order, $point);
-                echo json_encode(array(
-                    'html'=>'',
-                    'js'=>'change',
-                    'comment'=>htmlspecialchars($comment),
-                    'orderId' => $this->order->localId,
-                    'clientPrice'=>$point->getDeliveryInfo()->clientPrice,
-                    'userInfo' => $this->getDDUserInfo($this->order->localId),
-                ));
+                return $this->renderChange();
                 break;
             default:
                 throw new DDeliveryException('Not support action');
                 break;
         }
+    }
 
-
-
+    private function renderChange()
+    {
+        $comment = '';
+        $point = $this->order->getPoint();
+        if ($point instanceof DDeliveryPointSelf) {
+            $comment = 'Самовывоз, '.$point->address;
+        } elseif($point instanceof DDeliveryPointCourier) {
+            $comment = 'Доставка курьером по адресу '.$this->order->getFullAddress();
+        }
+        $this->shop->onFinishChange($this->order->localId, $this->order, $point);
+        return json_encode(array(
+            'html'=>'',
+            'js'=>'change',
+            'comment'=>htmlspecialchars($comment),
+            'orderId' => $this->order->localId,
+            'clientPrice'=>$point->getDeliveryInfo()->clientPrice,
+            'userInfo' => $this->getDDUserInfo($this->order->localId),
+        ));
     }
 
     /**
@@ -1797,6 +1799,10 @@ class DDeliveryUI
         }else{
             return '';
         }
+        if($requiredFieldMask == 0){
+            return $this->renderChange();
+        }
+
         $deliveryType = $this->getOrder()->type;
 
         $order = $this->order;
