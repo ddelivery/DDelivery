@@ -2,7 +2,7 @@ if(typeof(DDelivery) == 'undefined')
 var DDelivery = {
     delivery: function (objectId, componentUrl, params, callbacks) {
         var iframe = document.createElement('iframe');
-        iframe.params = params;
+
         iframe.style.width = '1000px';
         iframe.style.height = '650px';
         iframe.style.overflow = 'hidden';
@@ -18,6 +18,7 @@ var DDelivery = {
         var object = document.getElementById(objectId);
         object.innerHTML = '';
         object.appendChild(iframe);
+        iframe.contentWindow.params = params;
 
         if(typeof(callbacks)!='object'){
             callbacks = false;
