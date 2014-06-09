@@ -126,6 +126,14 @@ class DDeliveryUI
         $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled(), $this->pdo, $this->pdoTablePrefix );
     }
 
+    public function createTables()
+    {
+        $cache = new DataBase\Cache($this->pdo, $this->pdoTablePrefix);
+        $cache->createTable();
+        $order = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
+        $order->createTable();
+    }
+
     /**
      * Чистим кэш
      */

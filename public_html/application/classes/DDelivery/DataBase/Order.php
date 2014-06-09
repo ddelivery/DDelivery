@@ -110,6 +110,7 @@ class Order {
                 `comment` varchar(255) DEFAULT NULL,
                 PRIMARY KEY (`id`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $this->pdo->exec($query);
         }elseif($this->pdoType == DShopAdapter::DB_SQLITE){
             $this->pdo->exec("CREATE TABLE IF NOT EXISTS orders (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
