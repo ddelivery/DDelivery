@@ -1917,5 +1917,15 @@ class DDeliveryUI
         $currentOrder->comment = $item->comment;
     }
 
+    /**
+     * Удалить все заказы
+     * @return bool
+     */
+    public function deleteAllOrders()
+    {
+        $orderDB = new DataBase\Order();
+        return $orderDB->cleanOrders();
+    }
+
 
 }
