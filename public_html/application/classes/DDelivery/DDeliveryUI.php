@@ -1579,7 +1579,7 @@ class DDeliveryUI
                 echo $this->renderContactForm();
                 break;
             case 'change':
-                return $this->renderChange();
+                echo $this->renderChange();
                 break;
             default:
                 throw new DDeliveryException('Not support action');
