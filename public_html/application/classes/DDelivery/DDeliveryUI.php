@@ -1541,7 +1541,7 @@ class DDeliveryUI
                 echo $this->renderContactForm();
                 break;
             case 'change':
-                return $this->renderChange();
+                echo $this->renderChange(); // Вот такие пироги. Скомитиш? Ага
                 break;
             default:
                 throw new DDeliveryException('Not support action');
@@ -1915,6 +1915,16 @@ class DDeliveryUI
         $currentOrder->toFlat = $item->to_flat;
         $currentOrder->toEmail = $item->to_email;
         $currentOrder->comment = $item->comment;
+    }
+
+    /**
+     * Удалить все заказы
+     * @return bool
+     */
+    public function deleteAllOrders()
+    {
+        $orderDB = new DataBase\Order();
+        return $orderDB->cleanOrders();
     }
 
 
