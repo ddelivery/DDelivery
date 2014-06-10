@@ -10,6 +10,7 @@ Map = (function () {
     var current_points = false;
     var current_point = false;
     var clusterer;
+    var currentPointExtendData = false;
     var filter = {
         cash: true,
         card: true,
@@ -281,6 +282,11 @@ Map = (function () {
             });
 
             $('.map-popup__info__btn a').click(function(){
+                if(!currentPointExtendData)
+                    return;
+                var point = $.extend({}, current_point, currentPointExtendData);
+                point.placemark = undefined;
+                DDeliveryIframe.postMessage('mapPointChange', {point: point});
                 DDeliveryIframe.ajaxPage({action:'contactForm', point: current_point._id, type:1, custom: current_point.is_custom ? 1 : ''});
             });
 
@@ -375,7 +381,7 @@ Map = (function () {
 
         },
         renderInfo: function (point, points) {
-
+            currentPointExtendData = false;
             $('.map-popup__main__right .places').addClass('info-open');
             $('.map-popup__main__right .places a').removeClass('active').removeClass('hasinfo');
 
@@ -431,6 +437,7 @@ Map = (function () {
                 {action: 'mapGetPoint', id: point._id, 'custom': point.is_custom ? 1 : ''},
                 function (data) {
                     if(typeof(data.length) == 'undefined') { // object
+                        currentPointExtendData = data.point;
                         $('.map-popup__info__table .rub').html(data.point.total_price);
                         var day = $('.map-popup__info__table .day').show();
                         $('strong', day).html(data.point.delivery_time_min);

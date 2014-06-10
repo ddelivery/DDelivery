@@ -47,8 +47,10 @@
     <div class="map-popup__main__overlay">&nbsp;</div>
     <div class="map-popup__main__delivery small">
         <table>
-
-            <?foreach($courierCompanyList as $key => $courierCompany):
+            <?
+            $courierCompanyListJson = array();
+            foreach($courierCompanyList as $key => $courierCompany):
+                $courierCompanyListJson[$courierCompany->delivery_company] = $courierCompany->toJson();
                 ?>
                 <tr>
                     <td class="col1">
@@ -72,7 +74,9 @@
                     </td>
                 </tr>
             <?endforeach;?>
-
+            <script type="application/javascript">
+                var couriers = <?=json_encode($courierCompanyListJson)?>;
+            </script>
         </table>
     </div>
     <div class="map-popup__main__delivery__next">

@@ -43,4 +43,18 @@ class DDeliveryPointCourier extends DDeliveryAbstractPoint {
     {
         $this->deliveryInfo->set($name, $value);
     }
+
+    /**
+     * Возвращает только информацию которая может понадобиться на карте
+     * @return array
+     */
+    public function toJson()
+    {
+        $params = array('delivery_company', 'delivery_company_name', 'delivery_time_min', 'delivery_time_max', 'total_price');
+        $result = array();
+        foreach($params as $param){
+            $result[$param] = $this->__get($param);
+        }
+        return $result;
+    }
 }

@@ -52,6 +52,10 @@
                         closePopup();
                         alert(data.comment+ ' интернет магазину нужно взять с пользователя за доставку '+data.clientPrice+' руб. OrderId: '+data.orderId);
                     }
+                    /* Хуки на выбор компании или точки
+                    mapPointChange: function(data) {},
+                    courierChange: function(data) {}
+                    */
                 };
 
                 DDelivery.delivery('ddelivery', 'ajax.php?<?isset($_GET['XDEBUG_SESSION_START']) ? 'XDEBUG_SESSION_START='.(int)$_GET['XDEBUG_SESSION_START'] : ''?> ', params, callback);

@@ -44,6 +44,7 @@ var Courier = (function () {
             $('.map-popup__main__delivery__next a').click(function () {
                 var radio = $('input[type="radio"]:checked').val();
                 if (radio) {
+                    DDeliveryIframe.postMessage('courierChange', {point: couriers[radio]});
                     DDeliveryIframe.ajaxPage({
                         point: radio,
                         action: 'contactForm',
