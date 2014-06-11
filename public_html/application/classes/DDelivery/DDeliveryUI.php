@@ -72,11 +72,20 @@ class DDeliveryUI
     private $cache;
 
     /**
+     * @var /PDO бд
+     */
+    private $pdo;
+    /**
+     * @var string префикс таблицы
+     */
+    private $pdoTablePrefix;
+
+    /**
      * Запускает движок SDK
      *
      * @param DShopAdapter $dShopAdapter адаптер интегратора
      * @param bool $skipOrder запустить движок без инициализации заказа  из корзины
-     *
+     * @throws DDeliveryException
      */
     public function __construct(DShopAdapter $dShopAdapter, $skipOrder = false)
     {
@@ -84,7 +93,28 @@ class DDeliveryUI
 
         $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), $this->shop->isTestMode());
 
-        SQLite::$dbUri = $dShopAdapter->getPathByDB();
+        $dbConfig = $dShopAdapter->getDbConfig();
+        if(isset($dbConfig['pdo']) && $dbConfig['pdo'] instanceof \PDO) {
+            $this->pdo = $dbConfig['pdo'];
+        }elseif($dbConfig['type'] == DShopAdapter::DB_SQLITE) {
+            if(!$dbConfig['dbPath'])
+                throw new DDeliveryException('SQLite db is empty');
+
+            $dbDir = dirname($dbConfig['dbPath']);
+            if(  (!is_writable( $dbDir )) || ( !is_writable( $dbConfig['dbPath'] ) ) || (!is_dir( $dbDir )) ) {
+                throw new DDeliveryException('SQLite database does not exist or is not writable');
+            }
+
+            $this->pdo = new \PDO('sqlite:'.$dbConfig['dbPath']);
+            $this->pdo->exec('PRAGMA journal_mode=WAL;');
+        } elseif($dbConfig['type'] == DShopAdapter::DB_MYSQL) {
+            $this->pdo = new \PDO($dbConfig['dsn'], $dbConfig['user'], $dbConfig['pass']);
+            $this->pdo->exec('SET NAMES utf8');
+        }else{
+            throw new DDeliveryException('Not support database type');
+        }
+        $this->pdoTablePrefix = isset($dbConfig['prefix']) ? $dbConfig['prefix'] : '';
+
         // Формируем объект заказа
         if(!$skipOrder)
         {
@@ -93,7 +123,15 @@ class DDeliveryUI
             $this->order->amount = $this->shop->getAmount();
         }
         $this->messager = new Sdk\DDeliveryMessager($this->shop->isTestMode());
-        $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled() );
+        $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled(), $this->pdo, $this->pdoTablePrefix );
+    }
+
+    public function createTables()
+    {
+        $cache = new DataBase\Cache($this->pdo, $this->pdoTablePrefix);
+        $cache->createTable();
+        $order = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
+        $order->createTable();
     }
 
     /**
@@ -203,7 +241,7 @@ class DDeliveryUI
      */
     public function getUnfinishedOrders()
     {
-        $orderDB = new DataBase\Order();
+        $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
         $data = $orderDB->getNotFinishedOrders();
         $orderIDs = array();
         $orders = array();
@@ -312,7 +350,7 @@ class DDeliveryUI
      */
     function getOrderByCmsID( $cmsOrderID )
     {
-        $orderDB = new DataBase\Order();
+        $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
         $data = $orderDB->getOrderByCmsOrderID( $cmsOrderID );
 
         if( count($data) )
@@ -440,7 +478,7 @@ class DDeliveryUI
      */
     public function setShopOrderID( $id, $paymentVariant, $status, $shopOrderID )
     {
-    	$orderDB = new DataBase\Order();
+    	$orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
     	return $orderDB->setShopOrderID($id, $paymentVariant, $status, $shopOrderID);
     }
 
@@ -455,7 +493,7 @@ class DDeliveryUI
      */
     public function initIntermediateOrder( $id )
     {
-        $orderDB = new DataBase\Order();
+        $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
         if(!$id)
             return false;
         $orders = $orderDB->getOrderList(array( $id ));
@@ -478,7 +516,7 @@ class DDeliveryUI
      */
     public function initOrder( $ids )
     {   
-    	$orderDB = new DataBase\Order();
+    	$orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
         $orderList = array();
         if(!count($ids))
         	throw new DDeliveryException('Пустой массив для инициализации заказа');
@@ -719,7 +757,7 @@ class DDeliveryUI
     public function getSelfPointByID( $pointId, $order )
     {
         if(!$this->_validateOrderToGetPoints( $order))
-            throw new DDeliveryException('Для получения списка необходимо корректный order');
+            throw new DDeliveryException('Not valid order');
         $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) );
         $selfPoint = null;
         if(count($points))
@@ -735,7 +773,7 @@ class DDeliveryUI
         }
         if( $selfPoint == null )
         {
-            throw new DDeliveryException('Точка не найдена');
+            throw new DDeliveryException('Point not found');
         }
         /**
          * @var DDeliveryPointSelf $selfPoint
@@ -754,7 +792,7 @@ class DDeliveryUI
     public function getSelfPoints( DDeliveryOrder $order )
     {
         if(!$this->_validateOrderToGetPoints( $order))
-            throw new DDeliveryException('Для получения списка необходимо корректный order');
+            throw new DDeliveryException('Not valid order');
         // Есть ли необходимость искать точки на сервере ddelivery
         $result_points = array();
         if( $this->shop->preGoToFindPoints( $order ))
@@ -1002,7 +1040,7 @@ class DDeliveryUI
      */
     public function saveFullOrder( DDeliveryOrder $order )
     {
-    	$orderDB = new DataBase\Order();
+    	$orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
     	$id = $orderDB->saveFullOrder( $order );
     	return $id;
     }
@@ -1162,7 +1200,7 @@ class DDeliveryUI
      */
     public function getAllOrders()
     {
-    	$orderDB = new DataBase\Order();
+    	$orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
     	return $orderDB->selectAll();
     }
 
@@ -1541,7 +1579,7 @@ class DDeliveryUI
                 echo $this->renderContactForm();
                 break;
             case 'change':
-                echo $this->renderChange(); // Вот такие пироги. Скомитиш? Ага
+                echo $this->renderChange();
                 break;
             default:
                 throw new DDeliveryException('Not support action');
@@ -1582,7 +1620,7 @@ class DDeliveryUI
      */
     protected function getCityByDisplay($cityId)
     {
-        $cityDB = new City();
+        $cityDB = new City($this->pdo, $this->pdoTablePrefix);
         $cityList = $cityDB->getTopCityList();
         // Складываем массивы получаем текущий город наверху, потом его и выберем
         if(isset($cityList[$cityId])){
@@ -1789,7 +1827,7 @@ class DDeliveryUI
             return '';
         }
 
-        $cityDB = new City();
+        $cityDB = new City($this->pdo, $this->pdoTablePrefix);
         $currentCity = $cityDB->getCityById($this->getOrder()->city);
 
         //Собирает строчку с названием города для отображения
@@ -1929,7 +1967,7 @@ class DDeliveryUI
      */
     public function deleteAllOrders()
     {
-        $orderDB = new DataBase\Order();
+        $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
         return $orderDB->cleanOrders();
     }
 

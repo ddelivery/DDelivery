@@ -89,7 +89,10 @@ abstract class DShopAdapter
      * @var DDeliveryProduct[]
      */
     private $productsFromCart = null;
-    
+
+    const DB_MYSQL = 1;
+    const DB_SQLITE = 2;
+
     /**
      * Сопоставление cтатуса заказов на стороне cms
      * 
@@ -113,6 +116,39 @@ abstract class DShopAdapter
                                         DDStatusProvider::ORDER_RETURNED_MI => 'Возвращен в ИМ',
                                         DDStatusProvider::ORDER_WAITING => 'Ожидание',
                                         DDStatusProvider::ORDER_CANCEL => 'Отмена' );
+
+    /**
+     * Настройки базы данных
+     * @return array
+     */
+    public function getDbConfig()
+    {
+        return array(
+            'type' => self::DB_SQLITE,
+            'dbPath' => $this->getPathByDB(),
+            'prefix' => '',
+        );
+        return array(
+            'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', '0', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
+            'prefix' => '',
+        );
+        return array(
+            'type' => self::DB_MYSQL,
+            'dsn' => 'mysql:host=localhost;dbname=ddelivery',
+            'user' => 'root',
+            'pass' => '0',
+            'prefix' => '',
+        );
+    }
+
+    /**
+     * Возвращает путь до файла базы данных sqlite, положите его в место не доступное по прямой ссылке
+     * @return string
+     */
+    public function getPathByDB()
+    {
+        return '';
+    }
 
     /**
      * Возвращает true если статус $cmsStatus равен
@@ -285,15 +321,7 @@ abstract class DShopAdapter
         return array();
     }
 
-    /**
-     * Возвращает путь до файла базы данных, положите его в место не доступное по прямой ссылке
-     * @return string
-     */
-    public abstract function getPathByDB();
-    
-    
-    
-    
+
     /**
      * Вызывается перед отображением цены точки самовывоза, можно что-то изменить
      *
