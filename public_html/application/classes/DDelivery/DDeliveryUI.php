@@ -1971,5 +1971,17 @@ class DDeliveryUI
         return $orderDB->cleanOrders();
     }
 
+    /**
+     * Получить описание статуса на DDelivery
+     *
+     * @param $ddStatus код статуса на DDeivery
+     *
+     * @return string
+     */
+    public function getDDStatusDescription( $ddStatus )
+    {
+       $statusProvider = new DDStatusProvider();
+       return $statusProvider->getOrderDescription( $ddStatus );
+    }
 
 }

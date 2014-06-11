@@ -47,7 +47,7 @@ class DDStatusProvider
         {
             return $this->ddeliveryOrderStatus[$orderCode];
         }
-        return 'Заказ с таким кодом не найден';
+        return 'Статус с таким кодом не найден';
     }
 
 
