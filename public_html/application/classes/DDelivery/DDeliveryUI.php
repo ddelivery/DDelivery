@@ -1558,13 +1558,19 @@ class DDeliveryUI
         } elseif($point instanceof DDeliveryPointCourier) {
             $comment = 'Доставка курьером по адресу '.$this->order->getFullAddress();
         }
+        $pointDDInfo = $this->shop->filterSelfInfo(array($point->getDeliveryInfo()));
+        if(!count($pointDDInfo)) {
+            return '';
+        }
+        $pointDDInfo = reset($pointDDInfo);
+
         $this->shop->onFinishChange($this->order->localId, $this->order, $point);
         return json_encode(array(
             'html'=>'',
             'js'=>'change',
             'comment'=>htmlspecialchars($comment),
             'orderId' => $this->order->localId,
-            'clientPrice'=>$point->getDeliveryInfo()->clientPrice,
+            'clientPrice'=>$pointDDInfo->clientPrice,
             'userInfo' => $this->getDDUserInfo($this->order->localId),
         ));
     }
