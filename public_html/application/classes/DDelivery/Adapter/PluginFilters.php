@@ -207,7 +207,7 @@ abstract class PluginFilters extends DShopAdapter
                     if($price < $interval['amount']) {
                         $priceReturn = 0;
                     }else{
-                        $priceReturn = $price < $interval['amount'];
+                        $priceReturn = $price - $interval['amount'];
                     }
                     break;
                 case self::INTERVAL_RULES_CLIENT_ALL:
