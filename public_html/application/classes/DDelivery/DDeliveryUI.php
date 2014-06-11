@@ -1837,8 +1837,10 @@ class DDeliveryUI
         }
         $type = $this->getOrder()->type;
         if($this->getOrder()->type == DDeliverySDK::TYPE_COURIER) {
+            $displayCityName.=', '.$point->getDeliveryInfo()->delivery_company_name;
             $requiredFieldMask = $this->shop->getCourierRequiredFields();
         }elseif($this->getOrder()->type == DDeliverySDK::TYPE_SELF) {
+            $displayCityName.=' '. $point->address;
             $requiredFieldMask = $this->shop->getSelfRequiredFields();
         }else{
             return '';

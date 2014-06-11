@@ -42,6 +42,7 @@
 
                 var params = {
                     //orderId: 4 // Если у вас есть id заказа который изменяется, то укажите его в этом параметре
+                    //displayContactForm: false
                 };
                 var callback = {
                     close: function(){
