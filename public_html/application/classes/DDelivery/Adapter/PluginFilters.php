@@ -244,10 +244,10 @@ abstract class PluginFilters extends DShopAdapter
                 continue;
             }
             $info = $selfPoint->getDeliveryInfo();
-            if($pickup) { // Не учитывать цену забора
+            if(!$pickup) { // Не учитывать цену забора
                 $info->clientPrice = $info->total_price - $info->pickup_price;
             }
-            $info->clientPrice = $this->aroundPrice($info->total_price);
+            $info->clientPrice = $this->aroundPrice($info->clientPrice);
         }
 
         return $selfPoints;
@@ -275,7 +275,7 @@ abstract class PluginFilters extends DShopAdapter
                 unset($selfCompanyList[$key]);
             }
 
-            if($pickup) { // Не учитывать цену забора
+            if(!$pickup) { // Не учитывать цену забора
                 $company->clientPrice = $company->total_price - $company->pickup_price;
             }
             $company->clientPrice = $this->preDisplayPointCalc($company->clientPrice);
@@ -314,7 +314,7 @@ abstract class PluginFilters extends DShopAdapter
                 unset($courierPoints[$key]);
             }
 
-            if($pickup) { // Не учитывать цену забора
+            if(!$pickup) { // Не учитывать цену забора
                 $courierPoint->getDeliveryInfo()->clientPrice = $courierPoint->total_price - $courierPoint->pickup_price;
             }
             $courierPoint->getDeliveryInfo()->clientPrice = $this->preDisplayPointCalc($courierPoint->getDeliveryInfo()->clientPrice);
