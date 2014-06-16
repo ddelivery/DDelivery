@@ -482,28 +482,6 @@ class DDeliveryUI
     	return $orderDB->setShopOrderID($id, $paymentVariant, $status, $shopOrderID);
     }
 
-    /**
-     * Инициализирует заказ по id из заказов локальной БД, в контексте текущего UI
-     *
-     * @param int $id id заказа
-     *
-     * @throws DDeliveryException
-     *
-     * @return DDeliveryOrder[]
-     */
-    public function initIntermediateOrder( $id )
-    {
-        $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
-        if(!$id)
-            return false;
-        $orders = $orderDB->getOrderList(array( $id ));
-        if( count($orders) )
-        {
-            $item = $orders[0];
-            $this->_initOrderInfo( $this->order,  $item);
-        }
-        return true;
-    }
 
     /**
      * Инициализирует массив заказов из массива id заказов локальной БД
@@ -1366,7 +1344,8 @@ class DDeliveryUI
     public function render($request)
     {
         if(!empty($request['order_id'])) {
-            $this->initIntermediateOrder($request['order_id']);
+            $orders =  $this->initOrder( array($request['order_id']) );
+            $this->order = $orders[0];
         }
 
         if(isset($request['action'])) {
