@@ -445,21 +445,7 @@ class DDeliveryUI
         $order->paymentVariant = $payment;
         $order->shopRefnum = $shopOrderID;
         $order->localStatus = $status;
-        /*
-        if( $this->shop->isStatusToSendOrder( $status, $order) )
-        {   
 
-            if( $order->type == DDeliverySDK::TYPE_SELF ) {
-                $order->ddeliveryID = $this->createSelfOrder($order);
-            } else if( $order->type == DDeliverySDK::TYPE_COURIER ) {
-                $order->ddeliveryID = $this->createCourierOrder($order);
-            }else{
-                throw new DDeliveryException('Not support order type');
-            }
-            $this->saveFullOrder($order);
-            return (bool)$order->ddeliveryID;
-        }
-        */
         $id = $this->saveFullOrder($order);
         return (bool)$id;
     }
