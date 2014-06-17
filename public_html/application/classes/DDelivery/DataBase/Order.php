@@ -158,7 +158,7 @@ class Order {
 	 */
 	public function getOrderByCmsOrderID( $cmsOrderID )
 	{
-        if($this->pdoType == DShopAdapter::DB_SQLITE || $this->pdoType == DShopAdapter::DB_SQLITE) {
+        if($this->pdoType == DShopAdapter::DB_SQLITE || $this->pdoType == DShopAdapter::DB_MYSQL) {
 		    $query = "SELECT id FROM {$this->prefix}orders WHERE shop_refnum = :cmsOrderId";
         }
         $sth = $this->pdo->prepare( $query );
