@@ -469,6 +469,7 @@ class DDeliveryUI
     }
 
 
+
     /**
      * Инициализирует массив заказов из массива id заказов локальной БД
      *
@@ -1950,5 +1951,6 @@ class DDeliveryUI
        $statusProvider = new DDStatusProvider();
        return $statusProvider->getOrderDescription( $ddStatus );
     }
+
 
 }
