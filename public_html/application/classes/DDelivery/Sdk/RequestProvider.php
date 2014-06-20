@@ -134,7 +134,7 @@ class RequestProvider
 			$this->curl[$server] = curl_init();
 			curl_setopt($this->curl[$server], CURLOPT_RETURNTRANSFER, TRUE);
 			curl_setopt($this->curl[$server], CURLOPT_HEADER, 0);
-			curl_setopt($this->curl[$server], CURLOPT_FOLLOWLOCATION, 1);
+			//curl_setopt($this->curl[$server], CURLOPT_FOLLOWLOCATION, 1); // Не будет работать в защищенных режимах php
             // В реальных интернетах за пинг в секунду убивают
             //curl_setopt($this->curl[$server], CURLOPT_TIMEOUT, 3);
 		}
