@@ -45,7 +45,7 @@ var Courier = (function () {
                 var radio = $('input[type="radio"]:checked').val();
                 if (radio) {
                     DDeliveryIframe.postMessage('courierChange', {point: couriers[radio]});
-                    if(typeof(params.displayContactForm) == 'boolean' && !params.displayContactForm){
+                    if(typeof(params) != 'undefined' && typeof(params.displayContactForm) == 'boolean' && !params.displayContactForm){
                         return;
                     }
 
