@@ -287,7 +287,7 @@ Map = (function () {
                 var point = $.extend({}, current_point, currentPointExtendData);
                 point.placemark = undefined;
                 DDeliveryIframe.postMessage('mapPointChange', {point: point});
-                if(typeof(params.displayContactForm) == 'boolean' && !params.displayContactForm){
+                if(typeof(params) != 'undefined' && typeof(params.displayContactForm) == 'boolean' && !params.displayContactForm){
                     return;
                 }
                 DDeliveryIframe.ajaxPage({action:'contactForm', point: current_point._id, type:1, custom: current_point.is_custom ? 1 : ''});
