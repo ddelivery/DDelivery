@@ -1567,6 +1567,7 @@ class DDeliveryUI
             return '';
         }
         $pointDDInfo = reset($pointDDInfo);
+        $this->saveFullOrder($this->order);
 
         $this->shop->onFinishChange($this->order->localId, $this->order, $point);
         return json_encode(array(
