@@ -16,6 +16,7 @@ var DDelivery = {
         }
         iframe.src = componentUrl;
         var object = document.getElementById(objectId);
+        object.style.height = '650px';
         object.innerHTML = '';
         object.appendChild(iframe);
         iframe.contentWindow.params = params;
