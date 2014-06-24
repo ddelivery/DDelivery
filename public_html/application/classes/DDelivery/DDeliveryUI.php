@@ -1559,14 +1559,12 @@ class DDeliveryUI
         $point = $this->order->getPoint();
         if ($point instanceof DDeliveryPointSelf) {
             $comment = 'Самовывоз, '.$point->address;
+            $point = $this->getSelfPointByID($point->_id, $this->order);
+            $this->shop->filterSelfInfo(array($point->getDeliveryInfo()));
         } elseif($point instanceof DDeliveryPointCourier) {
             $comment = 'Доставка курьером по адресу '.$this->order->getFullAddress();
+            $this->getCourierPointByCompanyID($point->getDeliveryInfo()->delivery_company, $this->order);
         }
-        $pointDDInfo = $this->shop->filterSelfInfo(array($point->getDeliveryInfo()));
-        if(!count($pointDDInfo)) {
-            return '';
-        }
-        $pointDDInfo = reset($pointDDInfo);
         $this->saveFullOrder($this->order);
 
         $this->shop->onFinishChange($this->order->localId, $this->order, $point);
@@ -1575,7 +1573,7 @@ class DDeliveryUI
             'js'=>'change',
             'comment'=>htmlspecialchars($comment),
             'orderId' => $this->order->localId,
-            'clientPrice'=>$pointDDInfo->clientPrice,
+            'clientPrice'=>$point->getDeliveryInfo()->clientPrice,
             'userInfo' => $this->getDDUserInfo($this->order->localId),
         ));
     }
