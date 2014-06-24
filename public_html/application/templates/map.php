@@ -119,7 +119,7 @@
                         <td class="col1">Цена:</td>
                         <td class="col2"><strong><span class="rub">100</span> <i class="icon-rub">&nbsp;</i></strong>
 
-                            <div class="tip-box">
+                            <!--div class="tip-box">
                                 <i>&nbsp;</i>
 
                                 <div class="tip-box_i">
@@ -132,7 +132,7 @@
                                         <p></p>
                                     </div>
                                 </div>
-                            </div>
+                            </div-->
                             <!--tip-box end-->
 
                         </td>
