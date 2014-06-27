@@ -336,6 +336,7 @@ class DDeliveryUI
         {
             throw new DDeliveryException('Точка не найдена');
         }
+        $this->shop->filterSelfInfo( array($order->getPoint()->getDeliveryInfo()) );
         return $order->getPoint()->getDeliveryInfo()->clientPrice;
     }
 
