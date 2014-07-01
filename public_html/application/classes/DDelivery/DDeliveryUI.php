@@ -1841,9 +1841,9 @@ class DDeliveryUI
             if(isset($address[0]))
                 $order->setToStreet($address[0]);
             if(isset($address[1]))
-                $order->setToFlat($address[1]);
+                $order->setToHouse($address[1]);
             if(isset($address[2]))
-                $order->setToHouse($address[2]);
+                $order->setToHousing($address[2]);
             if(isset($address[3]))
                 $order->setToFlat($address[3]);
         }
