@@ -107,10 +107,13 @@ abstract class PluginFilters extends DShopAdapter
      */
     public function getPaymentPriceSelf( $order, $orderPrice )
     {
-        $filterByPayment = $this->filterPointByPaymentTypeCourier();
-        if($filterByPayment == self::PAYMENT_POST_PAYMENT){
+        $filterByPayment = $this->filterPointByPaymentTypeSelf();
+        if($filterByPayment == $order->paymentVariant){
+            if($order->getPoint() && $order->getPoint()->getDeliveryInfo()) {
+                return $order->amount + $order->getPoint()->getDeliveryInfo()->clientPrice;
+            }
             return $order->amount;
-        }
+         }
         return 0;
     }
 
