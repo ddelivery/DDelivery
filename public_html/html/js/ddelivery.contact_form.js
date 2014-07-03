@@ -37,7 +37,14 @@ var ContactForm = (function () {
                 if($('.error', form).length > 0){
                     return false;
                 }
-                DDeliveryIframe.ajaxPage({contact_form:form.serializeArray(), action: 'change'});
+                contact_form = form.serializeArray();
+                $.each( contact_form, function(index, value){
+                    if( $('#main_form').find('[name="' + value.name + '"]').attr('title') == value.value ){
+                        value.value = '';
+                    };
+                });
+
+                DDeliveryIframe.ajaxPage({contact_form: contact_form, action: 'change'});
             });
 
             $('.row-btns a.prev').click(function () {
