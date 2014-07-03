@@ -80,7 +80,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function getApiKey()
     {
-        return '73e402bc645d73e91721ecbc123e121d';
+        return '852af44bafef22e96d8277f3227f0998';
     }
 
     /**
@@ -209,7 +209,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
         return array(
             array('min' => 0, 'max'=>100, 'type'=>self::INTERVAL_RULES_MARKET_AMOUNT, 'amount'=>30),
             array('min' => 100, 'max'=>200, 'type'=>self::INTERVAL_RULES_CLIENT_ALL, 'amount'=>60),
-            array('min' => 300, 'max'=>400, 'type'=>self::INTERVAL_RULES_MARKET_PERCENT, 'amount'=>3),
+            array('min' => 300, 'max'=>5000, 'type'=>self::INTERVAL_RULES_MARKET_PERCENT, 'amount'=>0),
             array('min' => 1000, 'max'=>null, 'type'=>self::INTERVAL_RULES_MARKET_ALL),
         );
     }
