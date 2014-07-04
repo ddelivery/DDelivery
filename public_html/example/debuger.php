@@ -12,7 +12,7 @@
  * debuger.php?task=products - получить дамп текущего заказа( при наличии товара в корзине )
  *
  */
-
+header('Content-Type: text/html; charset=utf-8');
 include_once(implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', 'application', 'bootstrap.php')));
 
 // Добавьте адаптер и необходимые файлы для работы CMS
@@ -25,8 +25,10 @@ $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
 $order->city = 151184;
 echo '<pre>';
-$DDeliveryUI->getAllOrders();
+print_r(  $DDeliveryUI->getSelfPoints( $order ) );
+//print_r( $DDeliveryUI->getSelfDeliveryInfoForCity( $order ) );
 echo '</pre>';
+exit();
 /*
 echo '<pre>';
 print_r( $DDeliveryUI->getCourierPointsForCity($order) );

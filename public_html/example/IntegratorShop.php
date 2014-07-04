@@ -80,7 +80,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function getApiKey()
     {
-        return '852af44bafef22e96d8277f3227f0998';
+            return '852af44bafef22e96d8277f3227f0998';
     }
 
     /**
@@ -145,6 +145,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function filterCompanyPointCourier()
     {
+        return array();
         return array(4,32);
         // TODO: Implement filterCompanyPointCourier() method.
     }
@@ -156,7 +157,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function filterCompanyPointSelf()
     {
-        return array(4, 32);
+        return array();
+        return array(4,32);
         // TODO: Implement filterCompanyPointSelf() method.
     }
 
@@ -271,7 +273,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * @return string[]
      */
     public function getClientAddress() {
-        return array();
+        return array('1','2','3','4','5');
     }
 
     /**
