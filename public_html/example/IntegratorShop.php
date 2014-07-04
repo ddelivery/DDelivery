@@ -196,7 +196,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function isPayPickup()
     {
-        return true;
+        return false;
+        //return true;
         // TODO: Implement isPayPickup() method.
     }
 

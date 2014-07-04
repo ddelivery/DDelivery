@@ -50,9 +50,11 @@
                         var params = {
                             formData: {}
                         };
+                        /*
                         $($('#ORDER_FORM').serializeArray()).each(function(){
                             params.formData[this.name] = this.value;
                         });
+                        */
 
                         var callback = {
                             close: function(){
@@ -62,8 +64,6 @@
                             change: function(data) {
                                 status = data.comment;
                                 console.log(data);
-                                document.getElementById('ddelivery').getElementsByTagName('SPAN').innerHTML = data.comment;
-
                                 hideCover();
                                 document.getElementById('ddelivery_container').style.display = 'none';
 
