@@ -509,7 +509,7 @@ abstract class DShopAdapter
             | self::FIELD_EDIT_ADDRESS | self::FIELD_REQUIRED_ADDRESS
             | self::FIELD_EDIT_ADDRESS_HOUSE | self::FIELD_REQUIRED_ADDRESS_HOUSE
             | self::FIELD_EDIT_ADDRESS_HOUSING
-            | self::FIELD_EDIT_ADDRESS_FLAT;
+            | self::FIELD_EDIT_ADDRESS_FLAT | self::FIELD_REQUIRED_ADDRESS_FLAT;
     }
 
     /**
