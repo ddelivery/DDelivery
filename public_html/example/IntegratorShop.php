@@ -13,7 +13,7 @@ use DDelivery\Order\DDStatusProvider;
 class IntegratorShop extends \DDelivery\Adapter\PluginFilters
 {
     /**
-     * Синхронизация локальных статусов
+     * Синхронизация локальных статусов и статусов дделивери
      * @var array
      */
     protected  $cmsOrderStatus = array( DDStatusProvider::ORDER_IN_PROGRESS => 0,
@@ -59,6 +59,30 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
         );
         $products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'Грустный клоун');
         return $products;
+    }
+
+    /**
+     * Настройки базы данных
+     * @return array
+     */
+    public function getDbConfig()
+    {
+        return array(
+            'type' => self::DB_SQLITE,
+            'dbPath' => $this->getPathByDB(),
+            'prefix' => '',
+        );
+        return array(
+            'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', '0', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
+            'prefix' => '',
+        );
+        return array(
+            'type' => self::DB_MYSQL,
+            'dsn' => 'mysql:host=localhost;dbname=ddelivery',
+            'user' => 'root',
+            'pass' => '0',
+            'prefix' => '',
+        );
     }
 
     /**
@@ -197,7 +221,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
     public function isPayPickup()
     {
         return false;
-        //return true;
+        return true;
         // TODO: Implement isPayPickup() method.
     }
 
@@ -319,6 +343,18 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
         $selfPoints[] = $myCourier;
         /*/
         return $selfPoints;
+    }
+
+    /**
+     * При отправке заказа на сервер дделивери идет
+     * проверка  статуса  выставленого в настройках
+     *
+     * @param mixed $cmsStatus
+     * @return bool|void
+     */
+    public function isStatusToSendOrder( $cmsStatus )
+    {
+
     }
 
 
