@@ -319,7 +319,7 @@ class DDeliveryUI
 
     /**
      *
-     * Получить стоимость доставки по ID заказа в БД SQLite
+     * Получить стоимость доставки по ID заказа
      *
      * @param $localOrderID
      *
