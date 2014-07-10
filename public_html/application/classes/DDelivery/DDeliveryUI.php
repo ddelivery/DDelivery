@@ -1569,14 +1569,17 @@ class DDeliveryUI
         $this->saveFullOrder($this->order);
 
         $this->shop->onFinishChange($this->order->localId, $this->order, $point);
-        return json_encode(array(
-            'html'=>'',
-            'js'=>'change',
-            'comment'=>htmlspecialchars($comment),
-            'orderId' => $this->order->localId,
-            'clientPrice'=>$point->getDeliveryInfo()->clientPrice,
-            'userInfo' => $this->getDDUserInfo($this->order->localId),
-        ));
+
+        $returnArray = array(
+                        'html'=>'',
+                        'js'=>'change',
+                        'comment'=>htmlspecialchars($comment),
+                        'orderId' => $this->order->localId,
+                        'clientPrice'=>$point->getDeliveryInfo()->clientPrice,
+                        'userInfo' => $this->getDDUserInfo($this->order->localId),
+                        );
+        $returnArray = $this->shop->onFinishResultReturn( $this->order, $returnArray );
+        return json_encode( $returnArray );
     }
 
     /**
