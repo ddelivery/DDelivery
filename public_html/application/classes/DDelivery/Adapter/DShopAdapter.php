@@ -537,4 +537,15 @@ abstract class DShopAdapter
      */
     abstract public function onFinishChange($orderId, DDeliveryOrder $order, $customPoint);
 
+
+    /**
+     * Возможность что - нибудь добавить к информации
+     * при окончании оформления заказа
+     *
+     * @param $order
+     * @param $resultArray
+     */
+    public function onFinishResultReturn( $order, $resultArray ){
+        return $resultArray;
+    }
 }
