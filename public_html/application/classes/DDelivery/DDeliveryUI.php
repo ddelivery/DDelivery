@@ -122,7 +122,7 @@ class DDeliveryUI
             $this->order = new DDeliveryOrder( $productList );
             $this->order->amount = $this->shop->getAmount();
         }
-        $this->messager = new Sdk\DDeliveryMessager($this->shop->isTestMode());
+        // $this->messager = new Sdk\DDeliveryMessager($this->shop->isTestMode());
         $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled(), $this->pdo, $this->pdoTablePrefix );
     }
 
