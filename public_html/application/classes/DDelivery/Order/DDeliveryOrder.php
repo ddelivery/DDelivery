@@ -186,7 +186,7 @@ class DDeliveryOrder
         
         // Получаем параметры для товаров в заказе
         $this->getProductParams();
-		
+
     }
 
     /**
