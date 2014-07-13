@@ -66,6 +66,16 @@ class DDeliveryUI
     private $messager;
 
     /**
+     * Логирование
+     * @var bool
+     */
+    private $loggin = true;
+
+    /**
+     *
+     */
+    private $logginUrl = 'http://devphpshop.ddelivery.ru/loggin.php';
+    /**
      *  Кэш
      *  @var DCache
      */
@@ -122,10 +132,29 @@ class DDeliveryUI
             $this->order = new DDeliveryOrder( $productList );
             $this->order->amount = $this->shop->getAmount();
         }
-        // $this->messager = new Sdk\DDeliveryMessager($this->shop->isTestMode());
         $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled(), $this->pdo, $this->pdoTablePrefix );
     }
-
+    public function logMessage( DDeliveryException $e ){
+        if( $this->loggin ){
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($curl, CURLOPT_HEADER, 0);
+            curl_setopt($curl, CURLOPT_URL, $this->logginUrl);
+            curl_setopt($curl, CURLOPT_POST, true);
+            $params = array('message' => $e->getMessage() . ', ' . $e->getFile() . ', '
+                            . $e->getLine() . ', ' . date("Y-m-d H:i:s"), 'url' => $_SERVER['SERVER_NAME'],
+                            'apikey' => $this->shop->getApiKey(),
+                            'testmode' => (int)$this->shop->isTestMode());
+            $urlSuffix = '';
+            foreach($params as $key => $value) {
+                $urlSuffix .= urlencode($key).'='.urlencode($value) . '&';
+            }
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $urlSuffix);
+            $answer = curl_exec($curl);
+            curl_close($curl);
+            return $answer;
+        }
+    }
     public function createTables()
     {
         $cache = new DataBase\Cache($this->pdo, $this->pdoTablePrefix);
