@@ -134,14 +134,15 @@ class DDeliveryUI
         }
         $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled(), $this->pdo, $this->pdoTablePrefix );
     }
-    public function logMessage( DDeliveryException $e ){
+    public function logMessage( \Exception $e ){
         if( $this->loggin ){
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($curl, CURLOPT_HEADER, 0);
             curl_setopt($curl, CURLOPT_URL, $this->logginUrl);
             curl_setopt($curl, CURLOPT_POST, true);
-            $params = array('message' => $e->getMessage() . ', ' . $e->getFile() . ', '
+            $params = array('message' => $e->getMessage() . ', версия SDK -' . DShopAdapter::SDK_VERSION . ', '
+                            . $e->getFile() . ', '
                             . $e->getLine() . ', ' . date("Y-m-d H:i:s"), 'url' => $_SERVER['SERVER_NAME'],
                             'apikey' => $this->shop->getApiKey(),
                             'testmode' => (int)$this->shop->isTestMode());
@@ -1051,16 +1052,11 @@ class DDeliveryUI
     public function createCourierOrder( $order )
     {
     	/** @var DDeliveryPointCourier $point */
-    	try
-    	{
-            $order->toPhone = $this->formatPhone( $order->toPhone );
-    		$this->checkOrderCourierValues( $order );
-    	}
-    	catch (DDeliveryException $e)
-    	{
-    		$this->messager->pushMessage( $e->getMessage() );
-    		return 0;
-    	}
+
+        $order->toPhone = $this->formatPhone( $order->toPhone );
+        $cv = $this->checkOrderCourierValues( $order );
+        if( !$cv )
+            return false;
 
     	$ddeliveryOrderID = 0;
 
@@ -1134,16 +1130,11 @@ class DDeliveryUI
     public function createSelfOrder( $order )
     {
         /** @var DDeliveryPointSelf $point */
-    	try
-    	{
-            $order->toPhone = $this->formatPhone( $order->toPhone );
-            $this->checkOrderSelfValues( $order );
-    	}
-    	catch (DDeliveryException $e)
-    	{
-    		$this->messager->pushMessage($e->getMessage());
-    	    return 0;
-    	}
+        $order->toPhone = $this->formatPhone( $order->toPhone );
+        $cv = $this->checkOrderSelfValues( $order );
+        if( !$cv )
+            return false;
+
     	if(! $this->shop->sendOrderToDDeliveryServer($order) ) {
             return 0;
         } else {

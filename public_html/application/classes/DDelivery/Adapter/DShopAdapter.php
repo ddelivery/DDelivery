@@ -21,7 +21,8 @@ use DDelivery\Sdk\DDeliverySDK;
  * @package DDelivery\Adapter
  */
 abstract class DShopAdapter
-{  
+{
+    const SDK_VERSION = '1.1.5';
     /**
      * Имя редактируется
      */
