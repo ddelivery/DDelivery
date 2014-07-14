@@ -6,7 +6,7 @@
     <body>
         <script src="../html/js/ddelivery.js"></script>
 
-        <a href="javascript:void(0)" id="select_way" class="trigger">sdfsdffsd</a>
+        <a href="javascript:void(0)" id="select_way" class="trigger">Выбрать точку доставки</a>
 
         <script>
 

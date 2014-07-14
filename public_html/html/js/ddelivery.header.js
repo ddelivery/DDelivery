@@ -2,6 +2,7 @@
  * Created by DnAp on 09.04.14.
  * Оживляет шапку с выбором типа оплаты и поиска города.
  */
+
 var Header = (function () {
     var el;
     var componentUrl, staticUrl;

@@ -103,27 +103,8 @@ class DDeliveryUI
 
         $this->sdk = new Sdk\DDeliverySDK($dShopAdapter->getApiKey(), $this->shop->isTestMode());
 
-        $dbConfig = $dShopAdapter->getDbConfig();
-        if(isset($dbConfig['pdo']) && $dbConfig['pdo'] instanceof \PDO) {
-            $this->pdo = $dbConfig['pdo'];
-        }elseif($dbConfig['type'] == DShopAdapter::DB_SQLITE) {
-            if(!$dbConfig['dbPath'])
-                throw new DDeliveryException('SQLite db is empty');
-
-            $dbDir = dirname($dbConfig['dbPath']);
-            if(  (!is_writable( $dbDir )) || ( !is_writable( $dbConfig['dbPath'] ) ) || (!is_dir( $dbDir )) ) {
-                throw new DDeliveryException('SQLite database does not exist or is not writable');
-            }
-
-            $this->pdo = new \PDO('sqlite:'.$dbConfig['dbPath']);
-            $this->pdo->exec('PRAGMA journal_mode=WAL;');
-        } elseif($dbConfig['type'] == DShopAdapter::DB_MYSQL) {
-            $this->pdo = new \PDO($dbConfig['dsn'], $dbConfig['user'], $dbConfig['pass']);
-            $this->pdo->exec('SET NAMES utf8');
-        }else{
-            throw new DDeliveryException('Not support database type');
-        }
-        $this->pdoTablePrefix = isset($dbConfig['prefix']) ? $dbConfig['prefix'] : '';
+        // Инициализируем работу с БД
+        $this->_initDb($dShopAdapter);
 
         // Формируем объект заказа
         if(!$skipOrder)
@@ -134,6 +115,8 @@ class DDeliveryUI
         }
         $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled(), $this->pdo, $this->pdoTablePrefix );
     }
+
+
     public function logMessage( \Exception $e ){
         if( $this->loggin ){
             $curl = curl_init();
@@ -1355,7 +1338,9 @@ class DDeliveryUI
             $orders =  $this->initOrder( array($request['order_id']) );
             $this->order = $orders[0];
         }
-
+        if(!empty($request['city_alias'])) {
+            $this->order->cityName = strip_tags( $request['city_alias'] );
+        }
         if(isset($request['action'])) {
             switch($request['action']) {
                 case 'searchCity':
@@ -1454,6 +1439,7 @@ class DDeliveryUI
         if(!empty($request['city_id'])) {
             $this->order->city = $request['city_id'];
         }
+
         if(!$this->order->city ) {
             $this->order->city = $this->getCityId();
         }
@@ -1616,9 +1602,8 @@ class DDeliveryUI
             $cityData = $cityList[$cityId];
             unset($cityList[$cityId]);
             array_unshift($cityList, $cityData);
-        }else{
-            array_unshift($cityList, $cityDB->getCityById($cityId));
         }
+        $avalibleCities = array();
         foreach($cityList as &$cityData){
             // Костыль, на сервере города начинаются с маленькой буквы
             $cityData['name'] = Utils::firstWordLiterUppercase($cityData['name']);
@@ -1630,7 +1615,13 @@ class DDeliveryUI
             }
 
             $cityData['display_name'] = $displayCityName;
+            $avalibleCities[] = $cityData['_id'];
         }
+        if( !in_array($cityId, $avalibleCities) ){
+           $topCity = array('_id' => $cityId, 'display_name' => $this->order->cityName );
+           array_unshift($cityList, $topCity);
+        }
+
         return $cityList;
     }
 
@@ -1817,13 +1808,16 @@ class DDeliveryUI
         }
 
         $cityDB = new City($this->pdo, $this->pdoTablePrefix);
-        $currentCity = $cityDB->getCityById($this->getOrder()->city);
+        // $currentCity = $cityDB->getCityById($this->getOrder()->city);
 
         //Собирает строчку с названием города для отображения
+        /*
         $displayCityName = $currentCity['type'].'. '.$currentCity['name'];
         if($currentCity['region'] != $currentCity['name']) {
             $displayCityName .= ', '.$currentCity['region'].' обл.';
         }
+        */
+        $displayCityName = $this->order->cityName;
         $type = $this->getOrder()->type;
         if($this->getOrder()->type == DDeliverySDK::TYPE_COURIER) {
             $displayCityName.=', '.$point->getDeliveryInfo()->delivery_company_name;
@@ -1950,6 +1944,7 @@ class DDeliveryUI
         $currentOrder->toFlat = $item->to_flat;
         $currentOrder->toEmail = $item->to_email;
         $currentOrder->comment = $item->comment;
+        $currentOrder->cityName = $item->city_name;
     }
 
     /**
@@ -1973,6 +1968,35 @@ class DDeliveryUI
     {
        $statusProvider = new DDStatusProvider();
        return $statusProvider->getOrderDescription( $ddStatus );
+    }
+
+    /**
+     * @param DShopAdapter $dShopAdapter
+     * @throws DDeliveryException
+     */
+    public function _initDb(DShopAdapter $dShopAdapter)
+    {
+        $dbConfig = $dShopAdapter->getDbConfig();
+        if (isset($dbConfig['pdo']) && $dbConfig['pdo'] instanceof \PDO) {
+            $this->pdo = $dbConfig['pdo'];
+        } elseif ($dbConfig['type'] == DShopAdapter::DB_SQLITE) {
+            if (!$dbConfig['dbPath'])
+                throw new DDeliveryException('SQLite db is empty');
+
+            $dbDir = dirname($dbConfig['dbPath']);
+            if ((!is_writable($dbDir)) || (!is_writable($dbConfig['dbPath'])) || (!is_dir($dbDir))) {
+                throw new DDeliveryException('SQLite database does not exist or is not writable');
+            }
+
+            $this->pdo = new \PDO('sqlite:' . $dbConfig['dbPath']);
+            $this->pdo->exec('PRAGMA journal_mode=WAL;');
+        } elseif ($dbConfig['type'] == DShopAdapter::DB_MYSQL) {
+            $this->pdo = new \PDO($dbConfig['dsn'], $dbConfig['user'], $dbConfig['pass']);
+            $this->pdo->exec('SET NAMES utf8');
+        } else {
+            throw new DDeliveryException('Not support database type');
+        }
+        $this->pdoTablePrefix = isset($dbConfig['prefix']) ? $dbConfig['prefix'] : '';
     }
 
 

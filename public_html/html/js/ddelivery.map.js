@@ -312,7 +312,7 @@ Map = (function () {
             $('.delivery-type__drop ul').hide();
             $('.map-popup .delivery-type__drop p.loader_center').show();
 
-            DDeliveryIframe.ajaxData({action: 'mapDataOnly', city_id: cityId}, function (data) {
+            DDeliveryIframe.ajaxData({action: 'mapDataOnly', city_id: cityId, city_alias:cityFullName}, function (data) {
                 Map.renderData(data);
             });
 
