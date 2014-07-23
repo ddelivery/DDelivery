@@ -7,6 +7,7 @@
  */
 
 namespace DDelivery\Sdk;
+use DDelivery\Adapter\DShopAdapter;
 
 
 /**
@@ -145,7 +146,7 @@ class RequestProvider
 			$urlSuffix .= urlencode($key).'='.urlencode($value) . '&';
 		}
 
-        $urlSuffix .= 'sdk_ver='.include(dirname(dirname(dirname(__DIR__))).'/version.php');
+        $urlSuffix .= 'sdk_ver=' . DShopAdapter::SDK_VERSION ;
 
 		return $urlSuffix;
 	}

@@ -106,7 +106,13 @@ class DDeliveryUI
         $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled(), $this->pdo, $this->pdoTablePrefix );
     }
 
-
+    /**
+     *
+     * Залоггировать ошибку
+     *
+     * @param \Exception $e
+     * @return mixed
+     */
     public function logMessage( \Exception $e ){
         $logginUrl = $this->shop->getLogginServer();
         if( !is_null( $logginUrl ) ){
@@ -728,7 +734,10 @@ class DDeliveryUI
     {
         if(!$this->_validateOrderToGetPoints( $order))
             throw new DDeliveryException('Not valid order');
-        $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) );
+        //$points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) );
+
+        $points = $this->getSelfPointsDetail( $order->city );
+
         $selfPoint = null;
         if(count($points))
         {
@@ -767,8 +776,8 @@ class DDeliveryUI
         $result_points = array();
         if( $this->shop->preGoToFindPoints( $order ))
         {
-            $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) ); /** cache **/
-            //$points = $this->getSelfPointsDetail( $order->city ); /** cache **/
+            // $points = $this->cache->render( 'getSelfPointsDetail', array( $order->city ) ); /** cache **/
+            $points = $this->getSelfPointsDetail( $order->city ); /** cache **/
 
             $companyInfo = $this->getSelfDeliveryInfoForCity( $order );
 
@@ -1422,7 +1431,7 @@ class DDeliveryUI
         if(isset($request['iframe'])) {
             $staticURL = $this->shop->getStaticPath();
             $scriptURL = $this->shop->getPhpScriptURL();
-            $version = include(__DIR__ . '/../../version.php');
+            $version = DShopAdapter::SDK_VERSION;
             include(__DIR__ . '/../../templates/iframe.php');
             return;
         }

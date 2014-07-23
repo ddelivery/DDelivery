@@ -93,6 +93,7 @@ abstract class PluginFilters extends DShopAdapter
         return 0;
     }
 
+
     /**
      * Сумма к оплате на точке или курьеру
      *

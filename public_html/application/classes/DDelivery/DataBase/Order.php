@@ -106,7 +106,6 @@ class Order {
                 `to_email` varchar(255) DEFAULT NULL,
                 `first_name` varchar(255) DEFAULT NULL,
                 `second_name` varchar(255) DEFAULT NULL,
-                `serilize` text DEFAULT NULL,
                 `point` text DEFAULT NULL,
                 `comment` varchar(255) DEFAULT NULL,
                 `city_name` varchar(255) DEFAULT NULL,
@@ -144,7 +143,6 @@ class Order {
                 to_email TEXT,
                 first_name TEXT,
                 second_name TEXT,
-                serilize TEXT,
                 point TEXT,
                 comment TEXT,
                 city_name TEXT
