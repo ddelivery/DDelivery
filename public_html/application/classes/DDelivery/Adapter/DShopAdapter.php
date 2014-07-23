@@ -143,6 +143,15 @@ abstract class DShopAdapter
     }
 
     /**
+     * Возвращаем сервер для логгирования ошибок
+     */
+    public function getLogginServer(){
+        return 'http://service.ddelivery.ru/loggin.php';
+    }
+
+
+
+    /**
      * Возвращает путь до файла базы данных sqlite, положите его в место не доступное по прямой ссылке
      * @return string
      */

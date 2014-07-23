@@ -66,16 +66,6 @@ class DDeliveryUI
     private $messager;
 
     /**
-     * Логирование
-     * @var bool
-     */
-    private $loggin = true;
-
-    /**
-     *
-     */
-    private $logginUrl = 'http://devphpshop.ddelivery.ru/loggin.php';
-    /**
      *  Кэш
      *  @var DCache
      */
@@ -118,11 +108,12 @@ class DDeliveryUI
 
 
     public function logMessage( \Exception $e ){
-        if( $this->loggin ){
+        $logginUrl = $this->shop->getLogginServer();
+        if( !is_null( $logginUrl ) ){
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($curl, CURLOPT_HEADER, 0);
-            curl_setopt($curl, CURLOPT_URL, $this->logginUrl);
+            curl_setopt($curl, CURLOPT_URL, $logginUrl);
             curl_setopt($curl, CURLOPT_POST, true);
             $params = array('message' => $e->getMessage() . ', версия SDK -' . DShopAdapter::SDK_VERSION . ', '
                             . $e->getFile() . ', '
