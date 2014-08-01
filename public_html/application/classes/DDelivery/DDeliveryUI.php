@@ -104,6 +104,7 @@ class DDeliveryUI
             $this->order->amount = $this->shop->getAmount();
         }
         $this->cache = new DCache( $this, $this->shop->getCacheExpired(), $this->shop->isCacheEnabled(), $this->pdo, $this->pdoTablePrefix );
+
     }
 
     /**
@@ -191,7 +192,6 @@ class DDeliveryUI
 
     /**
      * Функция вызывается при изменении статуса внутри cms для отправки
-     * @deprecated Не работает.
      *
      * @param $cmsID
      * @param $cmsStatus
@@ -584,7 +584,7 @@ class DDeliveryUI
     	if( $this->shop->preGoToFindPoints( $this->order ))
     	{
             $response = $this->getCourierDeliveryInfoForCity($order);
-
+            $this->record_sort($response, 'total_price');
             if( count( $response ) )
             {
                 foreach ($response as $p)
@@ -797,6 +797,7 @@ class DDeliveryUI
                     }
                 }
             }
+
         }
         $points = $this->shop->filterPointsSelf( $result_points , $order, $order->city );
 
@@ -952,6 +953,7 @@ class DDeliveryUI
         {
             throw new DDeliveryException(implode(', ', $errors));
         }
+        return true;
     }
 
     /**
@@ -1625,6 +1627,27 @@ class DDeliveryUI
         return $cityList;
     }
 
+
+    function record_sort($records, $field, $reverse=false)
+    {
+        $hash = array();
+
+        foreach($records as $record)
+        {
+            $hash[$record[$field]] = $record;
+        }
+
+        ($reverse)? krsort($hash) : ksort($hash);
+
+        $records = array();
+
+        foreach($hash as $record)
+        {
+            $records []= $record;
+        }
+
+        return $records;
+    }
     /**
      * Страница с картой
      *
@@ -1638,15 +1661,67 @@ class DDeliveryUI
 
         $points = $this->getSelfPoints($this->order);
         $this->saveFullOrder($this->getOrder());
+
+
+        $staticURL = $this->shop->getStaticPath();
+
+        $selfCompanyList = $this->getSelfDeliveryInfoForCity( $this->order );
+        $selfCompanyList = $this->record_sort($selfCompanyList, "total_price");
+
+        $selfCompanyList = $this->_getOrderedDeliveryInfo( $selfCompanyList );
+        $selfCompanyList = $this->shop->filterSelfInfo($selfCompanyList);
+
         $pointsJs = array();
 
         foreach($points as $point) {
             $pointsJs[] = $point->toJson();
         }
-        $staticURL = $this->shop->getStaticPath();
+        /*
         $selfCompanyList = $this->getSelfDeliveryInfoForCity( $this->order );
-        $selfCompanyList = $this->_getOrderedDeliveryInfo( $selfCompanyList );
-        $selfCompanyList = $this->shop->filterSelfInfo($selfCompanyList);
+        //print_r($selfCompanyList);
+        //$selfCompanyList = $this->record_sort($selfCompanyList, "total_price");
+        $deliveryInfo = $this->_getOrderedDeliveryInfo( $selfCompanyList );
+
+        if( count( $points ) )
+        {
+            foreach ( $points as $item )
+            {
+                $companyID = $item->get('company_id');
+
+                if( array_key_exists( $companyID, $deliveryInfo ) )
+                {
+                    $item->setDeliveryInfo( $deliveryInfo[$companyID] );
+                    $item->pointID = $item->get('_id');
+                    $result_points[] = $item;
+                }
+            }
+        }
+        */
+        //print_r($selfCompanyList);
+        /*
+        $companyInfo = $this->getSelfDeliveryInfoForCity( $this->order );
+
+        $deliveryInfo = $this->_getOrderedDeliveryInfo( $companyInfo );
+        */
+        /*
+        if( count( $points ) )
+        {
+            foreach ( $points as $item )
+            {
+                $companyID = $item->get('company_id');
+
+                if( array_key_exists( $companyID, $deliveryInfo ) )
+                {
+                    $item->setDeliveryInfo( $deliveryInfo[$companyID] );
+                    $item->pointID = $item->get('_id');
+                    $result_points[] = $item;
+                }
+            }
+        }
+        */
+        //$selfCompanyList = $this->_getOrderedDeliveryInfo( $selfCompanyList );
+
+        //$selfCompanyList = $this->shop->filterSelfInfo($selfCompanyList);
 
         if($dataOnly) {
             ob_start();
@@ -1945,6 +2020,7 @@ class DDeliveryUI
         $currentOrder->toEmail = $item->to_email;
         $currentOrder->comment = $item->comment;
         $currentOrder->cityName = $item->city_name;
+        $currentOrder->toHousing = $item->to_housing;
     }
 
     /**

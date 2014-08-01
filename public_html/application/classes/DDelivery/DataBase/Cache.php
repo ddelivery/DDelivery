@@ -63,6 +63,7 @@ class Cache {
                 )';
         }
         $sth = $this->pdo->prepare( $query );
+
         $sth->execute();
     }
 
