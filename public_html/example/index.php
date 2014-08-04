@@ -28,6 +28,7 @@
                     };
 
                     function hideCover() {
+
                         document.body.removeChild(document.getElementById('ddelivery_cover'));
                     }
 
@@ -80,7 +81,7 @@
                     var body = document.getElementsByTagName('body')[0];
                     body.appendChild(style);
                     var div = document.createElement('div');
-                    div.innerHTML = '<div id="ddelivery_popup"></div>';
+                    div.innerHTML = '<div id="ddelivery_popup">xxxx</div>';
                     div.id = 'ddelivery_container';
                     body.appendChild(div);
 
