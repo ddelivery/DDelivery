@@ -32,7 +32,7 @@
             ?>
             <input type="hidden" name="ddelivery_city" value="<?=$cityData['_id']?>"/>
             <div class="delivery-place__title">
-                <input type="text" title="<?=$cityData['display_name']?>"/>
+                <input type="text" title="<?=htmlspecialchars($cityData['display_name'])?>"/>
                 <span><i>&nbsp;</i></span>
             </div>
             <div class="delivery-place__drop">
