@@ -109,7 +109,7 @@ class Order {
                 `point` text DEFAULT NULL,
                 `comment` varchar(255) DEFAULT NULL,
                 `city_name` varchar(255) DEFAULT NULL,
-                `to_housing` varchar(255) DEFAULT NULL
+                `to_housing` varchar(255) DEFAULT NULL,
                 PRIMARY KEY (`id`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $this->pdo->exec($query);
