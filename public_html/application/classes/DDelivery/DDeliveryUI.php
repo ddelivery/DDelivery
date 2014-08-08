@@ -584,7 +584,7 @@ class DDeliveryUI
     	if( $this->shop->preGoToFindPoints( $this->order ))
     	{
             $response = $this->getCourierDeliveryInfoForCity($order);
-            $this->record_sort($response, 'total_price');
+            $this->record_sort($response, 'delivery_price');
             if( count( $response ) )
             {
                 foreach ($response as $p)
@@ -1666,7 +1666,7 @@ class DDeliveryUI
         $staticURL = $this->shop->getStaticPath();
 
         $selfCompanyList = $this->getSelfDeliveryInfoForCity( $this->order );
-        $selfCompanyList = $this->record_sort($selfCompanyList, "total_price");
+        $selfCompanyList = $this->record_sort($selfCompanyList, "delivery_price");
 
         $selfCompanyList = $this->_getOrderedDeliveryInfo( $selfCompanyList );
         $selfCompanyList = $this->shop->filterSelfInfo($selfCompanyList);
