@@ -1979,7 +1979,11 @@ class DDeliveryUI
             28 => array('name' => 'DPD Express', 'ico' => 'dpd'),
             29 => array('name' => 'DPD Classic', 'ico' => 'dpd'),
             30 => array('name' => 'EMS', 'ico' => 'ems'),
-            31 => array('name' => 'Grastin', 'ico' => 'pack'),
+            31 => array('name' => 'Grastin', 'ico' => 'grastin'),
+            33 => array('name' => 'Aplix', 'ico' => 'aplix'),
+            42 => array('name' => 'Imlogistics', 'ico' => 'imlogistics'),
+            43 => array('name' => 'Imlogistics', 'ico' => 'imlogistics'),
+            41 => array('name' => 'Кит', 'ico' => 'kit'),
         );
     }
 
