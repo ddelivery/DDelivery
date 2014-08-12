@@ -1628,24 +1628,14 @@ class DDeliveryUI
     }
 
 
-    function record_sort($records, $field, $reverse=false)
+    function record_sort( $records )
     {
-        $hash = array();
-
-        foreach($records as $record)
-        {
-            $hash[$record[$field]] = $record;
-        }
-
-        ($reverse)? krsort($hash) : ksort($hash);
-
-        $records = array();
-
-        foreach($hash as $record)
-        {
-            $records []= $record;
-        }
-
+        usort($records,function($a, $b){
+            if ($a['delivery_price'] == $b['delivery_price']) {
+                return 0;
+            }
+            return ($a['delivery_price'] < $b['delivery_price']) ? -1 : 1;
+        });
         return $records;
     }
     /**
