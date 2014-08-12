@@ -1644,6 +1644,7 @@ class DDeliveryUI
      * @param bool $dataOnly ajax
      * @return string
      */
+
     protected function renderMap($dataOnly = false)
     {
         $this->getOrder()->type = DDeliverySDK::TYPE_SELF;
