@@ -1645,6 +1645,7 @@ class DDeliveryUI
      * @return string
      */
 
+
     protected function renderMap($dataOnly = false)
     {
         $this->getOrder()->type = DDeliverySDK::TYPE_SELF;
