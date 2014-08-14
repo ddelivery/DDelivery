@@ -287,7 +287,7 @@ class DDeliverySDK {
      * @throws \DDelivery\DDeliveryException
      * @return DDeliverySDKResponse
      */
-    public function calculatorPickupForPoint( $deliveryPoint, $dimensionSide1, 
+    public function calculatorPickupForPoint(   $deliveryPoint, $dimensionSide1,
                                                 $dimensionSide2, $dimensionSide3, $weight, 
                                                 $declaredPrice, $paymentPrice = null )
     {
@@ -327,8 +327,8 @@ class DDeliverySDK {
      * @throws \DDelivery\DDeliveryException
      * @return DDeliverySDKResponse
      */
-    public function calculatorCourier($cityTo, $dimensionSide1, 
-                                      $dimensionSide2, $dimensionSide3, 
+    public function calculatorCourier($cityTo, $dimensionSide1,
+                                      $dimensionSide2, $dimensionSide3,
     		                          $weight, $declaredPrice, $paymentPrice = null)
     {
         $params = array(

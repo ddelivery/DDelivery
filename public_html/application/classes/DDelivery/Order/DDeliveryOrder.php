@@ -28,6 +28,13 @@ class DDeliveryOrder
      * @var int
      */
     public $localId;
+
+    /**
+     * Id компании доставки
+     * @var int
+     */
+    public $companyId;
+
     /**
      * Тип если самовывоз - 1, если курьерка - 2
      * @var int
@@ -50,10 +57,11 @@ class DDeliveryOrder
      * @var int сторона 3 (см)
      */
     public $dimensionSide3 = 0;
+
     /**
-     * @var int вес заказа
+     * @var float вес заказа
      */
-    protected $weight = 0;
+    public $weight = 0;
     
     /**
      * @var int город
@@ -174,6 +182,31 @@ class DDeliveryOrder
     public $cityName = null;
 
     /**
+     * @var DDeliveryOrderCache - кеш в контексте заказа
+     */
+    public $orderCache;
+
+    /**
+     * @var DDeliveryOrderCache - кеш в контексте заказа
+     */
+    public $pointID;
+
+    /**
+     *   дополнительное поле 1
+     */
+    public $addField1 = null;
+
+    /**
+     *   дополнительное поле 2
+     */
+    public $addField2 = null;
+
+    /**
+     *   дополнительное поле 3
+     */
+    public $addField3 = null;
+
+    /**
      * @param DDeliveryProduct[] $productList
      * @throws DDeliveryOrderException
      */
@@ -191,7 +224,24 @@ class DDeliveryOrder
         
         // Получаем параметры для товаров в заказе
         $this->getProductParams();
+        $this->orderCache = new DDeliveryOrderCache();
+    }
 
+    public function getCacheValue( $field, $sig ){
+        if( ($this->orderCache->sig == $sig) && ( $this->orderCache->$field != null ) ){
+            return $this->orderCache->$field;
+        }
+        return false;
+    }
+
+    public function setCacheValue( $field, $sig, $value ){
+        if( $this->orderCache->sig == $sig ){
+            $this->orderCache->$field = $value;
+        }else{
+            $this->orderCache = new DDeliveryOrderCache();
+            $this->orderCache->sig = $sig;
+            $this->orderCache->$field = $value;
+        }
     }
 
     /**

@@ -46,21 +46,18 @@ class Cache {
     {
         if($this->pdoType == DShopAdapter::DB_MYSQL) {
             $query = 'CREATE TABLE `'.$this->prefix.'cache` (
-                      `id`  int NOT NULL AUTO_INCREMENT ,
-                      `sig`  varchar(255) NULL ,
+                      `id`  int NOT NULL,
                       `data_container`  text NULL ,
                       `expired`  datetime NULL ,
-                      PRIMARY KEY (`id`)
-                )';
-
+                      PRIMARY KEY (`id`),
+                      INDEX `dd_cache` (`id`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8';
         }else{
             $query = 'CREATE TABLE `'.$this->prefix.'cache` (
-                      id INTEGER PRIMARY KEY AUTOINCREMENT,
-                      sig TEXT,
+                      id INTEGER PRIMARY KEY,
                       data_container TEXT,
                       expired  TEXT
-
-                )';
+                    )';
         }
         $sth = $this->pdo->prepare( $query );
 

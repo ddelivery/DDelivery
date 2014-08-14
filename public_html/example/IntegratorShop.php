@@ -68,14 +68,16 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
     public function getDbConfig()
     {
         return array(
+            'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', 'root', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
+            'prefix' => '',
+        );
+
+        return array(
             'type' => self::DB_SQLITE,
             'dbPath' => $this->getPathByDB(),
             'prefix' => '',
         );
-        return array(
-            'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', '0', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
-            'prefix' => '',
-        );
+
         return array(
             'type' => self::DB_MYSQL,
             'dsn' => 'mysql:host=localhost;dbname=ddelivery',
@@ -169,8 +171,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function filterCompanyPointCourier()
     {
-        return array();
-        return array(4,32);
+        //return array();
+        return array(43,44);
         // TODO: Implement filterCompanyPointCourier() method.
     }
 
@@ -181,8 +183,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function filterCompanyPointSelf()
     {
-        return array();
-        return array(4,32);
+        //return array();
+        return array(1,4);
         // TODO: Implement filterCompanyPointSelf() method.
     }
 

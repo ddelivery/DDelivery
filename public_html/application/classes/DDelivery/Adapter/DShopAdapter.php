@@ -22,7 +22,7 @@ use DDelivery\Sdk\DDeliverySDK;
  */
 abstract class DShopAdapter
 {
-    const SDK_VERSION = '1.2';
+    const SDK_VERSION = '2.0';
     /**
      * Имя редактируется
      */
@@ -149,7 +149,13 @@ abstract class DShopAdapter
         return 'http://service.ddelivery.ru/loggin.php';
     }
 
+    public function finalFilterSelfCompanies( $companyArray, DDeliveryOrder $order ){
+        return $companyArray;
+    }
 
+    public function finalFilterCourierCompanies( $companyArray, DDeliveryOrder $order ){
+        return $companyArray;
+    }
 
     /**
      * Возвращает путь до файла базы данных sqlite, положите его в место не доступное по прямой ссылке

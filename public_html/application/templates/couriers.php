@@ -50,27 +50,32 @@
             <?
             $courierCompanyListJson = array();
             foreach($courierCompanyList as $key => $courierCompany):
-                $courierCompanyListJson[$courierCompany->delivery_company] = $courierCompany->toJson();
+                $courierCompanyListJson[$courierCompany['delivery_company']] =
+                    array('delivery_company' => $courierCompany['delivery_company'],
+                          'delivery_company_name' => $courierCompany['delivery_company_name'],
+                          'delivery_time_min' => $courierCompany['delivery_time_min'],
+                          'delivery_time_max' => $courierCompany['delivery_time_max'],
+                          'total_price' => $this->getCompanyPrice($courierCompany));
                 ?>
                 <tr>
                     <td class="col1">
-                        <input type="radio" name="delivery_company" value="<?=$courierCompany->delivery_company?>" <?if($key==0):?>checked="checked"<?endif;?>/>
+                        <input type="radio" name="delivery_company" value="<?=$courierCompany['delivery_company']?>" <?if($key==0):?>checked="checked"<?endif;?>/>
                     </td>
                     <td class="col2">
                         <img src="<?=$staticURL?>img/logo/<?php
-                        echo ((isset(  $companies[$courierCompany->delivery_company]['ico'] ) )?$companies[$courierCompany->delivery_company]['ico']:'pack');
+                        echo ((isset(  $companies[$courierCompany['delivery_company']]['ico'] ) )?$companies[$courierCompany['delivery_company']]['ico']:'pack');
                         ?>.png" alt="title"/>
                     </td>
                     <td class="col3">
                         <p>
-                            <strong><?=$courierCompany->delivery_company_name?></strong>
+                            <strong><?=$courierCompany['delivery_company_name']?></strong>
                         </p>
                     </td>
                     <td class="col4">
-                        <strong><?=$courierCompany->getDeliveryInfo()->clientPrice?> <i class="icon-rub">&nbsp;</i></strong>
+                        <strong><?=$this->getCompanyPrice($courierCompany)?> <i class="icon-rub">&nbsp;</i></strong>
                     </td>
                     <td class="col5">
-                        <strong><?=$courierCompany->delivery_time_min?></strong> <?=\DDelivery\Utils::plural($courierCompany->delivery_time_min, 'день', 'дня', 'дней', 'дней', false);?>
+                        <strong><?=$courierCompany['delivery_time_min']?></strong> <?=\DDelivery\Utils::plural($courierCompany['delivery_time_min'], 'день', 'дня', 'дней', 'дней', false);?>
                     </td>
                 </tr>
             <?endforeach;?>

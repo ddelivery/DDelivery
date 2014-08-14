@@ -18,29 +18,36 @@ include_once(implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', 'application', 'b
 // Добавьте адаптер и необходимые файлы для работы CMS
 include_once("IntegratorShop.php");
 
-$task = $_GET['task'];
+//$task = $_GET['task'];
 
 $shopAdapter = new IntegratorShop();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
+$order->setCacheValue('calculateCourier', 'xxx', '22');
+echo $order->getCacheValue('calculateCourier', 'xxx');
+
+/*
 $order->city = 151184;
 echo '<pre>';
-print_r(  $DDeliveryUI->getSelfPoints( $order ) );
+$prices = $DDeliveryUI->calculateSelfPrices( $order );
+print_r( $DDeliveryUI->getSelfPointsList( $order, $prices ) );
 //print_r( $DDeliveryUI->getSelfDeliveryInfoForCity( $order ) );
 echo '</pre>';
 exit();
+*/
 /*
 echo '<pre>';
 print_r( $DDeliveryUI->getCourierPointsForCity($order) );
 echo '</pre>';
 */
+$task = 'ozk';
 if(function_exists($task))
 {
     $task( $DDeliveryUI );
 }
 else
 {
-    dumpOrders( $DDeliveryUI );
+    //dumpOrders( $DDeliveryUI );
 }
 
 function products( $DDeliveryUI )
