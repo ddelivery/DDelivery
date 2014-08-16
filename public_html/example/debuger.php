@@ -22,10 +22,16 @@ include_once("IntegratorShop.php");
 
 $shopAdapter = new IntegratorShop();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
+//$DDeliveryUI->onCmsOrderFinish(30,3,4,5);
+$order = $DDeliveryUI->initOrder(30);
+$DDeliveryUI->createCourierOrder($order);
+
+//echo 'ozk';
+/*
 $order = $DDeliveryUI->getOrder();
 $order->setCacheValue('calculateCourier', 'xxx', '22');
 echo $order->getCacheValue('calculateCourier', 'xxx');
-
+*/
 /*
 $order->city = 151184;
 echo '<pre>';
@@ -43,7 +49,7 @@ echo '</pre>';
 $task = 'ozk';
 if(function_exists($task))
 {
-    $task( $DDeliveryUI );
+    //$task( $DDeliveryUI );
 }
 else
 {

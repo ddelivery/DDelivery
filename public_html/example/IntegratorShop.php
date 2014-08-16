@@ -71,7 +71,6 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
             'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', 'root', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
             'prefix' => '',
         );
-
         return array(
             'type' => self::DB_SQLITE,
             'dbPath' => $this->getPathByDB(),
@@ -238,8 +237,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
         return array(
             array('min' => 0, 'max'=>100, 'type'=>self::INTERVAL_RULES_MARKET_AMOUNT, 'amount'=>30),
             array('min' => 100, 'max'=>200, 'type'=>self::INTERVAL_RULES_CLIENT_ALL, 'amount'=>60),
-            array('min' => 300, 'max'=>5000, 'type'=>self::INTERVAL_RULES_MARKET_PERCENT, 'amount'=>0),
-            array('min' => 1000, 'max'=>null, 'type'=>self::INTERVAL_RULES_MARKET_ALL),
+            array('min' => 200, 'max'=>5000, 'type'=>self::INTERVAL_RULES_MARKET_PERCENT, 'amount'=>50),
+            array('min' => 5000, 'max'=>null, 'type'=>self::INTERVAL_RULES_MARKET_ALL),
         );
     }
 

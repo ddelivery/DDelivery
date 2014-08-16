@@ -84,9 +84,9 @@ abstract class PluginFilters extends DShopAdapter
     public function getPaymentPriceCourier($order, $orderPrice)
     {
         $filterByPayment = $this->filterPointByPaymentTypeCourier();
-        if($filterByPayment == self::PAYMENT_POST_PAYMENT) {
-            if($order->getPoint() && $order->getPoint()->getDeliveryInfo()) {
-                return $order->amount + $order->getPoint()->getDeliveryInfo()->clientPrice;
+        if($filterByPayment == $order->paymentVariant) {
+            if( $orderPrice && $order->amount ) {
+                return $order->amount + $orderPrice;
             }
             return $order->amount;
         }
@@ -110,11 +110,20 @@ abstract class PluginFilters extends DShopAdapter
     {
         $filterByPayment = $this->filterPointByPaymentTypeSelf();
         if($filterByPayment == $order->paymentVariant){
+            if( $orderPrice && $order->amount ){
+                return $order->amount + $orderPrice;
+            }
+            return $order->amount;
+        }
+        /*
+        $filterByPayment = $this->filterPointByPaymentTypeSelf();
+        if($filterByPayment == $order->paymentVariant){
             if($order->getPoint() && $order->getPoint()->getDeliveryInfo()) {
                 return $order->amount + $order->getPoint()->getDeliveryInfo()->clientPrice;
             }
             return $order->amount;
          }
+        */
         return 0;
     }
 
@@ -186,7 +195,7 @@ abstract class PluginFilters extends DShopAdapter
      * @param $price
      * @return bool|int
      */
-    private function preDisplayPointCalc($price)
+    public function preDisplayPointCalc($price)
     {
         $intervals = $this->getIntervalsByPoint();
 

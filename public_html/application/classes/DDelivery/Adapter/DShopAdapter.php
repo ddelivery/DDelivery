@@ -22,6 +22,16 @@ use DDelivery\Sdk\DDeliverySDK;
  */
 abstract class DShopAdapter
 {
+    /**
+     * Тип кеширования централизованый(забираются все точки с сервера)
+     */
+    const CACHING_TYPE_CENTRAL = 'central';
+
+    /**
+     * Тип кеширования локальный(забираются точки с сервера с фильтром по компаниям)
+     */
+    const CACHING_TYPE_INDIVIDUAL = 'individual';
+
     const SDK_VERSION = '2.0';
     /**
      * Имя редактируется
@@ -142,6 +152,10 @@ abstract class DShopAdapter
         );
     }
 
+    public function getCachingFormat(){
+        return DShopAdapter::CACHING_TYPE_INDIVIDUAL;
+    }
+
     /**
      * Возвращаем сервер для логгирования ошибок
      */
@@ -184,7 +198,7 @@ abstract class DShopAdapter
      */
     public function getCacheExpired()
     {
-        return 1440; // 60*24
+        return 720; // 60*24
     }
 
     /**

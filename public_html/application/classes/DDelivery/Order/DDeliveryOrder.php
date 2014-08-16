@@ -299,7 +299,14 @@ class DDeliveryOrder
     {
         return serialize( $this->productList );
     }
-    
+
+    public function getAmount(){
+        $amount = 0.;
+        foreach($this->productList as $product) {
+            $amount += $product->getPrice() * $product->getQuantity();
+        }
+        return $amount;
+    }
     /**
      *
      * Упаковать данные заказа для сохранения в БД
@@ -340,7 +347,7 @@ class DDeliveryOrder
 
     
     /**
-     * @param DDeliveryAbstractPoint $point
+     * @param  $point
      */
     public function setPoint( $point )
     {

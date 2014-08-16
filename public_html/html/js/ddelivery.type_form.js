@@ -53,11 +53,13 @@ var TypeForm = (function () {
             });
 
             $('.map-popup__main__delivery__next a').click(function () {
+                var cityTitle = $('.delivery-place__title').find('input').attr('title');
                 var radio = $('input[type="radio"]:checked').val();
                 if (radio) {
                     DDeliveryIframe.ajaxPage({
                         type: radio,
-                        city_id: $('input[name=ddelivery_city]').val()
+                        city_id: $('input[name=ddelivery_city]').val(),
+                        city_alias: cityTitle
                     });
                 }
             });

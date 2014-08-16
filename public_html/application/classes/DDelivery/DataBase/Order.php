@@ -98,7 +98,7 @@ class Order {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
         }elseif($this->pdoType == DShopAdapter::DB_SQLITE){
-            $query = "CREATE TABLE orders (
+            $query = "CREATE TABLE {$this->prefix}orders (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             payment_variant TEXT,
                             shop_refnum INTEGER,
@@ -249,12 +249,7 @@ class Order {
      *
      * @return array
      */
-    public function getOrderById( $id )
-    {
-        if(empty($id))
-            return false;
-        $id = (int)$id;
-
+    public function getOrderById( $id ){
         $query = "SELECT * FROM {$this->prefix}orders WHERE id = $id";
         $sth = $this->pdo->query( $query );
         $result = $sth->fetchAll(PDO::FETCH_OBJ);
@@ -335,7 +330,6 @@ class Order {
      */
 	public function saveFullOrder( DDeliveryOrder $order )
 	{
-
 	    /*
 	    $point = $order->getPoint();
         $pointDB = '';
@@ -392,7 +386,7 @@ class Order {
         $pointID = $order->pointID;
         $ddeliveryID = $order->ddeliveryID;
         $delivery_company = $order->companyId;
-
+        //echo 'pz';
         $order_info = serialize(
                       array(
                             'confirmed' => $order->confirmed,
@@ -406,7 +400,8 @@ class Order {
                             'toFlat' => $order->toFlat,
                             'comment' => $order->comment,
                             'city_name' => $order->cityName,
-                            'toHousing' => $order->toHousing
+                            'toHousing' => $order->toHousing,
+                            'toEmail' => $order->toEmail
                       ));
         $cache = serialize( $order->orderCache );
         $point = serialize( $order->getPoint() );
