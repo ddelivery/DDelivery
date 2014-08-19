@@ -411,7 +411,7 @@ Map = (function () {
                 point.name = point.company + ' #' + point._id;
             }
             $('.map-popup__info__title h2').html(point.name);
-            $('.map-popup__info__table .rub').html('<img src="' + DDeliveryIframe.staticUrl + '/img/ajax_loader_min.gif"/> ');
+            $('.map-popup__info__table .rub').html('<img src="' + DDeliveryIframe.staticUrl + 'img/ajax_loader_min.gif"/> ');
             var payType = [];
             if (point.is_cash) {
                 payType.push('Наличными');

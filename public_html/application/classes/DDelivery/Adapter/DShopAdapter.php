@@ -157,6 +157,14 @@ abstract class DShopAdapter
     }
 
     /**
+     * Получить название шаблона для сдк
+     *
+     * @return string
+     */
+    public function getTemplate(){
+        return 'default';
+    }
+    /**
      * Возвращаем сервер для логгирования ошибок
      */
     public function getLogginServer(){
@@ -171,6 +179,23 @@ abstract class DShopAdapter
         return $companyArray;
     }
 
+    /**
+     * Получить доступные способы оплаты для Самовывоза ( можно анализировать содержимое order )
+     * @param $order DDeliveryOrder
+     * @return array
+     */
+    public function getSelfPaymentVariants( DDeliveryOrder $order ){
+        return array();
+    }
+
+    /**
+     * Получить доступные способы оплаты для курьера ( можно анализировать содержимое order )
+     * @param $order DDeliveryOrder
+     * @return array
+     */
+    public function getCourierPaymentVariants( DDeliveryOrder $order ){
+        return array();
+    }
     /**
      * Возвращает путь до файла базы данных sqlite, положите его в место не доступное по прямой ссылке
      * @return string

@@ -10,9 +10,6 @@
     $companySubInfo = $this->getCompanySubInfo();
     $count = 0;
     foreach($selfCompanyList as $selfCompany):
-        if($count >= 8)
-            break;
-        $count++;
         $ico = isset($companySubInfo[$selfCompany['delivery_company']]) ? $companySubInfo[$selfCompany['delivery_company']]['ico'] : 'pack';
         ?>
         <li>

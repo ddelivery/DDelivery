@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="<?=$staticURL?>css/screen.css?<?=$version?>"/>
+        <link rel="stylesheet" href="<?=$styleUrl?>css/screen.css?<?=$version?>"/>
     </head>
     <body>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -34,7 +34,7 @@
                 <div class="map-popup__main__delivery">
                     <div class="loader">
                         <p>Подождите пожалуйста, мы ищем лучшие предложения</p>
-                        <img src="<?=$staticURL?>/img/ajax_loader_horizont.gif"/>
+                        <img src="<?=$styleUrl?>img/ajax_loader_horizont.gif"/>
                     </div>
                     <div>
                         <p class="load_error">
@@ -76,7 +76,7 @@
         })(document, window, "yandex_metrika_callbacks");
 
         $(function(){
-            DDeliveryIframe.init(<?=json_encode($scriptURL)?>, <?=json_encode($staticURL)?>);
+            DDeliveryIframe.init(<?=json_encode($scriptURL)?>, <?=json_encode($styleUrl)?>);
         });
     </script>
     </body>

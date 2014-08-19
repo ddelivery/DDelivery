@@ -22,10 +22,13 @@ include_once("IntegratorShop.php");
 
 $shopAdapter = new IntegratorShop();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
-//$DDeliveryUI->onCmsOrderFinish(30,3,4,5);
-$order = $DDeliveryUI->initOrder(30);
-$DDeliveryUI->createCourierOrder($order);
-
+//$DDeliveryUI->onCmsOrderFinish(34,3,4,5);
+$order = $DDeliveryUI->getOrder();
+$order->city = 151184;
+$selfCompanyList = $DDeliveryUI->cachedCalculateSelfPrices( $order   );
+print_r($selfCompanyList);
+$pointsJs = $DDeliveryUI->getSelfPointsList( $order, $selfCompanyList );
+print_r($pointsJs);
 //echo 'ozk';
 /*
 $order = $DDeliveryUI->getOrder();

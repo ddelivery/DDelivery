@@ -67,15 +67,19 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function getDbConfig()
     {
+
         return array(
             'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', 'root', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
             'prefix' => '',
         );
+
         return array(
             'type' => self::DB_SQLITE,
             'dbPath' => $this->getPathByDB(),
             'prefix' => '',
         );
+
+
 
         return array(
             'type' => self::DB_MYSQL,
@@ -171,7 +175,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
     public function filterCompanyPointCourier()
     {
         //return array();
-        return array(43,44);
+        return array(23,27,29,35, 36, 40, 45, 48 );
         // TODO: Implement filterCompanyPointCourier() method.
     }
 
@@ -183,7 +187,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
     public function filterCompanyPointSelf()
     {
         //return array();
-        return array(1,4);
+        return array(38,39,40);
         // TODO: Implement filterCompanyPointSelf() method.
     }
 
@@ -319,7 +323,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
     public function getSupportedType()
     {
         return array(
-            \DDelivery\Sdk\DDeliverySDK::TYPE_COURIER,
+           \DDelivery\Sdk\DDeliverySDK::TYPE_COURIER,
             \DDelivery\Sdk\DDeliverySDK::TYPE_SELF
         );
     }

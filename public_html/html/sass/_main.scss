@@ -15,7 +15,7 @@
 	.map-popup__head {
 		height: 60px;
 		padding-top: 25px;
-		background: url(../img/head-bg.png) repeat 0 0 transparent;
+		background: url(../buckup/head-bg.png) repeat 0 0 transparent;
 		padding-left: 30px;
 		position: relative;
 		z-index: 100;
@@ -259,7 +259,7 @@
 	.map-popup__bott {
 		position: relative;
 		height: 6px;
-		background: url(../img/bott-bg.png) repeat 0 0 transparent;
+		background: url(../buckup/bott-bg.png) repeat 0 0 transparent;
 		a {
 			&:hover {
 				text-decoration: underline;
@@ -469,7 +469,7 @@
 								content: "";
 								width: 7px;
 								height: 100%;
-								background: url(../img/shadow.png) repeat 0 0 transparent;
+								background: url(../buckup/shadow.png) repeat 0 0 transparent;
 							}
 						}
 						&.active {
@@ -917,7 +917,7 @@
 		position: relative;
 		height: 20px;
 		width: 20px;
-		background: url("../img/radio.png") no-repeat;
+		background: url("../buckup/radio.png") no-repeat;
 		cursor: default;
 		text-align: left;
 		overflow: hidden;

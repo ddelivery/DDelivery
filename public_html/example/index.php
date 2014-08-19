@@ -58,6 +58,7 @@
                                 document.getElementById('ddelivery_container').style.display = 'none';
                             },
                             change: function(data) {
+                                alert('Не забываем фильтровать способы оплаты ');
                                 status = data.comment;
                                 console.log(data);
                                 hideCover();

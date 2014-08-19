@@ -6,14 +6,14 @@
  */
 ?>
 <div class="delivery-type__title courier">
-    <img src="<?=$staticURL?>img/icons/icon-courier.png"/>доставить курьером <span class="arrow"><i>&nbsp;</i></span>
+    <img src="<?=$styleUrl?>img/icons/icon-courier.png"/>доставить курьером <span class="arrow"><i>&nbsp;</i></span>
 </div>
 <div class="delivery-type__title self">
-    <img src="<?=$staticURL?>img/icons/shipping-grey.png"/>забрать самовывозом <i>&nbsp;</i></span>
+    <img src="<?=$styleUrl?>img/icons/shipping-grey.png"/>забрать самовывозом <i>&nbsp;</i></span>
 </div>
 <div class="delivery-type__drop">
     <p class="loader_center">
-        <img src="<?=$staticURL?>img/ajax_loader_horizont.gif"/>
+        <img src="<?=$styleUrl?>img/ajax_loader_horizont.gif"/>
     </p>
     <ul>
         <?if(in_array(DDelivery\Sdk\DDeliverySDK::TYPE_COURIER, $this->supportedTypes)):?>
