@@ -25,10 +25,18 @@ $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 //$DDeliveryUI->onCmsOrderFinish(34,3,4,5);
 $order = $DDeliveryUI->getOrder();
 $order->city = 151184;
+$selfCompanyList = $DDeliveryUI->cachedCalculateSelfPrices( $order );
+$order->setPoint( $selfCompanyList[0] );
+
+echo $DDeliveryUI->getOrderClientDeliveryPrice($order);
+//print_r($selfCompanyList[0]);
+/*
+$order->city = 151184;
 $selfCompanyList = $DDeliveryUI->cachedCalculateSelfPrices( $order   );
 print_r($selfCompanyList);
 $pointsJs = $DDeliveryUI->getSelfPointsList( $order, $selfCompanyList );
 print_r($pointsJs);
+*/
 //echo 'ozk';
 /*
 $order = $DDeliveryUI->getOrder();

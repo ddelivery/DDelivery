@@ -158,7 +158,24 @@ use DDelivery\Sdk\Messager;
             return $this->shop->getLocalStatusByDD( $ddStatus );
         }
 
-
+        /**
+         *
+         * Получить список незаконченых заказов
+         *
+         * @return array
+         *
+         */
+        public function getNotFinishedOrders(){
+            $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
+            $orders = $orderDB->getNotFinishedOrders();
+            $ddOrders = array();
+            if( count( $orders ) > 0 ){
+                foreach( $orders as $item ){
+                    $ddOrders[] = $this->initOrder($item->id);
+                }
+            }
+            return $ddOrders;
+        }
         /**
          * Получить все пользовательские поля по ID в БД SQLite
          *
@@ -840,7 +857,7 @@ use DDelivery\Sdk\Messager;
             // интервалы
             $this->shop->preDisplayPointCalc($price);
             // Ручное редактирование
-            $price = $this->shop->processClientPrice( $price, $order );
+            $price = $this->shop->processClientPrice( $order, $price );
             // Округление
             $price =  $this->shop->aroundPrice( $price );
             return $price;
