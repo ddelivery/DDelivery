@@ -13,7 +13,7 @@ require_once 'application/bootstrap.php';
 //$DDeliverySDK = new DDelivery\Sdk\DDeliverySDK('	', true);
 //$result = $DDeliverySDK->getSelfDeliveryPoints('4,6', '4,25');
 //$result = $DDeliverySDK->deliveryPoints();
-// $result = $DDeliverySDK->getCityByIp('188.162.64.72');
+// $result = $DDelive   rySDK->getCityByIp('188.162.64.72');
 //$result = $DDeliverySDK->getSelfDeliveryPoints('4,6');
 //$result = $DDeliverySDK->calculatorPickup( 1, 10, 10, 10, 1 , 0);
 /*

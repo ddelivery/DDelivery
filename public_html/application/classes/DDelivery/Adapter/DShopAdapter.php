@@ -11,9 +11,7 @@ namespace DDelivery\Adapter;
 use DDelivery\Order\DDeliveryOrder;
 use DDelivery\Order\DDeliveryProduct;
 use DDelivery\Order\DDStatusProvider;
-use DDelivery\Point\DDeliveryAbstractPoint;
-use DDelivery\Point\DDeliveryPointCourier;
-use DDelivery\Point\DDeliveryPointSelf;
+
 use DDelivery\Sdk\DDeliverySDK;
 
 /**
@@ -583,6 +581,16 @@ abstract class DShopAdapter
      */
     abstract public function onFinishChange( DDeliveryOrder $order);
 
+    /**
+     * Обработка цены перед отдачей в методе getClientPrice
+     *
+     * @param DDeliveryOrder $order
+     * @param $price
+     * @return mixed
+     */
+    public function  processClientPrice( DDeliveryOrder $order, $price ){
+        return $price;
+    }
 
     /**
      * Возможность что - нибудь добавить к информации
