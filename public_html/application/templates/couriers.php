@@ -49,6 +49,7 @@
         <table>
             <?
             $courierCompanyListJson = array();
+            if( count($courierCompanyList) ){
             foreach($courierCompanyList as $key => $courierCompany):
                 $courierCompanyListJson[$courierCompany['delivery_company']] =
                     array('delivery_company' => $courierCompany['delivery_company'],
@@ -82,6 +83,14 @@
             <script type="application/javascript">
                 var couriers = <?=json_encode($courierCompanyListJson)?>;
             </script>
+            <?php
+            }else{ ?>
+                <script type="application/javascript">
+                    DDeliveryIframe.ajaxPage({});
+                </script>
+            <?php
+            }
+            ?>
         </table>
     </div>
     <div class="map-popup__main__delivery__next">

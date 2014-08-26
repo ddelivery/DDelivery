@@ -121,86 +121,7 @@ class Order {
         }
         $this->pdo->exec($query);
     }
-    /*
-	public function createTable()
-	{
-        if($this->pdoType == DShopAdapter::DB_MYSQL) {
-            $query = "CREATE TABLE `{$this->prefix}orders` (
-                `id` int(11) NOT NULL AUTO_INCREMENT,
-                `payment_variant` varchar(255) DEFAULT NULL,
-                `shop_refnum` int(11) DEFAULT NULL,
-                `local_status` varchar(20) DEFAULT NULL,
-                `dd_status` int(11) DEFAULT NULL,
-                `type` int(11) DEFAULT NULL,
-                `amount` float(11,2) DEFAULT NULL,
-                `products` text DEFAULT NULL,
-                `to_city` int(11) DEFAULT NULL,
-                `date` datetime DEFAULT NULL,
-                `ddeliveryorder_id` int(11) DEFAULT NULL,
-                `point_id` int(11) DEFAULT NULL,
-                `delivery_company` int(11) DEFAULT NULL,
-                `dimension_side1` int(11) DEFAULT NULL,
-                `dimension_side2` int(11) DEFAULT NULL,
-                `dimension_side3` int(11) DEFAULT NULL,
-                `confirmed` int(11) DEFAULT NULL,
-                `weight` int(11) DEFAULT NULL,
-                `declared_price` int(11) DEFAULT NULL,
-                `payment_price` int(11) DEFAULT NULL,
-                `to_name` varchar(255) DEFAULT NULL,
-                `to_phone` varchar(255) DEFAULT NULL,
-                `goods_description` text DEFAULT NULL,
-                `to_street` varchar(255) DEFAULT NULL,
-                `to_house` varchar(255) DEFAULT NULL,
-                `to_flat` varchar(255) DEFAULT NULL,
-                `to_email` varchar(255) DEFAULT NULL,
-                `first_name` varchar(255) DEFAULT NULL,
-                `second_name` varchar(255) DEFAULT NULL,
-                `point` text DEFAULT NULL   ,
-                `comment` varchar(255) DEFAULT NULL,
-                `city_name` varchar(255) DEFAULT NULL,
-                `to_housing` varchar(255) DEFAULT NULL,
-                PRIMARY KEY (`id`)
-              ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-            $this->pdo->exec($query);
-        }elseif($this->pdoType == DShopAdapter::DB_SQLITE){
-            $this->pdo->exec("CREATE TABLE IF NOT EXISTS orders (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                payment_variant TEXT,
-                shop_refnum INTEGER,
-                local_status TEXT,
-                dd_status INTEGER,
-                type INTEGER,
-                amount REAL,
-                products TEXT,
-                to_city INTEGER,
-                date TEXT,
-                ddeliveryorder_id INTEGER,
-                point_id INTEGER,
-                delivery_company INTEGER,
-                dimension_side1 INTEGER,
-                dimension_side2 INTEGER,
-                dimension_side3 INTEGER,
-                confirmed INTEGER,
-                weight REAL,
-                declared_price REAL,
-                payment_price REAL,
-                to_name TEXT,
-                to_phone TEXT,
-                goods_description TEXT,
-                to_street  TEXT,
-                to_house TEXT,
-                to_flat TEXT,
-                to_email TEXT,
-                first_name TEXT,
-                second_name TEXT,
-                point TEXT,
-                comment TEXT,
-                city_name TEXT,
-                to_housing TEXT
-              )");
-        }
-	}
-    */
+
 	/**
 	 * Получить заказ по его cms ID
 	 *
@@ -330,51 +251,7 @@ class Order {
      */
 	public function saveFullOrder( DDeliveryOrder $order )
 	{
-	    /*
-	    $point = $order->getPoint();
-        $pointDB = '';
-        $delivery_company = 0;
-        $deliveryPrice = 0;
-        if( $point !== null )
-        {
-            $delivery_company = $point->getDeliveryInfo()->get('delivery_company');
-            $deliveryPrice = $point->getDeliveryInfo()->get('total_price');
-            $pointDB = serialize($point);
-        }
-	    $dimensionSide1 = $order->getDimensionSide1();
-	    $dimensionSide2 = $order->getDimensionSide2();
-	    $dimensionSide3 = $order->getDimensionSide3();
-	    $goods_description = $order->getGoodsDescription();
-	    $weight = $order->getWeight();
-	    $to_city = $order->city;
-
-	    $confirmed = $order->getConfirmed();
-	    $to_name = $order->getToName();
-	    $to_phone = $order->getToPhone();
-	    $declaredPrice = $order->declaredPrice;
-	    $paymentPrice = $order->paymentPrice;
-	    $ddeliveryID = $order->ddeliveryID;
-	    $localId = $order->localId;
-
-	    $payment_variant = $order->paymentVariant;
-	    $localStatus = $order->localStatus;
-	    $ddStatus = $order->ddStatus;
-	    $shop_refnum = $order->shopRefnum;
-	    $firstName = $order->firstName;
-	    $secondName = $order->secondName;
-	    $amount = $order->amount;
-
-	    $productString = $order->getSerializedProducts();
-	    $toStreet = $order->toStreet;
-	    $toHouse = $order->toHouse;
-	    $toFlat = $order->toFlat;
-	    $type = $order->type;
-        $comment = $order->comment;
-        $city_name = $order->cityName;
-        $toHousing = $order->toHousing;
-        */
-
-        $wasUpdate = 0;
+	    $wasUpdate = 0;
 
         $localId = $order->localId;
         $payment_variant = $order->paymentVariant;
@@ -422,20 +299,7 @@ class Order {
                           point = :point, add_field1 = :add_field1,
                           add_field2 = :add_field2, add_field3 = :add_field3, cart = :cart
 			          WHERE id=:id";
-            /*
-	    	$query = "UPDATE {$this->prefix}orders SET to_housing = :to_housing,  city_name = :city_name, comment = :comment,
-                      payment_variant = :payment_variant, type = :type, amount =:amount,
-	    			  to_city = :to_city,
-	    			  ddeliveryorder_id = :ddeliveryorder_id, delivery_company = :delivery_company,
-	    			  dimension_side1 = :dimension_side1, dimension_side2 = :dimension_side2,
-	    			  dimension_side3 = :dimension_side3, confirmed = :confirmed,
-			          weight = :weight, declared_price = :declared_price, payment_price = :payment_price,
-	    			  to_name = :to_name, to_phone = :to_phone, goods_description = :goods_description,
-	    			  to_street= :to_street, to_house = :to_house, to_flat = :to_flat, date = :date,
-			          shop_refnum =:shop_refnum, products = :products, local_status = :local_status,
-			          dd_status = :dd_status, first_name = :first_name, second_name =:second_name,
-	    			  point = :point  WHERE id=:id";
-            */
+
 	    	$stmt = $this->pdo->prepare($query);
 	    	$stmt->bindParam( ':id', $localId );
             $wasUpdate = 1;
@@ -449,19 +313,7 @@ class Order {
                             :to_city, :point_id, :date, :ddeliveryorder_id, :delivery_company, :order_info,
                             :cache, :point, :add_field1, :add_field2, :add_field3, :cart
                           )";
-            /*
-	    	$query = "INSERT INTO {$this->prefix}orders ( to_housing, city_name, comment, payment_variant, type, amount, to_city, ddeliveryorder_id,
-	    			  delivery_company, dimension_side1,
-                      dimension_side2, dimension_side3, confirmed, weight, declared_price,
-	    			  payment_price, to_name, to_phone, goods_description, to_flat, to_house,
-	    			  to_street, date, shop_refnum, products, local_status, dd_status,
-	    			  first_name, second_name, point)
-	                  VALUES( :to_housing, :city_name, :comment, :payment_variant, :type, :amount, :to_city, :ddeliveryorder_id, :delivery_company,
-	    			  :dimension_side1, :dimension_side2, :dimension_side3, :confirmed, :weight,
-	    			  :declared_price, :payment_price, :to_name, :to_phone, :goods_description,
-	    			  :to_flat, :to_house, :to_street,  :date, :shop_refnum, :products,
-	    			  :local_status, :dd_status, :first_name, :second_name, :point )";
-            */
+
 	    	$stmt = $this->pdo->prepare($query);
 	    }
 
@@ -485,29 +337,7 @@ class Order {
         $stmt->bindParam( ':add_field3', $add_field3 );
         $stmt->bindParam( ':cart', $cart );
 
-        /*
-	    $stmt->bindParam( ':to_city', $to_city );
-	    $stmt->bindParam( ':dimension_side1', $dimensionSide1 );
-	    $stmt->bindParam( ':dimension_side2', $dimensionSide2 );
-	    $stmt->bindParam( ':dimension_side3', $dimensionSide3 );
-	    $stmt->bindParam( ':confirmed', $confirmed );
-	    $stmt->bindParam( ':weight', $weight );
-	    $stmt->bindParam( ':declared_price', $declaredPrice );
-	    $stmt->bindParam( ':payment_price', $paymentPrice );
-	    $stmt->bindParam( ':to_name', $to_name );
-	    $stmt->bindParam( ':to_phone', $to_phone );
-	    $stmt->bindParam( ':goods_description', $goods_description );
-	    $stmt->bindParam( ':to_house', $toHouse );
-	    $stmt->bindParam( ':to_street', $toStreet );
-	    $stmt->bindParam( ':to_flat', $toFlat );
-	    $stmt->bindParam( ':date', $dateTime );
-	    $stmt->bindParam( ':shop_refnum', $shop_refnum );
-	    $stmt->bindParam( ':products', $productString );
-	    $stmt->bindParam( ':local_status', $localStatus );
-	    $stmt->bindParam( ':dd_status', $ddStatus );
-	    $stmt->bindParam( ':first_name', $firstName );
-	    $stmt->bindParam( ':second_name', $secondName );
-        */
+
 	    if( $stmt->execute() ){
             if( $wasUpdate )
             {

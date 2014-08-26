@@ -11,8 +11,7 @@ namespace DDelivery\Adapter;
 use DDelivery\Adapter\DShopAdapter;
 use DDelivery\DDeliveryException;
 use DDelivery\Order\DDeliveryOrder;
-use DDelivery\Point\DDeliveryPointCourier;
-use DDelivery\Point\DDeliveryPointSelf;
+
 
 
 /**
@@ -115,15 +114,7 @@ abstract class PluginFilters extends DShopAdapter
             }
             return $order->amount;
         }
-        /*
-        $filterByPayment = $this->filterPointByPaymentTypeSelf();
-        if($filterByPayment == $order->paymentVariant){
-            if($order->getPoint() && $order->getPoint()->getDeliveryInfo()) {
-                return $order->amount + $order->getPoint()->getDeliveryInfo()->clientPrice;
-            }
-            return $order->amount;
-         }
-        */
+
         return 0;
     }
 
@@ -228,114 +219,6 @@ abstract class PluginFilters extends DShopAdapter
 
         }
         return $priceReturn;
-    }
-
-    /**
-     * Если необходимо фильтрует пункты самовывоза и добавляет новые
-     *
-     * @param \DDelivery\Point\DDeliveryPointSelf[] $selfPoints
-     * @param DDeliveryOrder $order
-     * @return \DDelivery\Point\DDeliveryPointSelf[]
-     */
-    public function filterPointsSelf($selfPoints, DDeliveryOrder $order)
-    {
-        if(empty($selfPoints)) {
-            return array();
-        }
-
-        $filterCompany = $this->filterCompanyPointSelf();
-        if(!is_array($filterCompany) || empty($filterCompany)) {
-            $filterCompany = array();
-        }
-
-        $pickup = $this->isPayPickup();
-
-        foreach($selfPoints as $key => $selfPoint) {
-            // Удаляем те компании которые есть в фильтре
-            if(in_array($selfPoint->company_id, $filterCompany)) {
-                unset($selfPoints[$key]);
-                continue;
-            }
-            $info = $selfPoint->getDeliveryInfo();
-            if(!$pickup) { // Не учитывать цену забора
-                $info->clientPrice = $info->total_price - $info->pickup_price;
-            }
-            $info->clientPrice = $this->aroundPrice($info->clientPrice);
-        }
-
-        return $selfPoints;
-    }
-
-
-    /**
-     * Перед тем как показать точную информацию о стоимости мы сообщаем информацию
-     *
-     * @param \DDelivery\Point\DDeliveryInfo[] $selfCompanyList
-     * @return \DDelivery\Point\DDeliveryInfo[]
-     */
-    public function filterSelfInfo($selfCompanyList)
-    {
-        $filterCompany = $this->filterCompanyPointSelf();
-        if(!is_array($filterCompany) || empty($filterCompany)) {
-            $filterCompany = array();
-        }
-
-        $pickup = $this->isPayPickup();
-
-        foreach($selfCompanyList as $key => $company) {
-            // Удаляем те компании которые есть в фильтре
-            if(in_array($company->delivery_company, $filterCompany)) {
-                unset($selfCompanyList[$key]);
-            }
-
-            if(!$pickup) { // Не учитывать цену забора
-                $company->clientPrice = $company->total_price - $company->pickup_price;
-            }
-            $company->clientPrice = $this->preDisplayPointCalc($company->clientPrice);
-            $company->clientPrice = $this->aroundPrice($company->clientPrice);
-
-        }
-
-        return $selfCompanyList;
-    }
-
-
-    /**
-     * Если необходимо фильтрует курьеров и добавляет новых
-     * Кстати здесь можно отсортировать еще точки
-     *
-     * @param \DDelivery\Point\DDeliveryPointCourier[] $courierPoints
-     * @param DDeliveryOrder $order
-     * @return \DDelivery\Point\DDeliveryPointCourier[]
-     */
-    public function filterPointsCourier($courierPoints, DDeliveryOrder $order)
-    {
-        if(empty($courierPoints)) {
-            return array();
-        }
-
-        $filterCompany = $this->filterCompanyPointCourier();
-        if(!is_array($filterCompany) || empty($filterCompany)) {
-            $filterCompany = array();
-        }
-
-        $pickup = $this->isPayPickup();
-
-        foreach($courierPoints as $key => $courierPoint) {
-            // Удаляем те компании которые есть в фильтре
-            if(in_array($courierPoint->delivery_company, $filterCompany)) {
-                unset($courierPoints[$key]);
-            }
-
-            if(!$pickup) { // Не учитывать цену забора
-                $courierPoint->getDeliveryInfo()->clientPrice = $courierPoint->total_price - $courierPoint->pickup_price;
-            }
-            $courierPoint->getDeliveryInfo()->clientPrice = $this->preDisplayPointCalc($courierPoint->getDeliveryInfo()->clientPrice);
-            $courierPoint->getDeliveryInfo()->clientPrice = $this->aroundPrice($courierPoint->getDeliveryInfo()->clientPrice);
-        }
-
-
-        return $courierPoints;
     }
 
     /**
