@@ -78,7 +78,7 @@ class Order {
             $query = "CREATE TABLE `{$this->prefix}orders` (
                             `id` int(11) NOT NULL AUTO_INCREMENT,
                             `payment_variant` varchar(255) DEFAULT NULL,
-                            `shop_refnum` int(11) DEFAULT NULL,
+                            `shop_refnum` varchar(255) DEFAULT NULL,
                             `local_status` varchar(255) DEFAULT NULL,
                             `dd_status` int(11) DEFAULT NULL,
                             `type` int(11) DEFAULT NULL,
@@ -101,7 +101,7 @@ class Order {
             $query = "CREATE TABLE {$this->prefix}orders (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             payment_variant TEXT,
-                            shop_refnum INTEGER,
+                            shop_refnum TEXT,
                             local_status TEXT,
                             dd_status INTEGER,
                             type INTEGER,
