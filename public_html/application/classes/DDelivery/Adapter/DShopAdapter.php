@@ -550,7 +550,7 @@ abstract class DShopAdapter
     public function getCourierRequiredFields()
     {
         // ВВести все обязательно, кроме корпуса
-        return self::FIELD_EDIT_FIRST_NAME | self::FIELD_REQUIRED_FIRST_NAME | self::FIELD_EDIT_SECOND_NAME | self::FIELD_REQUIRED_SECOND_NAME
+        return self::FIELD_EDIT_FIRST_NAME | self::FIELD_REQUIRED_FIRST_NAME
             | self::FIELD_EDIT_PHONE | self::FIELD_REQUIRED_PHONE
             | self::FIELD_EDIT_ADDRESS | self::FIELD_REQUIRED_ADDRESS
             | self::FIELD_EDIT_ADDRESS_HOUSE | self::FIELD_REQUIRED_ADDRESS_HOUSE
@@ -568,8 +568,7 @@ abstract class DShopAdapter
     {
         // Имя, фамилия, мобилка
         return self::FIELD_EDIT_FIRST_NAME | self::FIELD_REQUIRED_FIRST_NAME
-            | self::FIELD_EDIT_SECOND_NAME | self::FIELD_REQUIRED_SECOND_NAME
-            | self::FIELD_EDIT_PHONE | self::FIELD_REQUIRED_PHONE;
+             | self::FIELD_EDIT_PHONE | self::FIELD_REQUIRED_PHONE;
     }
 
 

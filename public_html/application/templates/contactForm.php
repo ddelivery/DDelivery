@@ -33,7 +33,7 @@ use DDelivery\Adapter\DShopAdapter;
                 <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_FIRST_NAME || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_FIRST_NAME && !$order->firstName ) ):?>
                     <div class="row clearfix">
                         <div class="row__title">
-                            <label for="first_name">Имя</label>
+                            <label for="first_name">ФИО</label>
                         </div>
                         <div class="row__inp">
                             <input type="text" title="Иван" id="first_name" name="first_name" value="<?=htmlspecialchars(trim($order->firstName))?>" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_FIRST_NAME):?>req="req"<?endif;?>/>
