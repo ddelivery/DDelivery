@@ -22,13 +22,9 @@ include_once("IntegratorShop.php");
 
 $shopAdapter = new IntegratorShop();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
-//$DDeliveryUI->onCmsOrderFinish(34,3,4,5);
 $order = $DDeliveryUI->getOrder();
-$order->city = 151184;
-$selfCompanyList = $DDeliveryUI->cachedCalculateSelfPrices( $order );
-$order->setPoint( $selfCompanyList[0] );
-
-echo $DDeliveryUI->getOrderClientDeliveryPrice($order);
+$order->type = 1;
+$DDeliveryUI->getAvailablePaymentVariants( $order );
 //print_r($selfCompanyList[0]);
 /*
 $order->city = 151184;

@@ -348,7 +348,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * @param $order DDeliveryOrder
      * @return array
      */
-    public function getSelfPaymentVariants( DDeliveryOrder $order ){
+    public function getSelfPaymentVariants( $order ){
         return array();
     }
 
@@ -357,7 +357,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * @param $order DDeliveryOrder
      * @return array
      */
-    public function getCourierPaymentVariants( DDeliveryOrder $order ){
+    public function getCourierPaymentVariants( $order ){
         return array();
     }
 

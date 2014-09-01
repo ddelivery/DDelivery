@@ -73,7 +73,7 @@
                         </p>
                     </td>
                     <td class="col4">
-                        <strong><?=$this->getCompanyPrice($courierCompany)?> <i class="icon-rub">&nbsp;</i></strong>
+                        <strong><?=$this->getClientPrice($courierCompany, $this->order)?> <i class="icon-rub">&nbsp;</i></strong>
                     </td>
                     <td class="col5">
                         <strong><?=$courierCompany['delivery_time_min']?></strong> <?=\DDelivery\Utils::plural($courierCompany['delivery_time_min'], 'день', 'дня', 'дней', 'дней', false);?>

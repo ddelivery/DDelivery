@@ -206,7 +206,7 @@ abstract class DShopAdapter
      * @param $order DDeliveryOrder
      * @return array
      */
-    public function getSelfPaymentVariants( DDeliveryOrder $order ){
+    public function getSelfPaymentVariants( $order ){
         return array();
     }
 
@@ -215,7 +215,7 @@ abstract class DShopAdapter
      * @param $order DDeliveryOrder
      * @return array
      */
-    public function getCourierPaymentVariants( DDeliveryOrder $order ){
+    public function getCourierPaymentVariants( $order ){
         return array();
     }
     /**
@@ -578,7 +578,7 @@ abstract class DShopAdapter
      * @param DDeliveryOrder $order
      * @return bool
      */
-    abstract public function onFinishChange( DDeliveryOrder $order);
+    abstract public function onFinishChange(  $order);
 
     /**
      * Обработка цены перед отдачей в методе getClientPrice
@@ -587,7 +587,7 @@ abstract class DShopAdapter
      * @param $price
      * @return mixed
      */
-    public function  processClientPrice( DDeliveryOrder $order, $price ){
+    public function  processClientPrice(  $order, $price ){
         return $price;
     }
 
