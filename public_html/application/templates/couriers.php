@@ -1,6 +1,5 @@
 <?
 /**
- * @var DDelivery\Point\DDeliveryPointCourier[] $courierCompanyList
  * @var string $staticPath
  */
 
