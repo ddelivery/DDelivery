@@ -586,8 +586,7 @@ use DDelivery\Sdk\Messager;
 
             $ddeliveryOrderID = 0;
 
-            if( $this->shop->sendOrderToDDeliveryServer($order) )
-            {
+            if( $this->shop->sendOrderToDDeliveryServer($order) ){
                 $point = $order->getPoint();
                 $to_city = $order->city;
                 $delivery_company = $order->companyId;
@@ -612,11 +611,14 @@ use DDelivery\Sdk\Messager;
                 $to_house = $order->toHouse;
                 $to_flat = $order->toFlat;
                 $shop_refnum = $order->shopRefnum;
+                $to_email = $order->toEmail;
+                $metadata = $order->getJsonOrder();
+
 
                 $response = $this->sdk->addCourierOrder( $to_city, $delivery_company, $dimensionSide1, $dimensionSide2,
                                                              $dimensionSide3, $shop_refnum, $confirmed, $weight,
                                                              $to_name, $to_phone, $goods_description, $declaredPrice,
-                                                             $paymentPrice, $to_street, $to_house, $to_flat );
+                                                             $paymentPrice, $to_street, $to_house, $to_flat, $to_email, $metadata );
                 if( !$response->response['order'] ){
                     throw new DDeliveryException("Ошибка отправки заказа на сервер DDelivery.ru");
                 }
@@ -666,10 +668,13 @@ use DDelivery\Sdk\Messager;
                 $paymentPrice = $this->shop->getPaymentPriceSelf( $order, $this->getClientPrice($point, $order ) );
                 $shop_refnum = $order->shopRefnum;
 
+                $to_email = $order->toEmail;
+                $metadata = $order->getJsonOrder();
+
                 $response = $this->sdk->addSelfOrder( $pointID, $dimensionSide1, $dimensionSide2,
                                                       $dimensionSide3, $confirmed, $weight, $to_name,
                                                       $to_phone, $goods_description, $declaredPrice,
-                                                      $paymentPrice, $shop_refnum );
+                                                      $paymentPrice, $shop_refnum, $to_email, $metadata );
 
                 if( !$response->response['order'] ){
                     throw new DDeliveryException("Ошибка отправки заказа на сервер DDelivery.ru");

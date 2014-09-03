@@ -23,8 +23,21 @@ include_once("IntegratorShop.php");
 $shopAdapter = new IntegratorShop();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
+$order->city = 151184;
 $order->type = 1;
-$DDeliveryUI->getAvailablePaymentVariants( $order );
+$order->firstName = 'Васян';
+$order->secondName = 'xxxx';
+$order->toPhone = '3322322323';
+$order->paymentVariant = 2;
+$order->localStatus = 20;
+$order->shopRefnum = 12;
+$selfCompanyList = $DDeliveryUI->cachedCalculateSelfPrices( $order   );
+
+$order->setPoint($selfCompanyList[0]);
+$order->pointID = 2716;
+//print_r($selfCompanyList[0]);
+echo $DDeliveryUI->sendOrderToDD($order);
+//print_r( $order->getJsonOrder() );
 //print_r($selfCompanyList[0]);
 /*
 $order->city = 151184;

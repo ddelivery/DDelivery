@@ -97,7 +97,7 @@ class DDeliveryOrder
     /**
      * @var string фамилия
      */
-    public $secondName;
+    public $secondName = '';
     /**
      * @var string телефон
      */
@@ -289,6 +289,20 @@ class DDeliveryOrder
         $this->dimensionSide3 = $dimensionSide3;
         $this->productIDs = implode(',', $productIDs);
     }
+
+    public function getJsonOrder(){
+        $json = array();
+        if(!empty($this->productList)){
+            foreach ($this->productList as $product) {
+                $json[] = array('name' => $product->getName(), 'article' =>$product->getSku(),
+                                'count' =>  $product->getQuantity());
+            }
+            return json_encode( $json );
+        }else{
+            throw new DDeliveryOrderException("Корзина пуста");
+        }
+    }
+
     /**
      *
      * Упаковать продукты заказа для сохранения в БД
@@ -307,35 +321,7 @@ class DDeliveryOrder
         }
         return $amount;
     }
-    /**
-     *
-     * Упаковать данные заказа для сохранения в БД
-     * @deprecated
-     * @return array
-     */
-    public function packOrder()
-    {	
-    	$point = $this->getPoint();
-    	$checkSum = md5( $this->goodsDescription );
-    	$pointID = 0;
-    	$pointPacked = '';
-    	
-    	if( !empty( $point ) )
-    	{
-    		$pointPacked = serialize($point);
-            $pointID = $this->point->pointID;
-    	}
-    	
-    	$packedOrder = array( 'type'=>$this->type, 'city' => $this->city, 'amount' => $this->amount, 
-    			              'productIDs' => $this->productIDs, 'ddeliveryID' => $this->ddeliveryID, 
-    			              'products' => serialize( $this->productList ), 'point_id' => $pointID, 
-                              'to_name' => $this->toName, 'firstName' => $this->firstName,
-    	                      'secondName' => $this->secondName, 'to_phone' => $this->toPhone, 'to_street' => $this->toStreet,
-                              'to_house' => $this->toHouse, 'to_flat' => $this->toFlat, 'to_email' => $this->toEmail,
-    						  'point' => $pointPacked, 'checksum' => $checkSum );
-    	
-    	return $packedOrder;
-    }
+
 
     /**
      * @return int

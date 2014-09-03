@@ -52,10 +52,11 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
             25,	//	float $length ширина
             0.5,	//	float $weight вес кг
             1000,	//	float $price стоимостьв рублях
-            1,	//	int $quantity количество товара
-            'Веселый клоун'	//	string $name Название вещи
+            1,
+            'Веселый клоун',	//	string $name Название вещи
+            'artikul222'
         );
-        $products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'Грустный клоун');
+        $products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'Грустный клоун', 'artikul222');
         return $products;
     }
 
@@ -65,16 +66,19 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function getDbConfig(){
 
+
+        return array(
+            'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', 'root', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
+            'prefix' => '',
+        );
+
         return array(
             'type' => self::DB_SQLITE,
             'dbPath' => $this->getPathByDB(),
             'prefix' => '',
         );
 
-        return array(
-            'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', 'root', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
-            'prefix' => '',
-        );
+
 
         return array(
             'type' => self::DB_MYSQL,
@@ -136,7 +140,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * @param \DDelivery\Order\DDeliveryOrder $order
      * @return void
      */
-    public function onFinishChange(\DDelivery\Order\DDeliveryOrder $order){
+    public function onFinishChange($order){
 
     }
 
@@ -155,7 +159,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function filterCompanyPointCourier(){
         //return array();
-        return array(23,27,29,35, 36, 40, 45, 48 );
+        return array	(4,21,29,23,27,28,20,30,31,11,16,22,17,3,14,1,13,18,6,
+                         26,25,24,7,35,36,37,39,40,42,43,44,45,46,47,48,49);
         // TODO: Implement filterCompanyPointCourier() method.
     }
 
@@ -166,7 +171,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function filterCompanyPointSelf(){
         //return array();
-        return array(38,39,40);
+        return array	(4,21,29,23,27,28,20,30,31,11,16,22,17,3,14,1,13,18,6,
+                         26,25,24,7,35,36,37,39,40,42,43,44,45,46,47,48,49);
         // TODO: Implement filterCompanyPointSelf() method.
     }
 
@@ -288,24 +294,6 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
         );
     }
 
-    /**
-     * Если необходимо фильтрует пункты самовывоза и добавляет новые
-     *
-     * @param DDeliveryOrder $order
-     */
-    public function filterPointsSelf($selfPoints, DDeliveryOrder $order){
-
-        $selfPoints = parent::filterPointsSelf($selfPoints, $order);
-        /* пример установки собственного магазина на карту
-        $myCourier = new \DDelivery\Point\PointSelfCustom(
-            1, 'Моя компания', 'Петропавловская крепость, 8',
-            59.950236, 30.31537, 100, 0, 'Ежедневно с 10 до 22',
-            '', ''
-        );
-        $selfPoints[] = $myCourier;
-        /*/
-        return $selfPoints;
-    }
 
     /**
      * При отправке заказа на сервер дделивери идет
@@ -349,7 +337,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * @return array
      */
     public function getSelfPaymentVariants( $order ){
-        return array();
+        return array(10, 2);
     }
 
     /**

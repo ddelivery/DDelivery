@@ -331,9 +331,10 @@ abstract class DShopAdapter
             0.5,	//	float $weight вес кг
             1000,	//	float $price стоимостьв рублях
             1,	//	int $quantity количество товара
+            'articule 222',
             'Веселый клоун'	//	string $name Название вещи
         );
-        $products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'Грустный клоун');
+        $products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'articule 222', 'Грустный клоун');
         return $products;
     }
     /**

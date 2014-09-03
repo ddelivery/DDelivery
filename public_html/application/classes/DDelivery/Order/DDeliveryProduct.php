@@ -62,6 +62,13 @@ class DDeliveryProduct
 	 */
 	private $quantity;
 
+
+    /**
+     * количество единицы товара
+     * @var string
+     */
+    private $sku;
+
     /**
      * @param int $id id товара в системе и-нет магазина
      * @param float $width длинна
@@ -73,7 +80,7 @@ class DDeliveryProduct
      * @param string $name Название вещи
      */
     public function __construct( $id, $width, $height, $length,
-                                 $weight, $price, $quantity, $name )
+                                 $weight, $price, $quantity, $name, $sku )
     {
         $this->id = (int)$id;
         $this->width = (float)$width;
@@ -83,6 +90,7 @@ class DDeliveryProduct
         $this->price = (float)$price;
         $this->quantity = (int)$quantity;
         $this->name = $name;
+        $this->sku = $sku;
     }
     
    
@@ -90,64 +98,64 @@ class DDeliveryProduct
     /**
      * @return int
      */
-    public function getId()
-    {
+    public function getId(){
     	return $this->id;
     }
 
     /**
      * @return string
      */
-    public function getName()
-    {
+    public function getName(){
     	return $this->name;
     }
 
     /**
      * @return float
      */
-    public function getWidth()
-    {
+    public function getWidth(){
     	return $this->width;
     }
 
     /**
      * @return float
      */
-    public function getHeight()
-    {
+    public function getHeight(){
     	return $this->height;
     }
 
     /**
      * @return float
      */
-    public function getLength()
-    {
+    public function getLength(){
     	return $this->length;
     }
 
     /**
      * @return float
      */
-    public function getWeight()
-    {
+    public function getWeight(){
     	return $this->weigth;
     }
 
     /**
      * @return float
      */
-    public function getPrice()
-    {
+    public function getPrice(){
     	return $this->price;
+    }
+
+
+    /**
+     * @return float
+     */
+    public function getSku(){
+        return $this->sku;
     }
 
     /**
      * @return int
      */
-    public function getQuantity()
-    {
+    public function getQuantity(){
     	return $this->quantity;
     }
 

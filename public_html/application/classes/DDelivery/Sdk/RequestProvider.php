@@ -41,14 +41,21 @@ class RequestProvider
 	 * @var resource[]
 	 */
 	private $curl = array();
+
+    const SERVER_STAGE = 'stage';
+    const SERVER_CABINET = 'cabinet';
+
+    const SERVER_STAGENODE = 'stagenode';
+    const SERVER_CABINETNODE = 'cabinetnode';
+
 	/**
 	 * url до сервера
 	 * @var string
 	 */
-	private $serverUrl = array('stage' => 'http://stage.ddelivery.ru/api/v1/',
-	                           'cabinet' => 'http://cabinet.ddelivery.ru/api/v1/',
-	                           'stagenode' => 'http://stage.ddelivery.ru/daemon/daemon.js',
-			                   'cabinetnode' => 'http://cabinet.ddelivery.ru/daemon/daemon.js'
+	private $serverUrl = array( self::SERVER_STAGE => 'http://syevseyev.dev.ddelivery.ru/api/v1/',
+                                self::SERVER_CABINET => 'http://cabinet.ddelivery.ru/api/v1/',
+                                self::SERVER_STAGENODE => 'http://syevseyev.dev.ddelivery.ru/daemon/daemon.js',
+                                self::SERVER_CABINETNODE => 'http://cabinet.ddelivery.ru/daemon/daemon.js'
 	                           );
 	/**
 	 * Количество проделанных запросов на сервер ddelivery
@@ -161,13 +168,13 @@ class RequestProvider
 	 * @param string $urlSuffix
 	 */
 	private function _setSpecificOptionsToRequest($method, $action, $server, $urlSuffix){
-		if( $method == 'get' && ($server == 'cabinet' || $server == 'stage') ){
+		if( $method == 'get' && ($server == self::SERVER_CABINET || $server ==  self::SERVER_STAGE) ){
 			$url = $this->serverUrl[$server] . urlencode($this->apiKey) .'/' . urlencode($action) . '.json?';
 			$url .= $urlSuffix;
 
 			curl_setopt($this->curl[$server], CURLOPT_URL, $url);
 		}
-		else if( $method == 'get' && ( $server == 'cabinetnode' || $server == 'stagenode')  ){
+		else if( $method == 'get' && ( $server == self::SERVER_CABINETNODE || $server == self::SERVER_STAGENODE)  ){
 			
 			$url = $this->serverUrl[$server] . '?';
 			$url .= $urlSuffix;
@@ -175,10 +182,11 @@ class RequestProvider
 		}
 		else if($method == 'post'){
 			$url = $this->serverUrl[$server] . urlencode($this->apiKey) .'/' . urlencode($action) . '.json';
-			
+
 			curl_setopt($this->curl[$server], CURLOPT_URL, $url);
 			curl_setopt($this->curl[$server], CURLOPT_POST, true);
 			curl_setopt($this->curl[$server], CURLOPT_POSTFIELDS, $urlSuffix);
+            print_r($urlSuffix);
 		}
 	}
     
