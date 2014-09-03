@@ -24,19 +24,26 @@ $shopAdapter = new IntegratorShop();
 $DDeliveryUI = new DDelivery\DDeliveryUI( $shopAdapter );
 $order = $DDeliveryUI->getOrder();
 $order->city = 151184;
-$order->type = 1;
+$order->type = 2;
 $order->firstName = 'Васян';
 $order->secondName = 'xxxx';
 $order->toPhone = '3322322323';
 $order->paymentVariant = 2;
 $order->localStatus = 20;
 $order->shopRefnum = 12;
-$selfCompanyList = $DDeliveryUI->cachedCalculateSelfPrices( $order   );
+$selfCompanyList = $DDeliveryUI->cachedCalculateCourierPrices( $order   );
+$order->toStreet = 'xxxx';
+$order->toEmail = 'sssss@sssss.ry';
+$order->toHouse = 'xxxx';
+$order->toFlat = 'xxxx';
 
 $order->setPoint($selfCompanyList[0]);
 $order->pointID = 2716;
+// print_r($selfCompanyList[0]['delivery_company']);
+$order->companyId = $selfCompanyList[0]['delivery_company'];
 //print_r($selfCompanyList[0]);
 echo $DDeliveryUI->sendOrderToDD($order);
+
 //print_r( $order->getJsonOrder() );
 //print_r($selfCompanyList[0]);
 /*

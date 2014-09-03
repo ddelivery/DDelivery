@@ -346,7 +346,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * @return array
      */
     public function getCourierPaymentVariants( $order ){
-        return array();
+        return array(2);
     }
 
     /**

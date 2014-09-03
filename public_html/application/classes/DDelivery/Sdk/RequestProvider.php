@@ -186,7 +186,6 @@ class RequestProvider
 			curl_setopt($this->curl[$server], CURLOPT_URL, $url);
 			curl_setopt($this->curl[$server], CURLOPT_POST, true);
 			curl_setopt($this->curl[$server], CURLOPT_POSTFIELDS, $urlSuffix);
-            print_r($urlSuffix);
 		}
 	}
     
