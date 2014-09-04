@@ -561,8 +561,8 @@ use DDelivery\Sdk\Messager;
          *
          * @return int
          */
-        public function saveFullOrder( DDeliveryOrder $order )
-        {
+        public function saveFullOrder( DDeliveryOrder $order ){
+            file_put_contents('ozk.text', '1', FILE_APPEND);
             $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
             $id = $orderDB->saveFullOrder( $order );
             return $id;
@@ -1193,15 +1193,35 @@ use DDelivery\Sdk\Messager;
          */
         public function render($request)
         {
+            if(isset($request['iframe'])) {
+                $staticURL = $this->shop->getStaticPath();
+                $styleUrl = $this->shop->getStaticPath() . 'tems/' . $this->shop->getTemplate() . '/';
+                $scriptURL = $this->shop->getPhpScriptURL();
+                $version = DShopAdapter::SDK_VERSION;
+                include(__DIR__ . '/../../templates/iframe.php');
+                return;
+            }
+
+            if( isset($request['dd_plugin']) ){
+                $this->renderPlugin($request);
+                return;
+            }
+
             if(!empty($request['order_id'])) {
                 $orders =  $this->initOrder( $request['order_id'] );
                 $this->order = $orders;
             }
+
+            if( !$this->order->localId ){
+                $this->order->localId = $this->saveFullOrder($this->order);
+            }
+
             if(!empty($request['city_alias'])) {
                 $this->order->cityName = strip_tags( $request['city_alias'] );
             }
             if(isset($request['action'])) {
                 switch($request['action']) {
+
                     case 'searchCity':
                     case 'searchCityMap':
                         if(isset($request['name']) && mb_strlen($request['name']) >= 3){
@@ -1275,15 +1295,6 @@ use DDelivery\Sdk\Messager;
                         }
                         return;
                 }
-            }
-
-            if(isset($request['iframe'])) {
-                $staticURL = $this->shop->getStaticPath();
-                $styleUrl = $this->shop->getStaticPath() . 'tems/' . $this->shop->getTemplate() . '/';
-                $scriptURL = $this->shop->getPhpScriptURL();
-                $version = DShopAdapter::SDK_VERSION;
-                include(__DIR__ . '/../../templates/iframe.php');
-                return;
             }
 
             if(!empty($request['city_id'])) {
@@ -1402,15 +1413,18 @@ use DDelivery\Sdk\Messager;
                     }
                 }
             }
-            $this->order->localId = $this->saveFullOrder($this->order);
+
             switch($request['action']) {
                 case 'map':
+                    $this->order->type = DDeliverySDK::TYPE_SELF;
                     echo $this->renderMap();
                     break;
                 case 'mapDataOnly':
+                    $this->order->type = DDeliverySDK::TYPE_SELF;
                     echo $this->renderMap(true);
                     break;
                 case 'courier':
+                    $this->order->type = DDeliverySDK::TYPE_COURIER;
                     echo $this->renderCourier();
                     break;
                 case 'typeForm':
@@ -1429,8 +1443,50 @@ use DDelivery\Sdk\Messager;
                     throw new DDeliveryException('Not support action');
                     break;
             }
-
+            $this->order->localId = $this->saveFullOrder($this->order);
         }
+
+        /**
+         * Вызывается для использования api методов сервера ddelivery.ru
+         * @param array $request
+         */
+        public function renderPlugin($request){
+            if(isset($request['action'])) {
+                switch($request['action']) {
+                    case 'getCityIp':
+                        $cityList = $this->sdk->getCityByIp( $_SERVER['REMOTE_ADDR'] );
+                        if( count($cityList->response)){
+                            $cityList->response['city'] = Utils::firstWordLiterUppercase( $cityList->response['city'] );
+                            echo json_encode( $cityList->response );
+                        }else{
+                            echo json_encode(array());
+                        }
+                        return;
+                    case 'searchCity2':
+                        if(isset($request['name']) && mb_strlen($request['name']) >= 3){
+                            $cityList = $this->sdk->getAutoCompleteCity($request['name']);
+                            $cityList = $cityList->response;
+                            if( count( $cityList ) ){
+                                foreach($cityList as $key => $city){
+                                    $cityList[$key]['name'] = Utils::firstWordLiterUppercase($city['name']);
+                                }
+                            }
+
+                            echo json_encode(array(
+                                'displayData'=>$cityList,
+                                'request'=>array(
+                                    'name'=>$request['name'],
+                                    'action'=>'searchCity'
+                                )
+                            ));
+
+                        }
+                        return;
+
+                }
+            }
+        }
+
 
         private function renderChange()
         {
@@ -1505,8 +1561,6 @@ use DDelivery\Sdk\Messager;
 
         protected function renderMap($dataOnly = false)
         {
-            $this->getOrder()->type = DDeliverySDK::TYPE_SELF;
-            $this->saveFullOrder($this->getOrder());
             $cityId = $this->order->city;
             $staticURL = $this->shop->getStaticPath();
             $styleUrl = $this->shop->getStaticPath() . 'tems/' . $this->shop->getTemplate() . '/';
@@ -1594,7 +1648,6 @@ use DDelivery\Sdk\Messager;
                 }
 
             }
-            $this->saveFullOrder($this->order);
             return $data;
         }
 
@@ -1635,8 +1688,6 @@ use DDelivery\Sdk\Messager;
          */
         protected function renderCourier()
         {
-            $this->getOrder()->type = DDeliverySDK::TYPE_COURIER;
-            //$this->saveFullOrder($this->getOrder());
             $cityId = $this->order->city;
             $cityList = $this->getCityByDisplay($cityId);
             $companies = $this->getCompanySubInfo();
@@ -1664,6 +1715,7 @@ use DDelivery\Sdk\Messager;
             if(!$point){
                 return '';
             }
+
             $displayCityName = $this->order->cityName;
             $type = $this->getOrder()->type;
             if($this->getOrder()->type == DDeliverySDK::TYPE_COURIER) {
