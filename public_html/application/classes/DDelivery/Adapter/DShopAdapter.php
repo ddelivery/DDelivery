@@ -579,7 +579,7 @@ abstract class DShopAdapter
      * @param DDeliveryOrder $order
      * @return bool
      */
-    abstract public function onFinishChange(  $order);
+    abstract public function onFinishChange( $order );
 
     /**
      * Обработка цены перед отдачей в методе getClientPrice
