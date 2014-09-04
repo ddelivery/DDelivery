@@ -52,9 +52,9 @@ class RequestProvider
 	 * url до сервера
 	 * @var string
 	 */
-	private $serverUrl = array( self::SERVER_STAGE => 'http://syevseyev.dev.ddelivery.ru/api/v1/',
+	private $serverUrl = array( self::SERVER_STAGE => 'http://stage.ddelivery.ru/api/v1/',
                                 self::SERVER_CABINET => 'http://cabinet.ddelivery.ru/api/v1/',
-                                self::SERVER_STAGENODE => 'http://syevseyev.dev.ddelivery.ru/daemon/daemon.js',
+                                self::SERVER_STAGENODE => 'http://stage.ddelivery.ru/daemon/daemon.js',
                                 self::SERVER_CABINETNODE => 'http://cabinet.ddelivery.ru/daemon/daemon.js'
 	                           );
 	/**
