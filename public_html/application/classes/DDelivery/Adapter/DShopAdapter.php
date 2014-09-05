@@ -30,7 +30,7 @@ abstract class DShopAdapter
      */
     const CACHING_TYPE_INDIVIDUAL = 'individual';
 
-    const SDK_VERSION = '2.0';
+    const SDK_VERSION = '2.1';
     /**
      * Имя редактируется
      */
@@ -92,6 +92,16 @@ abstract class DShopAdapter
      * Адресс, квартира обязательное
      */
     const FIELD_REQUIRED_ADDRESS_FLAT = 8192;
+
+    /**
+     * Адресс, квартира редактируется
+     */
+    const FIELD_EDIT_EMAIL = 16384;
+    /**
+     * Адресс, квартира обязательное
+     */
+    const FIELD_REQUIRED_EMAIL = 32768;
+
 
     /**
      * Кеш объекта
@@ -400,7 +410,7 @@ abstract class DShopAdapter
      * @return string|null
      */
     public function getClientPhone() {
-        return null;
+        return '79211234567'; //null;
     }
 
     /**
@@ -548,15 +558,15 @@ abstract class DShopAdapter
      * Если редактируемых полей не будет то пропустим шаг
      * @return int
      */
-    public function getCourierRequiredFields()
-    {
+    public function getCourierRequiredFields(){
+        return 0;
         // ВВести все обязательно, кроме корпуса
         return self::FIELD_EDIT_FIRST_NAME | self::FIELD_REQUIRED_FIRST_NAME
             | self::FIELD_EDIT_PHONE | self::FIELD_REQUIRED_PHONE
             | self::FIELD_EDIT_ADDRESS | self::FIELD_REQUIRED_ADDRESS
             | self::FIELD_EDIT_ADDRESS_HOUSE | self::FIELD_REQUIRED_ADDRESS_HOUSE
             | self::FIELD_EDIT_ADDRESS_HOUSING
-            | self::FIELD_EDIT_ADDRESS_FLAT | self::FIELD_REQUIRED_ADDRESS_FLAT;
+            | self::FIELD_EDIT_ADDRESS_FLAT | self::FIELD_REQUIRED_ADDRESS_FLAT | self::FIELD_EDIT_EMAIL;
     }
 
     /**
@@ -565,11 +575,11 @@ abstract class DShopAdapter
      * Если редактируемых полей не будет то пропустим шаг
      * @return int
      */
-    public function getSelfRequiredFields()
-    {
+    public function getSelfRequiredFields(){
+        return 0;
         // Имя, фамилия, мобилка
         return self::FIELD_EDIT_FIRST_NAME | self::FIELD_REQUIRED_FIRST_NAME
-             | self::FIELD_EDIT_PHONE | self::FIELD_REQUIRED_PHONE;
+             | self::FIELD_EDIT_PHONE | self::FIELD_REQUIRED_PHONE | self::FIELD_EDIT_EMAIL;
     }
 
 
@@ -589,6 +599,8 @@ abstract class DShopAdapter
      * @return mixed
      */
     public function  processClientPrice(  $order, $price ){
+        // Округление
+        $price =  $this->aroundPrice( $price );
         return $price;
     }
 
@@ -601,5 +613,15 @@ abstract class DShopAdapter
      */
     public function onFinishResultReturn( $order, $resultArray ){
         return $resultArray;
+    }
+
+    /**
+     * Нужна ли контактная информация
+     * в конце оформления заказа
+     *
+     * @return bool
+     */
+    public function needContactForm(){
+        return true;
     }
 }

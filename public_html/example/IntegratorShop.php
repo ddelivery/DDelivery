@@ -247,7 +247,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * @return string|null
      */
     public function getClientFirstName() {
-        return null;
+        return 'xxx xxx xxx';
     }
 
     /**
@@ -255,7 +255,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * @return string|null
      */
     public function getClientLastName() {
-        return null;
+        return 'cccccc ccccccc ccccc';
     }
 
     /**
@@ -263,7 +263,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * @return string|null
      */
     public function getClientPhone() {
-        return null;
+        return '79211234567'; ///null;
     }
 
     /**
@@ -364,6 +364,34 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
         return true;
     }
 
+
+    /**
+     * Возвращает бинарную маску обязательных полей для курьера
+     * Если редактирование не включено, но есть обязательность то поле появится
+     * Если редактируемых полей не будет то пропустим шаг
+     * @return int
+     */
+    public function getCourierRequiredFields(){
+        // ВВести все обязательно, кроме корпуса
+        return self::FIELD_EDIT_FIRST_NAME | self::FIELD_REQUIRED_FIRST_NAME
+        | self::FIELD_EDIT_PHONE | self::FIELD_REQUIRED_PHONE
+        | self::FIELD_EDIT_ADDRESS | self::FIELD_REQUIRED_ADDRESS
+        | self::FIELD_EDIT_ADDRESS_HOUSE | self::FIELD_REQUIRED_ADDRESS_HOUSE
+        | self::FIELD_EDIT_ADDRESS_HOUSING
+        | self::FIELD_EDIT_ADDRESS_FLAT | self::FIELD_REQUIRED_ADDRESS_FLAT | self::FIELD_EDIT_EMAIL;
+    }
+
+    /**
+     * Возвращает бинарную маску обязательных полей для пунктов самовывоза
+     * Если редактирование не включено, но есть обязательность то поле появится
+     * Если редактируемых полей не будет то пропустим шаг
+     * @return int
+     */
+    public function getSelfRequiredFields(){
+        // Имя, фамилия, мобилка
+        return self::FIELD_EDIT_FIRST_NAME | self::FIELD_REQUIRED_FIRST_NAME
+        | self::FIELD_EDIT_PHONE | self::FIELD_REQUIRED_PHONE | self::FIELD_EDIT_EMAIL;
+    }
 
 
 }

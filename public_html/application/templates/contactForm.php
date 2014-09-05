@@ -56,6 +56,8 @@ use DDelivery\Adapter\DShopAdapter;
                         </div>
                     </div>
                 <?endif;?>
+
+
                 <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS && !$order->getToStreet() ) ):?>
                     <div class="row clearfix">
                         <div class="row__title">
@@ -92,6 +94,21 @@ use DDelivery\Adapter\DShopAdapter;
                         </div>
                     </div>
                 <?endif;?>
+
+                <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_EMAIL || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_EMAIL ) ):?>
+                    <div class="row clearfix">
+                        <div class="row__title">
+                            <label for="email">E-mail:</label>
+                        </div>
+                        <div class="row__inp">
+                            <input type="text" title="@email.ru" id="email" name="email" value="<?=htmlspecialchars(trim($order->getToEmail()))?>" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_EMAIL):?>req="req"<?endif;?>/>
+                            <div class="error-box email">
+                                <i>&nbsp;</i> Не верный формат email
+                            </div>
+                        </div>
+                    </div>
+                <?endif;?>
+
                 <div class="row clearfix">
                     <div class="row__title">
                         <label for="comment">Комментарий</label>

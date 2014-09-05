@@ -863,8 +863,7 @@ use DDelivery\Sdk\Messager;
             $this->shop->preDisplayPointCalc($price);
             // Ручное редактирование
             $price = $this->shop->processClientPrice( $order, $price );
-            // Округление
-            $price =  $this->shop->aroundPrice( $price );
+
             return $price;
         }
 
@@ -1352,6 +1351,9 @@ use DDelivery\Sdk\Messager;
                 if(!empty($request['contact_form'])) {
                     foreach($request['contact_form'] as $row) {
                         switch($row['name']){
+                            case 'email':
+                                $this->order->toEmail = $row['value'];
+                                break;
                             case 'second_name':
                                 $this->order->secondName = $row['value'];
                                 break;
@@ -1375,7 +1377,7 @@ use DDelivery\Sdk\Messager;
                                 break;
                             case 'comment':
                                 //@todo Комента нет
-                                //$this->order->toHousing = $row['value'];
+                                $this->order->comment = $row['value'];
                                 break;
                         }
                     }
@@ -1434,7 +1436,11 @@ use DDelivery\Sdk\Messager;
                     echo $this->renderDeliveryTypeForm(true);
                     break;
                 case 'contactForm':
-                    echo $this->renderContactForm();
+                    if( $this->shop->needContactForm() ){
+                        echo $this->renderContactForm();
+                    }else{
+                        echo $this->renderChange();
+                    }
                     break;
                 case 'change':
                     echo $this->renderChange();
@@ -1686,8 +1692,7 @@ use DDelivery\Sdk\Messager;
         /**
          * @return string
          */
-        protected function renderCourier()
-        {
+        protected function renderCourier(){
             $cityId = $this->order->city;
             $cityList = $this->getCityByDisplay($cityId);
             $companies = $this->getCompanySubInfo();
@@ -1709,8 +1714,7 @@ use DDelivery\Sdk\Messager;
         /**
          * @return string
          */
-        private function renderContactForm()
-        {
+        private function renderContactForm(){
             $point = $this->getOrder()->getPoint();
             if(!$point){
                 return '';
@@ -1727,10 +1731,6 @@ use DDelivery\Sdk\Messager;
             }else{
                 return '';
             }
-            if($requiredFieldMask == 0){
-                return $this->renderChange();
-            }
-
             $deliveryType = $this->getOrder()->type;
 
             $order = $this->order;
@@ -1764,6 +1764,9 @@ use DDelivery\Sdk\Messager;
                     $order->setToFlat($address[3]);
             }
 
+            if($requiredFieldMask == 0){
+                return $this->renderChange();
+            }
 
             ob_start();
             include(__DIR__.'/../../templates/contactForm.php');

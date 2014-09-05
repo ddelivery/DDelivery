@@ -13,6 +13,11 @@ var ContactForm = (function () {
                 return false;
             });
 
+            function validateEmail(email){
+                var re = /\S+@\S+\.\S+/;
+                return re.test(email);
+            };
+
             $('input', form).on('required', function() {
                 var el = $(this), val;
                 if(el.hasClass('tipped')){
@@ -24,6 +29,11 @@ var ContactForm = (function () {
                     el.closest('.row__inp').addClass('error');
                 }else{
                     el.closest('.row__inp').removeClass('error');
+                }
+                if( el.attr('id') == 'email' && el.val() != '@email.ru' ){
+                    if( !validateEmail( el.val() ) ){
+                        el.closest('.row__inp').addClass('error');
+                    }
                 }
             }).blur(function(){
                 $(this).trigger('required');
