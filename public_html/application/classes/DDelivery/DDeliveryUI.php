@@ -297,7 +297,11 @@ use DDelivery\Sdk\Messager;
         public function getDDOrderStatus( $ddeliveryOrderID )
         {
             $response = $this->sdk->getOrderStatus($ddeliveryOrderID);
-            return $response->response['status'];
+            if( isset($response->response['status']) ){
+                return $response->response['status'];
+            }else{
+                return false;
+            }
         }
 
         /**

@@ -132,6 +132,7 @@ class DDeliverySDK {
     	if( !count ( $response->response ))
     	{
             $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            return array();
             throw new DDeliveryException( $errorMsg );
     	}
     	return $response;
@@ -201,8 +202,7 @@ class DDeliverySDK {
      * @throws \DDelivery\DDeliveryException
      * @return DDeliverySDKResponse
      */
-    public function getSelfDeliveryPoints( $companies, $cities  )
-    {
+    public function getSelfDeliveryPoints( $companies, $cities  ){
     	$params = array(
     			'_action' => 'delivery_points',
     			'cities' => $cities,
@@ -224,8 +224,7 @@ class DDeliverySDK {
      * @throws \DDelivery\DDeliveryException
      * @return DDeliverySDKResponse
      */
-    public function getCityByIp( $ip )
-    {	
+    public function getCityByIp( $ip ){
     	$params = array(
             '_action' => 'geoip',
             'ip' => $ip
