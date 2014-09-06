@@ -1440,11 +1440,7 @@ use DDelivery\Sdk\Messager;
                     echo $this->renderDeliveryTypeForm(true);
                     break;
                 case 'contactForm':
-                    if( $this->shop->needContactForm() ){
-                        echo $this->renderContactForm();
-                    }else{
-                        echo $this->renderChange();
-                    }
+                    echo $this->renderContactForm();
                     break;
                 case 'change':
                     echo $this->renderChange();

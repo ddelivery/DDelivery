@@ -101,7 +101,7 @@ use DDelivery\Adapter\DShopAdapter;
                             <label for="email">E-mail:</label>
                         </div>
                         <div class="row__inp">
-                            <input type="text" title="@email.ru" id="email" name="email" value="<?=htmlspecialchars(trim($order->getToEmail()))?>" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_EMAIL):?>req="req"<?endif;?>/>
+                            <input type="text" title="@email.ru" id="email" name="email" value="<?=htmlspecialchars(trim($order->toEmail))?>" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_EMAIL):?>req="req"<?endif;?>/>
                             <div class="error-box email">
                                 <i>&nbsp;</i> Не верный формат email
                             </div>
