@@ -421,6 +421,9 @@ abstract class DShopAdapter
         return array();
     }
 
+    public function getClientEmail() {
+        return null;
+    }
 
     /**
      * Вызывается перед отображением цены точки самовывоза, можно что-то изменить

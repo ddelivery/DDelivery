@@ -274,6 +274,10 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
         return array('1','2','3','4','5');
     }
 
+    public function getClientEmail(){
+        return 'example@ex.ru';
+    }
+
     /**
      * Верните id города в системе DDelivery
      * @return int

@@ -1768,6 +1768,11 @@ use DDelivery\Sdk\Messager;
                     $order->setToFlat($address[3]);
             }
 
+            $fieldValue = $order->toEmail;
+            if(!$fieldValue){
+                $order->toEmail = $this->shop->getClientEmail();
+            }
+
             if($requiredFieldMask == 0){
                 return $this->renderChange();
             }
