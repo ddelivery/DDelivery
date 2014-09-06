@@ -614,14 +614,4 @@ abstract class DShopAdapter
     public function onFinishResultReturn( $order, $resultArray ){
         return $resultArray;
     }
-
-    /**
-     * Нужна ли контактная информация
-     * в конце оформления заказа
-     *
-     * @return bool
-     */
-    public function needContactForm(){
-        return true;
-    }
 }

@@ -156,8 +156,6 @@ class DDeliverySDK {
      * @param $to_email email  заказа
      * @param $metadata метадвнные заказа
      *
-     *
-     *
      * @throws \DDelivery\DDeliveryException
      *
      * @return DDeliverySDKResponse
