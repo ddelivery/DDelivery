@@ -83,7 +83,7 @@ abstract class PluginFilters extends DShopAdapter
     public function getPaymentPriceCourier($order, $orderPrice)
     {
         $filterByPayment = $this->filterPointByPaymentTypeCourier();
-        if($filterByPayment == $order->paymentVariant) {
+        if($filterByPayment == PluginFilters::PAYMENT_POST_PAYMENT) {
             if( $orderPrice && $order->amount ) {
                 return $order->amount + $orderPrice;
             }
@@ -108,7 +108,7 @@ abstract class PluginFilters extends DShopAdapter
     public function getPaymentPriceSelf( $order, $orderPrice )
     {
         $filterByPayment = $this->filterPointByPaymentTypeSelf();
-        if($filterByPayment == $order->paymentVariant){
+        if($filterByPayment == PluginFilters::PAYMENT_POST_PAYMENT){
             if( $orderPrice && $order->amount ){
                 return $order->amount + $orderPrice;
             }

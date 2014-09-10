@@ -487,7 +487,8 @@ use DDelivery\Sdk\Messager;
             {
                 $errors[] = "Не найден id заказа в CMS";
             }
-            if( !in_array( $order->paymentVariant, $this->shop->getCourierPaymentVariants( $order ) ) ){
+            if( (count($this->shop->getSelfPaymentVariants( $order ))  > 0) &&
+                    !in_array( $order->paymentVariant, $this->shop->getCourierPaymentVariants( $order ) ) ){
                 $errors[] = "Нет попадания в список возможных способов оплаты";
             }
 
@@ -546,7 +547,8 @@ use DDelivery\Sdk\Messager;
                 $errors[] = "Не найден id заказа в CMS";
             }
 
-            if( !in_array( $order->paymentVariant, $this->shop->getSelfPaymentVariants( $order ) ) ){
+            if( (count($this->shop->getSelfPaymentVariants( $order ))  > 0) &&
+                    !in_array( $order->paymentVariant, $this->shop->getSelfPaymentVariants( $order ) ) ){
                 $errors[] = "Нет попадания в список возможных способов оплаты";
             }
 
@@ -1078,7 +1080,7 @@ use DDelivery\Sdk\Messager;
                     $pointsResponse = $this->sdk->getSelfDeliveryPoints('', $order->city );
                     if( count($pointsResponse->response) ){
                         $pointsInfo = $pointsResponse->response;
-                        $this->cache->set($order->city, $pointsInfo, implode(',', $this->shop->filterCompanyPointSelf()) );
+                        $this->cache->set($order->city, $pointsInfo, '' );
                     }else{
                         $pointsInfo = array();
                     }
