@@ -866,7 +866,7 @@ use DDelivery\Sdk\Messager;
                 $price = $companyArray['delivery_price'];
             }
             // интервалы
-            $this->shop->preDisplayPointCalc($price);
+            $price = $this->shop->preDisplayPointCalc($price);
             // Ручное редактирование
             $price = $this->shop->processClientPrice( $order, $price );
 
