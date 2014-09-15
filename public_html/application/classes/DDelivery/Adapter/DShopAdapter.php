@@ -617,4 +617,21 @@ abstract class DShopAdapter
     public function onFinishResultReturn( $order, $resultArray ){
         return $resultArray;
     }
+
+    public function getModuleWidth(){
+        return '1000';
+    }
+
+    public function getModuleHeight(){
+        return '650';
+    }
+
+    public function getMapWidth(){
+        return '1000';
+    }
+
+    public function getMapHeight(){
+        return '560';
+    }
+
 }

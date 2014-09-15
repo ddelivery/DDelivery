@@ -20,6 +20,16 @@
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.contact_form.js?<?=$version?>"></script>
     <script type="text/javascript" src="<?=$staticURL?>js/ddelivery.type_form.js?<?=$version?>"></script>
     <script src="//api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU" async="async" type="text/javascript"></script>
+    <style type="text/css">
+        .map-popup{
+            width: <?=$this->shop->getModuleWidth();?>px;
+            height: <?=$this->shop->getModuleHeight();?>px;
+        }
+        .map-canvas{
+            width: <?=$this->shop->getMapWidth();?>px;
+            height: <?=$this->shop->getMapHeight();?>px
+        }
+    </style>
     <div id="ddelivery"></div>
     <div id="ddelivery_loader">
         <div class="map-popup">

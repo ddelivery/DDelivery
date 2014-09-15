@@ -2,7 +2,6 @@
 /**
  * @var \DDelivery\DDeliveryUI $this
  * @var array[] $cityList
- * @var DDelivery\Point\DDeliveryPointSelf[] $selfCompanyList
  */
 
 ?>
@@ -53,7 +52,7 @@
     <div class="map-popup__main">
         <div class="map-popup__main__overlay">&nbsp;</div>
         <div class="map">
-            <div class="map-canvas" style="width: 1000px; height: 568px"></div>
+            <div class="map-canvas"></div>
             <div class="map__search clearfix">
                 <input type="text" placeholder="Адрес или объект"/>
                 <input type="submit" value="ПОИСК"/>

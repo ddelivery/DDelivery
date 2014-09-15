@@ -100,7 +100,8 @@ sprites locations are 0 -56px/-20px -56px/-40px -56px/-60px -56px (light) and -8
 
 .mCSB_scrollTools .mCSB_buttonUp:active, .mCSB_scrollTools .mCSB_buttonDown:active, .mCSB_scrollTools .mCSB_buttonLeft:active, .mCSB_scrollTools .mCSB_buttonRight:active { opacity: 0.9; filter: "alpha(opacity=90)"; -ms-filter: "alpha(opacity=90)"; /* old ie */ }
 
-.map-popup { width: 1000px; height: 650px; overflow: hidden; }
+/*.map-popup { width: 1000px; height: 650px; overflow: hidden; }*/
+
 .map-popup .icon-rub { display: inline-block; background: url('../img/icons-sdcb5931be9.png') 0 -450px no-repeat; width: 9px; height: 13px; text-indent: 100%; white-space: nowrap; overflow: hidden; }
 .map-popup .map-popup__head { height: 60px; padding-top: 25px; background: url(../img/head-bg.png) repeat 0 0 transparent; padding-left: 30px; position: relative; z-index: 100; }
 .map-popup .map-popup__head > p { font-size: 24px; line-height: 26px; color: #fff; line-height: 36px; padding-right: 25px; float: left; }
