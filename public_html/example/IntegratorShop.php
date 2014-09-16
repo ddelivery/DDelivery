@@ -67,10 +67,10 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
     public function getDbConfig(){
 
 
-        return array(
+        /*return array(
             'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', 'root', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
             'prefix' => '',
-        );
+        );*/
 
         return array(
             'type' => self::DB_SQLITE,
@@ -276,11 +276,17 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
 
     /**
      * Верните id города в системе DDelivery
-     * @return int
+     * @return array
      */
-    public function getClientCityId(){
+    public function getClientCity(){
+        /*
+        $cityRes = $ddeliveryUI->sdk->getAutoCompleteCity('Псков');
+        if($cityRes && !empty($cityRes->response)) {
+            return $cityRes->response[0];
+        }*/
+
         // Если нет информации о городе, оставьте вызов родительского метода.
-        return parent::getClientCityId();
+        return parent::getClientCity();
     }
 
     /**
@@ -363,6 +369,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
     public function isConfirmedStatus( $localStatus ){
         return true;
     }
+
+
 
 
 
