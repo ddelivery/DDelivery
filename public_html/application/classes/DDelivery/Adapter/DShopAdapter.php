@@ -30,7 +30,7 @@ abstract class DShopAdapter
      */
     const CACHING_TYPE_INDIVIDUAL = 'individual';
 
-    const SDK_VERSION = '2.1.2';
+    const SDK_VERSION = '2.1.3';
     /**
      * Имя редактируется
      */

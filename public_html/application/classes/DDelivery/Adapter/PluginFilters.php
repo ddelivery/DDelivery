@@ -186,17 +186,16 @@ abstract class PluginFilters extends DShopAdapter
      * @param $price
      * @return bool|int
      */
-    public function preDisplayPointCalc($price)
-    {
+    public function preDisplayPointCalc($price, $orderSum){
         $intervals = $this->getIntervalsByPoint();
 
         $priceReturn = $price;
 
         foreach($intervals as $interval){
-            if (!isset($interval['min']) || $price < $interval['min'])
+            if (!isset($interval['min']) || $orderSum < $interval['min'])
                 continue;
 
-            if(!empty($interval['max']) && $price >= $interval['max'])
+            if(!empty($interval['max']) && $orderSum >= $interval['max'])
                 continue;
 
 
