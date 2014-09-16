@@ -26,8 +26,8 @@
             height: <?=$this->shop->getModuleHeight();?>px;
         }
         .map-canvas{
-            width: <?=$this->shop->getMapWidth();?>px;
-            height: <?=$this->shop->getMapHeight();?>px
+            width: <?=$this->shop->getModuleWidth();?>px;
+            height: <?=((int)$this->shop->getModuleHeight() - 90);?>px
         }
     </style>
     <div id="ddelivery"></div>

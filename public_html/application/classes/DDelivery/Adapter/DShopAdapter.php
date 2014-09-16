@@ -618,20 +618,22 @@ abstract class DShopAdapter
         return $resultArray;
     }
 
+    /**
+     * Ширина модуля
+     * @return string
+     */
     public function getModuleWidth(){
         return '1000';
     }
 
+    /**
+     * Высота модуля
+     * @return string
+     */
     public function getModuleHeight(){
         return '650';
     }
 
-    public function getMapWidth(){
-        return '1000';
-    }
 
-    public function getMapHeight(){
-        return '560';
-    }
 
 }
