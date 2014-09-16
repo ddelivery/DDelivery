@@ -599,9 +599,12 @@ abstract class DShopAdapter
      *
      * @param DDeliveryOrder $order
      * @param $price
+     * @param $orderType
+     * @param $companyArray
+     *
      * @return mixed
      */
-    public function  processClientPrice(  $order, $price ){
+    public function  processClientPrice(  $order, $price, $orderType, $companyArray  ){
         // Округление
         $price =  $this->aroundPrice( $price );
         return $price;

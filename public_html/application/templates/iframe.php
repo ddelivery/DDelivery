@@ -29,6 +29,9 @@
             width: <?=$this->shop->getModuleWidth();?>px;
             height: <?=((int)$this->shop->getModuleHeight() - 90);?>px
         }
+        .map-popup .map-popup__main{
+            height: <?=((int)$this->shop->getModuleHeight() - 90);?>px
+        }
     </style>
     <div id="ddelivery"></div>
     <div id="ddelivery_loader">
