@@ -499,14 +499,14 @@ abstract class DShopAdapter
     }
 
     /**
-     * Верните id города в системе DDelivery
-     * @return int
+     * Верните объект города в системе DDelivery
+     * @return array|false
      */
-    public function getClientCityId() {
-        if(isset($_COOKIE['ddCityId'])){
+    public function getClientCity() {
+        /*if(isset($_COOKIE['ddCityId'])){
             return $_COOKIE['ddCityId'];
-        }
-        return 0;
+        }*/
+        return false;
     }
 
 

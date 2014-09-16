@@ -42,7 +42,7 @@ class DDeliverySDKResponse {
             return;
         }
         $jsonData = json_decode($jsonRaw, true);
-        
+
         if(!$jsonData || !is_array($jsonData)) {
             $this->success = false;
             $this->errorMessage = 'Unknown error';
