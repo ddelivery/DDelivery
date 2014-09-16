@@ -184,6 +184,7 @@ abstract class PluginFilters extends DShopAdapter
 
     /**
      * @param $price
+     * @param $orderSum
      * @return bool|int
      */
     public function preDisplayPointCalc($price, $orderSum){

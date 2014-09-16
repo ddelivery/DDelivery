@@ -823,6 +823,7 @@ use DDelivery\Sdk\Messager;
                 $cityRaw = $this->getCityByIp($_SERVER['REMOTE_ADDR']);
                 if($cityRaw && $cityRaw['city_id']) {
                     $cityId = (int)$cityRaw['city_id'];
+                    $this->order->cityName = Utils::firstWordLiterUppercase($cityRaw['city']);
                 }
                 if(!$cityId) {
                     $topCityId = $this->sdk->getTopCityId();
