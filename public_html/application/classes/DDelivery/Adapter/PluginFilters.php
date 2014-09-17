@@ -82,7 +82,7 @@ abstract class PluginFilters extends DShopAdapter
      */
     public function getPaymentPriceCourier($order, $orderPrice)
     {
-        $filterByPayment = $this->filterPointByPaymentTypeCourier();
+        $filterByPayment = $this->filterPointByPaymentTypeCourier( $order );
         if($filterByPayment == PluginFilters::PAYMENT_POST_PAYMENT) {
             if( $orderPrice && $order->amount ) {
                 return $order->amount + $orderPrice;
@@ -107,7 +107,7 @@ abstract class PluginFilters extends DShopAdapter
      */
     public function getPaymentPriceSelf( $order, $orderPrice )
     {
-        $filterByPayment = $this->filterPointByPaymentTypeSelf();
+        $filterByPayment = $this->filterPointByPaymentTypeSelf( $order );
         if($filterByPayment == PluginFilters::PAYMENT_POST_PAYMENT){
             if( $orderPrice && $order->amount ){
                 return $order->amount + $orderPrice;
@@ -249,15 +249,17 @@ abstract class PluginFilters extends DShopAdapter
 
     /**
      * Возвращаем способ оплаты константой PluginFilters::PAYMENT_, предоплата или оплата на месте. Курьер
+     * @param $order DDeliveryOrder
      * @return int
      */
-    abstract public function filterPointByPaymentTypeCourier();
+    abstract public function filterPointByPaymentTypeCourier( $order );
 
     /**
      * Возвращаем способ оплаты константой PluginFilters::PAYMENT_, предоплата или оплата на месте. Самовывоз
+     * @param $order DDeliveryOrder
      * @return int
      */
-    abstract public function filterPointByPaymentTypeSelf();
+    abstract public function filterPointByPaymentTypeSelf( $order );
 
 
     /**

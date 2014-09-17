@@ -182,9 +182,11 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * либо константа \DDelivery\Adapter\PluginFilters::PAYMENT_PREPAYMENT - если способ облаты - предоплата,
      * либо константа \DDelivery\Adapter\PluginFilters::PAYMENT_POST_PAYMENT -  если способ оплаты оплата при получении
      *
+     * @param $order DDeliveryOrder
+     *
      * @return int
      */
-    public function filterPointByPaymentTypeCourier(){
+    public function filterPointByPaymentTypeCourier( $order ){
         return \DDelivery\Adapter\PluginFilters::PAYMENT_PREPAYMENT;
     }
 
@@ -194,9 +196,11 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * либо константа \DDelivery\Adapter\PluginFilters::PAYMENT_PREPAYMENT - если способ облаты - предоплата,
      * либо константа \DDelivery\Adapter\PluginFilters::PAYMENT_POST_PAYMENT -  если способ оплаты оплата при получении
      *
+     * @param $order DDeliveryOrder
+     *
      * @return int
      */
-    public function filterPointByPaymentTypeSelf(){
+    public function filterPointByPaymentTypeSelf( $order ){
         return \DDelivery\Adapter\PluginFilters::PAYMENT_POST_PAYMENT;
     }
 
