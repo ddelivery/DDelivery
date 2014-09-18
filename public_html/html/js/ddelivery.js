@@ -1,4 +1,4 @@
-if(typeof(DDelivery) == 'undefined')
+    if(typeof(DDelivery) == 'undefined')
 var DDelivery = {
     delivery: function (objectId, componentUrl, params, callbacks) {
         var iframe = document.createElement('iframe');
