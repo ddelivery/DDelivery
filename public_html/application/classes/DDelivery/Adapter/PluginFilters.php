@@ -67,6 +67,38 @@ abstract class PluginFilters extends DShopAdapter
      */
     const AROUND_CEIL = 3;
 
+
+    /**
+     *
+     * Залоггировать ошибку
+     *
+     * @param \Exception $e
+     * @return mixed
+     */
+    public function logMessage( \Exception $e ){
+        $logginUrl = $this->getLogginServer();
+        if( !is_null( $logginUrl ) ){
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($curl, CURLOPT_HEADER, 0);
+            curl_setopt($curl, CURLOPT_URL, $logginUrl);
+            curl_setopt($curl, CURLOPT_POST, true);
+            $params = array('message' => $e->getMessage() . ', версия SDK -' . DShopAdapter::SDK_VERSION . ', '
+                . $e->getFile() . ', '
+                . $e->getLine() . ', ' . date("Y-m-d H:i:s"), 'url' => $_SERVER['SERVER_NAME'],
+                'apikey' => $this->getApiKey(),
+                'testmode' => (int)$this->isTestMode());
+            $urlSuffix = '';
+            foreach($params as $key => $value) {
+                $urlSuffix .= urlencode($key).'='.urlencode($value) . '&';
+            }
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $urlSuffix);
+            $answer = curl_exec($curl);
+            curl_close($curl);
+            return $answer;
+        }
+    }
+
     /**
      *
      * Сумма к оплате на точке или курьеру
@@ -91,6 +123,7 @@ abstract class PluginFilters extends DShopAdapter
         }
         return 0;
     }
+
 
 
     /**

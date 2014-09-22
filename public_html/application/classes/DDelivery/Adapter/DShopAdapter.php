@@ -162,6 +162,16 @@ abstract class DShopAdapter
 
     /**
      *
+     * Залоггировать ошибку
+     *
+     * @param \Exception $e
+     * @return mixed
+     */
+    abstract public function  logMessage( \Exception $e );
+
+
+    /**
+     *
      * Тип кеширования, для централизированого подхода и для индивидуального решения
      * разные
      *

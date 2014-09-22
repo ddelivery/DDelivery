@@ -109,28 +109,9 @@ use DDelivery\Sdk\Messager;
          * @return mixed
          */
         public function logMessage( \Exception $e ){
-            $logginUrl = $this->shop->getLogginServer();
-            if( !is_null( $logginUrl ) ){
-                $curl = curl_init();
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-                curl_setopt($curl, CURLOPT_HEADER, 0);
-                curl_setopt($curl, CURLOPT_URL, $logginUrl);
-                curl_setopt($curl, CURLOPT_POST, true);
-                $params = array('message' => $e->getMessage() . ', версия SDK -' . DShopAdapter::SDK_VERSION . ', '
-                                . $e->getFile() . ', '
-                                . $e->getLine() . ', ' . date("Y-m-d H:i:s"), 'url' => $_SERVER['SERVER_NAME'],
-                                'apikey' => $this->shop->getApiKey(),
-                                'testmode' => (int)$this->shop->isTestMode());
-                $urlSuffix = '';
-                foreach($params as $key => $value) {
-                    $urlSuffix .= urlencode($key).'='.urlencode($value) . '&';
-                }
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $urlSuffix);
-                $answer = curl_exec($curl);
-                curl_close($curl);
-                return $answer;
-            }
+            $this->shop->logMessage($e);
         }
+
         public function createTables()
         {
             $cache = new DataBase\Cache($this->pdo, $this->pdoTablePrefix);
