@@ -68,6 +68,9 @@ abstract class PluginFilters extends DShopAdapter
     const AROUND_CEIL = 3;
 
 
+    public  function  getErrorMsg( \Exception $e, $extraParams = array() ){
+        return $e->getMessage();
+    }
     /**
      *
      * Залоггировать ошибку
@@ -83,7 +86,10 @@ abstract class PluginFilters extends DShopAdapter
             curl_setopt($curl, CURLOPT_HEADER, 0);
             curl_setopt($curl, CURLOPT_URL, $logginUrl);
             curl_setopt($curl, CURLOPT_POST, true);
-            $params = array('message' => $e->getMessage() . ', версия SDK -' . DShopAdapter::SDK_VERSION . ', '
+
+            $message = $this->getErrorMsg($e);
+
+            $params = array('message' => $message . ', версия SDK -' . DShopAdapter::SDK_VERSION . ', '
                 . $e->getFile() . ', '
                 . $e->getLine() . ', ' . date("Y-m-d H:i:s"), 'url' => $_SERVER['SERVER_NAME'],
                 'apikey' => $this->getApiKey(),

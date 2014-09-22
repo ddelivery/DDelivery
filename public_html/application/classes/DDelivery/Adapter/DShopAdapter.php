@@ -162,6 +162,15 @@ abstract class DShopAdapter
 
     /**
      *
+     * Формируем сообщение для логов
+     *
+     * @param \Exception $e
+     * @param array $extraParams
+     * @return mixed
+     */
+    abstract public function  getErrorMsg( \Exception $e, $extraParams = array() );
+    /**
+     *
      * Залоггировать ошибку
      *
      * @param \Exception $e

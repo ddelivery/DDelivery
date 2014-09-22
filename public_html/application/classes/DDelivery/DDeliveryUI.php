@@ -1460,23 +1460,39 @@ use DDelivery\Sdk\Messager;
                         if(isset($request['name']) && mb_strlen($request['name']) >= 3){
                             $cityList = $this->sdk->getAutoCompleteCity($request['name']);
                             $cityList = $cityList->response;
+                            $resultCity = array();
                             if( count( $cityList ) ){
                                 foreach($cityList as $key => $city){
-                                    $cityList[$key]['name'] = Utils::firstWordLiterUppercase($city['name']);
+                                    $resultCity[$key]['label'] = Utils::firstWordLiterUppercase($city['name']);
+                                    if($cityList[$key]['region'] != $cityList[$key]['label']) {
+                                        $resultCity[$key]['label'] .= ', '.$cityList[$key]['region'].' обл.';
+                                    }
+                                    $resultCity[$key]['id'] = $city['_id'];
                                 }
                             }
 
-                            echo json_encode(array(
-                                'displayData'=>$cityList,
-                                'request'=>array(
-                                    'name'=>$request['name'],
-                                    'action'=>'searchCity'
-                                )
-                            ));
+                            echo json_encode($resultCity);
 
                         }
                         return;
+                    case 'getCompanies':
+                        //$ddcalc_from = $request['ddcalc_from'];
+                        $dd_to = $request['ddcalc_to'];
+                        $dd_payment = $request['ddcalc_payment'];
+                        $dd_weight = $request['ddcalc_weight'];
+                        $dd_width = $request['ddcalc_width'];
+                        $dd_height = $request['ddcalc_height'];
+                        $dd_length = $request['ddcalc_length'];
 
+                        $pickup = $this->sdk->calculatorPickupForCity( $dd_to, $dd_width, $dd_height, $dd_length, $dd_weight, $dd_payment );
+                        $courier = $this->sdk->calculatorCourier( $dd_to, $dd_width, $dd_height, $dd_length, $dd_weight, $dd_payment );
+                        echo json_encode(
+                            array(
+                                'pickup' => $pickup->response,
+                                'courier' => $courier->response
+                            )
+                        );
+                        return;
                 }
             }
         }
