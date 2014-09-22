@@ -1476,7 +1476,6 @@ use DDelivery\Sdk\Messager;
                         }
                         return;
                     case 'getCompanies':
-                        //$ddcalc_from = $request['ddcalc_from'];
                         $dd_to = $request['ddcalc_to'];
                         $dd_payment = $request['ddcalc_payment'];
                         $dd_weight = $request['ddcalc_weight'];
@@ -1502,10 +1501,15 @@ use DDelivery\Sdk\Messager;
         {
             $comment = '';
             $point = $this->order->getPoint();
+
             if( $this->order->type == DDeliverySDK::TYPE_SELF ){
-                $comment = 'Самовывоз, ' . $this->order->cityName . ' ' . $point['address'];
+                $comment = 'Самовывоз, ' . $this->order->cityName . ' ' . $point['address'] .
+                            (', ' . $point['delivery_company_name']) .
+                            (', ' . $point['name'] . ', ID точки - ' . $point['_id'] ) .
+                            (', ' . (($point['type'] == 1)?'Авто':'Ручной'));
             }else if( $this->order->type == DDeliverySDK::TYPE_COURIER ){
-                $comment = 'Доставка курьером по адресу '.$this->order->getFullAddress();
+                $comment = 'Доставка курьером по адресу '.$this->order->getFullAddress().
+                            (', ' . $point['delivery_company_name']) ;
             }
 
             $this->shop->onFinishChange( $this->order );
