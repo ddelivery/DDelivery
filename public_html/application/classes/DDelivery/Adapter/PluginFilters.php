@@ -76,9 +76,11 @@ abstract class PluginFilters extends DShopAdapter
      * Залоггировать ошибку
      *
      * @param \Exception $e
+     * @param array $extraParams
+     *
      * @return mixed
      */
-    public function logMessage( \Exception $e ){
+    public function logMessage( \Exception $e, $extraParams = array() ){
         $logginUrl = $this->getLogginServer();
         if( !is_null( $logginUrl ) ){
             $curl = curl_init();
@@ -87,7 +89,7 @@ abstract class PluginFilters extends DShopAdapter
             curl_setopt($curl, CURLOPT_URL, $logginUrl);
             curl_setopt($curl, CURLOPT_POST, true);
 
-            $message = $this->getErrorMsg($e);
+            $message = $this->getErrorMsg($e, $extraParams);
 
             $params = array('message' => $message . ', версия SDK -' . DShopAdapter::SDK_VERSION . ', '
                 . $e->getFile() . ', '

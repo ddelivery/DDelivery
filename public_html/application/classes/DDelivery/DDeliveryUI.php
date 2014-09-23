@@ -1506,7 +1506,7 @@ use DDelivery\Sdk\Messager;
                 $comment = 'Самовывоз, ' . $this->order->cityName . ' ' . $point['address'] .
                             (', ' . $point['delivery_company_name']) .
                             (', ' . $point['name'] . ', ID точки - ' . $point['_id'] ) .
-                            (', ' . (($point['type'] == 1)?'Авто':'Ручной'));
+                            (', ' . (($point['type'] == 1)?'Постомат':'ПВЗ'));
             }else if( $this->order->type == DDeliverySDK::TYPE_COURIER ){
                 $comment = 'Доставка курьером по адресу '.$this->order->getFullAddress().
                             (', ' . $point['delivery_company_name']) ;
