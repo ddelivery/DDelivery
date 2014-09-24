@@ -224,6 +224,23 @@ abstract class PluginFilters extends DShopAdapter
     }
 
     /**
+     *
+     * Есть ли необходимость отправлять заказ на сервер ddelivery
+     *
+     * @param \DDelivery\Order\DDeliveryOrder $order
+     *
+     * @return bool
+     *
+     */
+    public function sendOrderToDDeliveryServer( $order ){
+        $point = $order->getPoint();
+        if( array_key_exists( $point['delivery_company'], $this->customCourierCompanies ) || array_key_exists( $point['delivery_company'], $this->customSelfCompanies )){
+
+            return false;
+        }
+        return true;
+    }
+    /**
      * @param $price
      * @param $orderSum
      * @return bool|int
@@ -326,5 +343,73 @@ abstract class PluginFilters extends DShopAdapter
      */
     public abstract function getCustomPointsString();
 
+
+    /**
+     *
+     * Перед возвратом точек самовывоза фильтровать их по определенным правилам
+     *
+     * @param $companyArray
+     * @param DDeliveryOrder $order
+     * @return mixed
+     */
+    public function finalFilterSelfCompanies( $companyArray, $order ){
+        if( count($this->customSelfCompanies) ){
+            foreach( $this->customSelfCompanies as $key => $item ){
+                if( $item['city'] == $order->city ){
+                    $companyArray[] = $item;
+                }
+            }
+        }
+        return $companyArray;
+    }
+
+    /**
+     *
+     *  Перед возвратом компаний курьерок фильтровать их по определенным правилам
+     *
+     * @param $companyArray
+     * @param DDeliveryOrder $order
+     * @return mixed
+     */
+    public function finalFilterCourierCompanies( $companyArray, $order ){
+        if( count($this->customCourierCompanies) ){
+            foreach( $this->customCourierCompanies as $key => $item ){
+                if( $item['city'] == $order->city ){
+                    $companyArray[] = $item;
+                }
+            }
+        }
+        return $companyArray;
+    }
+
+    /**
+     *
+     * Перед получение списка точек
+     *
+     * @param $resultPoints array
+     * @param $order DDeliveryOrder
+     * @param $resultCompanies array
+     *
+     * @return array
+     */
+    public function prePointListReturn( $resultPoints, $order, $resultCompanies ){
+        if( count( $this->customSelfPoints ) ){
+            foreach( $this->customSelfPoints as $key => $item ){
+
+                if( ($item['city_id'] == $order->city) && isset($item['company_id']) ){
+                        $resultPoints[] = $item;
+                }
+            }
+        }
+        return $resultPoints;
+    }
+
+
+    public function preGoToFindPoints( $order, $pointId = 0 ){
+        if( array_key_exists( $pointId, $this->customSelfPoints ) ){
+            return false;
+        }
+        return true;
+    }
 
 }

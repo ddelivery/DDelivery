@@ -220,6 +220,7 @@ Map = (function () {
                 if (filter.has_fitting_room && !point.has_fitting_room) {
                     return false;
                 }
+
                 if (filter.hideCompany.indexOf(point.company_id) != -1) {
                     return false;
                 }
@@ -229,6 +230,7 @@ Map = (function () {
             for (var pointKey in points) {
                 point = points[pointKey];
                 display = isDisplayPoint(point);
+
                 if (point.display != display) {
                     if (display) { // Скрыта, пказать
                         pointsAdd.push(point.placemark);
@@ -341,10 +343,10 @@ Map = (function () {
                     var check = $(this).hasClass('border');
                     if (check) {
                         $(this).removeClass('border').addClass('hasinfo');
-                        filter.hideCompany.push(parseInt($(this).data('id')));
+                        filter.hideCompany.push($(this).data('id'));
                     } else {
                         $(this).addClass('border').removeClass('hasinfo');
-                        filter.hideCompany.splice(filter.hideCompany.indexOf(parseInt($(this).data('id'))), 1);
+                        filter.hideCompany.splice(filter.hideCompany.indexOf($(this).data('id')), 1);
                     }
                     Map.filterPoints();
                 }

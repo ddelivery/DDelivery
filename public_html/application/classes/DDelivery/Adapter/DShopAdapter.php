@@ -110,7 +110,14 @@ abstract class DShopAdapter
     private $productsFromCart = null;
 
     const DB_MYSQL = 1;
+
     const DB_SQLITE = 2;
+
+    protected  $customCourierCompanies = array();
+
+    protected $customSelfCompanies = array();
+
+    protected $customSelfPoints = array();
 
     /**
      * Сопоставление cтатуса заказов на стороне cms
@@ -214,7 +221,7 @@ abstract class DShopAdapter
      * @param DDeliveryOrder $order
      * @return mixed
      */
-    public function finalFilterSelfCompanies( $companyArray, DDeliveryOrder $order ){
+    public function finalFilterSelfCompanies( $companyArray, $order ){
         return $companyArray;
     }
 
@@ -226,7 +233,7 @@ abstract class DShopAdapter
      * @param DDeliveryOrder $order
      * @return mixed
      */
-    public function finalFilterCourierCompanies( $companyArray, DDeliveryOrder $order ){
+    public function finalFilterCourierCompanies( $companyArray, $order ){
         return $companyArray;
     }
 
@@ -380,7 +387,18 @@ abstract class DShopAdapter
         }
         return $this->productsFromCart;
     }
-    
+
+    /**
+     *
+     * Перед получение списка точек
+     *
+     * @param $resultPoints array
+     * @param $order DDeliveryOrder
+     * @param $resultCompanies array
+     *
+     * @return array
+     */
+    public abstract function prePointListReturn( $resultPoints, $order, $resultCompanies );
     /**
      * Возвращает API ключ, вы можете получить его для Вашего приложения в личном кабинете
      * @return string
@@ -467,10 +485,10 @@ abstract class DShopAdapter
      * Если есть необходимость искать точки на сервере ddelivery
      * 
      * @param \DDelivery\Order\DDeliveryOrder $order
-     * 
+     * @param int $pointId
      * @return boolean
      */
-    public function preGoToFindPoints( $order ){
+    public function preGoToFindPoints( $order , $pointId = 0 ){
         return true;        	
     }
     
@@ -480,7 +498,7 @@ abstract class DShopAdapter
      * 
      * @param \DDelivery\Order\DDeliveryOrder $order
      * 
-     * @return float
+     * @return bool
      */
     public function sendOrderToDDeliveryServer( $order ){
         return true;    	

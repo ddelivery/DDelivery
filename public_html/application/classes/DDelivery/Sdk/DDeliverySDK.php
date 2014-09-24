@@ -354,6 +354,18 @@ class DDeliverySDK {
         return $response;
     }
 
+    public function getCityById( $id ){
+        $params = array(
+            '_action' => 'city',
+            '_id' => $id
+        );
+        $response = $this->requestProvider->request('city', $params, 'get', $this->server . 'node') ;
+        if( !$response->success ){
+            $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            throw new DDeliveryException( $errorMsg );
+        }
+        return $response;
+    }
 
     /**
      * Получить автокомплит для города
@@ -371,8 +383,7 @@ class DDeliverySDK {
     	);
     	$response = $this->requestProvider->request('autocomplete', $params,
     											    'get', $this->server . 'node') ;
-    	if( !$response->success )
-        {
+    	if( !$response->success ){
             $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
             throw new DDeliveryException( $errorMsg );
         }

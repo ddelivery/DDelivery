@@ -193,7 +193,7 @@ use DDelivery\Sdk\Messager;
                     if($order->type == DDeliverySDK::TYPE_SELF){
                         return $this->createSelfOrder($order);
                     }elseif( $order->type == DDeliverySDK::TYPE_COURIER ){
-                        return $this->createCourierOrder($order);
+                            return $this->createCourierOrder($order);
                     }
                 }
             }
@@ -549,7 +549,6 @@ use DDelivery\Sdk\Messager;
          * @return int
          */
         public function saveFullOrder( DDeliveryOrder $order ){
-            file_put_contents('ozk.text', '1', FILE_APPEND);
             $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
             $id = $orderDB->saveFullOrder( $order );
             return $id;
@@ -566,14 +565,15 @@ use DDelivery\Sdk\Messager;
         public function createCourierOrder( $order ){
             /** @var DDeliveryPointCourier $point */
 
-            $order->toPhone = $this->formatPhone( $order->toPhone );
-            $cv = $this->checkOrderCourierValues( $order );
-            if( !$cv )
-                return false;
+            if(! $this->shop->sendOrderToDDeliveryServer($order) ){
+                return 0;
+            } else {
 
-            $ddeliveryOrderID = 0;
+                $order->toPhone = $this->formatPhone( $order->toPhone );
+                $cv = $this->checkOrderCourierValues( $order );
+                if( !$cv )
+                    return 0;
 
-            if( $this->shop->sendOrderToDDeliveryServer($order) ){
                 $point = $order->getPoint();
                 $to_city = $order->city;
                 $delivery_company = $order->companyId;
@@ -600,8 +600,6 @@ use DDelivery\Sdk\Messager;
                 $shop_refnum = $order->shopRefnum;
                 $to_email = $order->toEmail;
                 $metadata = $order->getJsonOrder();
-
-
                 $response = $this->sdk->addCourierOrder( $to_city, $delivery_company, $dimensionSide1, $dimensionSide2,
                                                              $dimensionSide3, $shop_refnum, $confirmed, $weight,
                                                              $to_name, $to_phone, $goods_description, $declaredPrice,
@@ -610,19 +608,18 @@ use DDelivery\Sdk\Messager;
                     throw new DDeliveryException("Ошибка отправки заказа на сервер DDelivery.ru");
                 }
                 $ddeliveryOrderID = $response->response['order'];
-            }
-            $order->ddeliveryID = $ddeliveryOrderID;
-            if( $confirmed )
-            {
-                $order->ddStatus = DDStatusProvider::ORDER_CONFIRMED;
-            }
-            else
-            {
-                $order->ddStatus = DDStatusProvider::ORDER_IN_PROGRESS;
-            }
-            $this->saveFullOrder( $order );
 
-            return $ddeliveryOrderID;
+                $order->ddeliveryID = $ddeliveryOrderID;
+                if( $confirmed ){
+                    $order->ddStatus = DDStatusProvider::ORDER_CONFIRMED;
+                }
+                else{
+                    $order->ddStatus = DDStatusProvider::ORDER_IN_PROGRESS;
+                }
+                $this->saveFullOrder( $order );
+                return $ddeliveryOrderID;
+            }
+
         }
 
 
@@ -633,14 +630,16 @@ use DDelivery\Sdk\Messager;
          * @return int
          */
         public function createSelfOrder( $order ){
-            $order->toPhone = $this->formatPhone( $order->toPhone );
-            $cv = $this->checkOrderSelfValues( $order );
-            if( !$cv )
-                return false;
 
             if(! $this->shop->sendOrderToDDeliveryServer($order) ){
                 return 0;
             } else {
+
+                $order->toPhone = $this->formatPhone( $order->toPhone );
+                $cv = $this->checkOrderSelfValues( $order );
+                if( !$cv )
+                    return 0;
+
                 $point = $order->getPoint();
                 $pointID = $order->pointID;
                 $dimensionSide1 = $order->getDimensionSide1();
@@ -668,17 +667,19 @@ use DDelivery\Sdk\Messager;
                 }
 
                 $ddeliveryOrderID = $response->response['order'];
-            }
-            $order->ddeliveryID = $ddeliveryOrderID;
-            if( $confirmed ){
-                $order->ddStatus = DDStatusProvider::ORDER_CONFIRMED;
-            }
-            else{
-                $order->ddStatus = DDStatusProvider::ORDER_IN_PROGRESS;
+
+                $order->ddeliveryID = $ddeliveryOrderID;
+                if( $confirmed ){
+                    $order->ddStatus = DDStatusProvider::ORDER_CONFIRMED;
+                }
+                else{
+                    $order->ddStatus = DDStatusProvider::ORDER_IN_PROGRESS;
+                }
+                $this->saveFullOrder( $order );
+                return $ddeliveryOrderID;
             }
 
-            $this->saveFullOrder( $order );
-            return $ddeliveryOrderID;
+
         }
         /**
          * Весь список заказов
@@ -803,10 +804,7 @@ use DDelivery\Sdk\Messager;
                 $cityRaw = $this->getCityByIp($_SERVER['REMOTE_ADDR']);
                 if($cityRaw && $cityRaw['city_id']) {
                     $cityId = (int)$cityRaw['city_id'];
-                    if( $cityRaw['city'] != $cityRaw['region']) {
-                        $cityRaw['city'] .= ', '.$cityRaw['region'].' обл.';
-                    }
-                    $this->order->cityName = Utils::firstWordLiterUppercase($cityRaw['city']);
+                    $this->getCityNameByDisplay( $cityRaw );
                 }
                 if(!$cityId) {
                     $topCityId = $this->sdk->getTopCityId();
@@ -814,6 +812,25 @@ use DDelivery\Sdk\Messager;
                 }
             }
             return $cityId;
+        }
+
+
+        /**
+         *  Костыль, на сервере города начинаются с маленькой буквы
+         *
+         * @param $cityData
+         *
+         * @return $cityData
+         */
+        public function getCityNameByDisplay( $cityData ){
+           $cityData['name'] = Utils::firstWordLiterUppercase($cityData['name']);
+           //Собирает строчку с названием города для отображения
+           $displayCityName = $cityData['type'].'. '.$cityData['name'];
+           if($cityData['region'] != $cityData['name']) {
+                $displayCityName .= ', '.$cityData['region'].' обл.';
+           }
+           $cityData['display_name'] = $displayCityName;
+           return $cityData;
         }
 
         /**
@@ -910,7 +927,7 @@ use DDelivery\Sdk\Messager;
         public function calculateSelfPointPrice( DDeliveryOrder $order, $pointId ){
             if ( ( $pointId > 0) && count( $order->getProducts() ) ){
                 $resultPoint = array();
-                if( $this->shop->preGoToFindPoints( $order ) ){
+                if( $this->shop->preGoToFindPoints( $order, $pointId ) ){
                     $declared_price = (int) $this->shop->getDeclaredPrice($order);
                     $params = array(
                         $pointId, $order->dimensionSide1, $order->dimensionSide2,
@@ -922,6 +939,7 @@ use DDelivery\Sdk\Messager;
                 $resultPoint = $this->shop->finalFilterSelfCompanies( $resultPoint, $order );
                 return $resultPoint;
             }
+            return null;
         }
 
         /**
@@ -1039,10 +1057,13 @@ use DDelivery\Sdk\Messager;
         public function getSelfPointsList( DDeliveryOrder $order, $resultCompanies ){
 
             $filterCompany = implode(',', $this->shop->filterCompanyPointSelf() );
+
             $companiesIdsArray = array();
+
             if( count( $resultCompanies ) > 0 ){
                 foreach( $resultCompanies as $item ){
-                    if( ((int) $item['delivery_company']) > 0 ){
+
+                    if( !empty( $item['delivery_company'] ) ){
                         $companiesIdsArray[] = $item['delivery_company'];
                     }
                 }
@@ -1074,15 +1095,17 @@ use DDelivery\Sdk\Messager;
             }
 
             $resultPoints = array();
-            // Фильтруем инфу согласно полученными компаниям в калькуляторе или если инфа про курьерку
+            // Фильтруем инфу согласно полученными компаниям в калькуляторе
             foreach ($pointsInfo as $key => $item){
-                $company_id = (int)$item['company_id'];
+                $company_id = $item['company_id'];
                 if( (!in_array($company_id, $companiesIdsArray))){
                     unset($pointsInfo[$key]);
                 }else{
                     $resultPoints[] = $pointsInfo[$key];
                 }
             }
+
+            $resultPoints = $this->shop->prePointListReturn( $resultPoints, $order, $resultCompanies );
 
             return $resultPoints;
         }
@@ -1144,6 +1167,7 @@ use DDelivery\Sdk\Messager;
                 throw new DDeliveryException("Проблемы с сортироовкой точек при получении информации");
                 return;
             }
+
             return $returnPosition;
         }
 
@@ -1220,7 +1244,7 @@ use DDelivery\Sdk\Messager;
 
                             $cityList = $cityList->response;
                             foreach($cityList as $key => $city){
-                                $cityList[$key]['name'] = Utils::firstWordLiterUppercase($city['name']);
+                                $this->getCityNameByDisplay($cityList[$key]);
                             }
 
                             $cityId = $this->order->city;
@@ -1261,15 +1285,14 @@ use DDelivery\Sdk\Messager;
                             $pointSelf = $this->calculateSelfPointPrice( $this->order, (int)$request['id'] );
                             $pointInfo = $this->getSelfPointsList($this->order, $pointSelf);
 
+
+
                             if(empty($pointSelf) || empty($pointInfo)) {
                                 echo json_encode(array('point'=>array()));
                                 return;
                             }
+
                             $point = $this->findPointIdInArray( $pointInfo, (int)$request['id'] );
-                            if( empty( $pointSelf ) ){
-                                echo json_encode(array('point'=>array()));
-                                return;
-                            }
 
                             echo json_encode(array(
                                 'point'=>array(
@@ -1309,11 +1332,13 @@ use DDelivery\Sdk\Messager;
                         $this->order->setCacheValue('calculateSelfPoint', $sig, $selfCompany);
                     }
                     // Получаем список информации про компании из кеша
+                    /*
                     $pointInfoArray = $this->getSelfPointsList( $this->order, $selfCompany );
                     $point = $this->findPointIdInArray( $pointInfoArray, $this->order->pointID);
                     if( $pointInfoArray[$point]['company_id'] ){
                         $pointArray = array_merge( $selfCompany, $pointInfoArray[$point] );
                     }
+                    */
                     $pointInfoArray = $this->getSelfPointsList( $this->order, $selfCompany );
                     $pointId = $this->findPointIdInArray( $pointInfoArray, $this->order->pointID);
 
@@ -1543,16 +1568,7 @@ use DDelivery\Sdk\Messager;
             }
             $avalibleCities = array();
             foreach($cityList as &$cityData){
-                // Костыль, на сервере города начинаются с маленькой буквы
-                $cityData['name'] = Utils::firstWordLiterUppercase($cityData['name']);
-
-                //Собирает строчку с названием города для отображения
-                $displayCityName = $cityData['type'].'. '.$cityData['name'];
-                if($cityData['region'] != $cityData['name']) {
-                    $displayCityName .= ', '.$cityData['region'].' обл.';
-                }
-
-                $cityData['display_name'] = $displayCityName;
+                $cityData = $this->getCityNameByDisplay($cityData);
                 $avalibleCities[] = $cityData['_id'];
             }
             if( !in_array($cityId, $avalibleCities) ){
@@ -1584,8 +1600,7 @@ use DDelivery\Sdk\Messager;
             if(count( $selfCompanyList )){
                 $pointsJs = $this->getSelfPointsList( $this->order, $selfCompanyList );
             }
-
-                   if($dataOnly) {
+            if($dataOnly) {
                 ob_start();
                 include(__DIR__ . '/../../templates/mapCompanyHelper.php');
                 $content = ob_get_contents();
