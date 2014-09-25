@@ -353,13 +353,15 @@ abstract class PluginFilters extends DShopAdapter
      * @return mixed
      */
     public function finalFilterSelfCompanies( $companyArray, $order ){
-        if( count($this->customSelfCompanies) ){
-            foreach( $this->customSelfCompanies as $key => $item ){
+        if( count($this->getCustomSelfCompanies()) ){
+            foreach( $this->getCustomSelfCompanies() as $key => $item ){
                 if( $item['city'] == $order->city ){
+
                     $companyArray[] = $item;
                 }
             }
         }
+
         return $companyArray;
     }
 
@@ -372,8 +374,8 @@ abstract class PluginFilters extends DShopAdapter
      * @return mixed
      */
     public function finalFilterCourierCompanies( $companyArray, $order ){
-        if( count($this->customCourierCompanies) ){
-            foreach( $this->customCourierCompanies as $key => $item ){
+        if( count($this->getCustomCourierCompanies()) ){
+            foreach( $this->getCustomCourierCompanies() as $key => $item ){
                 if( $item['city'] == $order->city ){
                     $companyArray[] = $item;
                 }
@@ -393,9 +395,8 @@ abstract class PluginFilters extends DShopAdapter
      * @return array
      */
     public function prePointListReturn( $resultPoints, $order, $resultCompanies ){
-        if( count( $this->customSelfPoints ) ){
-            foreach( $this->customSelfPoints as $key => $item ){
-
+        if( count( $this->getCustomSelfPoints() ) ){
+            foreach( $this->getCustomSelfPoints() as $key => $item ){
                 if( ($item['city_id'] == $order->city) && isset($item['company_id']) ){
                         $resultPoints[] = $item;
                 }
@@ -406,7 +407,7 @@ abstract class PluginFilters extends DShopAdapter
 
 
     public function preGoToFindPoints( $order, $pointId = 0 ){
-        if( array_key_exists( $pointId, $this->customSelfPoints ) ){
+        if( array_key_exists( $pointId, $this->getCustomSelfPoints() ) ){
             return false;
         }
         return true;
@@ -417,6 +418,36 @@ abstract class PluginFilters extends DShopAdapter
             return $_COOKIE['ddCityId'];
         }
         return 0;
+    }
+
+    /**
+     *
+     * Получить массив с кастомными курьерскими компаниями
+     *
+     * @return array
+     */
+    public function getCustomCourierCompanies(){
+        return array();
+    }
+
+    /**
+     *
+     * Получить массив с кастомными компаниями самовывоза
+     *
+     * @return array
+     */
+    public function getCustomSelfCompanies(){
+        return array();
+    }
+
+    /**
+     *
+     * Получить массив с кастомными точками самовывоза
+     *
+     * @return array
+     */
+    public function getCustomSelfPoints(){
+        return array();
     }
 
 }

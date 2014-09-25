@@ -1159,9 +1159,25 @@ use DDelivery\Sdk\Messager;
                 $this->order = $order;
             }
 
+
+            // если пустой город и нет его в реквесте, пытаемся определить его самостоятельно
+            if(!$this->order->city && !isset($request['city_id']) ) {
+                $cityId = $this->shop->getClientCityId();
+                $cityData = $this->cityLocator->getCity($cityId);
+                $this->order->city = $cityData['_id'];
+                $this->order->cityName = $cityData['display_name'];
+            }
+
+            if( isset($request['city_id']) && ( $this->order->city != $request['city_id'] ) ){
+                $cityData = $this->cityLocator->getCity($request['city_id']);
+                $this->order->city = $cityData['_id'];
+                $this->order->cityName = $cityData['display_name'];
+            }
+
             if( !$this->order->localId ){
                 $this->order->localId = $this->saveFullOrder($this->order);
             }
+
 
 
             if(isset($request['action'])) {
@@ -1237,25 +1253,9 @@ use DDelivery\Sdk\Messager;
                 }
             }
 
-            // если пустой город и нет его в реквесте, пытаемся определить его самостоятельно
-            if(!$this->order->city && !isset($request['city_id']) ) {
-                $cityId = $this->shop->getClientCityId();
-                $cityData = $this->cityLocator->getCity($cityId);
-                $this->order->city = $cityData['_id'];
-                $this->order->cityName = $cityData['display_name'];
-            }
 
-            if( isset($request['city_id']) && ( $this->order->city != $request['city_id'] ) ){
-                $cityData = $this->cityLocator->getCity($request['city_id']);
-                $this->order->city = $cityData['_id'];
-                $this->order->cityName = $cityData['display_name'];
-            }
 
-            /*
-            if(!empty($request['city_alias'])) {
-                $this->order->cityName = strip_tags( $request['city_alias'] );
-            }
-            */
+
             if(!empty($request['point']) && isset($request['type'])) {
                 if ( $request['type'] == DDeliverySDK::TYPE_SELF ) {
 

@@ -29,75 +29,6 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
                                         DDStatusProvider::ORDER_CANCEL => 26 );
 
 
-    protected $customCourierCompanies = array(
-                                        'custom_company1' => array(
-                                            'city' => 151184,
-                                            'delivery_company' => 'custom_company1',
-                                            'delivery_company_name' => 'XXX company',
-                                            'pickup_price' => 250,
-                                            'delivery_price' => 170,
-                                            'delivery_price_fee' => 0,
-                                            'declared_price_fee' => 30,
-                                            'delivery_time_min' => 2,
-                                            'delivery_time_max' => 3,
-                                            'delivery_time_avg' => 3,
-                                            'return_price' => 0,
-                                            'return_client_price' => 0,
-                                            'return_partial_price' => 0,
-                                            'total_price' => 450
-                                        )
-    );
-
-    protected $customSelfCompanies = array(
-                                        'custom_self_company1' => array(
-                                            'city' => 151184,
-                                            'delivery_company' => 'custom_self_company1',
-                                            'delivery_company_name' => 'XXX Self company',
-                                            'pickup_price' => 250,
-                                            'delivery_price' => 170,
-                                            'delivery_price_fee' => 0,
-                                            'declared_price_fee' => 30,
-                                            'delivery_time_min' => 2,
-                                            'delivery_time_max' => 3,
-                                            'delivery_time_avg' => 3,
-                                            'return_price' => 0,
-                                            'return_client_price' => 0,
-                                            'return_partial_price' => 0,
-                                            'total_price' => 450
-                                        )
-    );
-
-    protected $customSelfPoints = array(
-                                    1000900 => array(
-                                        '_id' => 1000900,
-                                        'name' => 'xxxxxxx',
-                                        'city_id' => 151184,
-                                        'city' => 'Москва',
-                                        'region' => 'Москва',
-                                        'region_id' => '77',
-                                        'city_type' => 'г',
-                                        'postal_code' => '101000',
-                                        'area' =>'',
-                                        'kladr' => '77000000000',
-                                        'company' => 'XXX Self company',
-                                        'company_id' => 'custom_self_company1',
-                                        'company_code' => 'MSK3',
-                                        'metro' => '',
-                                        'description_in' =>'',
-                                        'description_out' =>'',
-                                        'indoor_place' =>'',
-                                        'address' => 'Своя собственная точка доставки`',
-                                        'schedule' => 'пн.-пт. 11-20, сб. 11-17, вс. 11-16',
-                                        'longitude' => '37.582745',
-                                        'latitude' => '55.778628',
-                                        'type' => 2,
-                                        'status' => 2,
-                                        'has_fitting_room' => '',
-                                        'is_cash' => 1,
-                                        'is_card' => ''
-                                    )
-    );
-
 
     /**
      * Верните true если нужно использовать тестовый(stage) сервер
@@ -492,5 +423,97 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
         return 'blue';
     }
 
+    /**
+     *
+     * Получить массив с кастомными курьерскими компаниями
+     *
+     * @return array
+     */
+    public function getCustomCourierCompanies(){
+        return array(
+            'custom_company1' => array(
+                'city' => 151184,
+                'delivery_company' => 'custom_company1',
+                'delivery_company_name' => 'XXX company',
+                'pickup_price' => 250,
+                'delivery_price' => 170,
+                'delivery_price_fee' => 0,
+                'declared_price_fee' => 30,
+                'delivery_time_min' => 2,
+                'delivery_time_max' => 3,
+                'delivery_time_avg' => 3,
+                'return_price' => 0,
+                'return_client_price' => 0,
+                'return_partial_price' => 0,
+                'total_price' => 450
+            )
+        );
+    }
+
+    /**
+     *
+     * Получить массив с кастомными компаниями самовывоза
+     *
+     * @return array
+     */
+    public function getCustomSelfCompanies(){
+        return array(
+            'custom_self_company1' => array(
+                'city' => 151184,
+                'delivery_company' => 'custom_self_company1',
+                'delivery_company_name' => 'XXX Self company',
+                'pickup_price' => 250,
+                'delivery_price' => 170,
+                'delivery_price_fee' => 0,
+                'declared_price_fee' => 30,
+                'delivery_time_min' => 2,
+                'delivery_time_max' => 3,
+                'delivery_time_avg' => 3,
+                'return_price' => 0,
+                'return_client_price' => 0,
+                'return_partial_price' => 0,
+                'total_price' => 450
+            )
+        );
+    }
+
+    /**
+     *
+     * Получить массив с кастомными точками самовывоза
+     *
+     * @return array
+     */
+    public function getCustomSelfPoints(){
+        return array(
+            1000900 => array(
+                '_id' => 1000900,
+                'name' => 'xxxxxxx',
+                'city_id' => 151184,
+                'city' => 'Москва',
+                'region' => 'Москва',
+                'region_id' => '77',
+                'city_type' => 'г',
+                'postal_code' => '101000',
+                'area' =>'',
+                'kladr' => '77000000000',
+                'company' => 'XXX Self company',
+                'company_id' => 'custom_self_company1',
+                'company_code' => 'MSK3',
+                'metro' => '',
+                'description_in' =>'',
+                'description_out' =>'',
+                'indoor_place' =>'',
+                'address' => 'Своя собственная точка доставки`',
+                'schedule' => 'пн.-пт. 11-20, сб. 11-17, вс. 11-16',
+                'longitude' => '37.582745',
+                'latitude' => '55.778628',
+                'type' => 2,
+                'status' => 2,
+                'has_fitting_room' => '',
+                'is_cash' => 1,
+                'is_card' => ''
+            )
+        );
+    }
 
 }

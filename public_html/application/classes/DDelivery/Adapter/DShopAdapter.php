@@ -113,11 +113,6 @@ abstract class DShopAdapter
 
     const DB_SQLITE = 2;
 
-    protected  $customCourierCompanies = array();
-
-    protected $customSelfCompanies = array();
-
-    protected $customSelfPoints = array();
 
     /**
      * Сопоставление cтатуса заказов на стороне cms
@@ -669,6 +664,11 @@ abstract class DShopAdapter
         return '650';
     }
 
+    public abstract function getCustomCourierCompanies();
+
+    public abstract function getCustomSelfCompanies();
+
+    public abstract function getCustomSelfPoints();
 
 
 }
