@@ -51,6 +51,21 @@ class DCityLocator{
         return $cityInfo;
     }
 
+    /**
+     * @param $name
+     * @return array|Sdk\DDeliverySDKResponse
+     */
+    public function getAutoCompleteCity( $name ){
+        $cityList = $this->sdk->getAutoCompleteCity($name);
+        $cityList = $cityList->response;
+        if( !empty($cityList) ){
+            foreach($cityList as $key => $city){
+                $this->getCityNameByDisplay($cityList[$key]);
+            }
+            return $cityList;
+        }
+        return array();
+    }
 
     /**
      * Получаем массив городов для отображения на странцие

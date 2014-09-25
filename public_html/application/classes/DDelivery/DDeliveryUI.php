@@ -1170,14 +1170,10 @@ use DDelivery\Sdk\Messager;
                     case 'searchCity':
                     case 'searchCityMap':
                         if(isset($request['name']) && mb_strlen($request['name']) >= 3){
-                            $cityList = $this->sdk->getAutoCompleteCity($request['name']);
 
-                            $cityList = $cityList->response;
-                            foreach($cityList as $key => $city){
-                                $this->getCityNameByDisplay($cityList[$key]);
-                            }
-
+                            $cityList = $this->cityLocator->getAutoCompleteCity( $request['name'] );
                             $cityId = $this->order->city;
+
                             $displayData = array();
                             $content = '';
                             if($request['action'] == 'searchCity'){
@@ -1273,13 +1269,7 @@ use DDelivery\Sdk\Messager;
                         $this->order->setCacheValue('calculateSelfPoint', $sig, $selfCompany);
                     }
                     // Получаем список информации про компании из кеша
-                    /*
-                    $pointInfoArray = $this->getSelfPointsList( $this->order, $selfCompany );
-                    $point = $this->findPointIdInArray( $pointInfoArray, $this->order->pointID);
-                    if( $pointInfoArray[$point]['company_id'] ){
-                        $pointArray = array_merge( $selfCompany, $pointInfoArray[$point] );
-                    }
-                    */
+
                     $pointInfoArray = $this->getSelfPointsList( $this->order, $selfCompany );
                     $pointId = $this->findPointIdInArray( $pointInfoArray, $this->order->pointID);
 

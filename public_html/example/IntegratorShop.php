@@ -28,7 +28,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
                                         DDStatusProvider::ORDER_WAITING => 25,
                                         DDStatusProvider::ORDER_CANCEL => 26 );
 
-    /*
+
     protected $customCourierCompanies = array(
                                         'custom_company1' => array(
                                             'city' => 151184,
@@ -97,7 +97,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
                                         'is_card' => ''
                                     )
     );
-    */
+
 
     /**
      * Верните true если нужно использовать тестовый(stage) сервер
