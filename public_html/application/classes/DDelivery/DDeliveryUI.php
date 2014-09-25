@@ -759,72 +759,12 @@ use DDelivery\Sdk\Messager;
          * Назначить email для доставки
          *
          */
-        public function setOrderToEmail( $email )
-        {
+        public function setOrderToEmail( $email ){
             $this->order->toEmail = trim( strip_tags( $email ) );
         }
 
-        /**
-         * Возвращает id текущего города или пытается определить его
-         * @deprecated
-         * @return int
-         */
-        /*
-        protected function getCityId(){
-            if($this->order->city) {
-                return $this->order->city;
-            }
 
-            $cityId = (int)$this->shop->getClientCityId();
 
-            if(!$cityId){
-                $cityRaw = $this->getCityByIp($_SERVER['REMOTE_ADDR']);
-                if($cityRaw && $cityRaw['city_id']) {
-                    $cityId = (int)$cityRaw['city_id'];
-                    $this->getCityNameByDisplay( $cityRaw );
-                }
-                if(!$cityId) {
-                    $topCityId = $this->sdk->getTopCityId();
-                    $cityId = reset($topCityId); // Самый большой город
-                }
-            }
-            return $cityId;
-        }
-        */
-
-        /**
-         * Возвращает id текущего города или пытается определить его
-         * @deprecated
-         * @return int
-         */
-        /*
-        protected function getCity(){
-
-            $cityId = (int)$this->shop->getClientCityId();
-            $topCityList = $this->cityLocator->getTopCityList();
-
-            if( $cityId > 0 ){
-                if( array_key_exists($cityId, $topCityList) ){
-                    $cityInfo = $topCityList[$cityId];
-                }else{
-                    $city = $this->sdk->getCityById( $cityId );
-                    if( !empty( $city->response ) ){
-                        $cityInfo = $city->response;
-                    }
-                }
-            }else{
-                $cityInfo = $this->cityLocator->getCityByIp( '195.208.131.1' );
-            }
-
-            if( !isset($cityInfo['_id']) || empty($cityInfo['_id']) ){
-                $cityInfo = reset($topCityId);
-            }
-
-            $this->cityLocator->getCityNameByDisplay( $cityInfo );
-
-            return $cityInfo;
-        }
-        */
         /**
          *
          * Получить реальную цену доставки без скидок и т.д
