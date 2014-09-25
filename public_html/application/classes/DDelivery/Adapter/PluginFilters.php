@@ -412,4 +412,11 @@ abstract class PluginFilters extends DShopAdapter
         return true;
     }
 
+    public function getClientCityId(){
+        if(isset($_COOKIE['ddCityId'])){
+            return $_COOKIE['ddCityId'];
+        }
+        return 0;
+    }
+
 }

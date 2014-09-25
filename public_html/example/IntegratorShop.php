@@ -367,6 +367,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      */
     public function getClientCityId(){
         // Если нет информации о городе, оставьте вызов родительского метода.
+        //return 151185;
         return parent::getClientCityId();
     }
 
@@ -490,5 +491,6 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
     public function getTemplate(){
         return 'blue';
     }
+
 
 }

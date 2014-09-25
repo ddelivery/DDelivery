@@ -394,8 +394,7 @@ class DDeliverySDK {
      * Возвращает true если ключ валиден
      * @return bool
      */
-    function checkApiKey()
-    {
+    function checkApiKey(){
         $result = $this->requestProvider->request('order_status');
         return $result->errorMessage != 'Shop not found!';
     }
@@ -404,8 +403,7 @@ class DDeliverySDK {
      * Возвращает id городов с болшим кол-вом людей, может когда-нибудь будет на сервере
      * @return array
      */
-    public function getTopCityId()
-    {
+    public function getTopCityId(){
         return array(
             151184, // 'Москва',
             151185, // 'Санкт-Петербург',

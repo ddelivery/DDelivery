@@ -552,12 +552,7 @@ abstract class DShopAdapter
      * Верните id города в системе DDelivery
      * @return int
      */
-    public function getClientCityId() {
-        if(isset($_COOKIE['ddCityId'])){
-            return $_COOKIE['ddCityId'];
-        }
-        return 0;
-    }
+    public abstract function getClientCityId();
 
 
     /**
