@@ -133,7 +133,7 @@ Map = (function () {
                     var geoObjects = target.properties.get('geoObjects');
                     if (geoObjects) { // Клик по кластеру
                         var bound = [
-                            [99, 99],
+                            [500, 500],
                             [0, 0]
                         ];
                         for (var geoKey in geoObjects) {
@@ -148,7 +148,6 @@ Map = (function () {
                             if (bound[0][1] > coord[1])
                                 bound[0][1] = coord[1];
                         }
-
                         // Вычисляем центр и зум которые нам нужны, отступ 20 - первое число которое указал и оно нормально работает
                         //var centerAndZoom = ymaps.util.bounds.getCenterAndZoom(bound, yamap.container.getSize(), ymaps.projection.wgs84Mercator, {margin:20});
 
