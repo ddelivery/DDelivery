@@ -453,7 +453,7 @@ Map = (function () {
 
                         $('.schedule', more).html(data.point.schedule.replace(/\n/g, "<br>"));
 
-                        var description = (data.point.description_out + '<br/>' + data.point.description_out).replace(/\n/g, '<br/>');
+                        var description = (data.point.description_in + '<br/>' + data.point.description_out).replace(/\n/g, '<br/>');
                         $('.more', more).html(description);
 
                         if(!data.point.metro) {
