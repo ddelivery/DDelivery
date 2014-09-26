@@ -28,9 +28,7 @@ class DCityLocator{
      * @return array
      */
     public function getCity( $cityId = 0 ){
-
         $topCityList = $this->getTopCityList();
-
         if( $cityId > 0 ){
             if( array_key_exists($cityId, $topCityList) ){
                 $cityInfo = $topCityList[$cityId];

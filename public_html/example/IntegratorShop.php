@@ -58,7 +58,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
             'Веселый клоун',	//	string $name Название вещи
             'artikul222'
         );
-        $products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'Грустный клоун', 'artikul222');
+        $products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'Грустный клоун', 'another artikul222');
         return $products;
     }
 
@@ -189,7 +189,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return int
      */
     public function filterPointByPaymentTypeCourier( $order ){
-        return \DDelivery\Adapter\PluginFilters::PAYMENT_PREPAYMENT;
+        return \DDelivery\Adapter\PluginFilters::PAYMENT_POST_PAYMENT;
     }
 
     /**
@@ -399,7 +399,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
         | self::FIELD_EDIT_ADDRESS | self::FIELD_REQUIRED_ADDRESS
         | self::FIELD_EDIT_ADDRESS_HOUSE | self::FIELD_REQUIRED_ADDRESS_HOUSE
         | self::FIELD_EDIT_ADDRESS_HOUSING
-        | self::FIELD_EDIT_ADDRESS_FLAT | self::FIELD_REQUIRED_ADDRESS_FLAT | self::FIELD_EDIT_EMAIL;
+        | self::FIELD_EDIT_ADDRESS_FLAT | self::FIELD_REQUIRED_ADDRESS_FLAT | self::FIELD_EDIT_EMAIL
+        | self::FIELD_EDIT_INDEX;
     }
 
     /**

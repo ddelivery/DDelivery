@@ -31,12 +31,18 @@ echo '<pre>';
 print_r( $p );
 echo '</pre>';
 */
-$order = $ddeliveryUI->initOrder(668);
+$order = $ddeliveryUI->initOrder(766);
 $order->paymentVariant = 12;
 $order->shopRefnum = 12;
 $order->localStatus = 10;
+echo '<pre>';
+print_r($order);
+echo '</pre>';
+echo $ddeliveryUI->sendOrderToDD($order);
+/*
 echo $ddeliveryUI->sendOrderToDD($order);
 
 echo '<pre>';
 print_r($order->getPoint());
 echo '</pre>';
+*/
