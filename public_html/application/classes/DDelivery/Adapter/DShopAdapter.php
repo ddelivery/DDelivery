@@ -690,5 +690,12 @@ abstract class DShopAdapter{
      */
     public abstract function getCustomSelfPoints();
 
-
+    /**
+     *
+     * Текст когда компании не найдены
+     *
+     * @param DDeliveryOrder $order
+     * @return mixed
+     */
+    public abstract function getEmptyCompanyError($order);
 }

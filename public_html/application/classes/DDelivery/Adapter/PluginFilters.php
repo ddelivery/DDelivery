@@ -451,4 +451,14 @@ abstract class PluginFilters extends DShopAdapter
         return array();
     }
 
+    /**
+     *
+     * Текст когда компании не найдены
+     *
+     * @param DDeliveryOrder $order
+     * @return mixed
+     */
+    public function getEmptyCompanyError( $order ){
+        return 'Извините, этот способ доставки не доступен для выбранного города.';
+    }
 }

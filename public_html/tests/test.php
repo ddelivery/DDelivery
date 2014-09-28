@@ -31,7 +31,7 @@ echo '<pre>';
 print_r( $p );
 echo '</pre>';
 */
-$order = $ddeliveryUI->initOrder(766);
+$order = $ddeliveryUI->initOrder(779);
 $order->paymentVariant = 12;
 $order->shopRefnum = 12;
 $order->localStatus = 10;

@@ -189,7 +189,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return int
      */
     public function filterPointByPaymentTypeCourier( $order ){
-        return \DDelivery\Adapter\PluginFilters::PAYMENT_POST_PAYMENT;
+        return \DDelivery\Adapter\PluginFilters::PAYMENT_PREPAYMENT;
     }
 
     /**
@@ -203,7 +203,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return int
      */
     public function filterPointByPaymentTypeSelf( $order ){
-        return \DDelivery\Adapter\PluginFilters::PAYMENT_POST_PAYMENT;
+        return \DDelivery\Adapter\PluginFilters::PAYMENT_PREPAYMENT;
     }
 
     /**
@@ -222,9 +222,15 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return array
      */
     public function getIntervalsByPoint(){
+        return array(
+            array('min' => 0, 'max'=>10000, 'type'=>self::INTERVAL_RULES_MARKET_ALL, 'amount'=>100),
+            //array('min' => 100, 'max'=>200, 'type'=>self::INTERVAL_RULES_CLIENT_ALL, 'amount'=>60),
+            //array('min' => 200, 'max'=>5000, 'type'=>self::INTERVAL_RULES_MARKET_PERCENT, 'amount'=>50),
+            //array('min' => 5000, 'max'=>null, 'type'=>self::INTERVAL_RULES_MARKET_ALL),
+        );
         return array();
         return array(
-            array('min' => 0, 'max'=>100, 'type'=>self::INTERVAL_RULES_MARKET_AMOUNT, 'amount'=>30),
+            array('min' => 0, 'max'=>100, 'type'=>self::INTERVAL_RULES_MARKET_AMOUNT, 'amount'=>100),
             array('min' => 100, 'max'=>200, 'type'=>self::INTERVAL_RULES_CLIENT_ALL, 'amount'=>60),
             array('min' => 200, 'max'=>5000, 'type'=>self::INTERVAL_RULES_MARKET_PERCENT, 'amount'=>50),
             array('min' => 5000, 'max'=>null, 'type'=>self::INTERVAL_RULES_MARKET_ALL),

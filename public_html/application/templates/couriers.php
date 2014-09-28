@@ -87,7 +87,7 @@
                 <tr>
                     <td class="col1">
                         <div style="text-align: center">
-                            Извините, этот способ доставки не доступен для выбранного города.
+                            <?=$this->shop->getEmptyCompanyError($this->order);?>
                         </div>
                     </td>
                 </tr>
