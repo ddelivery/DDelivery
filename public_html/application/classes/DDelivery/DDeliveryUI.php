@@ -9,9 +9,6 @@ namespace DDelivery;
 use DDelivery\DB\ConnectInterface;
 use DDelivery\Order\DDStatusProvider;
 use DDelivery\Adapter\DShopAdapter;
-use DDelivery\DataBase\City;
-use DDelivery\DataBase\Order;
-use DDelivery\DataBase\SQLite;
 use DDelivery\Sdk\DCache;
 use DDelivery\Sdk\DDeliverySDK;
 use DDelivery\Order\DDeliveryOrder;
@@ -54,6 +51,9 @@ use DDelivery\Order\DDeliveryOrder;
          */
         private $order;
 
+        /**
+         * @var DCityLocator
+         */
         public $cityLocator;
 
         /**
@@ -536,8 +536,6 @@ use DDelivery\Order\DDeliveryOrder;
          * @return int
          */
         public function createCourierOrder( $order ){
-            /** @var DDeliveryPointCourier $point */
-
             if(! $this->shop->sendOrderToDDeliveryServer($order) ){
                 return 0;
             } else {
@@ -843,7 +841,6 @@ use DDelivery\Order\DDeliveryOrder;
                 return $resultCompanies;
             }else{
                 throw new DDeliveryException('Недостаточно параметров для расчета цены');
-                return false;
             }
         }
 
