@@ -8,10 +8,11 @@
 namespace DDelivery\DataBase;
 
 use DDelivery\Adapter\DShopAdapter;
+use DDelivery\DB\ConnectInterface;
 use DDelivery\DDeliveryException;
 use DDelivery\Order\DDStatusProvider;
 use DDelivery\Order\DDeliveryOrder;
-use PDO;
+use DDelivery\DB\ConstPDO as PDO;
 
 /**
  * Class Order
@@ -20,20 +21,16 @@ use PDO;
 class Order {
 
 	/**
-	 * @var PDO
+	 * @var ConnectInterface
 	 */
 	public $pdo;
 
 
-	public function __construct(\PDO $pdo, $prefix = '')
+	public function __construct($pdo, $prefix = '')
 	{
         $this->pdo = $pdo;
         $this->prefix = $prefix;
-        if($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME) == 'sqlite') {
-            $this->pdoType = DShopAdapter::DB_SQLITE;
-        }else{
-            $this->pdoType = DShopAdapter::DB_MYSQL;
-        }
+        $this->pdoType = \DDelivery\DB\Utils::getDBType($pdo);
 	}
 
 	/**
@@ -171,7 +168,7 @@ class Order {
      * @return array
      */
     public function getOrderById( $id ){
-        $query = "SELECT * FROM {$this->prefix}orders WHERE id = $id";
+        $query = "SELECT * FROM {$this->prefix}orders WHERE id = ".(int)$id;
         $sth = $this->pdo->query( $query );
         $result = $sth->fetchAll(PDO::FETCH_OBJ);
         return $result;

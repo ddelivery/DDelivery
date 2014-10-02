@@ -122,6 +122,7 @@ $result = $fixture->addSelfOrder( 50, 10,
 print_r($result);
 $result = $fixture->calculatorPickupForPoint(50, 10, 10,  10, 1, 0);
 */
+/*
 include 'example/IntegratorShop.php';
 
 $shopAdapter = new IntegratorShop();
@@ -322,3 +323,52 @@ $DDeliveryUI->initIntermediateOrder(1);
 
 
 //print_r($selfpoints);
+
+/*
+/// DB Driver
+$dbLogin = 'root';
+$dbPass = '0';
+$dbName = 'bitrix';
+$linkIdentifier = mysql_connect('localhost', $dbLogin, $dbPass);
+mysql_select_db('bitrix', $linkIdentifier);
+$connectMysql = new DDelivery\DB\Mysql\Connect($linkIdentifier);
+
+$linkIdentifier = mysqli_connect('localhost', $dbLogin, $dbPass, $dbName);
+$connectMysql = new DDelivery\DB\Mysqli\Connect($linkIdentifier);
+
+$connectPDO = new PDO('mysql:host=localhost;dbname='.$dbName, $dbLogin, $dbPass);
+
+$testPDOType =array(DDelivery\DB\ConstPDO::FETCH_ASSOC,
+    DDelivery\DB\ConstPDO::FETCH_BOTH,
+    DDelivery\DB\ConstPDO::FETCH_NUM,
+    DDelivery\DB\ConstPDO::FETCH_OBJ
+);
+
+$query = 'SELECT * FROM b_iblock_element WHERE PREVIEW_TEXT_TYPE = ?';
+//$query = 'SELECT * FROM b_iblock_element WHERE PREVIEW_TEXT_TYPE = :active';
+
+$sthMysql = $connectMysql->prepare( $query );
+$sthPDO = $connectPDO->prepare( $query );
+$val = 'text';
+//$sthMysql->bindParam( ':active', $val );
+//$sthPDO->bindParam( ':active', $val );
+
+$sthMysql->bindParam( 1, $val);
+$sthPDO->bindParam( 1, $val);
+$sthMysql->execute();
+$sthPDO->execute();
+
+foreach ($testPDOType as $type) {
+
+    //var_dump($sthMysql->fetch($type));
+    //var_dump($sthPDO->fetch($type));
+    if($sthPDO->fetch($type) == $sthMysql->fetch($type)){
+        echo $type.': OK<br>';
+    }else{
+        var_dump($sthMysql->fetch($type));
+        var_dump($sthPDO->fetch($type));
+    }
+}
+
+
+//*/

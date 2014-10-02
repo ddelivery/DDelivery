@@ -9,7 +9,9 @@
 namespace DDelivery\DataBase;
 
 use DDelivery\Adapter\DShopAdapter;
-use PDO;
+use DDelivery\DB\ConnectInterface;
+use DDelivery\DB\ConstPDO as PDO;
+
 /**
  *
 * Class Cache
@@ -18,7 +20,7 @@ use PDO;
 class Cache {
 
     /**
-     * @var PDO
+     * @var ConnectInterface
      */
     private $pdo;
     /**
@@ -31,15 +33,16 @@ class Cache {
     private $prefix;
 
 
-    public function __construct(PDO $pdo, $prefix = '')
+    /**
+     * @param $pdo
+     * @param string $prefix
+     * @throws \DDelivery\DDeliveryException
+     */
+    public function __construct($pdo, $prefix = '')
     {
         $this->pdo = $pdo;
         $this->prefix = $prefix;
-        if($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME) == 'sqlite') {
-            $this->pdoType = DShopAdapter::DB_SQLITE;
-        }else{
-            $this->pdoType = DShopAdapter::DB_MYSQL;
-        }
+        $this->pdoType = \DDelivery\DB\Utils::getDBType($pdo);
     }
 
     public function createTable()
@@ -112,11 +115,9 @@ class Cache {
      * @return bool
      */
     public function removeAll(){
-        $this->pdo->beginTransaction();
         $query = 'DELETE FROM '.$this->prefix.'cache';
         $sth = $this->pdo->prepare( $query );
         $result = $sth->execute();
-        $this->pdo->commit();
         return $result;
     }
 
@@ -260,7 +261,6 @@ class Cache {
      */
     public function removeExpired()
     {
-        $this->pdo->beginTransaction();
         if($this->pdoType == DShopAdapter::DB_SQLITE) {
             $query = 'DELETE FROM cache WHERE expired < datetime("now")';
         }elseif($this->pdoType == DShopAdapter::DB_MYSQL) {
@@ -268,7 +268,6 @@ class Cache {
         }
         $sth = $this->pdo->prepare( $query );
         $sth->execute();
-        $this->pdo->commit();
         $result = $sth->fetchAll(PDO::FETCH_OBJ);
         return $result;
     }
@@ -279,7 +278,6 @@ class Cache {
      */
     public function selectExpired()
     {
-        $this->pdo->beginTransaction();
         if($this->pdoType == DShopAdapter::DB_SQLITE) {
             $query = 'SELECT expired,  datetime("now") AS expired2  FROM
                   cache WHERE expired < datetime("now")';
@@ -290,7 +288,6 @@ class Cache {
         }
         $sth = $this->pdo->prepare( $query );
         $sth->execute();
-        $this->pdo->commit();
         $result = $sth->fetchAll(PDO::FETCH_OBJ);
 
         return $result;
@@ -308,7 +305,6 @@ class Cache {
      */
     public function remove( $sig )
     {
-        $this->pdo->beginTransaction();
         $query = 'DELETE FROM cache WHERE sig = ":sig"';
         $sth = $this->pdo->prepare( $query );
         $sth->bindParam( ':sig', $sig );
@@ -320,7 +316,6 @@ class Cache {
         {
             $result = false;
         }
-        $this->pdo->commit();
         return $result;
     }
 

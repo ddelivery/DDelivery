@@ -14,6 +14,7 @@ use PDO;
 /**
  * Class City
  * @package DDelivery\SQLite
+ * @deprecated
  */
 class City {
 
@@ -26,40 +27,11 @@ class City {
      */
     public $pdoType;
 
-    function __construct(\PDO $pdo, $prefix = '')
-    {
-        $this->pdo = $pdo;
-        $this->prefix = $prefix;
-        if($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME) == 'sqlite') {
-            $this->pdoType = DShopAdapter::DB_SQLITE;
-        }else{
-            $this->pdoType = DShopAdapter::DB_MYSQL;
-        }
-    }
-
-    /**
-     * Возвращает город по id
-     * @param int $cityId
-     * @deprecated
-     * @return array
-     */
-    public function getCityById($cityId)
-    {
-        $query = "SELECT * FROM ".$this->prefix."ps_dd_cities WHERE _id = :id";
-
-        $sth = $this->pdo->prepare( $query );
-        $sth->bindParam( ':id', $cityId );
-        $sth->execute();
-
-        $result = $sth->fetch(PDO::FETCH_ASSOC);
-        return $result;
-    }
-
     /**
      * Получает много городов по их id
      * @return array
      */
-    public function getTopCityList()
+    public static function getTopCityList()
     {
         return array (
             151184 =>

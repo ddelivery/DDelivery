@@ -8,6 +8,7 @@
 
 namespace DDelivery\Sdk;
 use DDelivery\DataBase\Cache;
+use DDelivery\DB\ConnectInterface;
 use DDelivery\DDeliveryException;
 use DDelivery\DDeliveryUI;
 
@@ -46,10 +47,10 @@ class DCache
     /**
      * @param int $expired
      * @param bool $enabled
-     * @param \PDO $PDO
+     * @param ConnectInterface $PDO
      * @param string $pdoTablePrefix
      */
-    public function __construct( $expired, \PDO $PDO, $enabled = true, $pdoTablePrefix = '' )
+    public function __construct( $expired, $PDO, $enabled = true, $pdoTablePrefix = '' )
     {
         $this->pdo = $PDO;
         $this->pdoTablePrefix = $pdoTablePrefix;

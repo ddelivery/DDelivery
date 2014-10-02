@@ -72,6 +72,15 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
             'prefix' => '',
         );
 
+        $connect = mysql_connect('localhost', 'root', '0');
+        mysql_select_db('bitrix', $connect);
+        mysql_query('SET NAMES utf8');
+        return array(
+            'pdo' => new DDelivery\DB\Mysql\Connect($connect),
+            'prefix' => 'ddelivery_',
+        );
+
+
         return array(
             'type' => self::DB_SQLITE,
             'dbPath' => $this->getPathByDB(),

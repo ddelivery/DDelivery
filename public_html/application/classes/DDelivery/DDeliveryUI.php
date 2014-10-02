@@ -6,16 +6,13 @@
 * @author  mrozk
 */
 namespace DDelivery;
+use DDelivery\DB\ConnectInterface;
 use DDelivery\Order\DDStatusProvider;
 use DDelivery\Adapter\DShopAdapter;
 use DDelivery\DataBase\City;
-use DDelivery\DataBase\Order;
-use DDelivery\DataBase\SQLite;
 use DDelivery\Sdk\DCache;
 use DDelivery\Sdk\DDeliverySDK;
 use DDelivery\Order\DDeliveryOrder;
-use DDelivery\Adapter\DShopAdapterImpl;
-use DDelivery\Sdk\Messager;
 
 
 /**
@@ -64,7 +61,7 @@ use DDelivery\Sdk\Messager;
         private $cache;
 
         /**
-         * @var /PDO бд
+         * @var ConnectInterface бд
          */
         private $pdo;
         /**
@@ -350,7 +347,6 @@ use DDelivery\Sdk\Messager;
                 $this->_initOrderInfo( $currentOrder, $item );
             }else{
                 throw new DDeliveryException('Заказ DD в локальной БД не найден');
-                return;
             }
 
             return $currentOrder;
@@ -1533,8 +1529,7 @@ use DDelivery\Sdk\Messager;
          */
         protected function getCityByDisplay($cityId)
         {
-            $cityDB = new City($this->pdo, $this->pdoTablePrefix);
-            $cityList = $cityDB->getTopCityList();
+            $cityList = City::getTopCityList();
             // Складываем массивы получаем текущий город наверху, потом его и выберем
             if(isset($cityList[$cityId])){
                 $cityData = $cityList[$cityId];
@@ -1914,7 +1909,7 @@ use DDelivery\Sdk\Messager;
         public function _initDb(DShopAdapter $dShopAdapter)
         {
             $dbConfig = $dShopAdapter->getDbConfig();
-            if (isset($dbConfig['pdo']) && $dbConfig['pdo'] instanceof \PDO) {
+            if (isset($dbConfig['pdo']) && ($dbConfig['pdo'] instanceof \PDO || $dbConfig['pdo'] instanceof ConnectInterface)) {
                 $this->pdo = $dbConfig['pdo'];
             } elseif ($dbConfig['type'] == DShopAdapter::DB_SQLITE) {
                 if (!$dbConfig['dbPath'])
