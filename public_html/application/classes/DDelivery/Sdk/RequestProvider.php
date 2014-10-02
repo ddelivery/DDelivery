@@ -101,8 +101,7 @@ class RequestProvider
      * @return DDeliverySDKResponse
      */
 	public function request($action, $params = array(), 
-	                        $method = 'get', $server = '')
-	{
+	                        $method = 'get', $server = ''){
 		
 		$this->countRequests++;
 		
@@ -117,7 +116,7 @@ class RequestProvider
 
 
 	    $response = new DDeliverySDKResponse( $result, $this->curl[$server] );
-	    
+
 	    if(!$this->keepActive)
 	    {
 	    	curl_close($this->curl[$server]);

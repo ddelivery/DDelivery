@@ -10,8 +10,7 @@ use DDelivery\Order\DDeliveryOrder;
 use DDelivery\Order\DDeliveryProduct;
 use DDelivery\Order\DDStatusProvider;
 
-class IntegratorShop extends \DDelivery\Adapter\PluginFilters
-{
+class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
     /**
      * Синхронизация локальных статусов и статусов дделивери
      * @var array
@@ -28,6 +27,9 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
                                         DDStatusProvider::ORDER_RETURNED_MI => 2,
                                         DDStatusProvider::ORDER_WAITING => 25,
                                         DDStatusProvider::ORDER_CANCEL => 26 );
+
+
+
     /**
      * Верните true если нужно использовать тестовый(stage) сервер
      * @return bool
@@ -68,7 +70,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
 
 
         return array(
-            'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', 'root', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
+            'type' => self::DB_SQLITE,
+            'dbPath' => $this->getPathByDB(),
             'prefix' => '',
         );
 
@@ -82,10 +85,10 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
 
 
         return array(
-            'type' => self::DB_SQLITE,
-            'dbPath' => $this->getPathByDB(),
+            'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', 'root', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
             'prefix' => '',
         );
+
 
 
 
@@ -305,6 +308,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function getClientCityId(){
         // Если нет информации о городе, оставьте вызов родительского метода.
+        //return 151185;
         return parent::getClientCityId();
     }
 
@@ -340,7 +344,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * @param DDeliveryOrder $order
      * @return mixed
      */
-    public function finalFilterSelfCompanies( $companyArray, DDeliveryOrder $order ){
+    public function finalFilterSelfCompanies( $companyArray, $order ){
+        $companyArray = parent::finalFilterSelfCompanies( $companyArray, $order );
         return $companyArray;
     }
 
@@ -352,7 +357,8 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      * @param DDeliveryOrder $order
      * @return mixed
      */
-    public function finalFilterCourierCompanies( $companyArray, DDeliveryOrder $order ){
+    public function finalFilterCourierCompanies( $companyArray, $order ){
+        $companyArray = parent::finalFilterCourierCompanies( $companyArray, $order );
         return $companyArray;
     }
 
@@ -425,6 +431,102 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters
      */
     public function getTemplate(){
         return 'blue';
+    }
+
+    /**
+     *
+     * Получить массив с кастомными курьерскими компаниями
+     *
+     * @return array
+     */
+    public function getCustomCourierCompanies(){
+        return array();
+        return array(
+            'custom_company1' => array(
+                'city' => 151184,
+                'delivery_company' => 'custom_company1',
+                'delivery_company_name' => 'XXX company',
+                'pickup_price' => 250,
+                'delivery_price' => 170,
+                'delivery_price_fee' => 0,
+                'declared_price_fee' => 30,
+                'delivery_time_min' => 2,
+                'delivery_time_max' => 3,
+                'delivery_time_avg' => 3,
+                'return_price' => 0,
+                'return_client_price' => 0,
+                'return_partial_price' => 0,
+                'total_price' => 450
+            )
+        );
+    }
+
+    /**
+     *
+     * Получить массив с кастомными компаниями самовывоза
+     *
+     * @return array
+     */
+    public function getCustomSelfCompanies(){
+        return array();
+        return array(
+            'custom_self_company1' => array(
+                'city' => 151184,
+                'delivery_company' => 'custom_self_company1',
+                'delivery_company_name' => 'XXX Self company',
+                'pickup_price' => 250,
+                'delivery_price' => 170,
+                'delivery_price_fee' => 0,
+                'declared_price_fee' => 30,
+                'delivery_time_min' => 2,
+                'delivery_time_max' => 3,
+                'delivery_time_avg' => 3,
+                'return_price' => 0,
+                'return_client_price' => 0,
+                'return_partial_price' => 0,
+                'total_price' => 450
+            )
+        );
+    }
+
+    /**
+     *
+     * Получить массив с кастомными точками самовывоза
+     *
+     * @return array
+     */
+    public function getCustomSelfPoints(){
+        return array();
+        return array(
+            1000900 => array(
+                '_id' => 1000900,
+                'name' => 'xxxxxxx',
+                'city_id' => 151184,
+                'city' => 'Москва',
+                'region' => 'Москва',
+                'region_id' => '77',
+                'city_type' => 'г',
+                'postal_code' => '101000',
+                'area' =>'',
+                'kladr' => '77000000000',
+                'company' => 'XXX Self company',
+                'company_id' => 'custom_self_company1',
+                'company_code' => 'MSK3',
+                'metro' => '',
+                'description_in' =>'',
+                'description_out' =>'',
+                'indoor_place' =>'',
+                'address' => 'Своя собственная точка доставки`',
+                'schedule' => 'пн.-пт. 11-20, сб. 11-17, вс. 11-16',
+                'longitude' => '37.582745',
+                'latitude' => '55.778628',
+                'type' => 2,
+                'status' => 2,
+                'has_fitting_room' => '',
+                'is_cash' => 1,
+                'is_card' => ''
+            )
+        );
     }
 
 }

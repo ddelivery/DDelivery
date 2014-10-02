@@ -6,6 +6,7 @@
             <?if($cityData['name'] != $cityData['region']):?>
                 <?=$cityData['region']?> обл.
             <?endif;?>
-        </a></li>
+        </a>
+    </li>
 <?endforeach;?>
 

@@ -354,6 +354,18 @@ class DDeliverySDK {
         return $response;
     }
 
+    public function getCityById( $id ){
+        $params = array(
+            '_action' => 'city',
+            '_id' => $id
+        );
+        $response = $this->requestProvider->request('city', $params, 'get', $this->server . 'node') ;
+        if( !$response->success ){
+            $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
+            throw new DDeliveryException( $errorMsg );
+        }
+        return $response;
+    }
 
     /**
      * Получить автокомплит для города
@@ -371,8 +383,7 @@ class DDeliverySDK {
     	);
     	$response = $this->requestProvider->request('autocomplete', $params,
     											    'get', $this->server . 'node') ;
-    	if( !$response->success )
-        {
+    	if( !$response->success ){
             $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
             throw new DDeliveryException( $errorMsg );
         }
@@ -383,8 +394,7 @@ class DDeliverySDK {
      * Возвращает true если ключ валиден
      * @return bool
      */
-    function checkApiKey()
-    {
+    function checkApiKey(){
         $result = $this->requestProvider->request('order_status');
         return $result->errorMessage != 'Shop not found!';
     }
@@ -393,8 +403,7 @@ class DDeliverySDK {
      * Возвращает id городов с болшим кол-вом людей, может когда-нибудь будет на сервере
      * @return array
      */
-    public function getTopCityId()
-    {
+    public function getTopCityId(){
         return array(
             151184, // 'Москва',
             151185, // 'Санкт-Петербург',
