@@ -549,7 +549,6 @@ use DDelivery\Sdk\Messager;
          * @return int
          */
         public function saveFullOrder( DDeliveryOrder $order ){
-            file_put_contents('ozk.text', '1', FILE_APPEND);
             $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
             $id = $orderDB->saveFullOrder( $order );
             return $id;
@@ -1479,7 +1478,7 @@ use DDelivery\Sdk\Messager;
                         $dd_to = $request['ddcalc_to'];
                         $dd_payment = $request['ddcalc_payment'];
                         $dd_weight = $request['ddcalc_weight'];
-                        $dd_width = $request['ddcalc_width'];
+                        $dd_width = $request['ddcalc_width'];
                         $dd_height = $request['ddcalc_height'];
                         $dd_length = $request['ddcalc_length'];
 
