@@ -1,7 +1,6 @@
 <?
 /**
  * @var \DDelivery\DDeliveryUI $this
- * @var \DDelivery\Point\DDeliveryInfo[] $selfCompanyList
  * @var string $staticURL
  */
 ?>

@@ -9,7 +9,6 @@ namespace DDelivery\Order;
 
 use DDelivery\Adapter\DShopAdapter;
 use DDelivery\DDeliveryException;
-use DDelivery\Point\DDeliveryAbstractPoint;
 use DDelivery\DataBase\SQLite;
 
 /**
