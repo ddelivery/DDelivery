@@ -234,7 +234,8 @@ abstract class PluginFilters extends DShopAdapter
      */
     public function sendOrderToDDeliveryServer( $order ){
         $point = $order->getPoint();
-        if( array_key_exists( $point['delivery_company'], $this->customCourierCompanies ) || array_key_exists( $point['delivery_company'], $this->customSelfCompanies )){
+        if( array_key_exists( $point['delivery_company'], $this->getCustomCourierCompanies() ) ||
+            array_key_exists( $point['delivery_company'], $this->getCustomSelfCompanies() )){
 
             return false;
         }
@@ -450,4 +451,14 @@ abstract class PluginFilters extends DShopAdapter
         return array();
     }
 
+    /**
+     *
+     * Текст когда компании не найдены
+     *
+     * @param DDeliveryOrder $order
+     * @return mixed
+     */
+    public function getEmptyCompanyError( $order ){
+        return 'Извините, этот способ доставки не доступен для выбранного города.';
+    }
 }

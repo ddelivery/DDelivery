@@ -176,7 +176,7 @@ use DDelivery\Order\DDeliveryOrder;
             return array('firstName' => $order->firstName, 'secondName' => $order->secondName,
                          'toPhone' => $order->toPhone, 'toEmail' => $order->toEmail,
                          'toStreet' => $order->toStreet, 'toHouse' => $order->toHouse,
-                         'toFlat' => $order->toFlat
+                         'toFlat' => $order->toFlat, 'toIndex' => $order->toIndex
             );
         }
 
@@ -571,10 +571,14 @@ use DDelivery\Order\DDeliveryOrder;
                 $shop_refnum = $order->shopRefnum;
                 $to_email = $order->toEmail;
                 $metadata = $order->getJsonOrder();
+
+                $to_index = $order->toIndex;
+
+
                 $response = $this->sdk->addCourierOrder( $to_city, $delivery_company, $dimensionSide1, $dimensionSide2,
                                                              $dimensionSide3, $shop_refnum, $confirmed, $weight,
                                                              $to_name, $to_phone, $goods_description, $declaredPrice,
-                                                             $paymentPrice, $to_street, $to_house, $to_flat, $to_email, $metadata );
+                                                             $paymentPrice, $to_street, $to_house, $to_flat, $to_email, $metadata, $to_index );
                 if( !$response->response['order'] ){
                     throw new DDeliveryException("Ошибка отправки заказа на сервер DDelivery.ru");
                 }
@@ -1318,6 +1322,9 @@ use DDelivery\Order\DDeliveryOrder;
                             case 'address_flat':
                                 $this->order->toFlat = $row['value'];
                                 break;
+                            case 'index':
+                                $this->order->toIndex = $row['value'];
+                                break;
                             case 'comment':
                                 //@todo Комента нет
                                 $this->order->comment = $row['value'];
@@ -1771,13 +1778,13 @@ use DDelivery\Order\DDeliveryOrder;
             $currentOrder->amount = $currentOrder->getAmount();
 
             $currentOrder->orderCache = unserialize( $item->cache );
-            $currentOrder->setPoint( unserialize( $item->point ) );
+            $currentOrder->setPoint( json_decode( $item->point, true ) );
 
             $currentOrder->addField1 = $item->add_field1;
             $currentOrder->addField2 = $item->add_field2;
             $currentOrder->addField3 = $item->add_field3;
 
-            $orderInfo = unserialize( $item->order_info );
+            $orderInfo = json_decode( $item->order_info, true );
 
             $currentOrder->confirmed = $orderInfo['confirmed'];
             $currentOrder->firstName = $orderInfo['firstName'];
@@ -1792,6 +1799,7 @@ use DDelivery\Order\DDeliveryOrder;
             $currentOrder->cityName = $orderInfo['city_name'];
             $currentOrder->toHousing = $orderInfo['toHousing'];
             $currentOrder->toEmail = $orderInfo['toEmail'];
+            $currentOrder->toIndex = $orderInfo['toIndex'];
         }
 
         /**

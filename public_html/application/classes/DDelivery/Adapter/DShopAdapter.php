@@ -18,8 +18,7 @@ use DDelivery\Sdk\DDeliverySDK;
  * Class DShopAdapter
  * @package DDelivery\Adapter
  */
-abstract class DShopAdapter
-{
+abstract class DShopAdapter{
     /**
      * Тип кеширования централизованый(забираются все точки с сервера)
      */
@@ -101,6 +100,15 @@ abstract class DShopAdapter
      * Адресс, квартира обязательное
      */
     const FIELD_REQUIRED_EMAIL = 32768;
+
+    /**
+     * Адресс, квартира редактируется
+     */
+    const FIELD_EDIT_INDEX = 65536;
+    /**
+     * Адресс, квартира обязательное
+     */
+    const FIELD_REQUIRED_INDEX = 131072;
 
 
     /**
@@ -365,7 +373,7 @@ abstract class DShopAdapter
             'articule 222',
             'Веселый клоун'	//	string $name Название вещи
         );
-        $products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'articule 222', 'Грустный клоун');
+        $products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'articule another', 'Грустный клоун');
         return $products;
     }
     /**
@@ -662,11 +670,30 @@ abstract class DShopAdapter
         return '650';
     }
 
+    /**
+     * Получить массив с кастомными курьерскими компаниями
+     * @return array
+     */
     public abstract function getCustomCourierCompanies();
 
+    /**
+     * Получить массив с кастомными компаниями самовывоза
+     * @return array
+     */
     public abstract function getCustomSelfCompanies();
 
+    /**
+     * Получить массив с кастомными точками самовывоза
+     * @return array
+     */
     public abstract function getCustomSelfPoints();
 
-
+    /**
+     *
+     * Текст когда компании не найдены
+     *
+     * @param DDeliveryOrder $order
+     * @return mixed
+     */
+    public abstract function getEmptyCompanyError($order);
 }

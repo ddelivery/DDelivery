@@ -243,10 +243,12 @@ class Order {
 	}
 
     /**
+     * Сохраняет заказ в БД
      * @param DDeliveryOrder $order
-     * @return int
+     * @return string
+     * @throws \DDelivery\DDeliveryException
      */
-	public function saveFullOrder( DDeliveryOrder $order )
+    public function saveFullOrder( $order )
 	{
 	    $wasUpdate = 0;
 
@@ -261,24 +263,25 @@ class Order {
         $ddeliveryID = $order->ddeliveryID;
         $delivery_company = $order->companyId;
         //echo 'pz';
-        $order_info = serialize(
-                      array(
-                            'confirmed' => $order->confirmed,
-                            'firstName' => $order->firstName,
-                            'secondName' => $order->secondName,
-                            'to_phone' => $order->getToPhone(),
-                            'declaredPrice' => $order->declaredPrice,
-                            'paymentPrice' => $order->paymentPrice,
-                            'toStreet' => $order->toStreet,
-                            'toHouse' => $order->toHouse,
-                            'toFlat' => $order->toFlat,
-                            'comment' => $order->comment,
-                            'city_name' => $order->cityName,
-                            'toHousing' => $order->toHousing,
-                            'toEmail' => $order->toEmail
-                      ));
+        $order_info = json_encode(
+                          array(
+                                'confirmed' => $order->confirmed,
+                                'firstName' => $order->firstName,
+                                'secondName' => $order->secondName,
+                                'to_phone' => $order->getToPhone(),
+                                'declaredPrice' => $order->declaredPrice,
+                                'paymentPrice' => $order->paymentPrice,
+                                'toStreet' => $order->toStreet,
+                                'toHouse' => $order->toHouse,
+                                'toFlat' => $order->toFlat,
+                                'comment' => $order->comment,
+                                'city_name' => $order->cityName,
+                                'toHousing' => $order->toHousing,
+                                'toEmail' => $order->toEmail,
+                                'toIndex' => $order->toIndex
+                          ));
         $cache = serialize( $order->orderCache );
-        $point = serialize( $order->getPoint() );
+        $point = json_encode( $order->getPoint() );
 
         $add_field1 = $order->addField1;
         $add_field2 = $order->addField2;
@@ -347,112 +350,6 @@ class Order {
         }else{
             throw  new DDeliveryException('Order not saved');
         }
-
-	    
-	}
-	/**
-	 * 
-	 * Сохраняем значения курьерского заказа
-	 * 
-	 * @deprecated
-	 * 
-	 * @param int $intermediateID id существующего заказа
-	 * @param int $to_city
-	 * @param int $delivery_company
-	 * @param int $dimensionSide1
-	 * @param int $dimensionSide2
-	 * @param int $dimensionSide3
-	 * @param int $shop_refnum
-	 * @param int $confirmed
-	 * @param float $weight
-	 * @param string $to_name
-	 * @param string $to_phone
-	 * @param string $goods_description
-	 * @param string $declaredPrice
-	 * @param string $paymentPrice
-	 * @param string $to_street
-	 * @param string $to_house
-	 * @param string $to_flat
-	 * @param $ddeliveryOrderID - id заказа на стороне сервера ddelivery
-	 *    
-	 */
-	public function saveFullCourierOrder( $intermediateID, $to_city, $delivery_company, $dimensionSide1, 
-			                              $dimensionSide2, $dimensionSide3, $shop_refnum, $confirmed, 
-    			                          $weight, $to_name, $to_phone, $goods_description, $declaredPrice, 
-			                              $paymentPrice, $to_street, $to_house, $to_flat, $ddeliveryOrderID, 
-			                              $productString,$localStatus, $ddStatus, $firstName, $secondName,
-			                              $pointDB   ) 
-	{
-		$wasUpdate = 0;
- 		$this->pdo->beginTransaction();
- 		if( $this->isRecordExist( $intermediateID ) )
- 		{   
-			
-			$query = "UPDATE {$this->prefix}orders SET type = :type, to_city = :to_city, ddeliveryorder_id = :ddeliveryorder_id,
-					  delivery_company = :delivery_company, dimension_side1 = :dimension_side1,
-					  dimension_side2 = :dimension_side2, dimension_side3 = :dimension_side3, confirmed = :confirmed,
-					  weight = :weight, declared_price = :declared_price, payment_price = :payment_price, to_name = :to_name,
-					  to_phone = :to_phone, goods_description = :goods_description, to_street= :to_street,
-					  to_house = :to_house, to_flat = :to_flat, date = :date,
-					  shop_refnum =:shop_refnum, products = :products, local_status = :local_status,
-				      dd_status = :dd_status, first_name = :first_name, second_name =:second_name, point = :point  WHERE id=:id";
-				
-			$stmt = $this->pdo->prepare($query);
-			$stmt->bindParam( ':id', $intermediateID );
-			$wasUpdate = 1;
-		}
-		else
-		{
-			$query = "INSERT INTO {$this->prefix}orders (type, to_city, ddeliveryorder_id, delivery_company, dimension_side1,
-                      dimension_side2, dimension_side3, confirmed, weight, declared_price, payment_price, to_name,
-                      to_phone, goods_description, to_flat, to_house, to_street, to_phone, date, shop_refnum,
-					  products, local_status, dd_status, first_name, second_name, point)
-	                  VALUES
-					  (:type, :to_city, :ddeliveryorder_id, :delivery_company, :dimension_side1,
-                      :dimension_side2, :dimension_side3, :confirmed, :weight, :declared_price,
-					  :payment_price, :to_name, :to_phone, :goods_description, :to_flat, :to_house,
-					  :to_street, :to_phone, :date, :shop_refnum, :products, :local_status, :dd_status, :first_name, :second_name, :point )";
-			$stmt = $this->pdo->prepare($query);
-		}
-		
-		$dateTime = date( "Y-m-d H:i:s" );
-		$type = 2;
-		$stmt->bindParam( ':type', $type );
-		$stmt->bindParam( ':to_city', $to_city );
-		$stmt->bindParam( ':ddeliveryorder_id', $ddeliveryOrderID );
-		$stmt->bindParam( ':delivery_company', $delivery_company );
-		$stmt->bindParam( ':dimension_side1', $dimensionSide1 );
-		$stmt->bindParam( ':dimension_side2', $dimensionSide2 );
-		$stmt->bindParam( ':dimension_side3', $dimensionSide3 );
-		$stmt->bindParam( ':confirmed', $confirmed );
-		$stmt->bindParam( ':weight', $weight );
-		$stmt->bindParam( ':declared_price', $declaredPrice );
-		$stmt->bindParam( ':payment_price', $paymentPrice );
-		$stmt->bindParam( ':to_name', $to_name );
-		$stmt->bindParam( ':to_phone', $to_phone );
-		$stmt->bindParam( ':goods_description', $goods_description );
-		$stmt->bindParam( ':to_house', $to_house );
-		$stmt->bindParam( ':to_street', $to_street );
-		$stmt->bindParam( ':to_phone', $to_phone );
-		$stmt->bindParam( ':date', $dateTime );
-		$stmt->bindParam( ':shop_refnum', $shop_refnum );
-		$stmt->bindParam( ':to_flat', $to_flat );
-		$stmt->bindParam( ':products', $productString );
-		$stmt->bindParam( ':local_status', $localStatus );
-		$stmt->bindParam( ':dd_status', $ddStatus );
-		$stmt->bindParam( ':first_name', $firstName );
-		$stmt->bindParam( ':second_name', $secondName );
-		$stmt->bindParam( ':point', $pointDB );
-		$stmt->execute();
-		$this->pdo->commit();
-		if( $wasUpdate )
-		{
-			return $intermediateID;
-		}
-		else 
-		{
-		    return $this->pdo->lastInsertId();
-		}
 	}
 
 	/**
@@ -480,6 +377,8 @@ class Order {
 	 *
 	 * Создаем промежуточное значение заказа
 	 *
+     * @deprecated
+     *
 	 * @param json упакованые параметры промежуточного заказа
 	 *
      * @return int

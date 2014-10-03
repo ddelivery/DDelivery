@@ -57,6 +57,19 @@ use DDelivery\Adapter\DShopAdapter;
                     </div>
                 <?endif;?>
 
+                <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_INDEX|| ($requiredFieldMask & DShopAdapter::FIELD_EDIT_INDEX && !$order->toIndex ) ):?>
+                    <div class="row clearfix">
+                        <div class="row__title">
+                            <label for="address">Индекс</label>
+                        </div>
+                        <div class="row__inp">
+                            <input type="text" title="Индекс" id="index" name="index" value="<?=htmlspecialchars(trim($order->toIndex))?>" <?if($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_INDEX):?>req="req"<?endif;?>/>
+                            <div class="error-box">
+                                <i>&nbsp;</i> Поле обязательное для заполнения
+                            </div>
+                        </div>
+                    </div>
+                <?endif;?>
 
                 <?if($requiredFieldMask & DShopAdapter::FIELD_EDIT_ADDRESS || ($requiredFieldMask & DShopAdapter::FIELD_REQUIRED_ADDRESS && !$order->getToStreet() ) ):?>
                     <div class="row clearfix">
