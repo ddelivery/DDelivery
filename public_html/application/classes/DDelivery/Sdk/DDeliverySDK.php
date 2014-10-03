@@ -193,6 +193,23 @@ class DDeliverySDK {
         return $response;
     }
 
+    /**
+     *
+     * Возможность НПП в городе или регионе
+     *
+     * @param $city
+     * @param $company
+     *
+     * @return DDeliverySDKResponse $response
+     */
+    public function paymentPriceEnable( $city, $company ){
+        $params = array(
+            'city' => $city,
+            'company' => $company
+        );
+        $response = $this->requestProvider->request( 'paymentprice', $params );
+        return $response;
+    }
 
     /**
      * Получить список точек для самовывоза
@@ -209,8 +226,7 @@ class DDeliverySDK {
     			'companies' => $companies
     	);
     	$response = $this->requestProvider->request('geoip', $params, 'get', $this->server . 'node');
-    	if( !$response->success )
-    	{
+    	if( !$response->success ){
             $errorMsg = (is_array($response->errorMessage))?implode(', ', $response->errorMessage):$response->errorMessage;
             throw new DDeliveryException( $errorMsg );
     	}
