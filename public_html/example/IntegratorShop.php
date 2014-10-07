@@ -227,12 +227,6 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return array
      */
     public function getIntervalsByPoint(){
-        return array(
-            array('min' => 0, 'max'=>10000, 'type'=>self::INTERVAL_RULES_MARKET_ALL, 'amount'=>100),
-            //array('min' => 100, 'max'=>200, 'type'=>self::INTERVAL_RULES_CLIENT_ALL, 'amount'=>60),
-            //array('min' => 200, 'max'=>5000, 'type'=>self::INTERVAL_RULES_MARKET_PERCENT, 'amount'=>50),
-            //array('min' => 5000, 'max'=>null, 'type'=>self::INTERVAL_RULES_MARKET_ALL),
-        );
         return array();
         return array(
             array('min' => 0, 'max'=>100, 'type'=>self::INTERVAL_RULES_MARKET_AMOUNT, 'amount'=>100),
@@ -363,23 +357,6 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
         return $companyArray;
     }
 
-    /**
-     * Получить доступные способы оплаты для Самовывоза ( можно анализировать содержимое order )
-     * @param $order DDeliveryOrder
-     * @return array
-     */
-    public function getSelfPaymentVariants( $order ){
-        return array();
-    }
-
-    /**
-     * Получить доступные способы оплаты для курьера ( можно анализировать содержимое order )
-     * @param $order DDeliveryOrder
-     * @return array
-     */
-    public function getCourierPaymentVariants( $order ){
-        return array();
-    }
 
     /**
      *
@@ -529,6 +506,14 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
                 'is_card' => ''
             )
         );
+    }
+
+    public  function getSelfPaymentVariants($order){
+        return array(2);
+    }
+
+    public function getCourierPaymentVariants($order){
+        return array(3);
     }
 
 }

@@ -5,6 +5,7 @@ include_once("../example/IntegratorShop.php");
 
 $shopAdapter = new IntegratorShop();
 $DDeliveryUI = new \DDelivery\DDeliveryUI($shopAdapter);
-
-
-echo 'xxx';
+echo '<pre>';
+$order = $DDeliveryUI->initOrder( 791 );
+print_r( $DDeliveryUI->getAvailablePaymentVariants($order));
+echo '</pre>';

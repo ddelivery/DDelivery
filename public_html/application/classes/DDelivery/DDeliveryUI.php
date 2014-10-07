@@ -450,11 +450,13 @@ use DDelivery\Order\DDeliveryOrder;
             {
                 $errors[] = "Не найден id заказа в CMS";
             }
-            if( (count($this->shop->getSelfPaymentVariants( $order ))  > 0) &&
-                    !in_array( $order->paymentVariant, $this->shop->getCourierPaymentVariants( $order ) ) ){
-                $errors[] = "Нет попадания в список возможных способов оплаты";
+            $enabled = $this->paymentPriceEnable($order);
+            if( !$enabled ){
+                if( (count($this->shop->getCourierPaymentVariants( $order ))  > 0) &&
+                        !in_array( $order->paymentVariant, $this->shop->getCourierPaymentVariants( $order ) ) ){
+                    $errors[] = "Нет попадания в список возможных способов оплаты";
+                }
             }
-
             if(count($errors))
             {
                 throw new DDeliveryException(implode(', ', $errors));
@@ -501,17 +503,48 @@ use DDelivery\Order\DDeliveryOrder;
             if( ! $order->shopRefnum ){
                 $errors[] = "Не найден id заказа в CMS";
             }
-
-            if( (count($this->shop->getSelfPaymentVariants( $order ))  > 0) &&
-                    !in_array( $order->paymentVariant, $this->shop->getSelfPaymentVariants( $order ) ) ){
-                $errors[] = "Нет попадания в список возможных способов оплаты";
+            $enabled = $this->paymentPriceEnable($order);
+            if( !$enabled ){
+                if( (count($this->shop->getSelfPaymentVariants( $order ))  > 0) &&
+                        !in_array( $order->paymentVariant, $this->shop->getSelfPaymentVariants( $order ) ) ){
+                    $errors[] = "Нет попадания в список возможных способов оплаты";
+                }
             }
-
             if(count($errors)){
                 throw new DDeliveryException(implode(', ', $errors));
             }
             return true;
         }
+
+        /**
+         *
+         * Проверка на доступность НПП
+         *
+         * @param DDeliveryOrder $order
+         * @return bool
+         *
+         * @throws DDeliveryException
+         */
+        public function paymentPriceEnable( $order ){
+            $city = $order->city;
+            $company = $order->companyId;
+            $enabled = $this->shop->getPaymentFilterEnabled( $order );
+            if( $enabled ){
+                if( !empty($city) && !empty($company) ){
+                    $paymentPrice = $this->sdk->paymentPriceEnable( $city, $company );
+                    //print_r($paymentPrice);
+                    //return (int)false;
+                    return $paymentPrice->success;
+                }else{
+                    throw new DDeliveryException('Не хватает параметров для расчета НПП');
+                }
+            }else{
+                return true;
+            }
+        }
+
+
+
 
         /**
          *
@@ -1048,13 +1081,18 @@ use DDelivery\Order\DDeliveryOrder;
          * @return array
          * @throws DDeliveryException
          */
-        public  function getAvailablePaymentVariants( DDeliveryOrder $order ){
-            if( $order->type == DDeliverySDK::TYPE_SELF ){
-                return $this->shop->getSelfPaymentVariants( $order );
-            }else if( $order->type == DDeliverySDK::TYPE_COURIER ){
-                return $this->shop->getCourierPaymentVariants( $order );
+        public  function getAvailablePaymentVariants( $order ){
+            $enabled = $this->paymentPriceEnable($order);
+            if($enabled){
+                return array();
             }else{
-                throw new DDeliveryException("Не определен способ доставки");
+                if( $order->type == DDeliverySDK::TYPE_SELF ){
+                    return $this->shop->getSelfPaymentVariants( $order );
+                }else if( $order->type == DDeliverySDK::TYPE_COURIER ){
+                    return $this->shop->getCourierPaymentVariants( $order );
+                }else{
+                    throw new DDeliveryException("Не определен способ доставки");
+                }
             }
         }
 
@@ -1460,15 +1498,7 @@ use DDelivery\Order\DDeliveryOrder;
             $comment = '';
             $point = $this->order->getPoint();
 
-            if( $this->order->type == DDeliverySDK::TYPE_SELF ){
-                $comment = 'Самовывоз, ' . $this->order->cityName . ' ' . $point['address'] .
-                            (', ' . $point['delivery_company_name']) .
-                            (', ' . $point['name'] . ', ID точки - ' . $point['_id'] ) .
-                            (', ' . (($point['type'] == 1)?'Постомат':'ПВЗ'));
-            }else if( $this->order->type == DDeliverySDK::TYPE_COURIER ){
-                $comment = 'Доставка курьером по адресу '.$this->order->getFullAddress().
-                            (', ' . $point['delivery_company_name']) ;
-            }
+            $comment = $this->getPointComment($this->order);
 
             $this->shop->onFinishChange( $this->order );
 
@@ -1852,6 +1882,27 @@ use DDelivery\Order\DDeliveryOrder;
                 throw new DDeliveryException('Not support database type');
             }
             $this->pdoTablePrefix = isset($dbConfig['prefix']) ? $dbConfig['prefix'] : '';
+        }
+
+        /**
+         * Получить описание точки в заказе
+         * @param $order
+         * @return string
+         */
+        public function getPointComment( $order ){
+            $comment = '';
+            $point = $order->getPoint();
+
+            if( $order->type == DDeliverySDK::TYPE_SELF ){
+                $comment = 'Самовывоз, ' . $order->cityName . ' ' . $point['address'] .
+                    (', ' . $point['delivery_company_name']) .
+                    (', ' . $point['name'] . ', ID точки - ' . $point['_id'] ) .
+                    (', ' . (($point['type'] == 1)?'Постомат':'ПВЗ'));
+            }else if( $order->type == DDeliverySDK::TYPE_COURIER ){
+                $comment = 'Доставка курьером по адресу ' . $order->getFullAddress() .
+                    (', ' . $point['delivery_company_name']) ;
+            }
+            return $comment;
         }
 
 

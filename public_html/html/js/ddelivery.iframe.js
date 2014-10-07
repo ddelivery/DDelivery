@@ -99,7 +99,8 @@ var DDeliveryIframe = (function () {
             window.parent.postMessage(dataJSON, '*');
         },
         close: function(){
-            DDeliveryIframe.postMessage('close', {});
+            var th = this;
+            DDeliveryIframe.postMessage('close', {orderId:th.orderId});
         }
     }
 })();

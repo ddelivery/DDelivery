@@ -42,8 +42,9 @@ class DDeliverySDKResponse {
             return;
         }
         $jsonData = json_decode($jsonRaw, true);
-        
+
         if(!$jsonData || !is_array($jsonData)) {
+
             $this->success = false;
             $this->errorMessage = 'Unknown error';
             return;
@@ -53,16 +54,12 @@ class DDeliverySDKResponse {
         
         $this->success = (bool)$jsonData['success'];
         
-        if($this->success) 
-        {
+        if($this->success) {
         	$this->response = $jsonData[$responseVar];
         }
-        elseif(isset($jsonData[$responseVar]) && isset($jsonData[$responseVar]['message'])) 
-        {
+        elseif(isset($jsonData[$responseVar]) && isset($jsonData[$responseVar]['message'])) {
             $this->errorMessage = $jsonData[$responseVar]['message'];
-        }
-        else 
-        {
+        }else{
             $this->errorMessage = 'Unknown error';
         }
     }

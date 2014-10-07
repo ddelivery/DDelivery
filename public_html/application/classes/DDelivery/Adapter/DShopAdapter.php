@@ -178,7 +178,7 @@ abstract class DShopAdapter{
      * @param array $extraParams
      * @return mixed
      */
-    abstract public function  getErrorMsg( \Exception $e, $extraParams = array() );
+    public static function  getErrorMsg( \Exception $e, $extraParams = array() ){}
     /**
      *
      * Залоггировать ошибку
@@ -186,7 +186,7 @@ abstract class DShopAdapter{
      * @param \Exception $e
      * @return mixed
      */
-    abstract public function  logMessage( \Exception $e );
+    public static function logMessage( \Exception $e ){}
 
 
     /**
@@ -212,7 +212,7 @@ abstract class DShopAdapter{
     /**
      * Возвращаем сервер для логгирования ошибок
      */
-    public function getLogginServer(){
+    public static function getLogginServer(){
         return 'http://service.ddelivery.ru/loggin.php';
     }
 
@@ -241,22 +241,12 @@ abstract class DShopAdapter{
     }
 
     /**
-     * Получить доступные способы оплаты для Самовывоза ( можно анализировать содержимое order )
+     * Учитывать фильтрацию НПП при работе
      * @param $order DDeliveryOrder
-     * @return array
+     * @return bool
      */
-    public function getSelfPaymentVariants( $order ){
-        return array();
-    }
+    public abstract function getPaymentFilterEnabled( $order );
 
-    /**
-     * Получить доступные способы оплаты для курьера ( можно анализировать содержимое order )
-     * @param $order DDeliveryOrder
-     * @return array
-     */
-    public function getCourierPaymentVariants( $order ){
-        return array();
-    }
     /**
      * Возвращает путь до файла базы данных sqlite, положите его в место не доступное по прямой ссылке
      * @return string
@@ -290,8 +280,7 @@ abstract class DShopAdapter{
      * Включить кэш
      * @return bool
      */
-    public function isCacheEnabled()
-    {
+    public function isCacheEnabled(){
         return true;
     }
 
@@ -696,4 +685,8 @@ abstract class DShopAdapter{
      * @return mixed
      */
     public abstract function getEmptyCompanyError($order);
+
+    public abstract function getSelfPaymentVariants($order);
+
+    public abstract function getCourierPaymentVariants($order);
 }

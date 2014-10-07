@@ -53,7 +53,8 @@
                         */
 
                         var callback = {
-                            close: function(){
+                            close: function(data){
+                                console.log(data);
                                 hideCover();
                                 document.getElementById('ddelivery_container').style.display = 'none';
                             },
