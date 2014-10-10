@@ -1215,6 +1215,11 @@ use DDelivery\Order\DDeliveryOrder;
                 $this->order->localId = $this->saveFullOrder($this->order);
             }
 
+            if($this->order->city && !$this->order->cityName) {
+                $cityData = $this->cityLocator->getCity($this->order->city);
+                $this->order->cityName = $cityData['display_name'];
+            }
+
 
 
             if(isset($request['action'])) {
