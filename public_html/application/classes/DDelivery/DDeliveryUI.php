@@ -453,7 +453,7 @@ use DDelivery\Order\DDeliveryOrder;
             $enabled = $this->paymentPriceEnable($order);
             if( !$enabled ){
                 if( (count($this->shop->getCourierPaymentVariants( $order ))  > 0) &&
-                        !in_array( $order->paymentVariant, $this->shop->getCourierPaymentVariants( $order ) ) ){
+                           in_array( $order->paymentVariant, $this->shop->getCourierPaymentVariants( $order ) ) ){
                     $errors[] = "Нет попадания в список возможных способов оплаты";
                 }
             }
@@ -506,7 +506,7 @@ use DDelivery\Order\DDeliveryOrder;
             $enabled = $this->paymentPriceEnable($order);
             if( !$enabled ){
                 if( (count($this->shop->getSelfPaymentVariants( $order ))  > 0) &&
-                        !in_array( $order->paymentVariant, $this->shop->getSelfPaymentVariants( $order ) ) ){
+                         in_array( $order->paymentVariant, $this->shop->getSelfPaymentVariants( $order ) ) ){
                     $errors[] = "Нет попадания в список возможных способов оплаты";
                 }
             }
