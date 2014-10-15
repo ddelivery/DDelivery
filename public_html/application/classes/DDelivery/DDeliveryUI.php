@@ -1785,7 +1785,9 @@ use DDelivery\Order\DDeliveryOrder;
                 44 => array('name' => 'Почта России', 'ico' => 'russianpost'),
                 45 => array('name' => 'Aplix курьерская доставка', 'ico' => 'aplix'),
                 48 => array('name' => 'Aplix IML курьерская доставка', 'ico' => 'aplix_imlogistics'),
-
+                49 => array('name' => 'IML Забор', 'ico' => 'imlogistics'),
+                50 => array('name' => 'Почта России 1-й класс', 'ico' => 'mail'),
+                51 => array('name' => 'EMS Почта России', 'ico' => 'ems')
             );
         }
 

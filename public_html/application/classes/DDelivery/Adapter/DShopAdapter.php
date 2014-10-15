@@ -29,7 +29,7 @@ abstract class DShopAdapter{
      */
     const CACHING_TYPE_INDIVIDUAL = 'individual';
 
-    const SDK_VERSION = '2.1.8';
+    const SDK_VERSION = '2.1.8.1';
     /**
      * Имя редактируется
      */
@@ -178,7 +178,7 @@ abstract class DShopAdapter{
      * @param array $extraParams
      * @return mixed
      */
-    public static function  getErrorMsg( \Exception $e, $extraParams = array() ){}
+    public function  getErrorMsg( \Exception $e, $extraParams = array() ){}
     /**
      *
      * Залоггировать ошибку
@@ -186,7 +186,7 @@ abstract class DShopAdapter{
      * @param \Exception $e
      * @return mixed
      */
-    public static function logMessage( \Exception $e ){}
+    public function logMessage( \Exception $e ){}
 
 
     /**
