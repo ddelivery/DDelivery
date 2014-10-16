@@ -1737,8 +1737,9 @@ use DDelivery\Order\DDeliveryOrder;
             include(__DIR__.'/../../templates/contactForm.php');
             $content = ob_get_contents();
             ob_end_clean();
-
-            return json_encode(array('html'=>$content, 'js'=>'contactForm', 'orderId' => $this->order->localId, 'type'=>DDeliverySDK::TYPE_COURIER));
+            $content = str_replace('<input', '<inp!KasperskyHack!ut', $content);
+            $html = json_encode(array('html'=>$content, 'js'=>'contactForm', 'orderId' => $this->order->localId, 'type'=>DDeliverySDK::TYPE_COURIER));
+            return $html;
         }
 
         /**
