@@ -1579,7 +1579,7 @@ use DDelivery\Order\DDeliveryOrder;
                 $selfCompanies = $this->cachedCalculateSelfPrices( $this->order );
                 if(count( $selfCompanies )){
 
-                    $minPrice = $this->getClientPrice( $selfCompanies[0], $this->order, DDeliverySDK::TYPE_SELF  );
+                    $minPrice = $this->getClientPrice( reset($selfCompanies), $this->order, DDeliverySDK::TYPE_SELF  );
                     $minTime = PHP_INT_MAX;
                     foreach( $selfCompanies as $selfCompany ) {
                         if($minTime > $selfCompany['delivery_time_min']){
@@ -1599,7 +1599,7 @@ use DDelivery\Order\DDeliveryOrder;
                 $courierCompanies = $this->cachedCalculateCourierPrices( $this->order );
 
                 if(count( $courierCompanies )){
-                    $minPrice = $this->getClientPrice( $courierCompanies[0], $this->order, DDeliverySDK::TYPE_COURIER  );
+                    $minPrice = $this->getClientPrice( reset($courierCompanies), $this->order, DDeliverySDK::TYPE_COURIER  );
                     $minTime = PHP_INT_MAX;
                     foreach( $courierCompanies as $courierCompany ) {
                         if($minTime > $courierCompany['delivery_time_min']){
