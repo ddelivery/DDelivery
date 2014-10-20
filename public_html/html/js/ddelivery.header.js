@@ -158,7 +158,7 @@ var Header = (function () {
                                 }
                                 $('.delivery-place__drop .search li a').on('click', citySelectEvent);
                             });
-                        }, 300);
+                        }, 600);
                     }
                 });
 
