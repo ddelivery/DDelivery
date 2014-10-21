@@ -1182,6 +1182,7 @@ use DDelivery\Order\DDeliveryOrder;
                 $styleUrl = $this->shop->getStaticPath() . 'tems/' . $this->shop->getTemplate() . '/';
                 $scriptURL = $this->shop->getPhpScriptURL();
                 $version = DShopAdapter::SDK_VERSION;
+                $captions = $this->shop->getCaptions();
                 include(__DIR__ . '/../../templates/iframe.php');
                 return;
             }
@@ -1746,8 +1747,7 @@ use DDelivery\Order\DDeliveryOrder;
          * Возвращает дополнительную информацию по компаниям доставки
          * @return array
          */
-        static public function getCompanySubInfo()
-        {
+        static public function getCompanySubInfo(){
             // pack забита для тех у кого нет иконки
             return array(
                 1 => array('name' => 'PickPoint', 'ico' => 'pickpoint'),
@@ -1788,7 +1788,13 @@ use DDelivery\Order\DDeliveryOrder;
                 48 => array('name' => 'Aplix IML курьерская доставка', 'ico' => 'aplix_imlogistics'),
                 49 => array('name' => 'IML Забор', 'ico' => 'imlogistics'),
                 50 => array('name' => 'Почта России 1-й класс', 'ico' => 'mail'),
-                51 => array('name' => 'EMS Почта России', 'ico' => 'ems')
+                51 => array('name' => 'EMS Почта России', 'ico' => 'ems'),
+
+                52 => array('name' => 'ЕКБ-доставка забор', 'ico' => 'pack'),
+                53 => array('name' => 'ЕКБ-доставка курьер', 'ico' => 'pack'),
+                54 => array('name' => 'Почта России 1-й класс.', 'ico' => 'mail'),
+                55 => array('name' => 'Почта России.', 'ico' => 'mail')
+
             );
         }
 

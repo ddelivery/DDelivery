@@ -415,16 +415,16 @@ Map = (function () {
             $('.map-popup__info__table .rub').html('<img src="' + DDeliveryIframe.staticUrl + 'img/ajax_loader_min.gif"/> ');
             var payType = [];
             if (point.is_cash) {
-                payType.push('Наличными');
+                payType.push( ddCaptionConfig.caption3);
             }
             if (point.is_card) {
-                payType.push('Банковскими картами');
+                payType.push(ddCaptionConfig.caption4);
             }
             if (payType.length == 0) {
-                payType.push('Предоплата');
+                payType.push(ddCaptionConfig.caption5);
             }
             $('.map-popup__info__table .payType').html(payType.join('<br>'));
-            $('.map-popup__info__table .type').html(point.type == 1 ? 'Ячейка' : 'Живой пункт');
+            $('.map-popup__info__table .type').html(point.type == 1 ? ddCaptionConfig.caption1 :  ddCaptionConfig.caption2);
 
             $('.map-popup__info__table .day').hide();
 

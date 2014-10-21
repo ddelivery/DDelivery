@@ -480,5 +480,73 @@ abstract class PluginFilters extends DShopAdapter
     }
 
 
+    public function  getCaptions(){
+        return array(
+            'CAPTION1' =>'DDelivery. Доставка в удобную Вам точку.',
+            'CAPTION2' =>'Подождите пожалуйста, мы ищем лучшие предложения',
+            'CAPTION3' =>'Произошла ошибка, ',
+            'CAPTION4' =>'повторить запрос',
+            'CAPTION5' =>'Сервис доставки DDelivery.ru',
+            'CAPTION6' =>'Ячейка',
+            'CAPTION7' =>'Живой пункт',
+            'CAPTION8' =>'Наличными',
+            'CAPTION9' =>'Банковскими картами',
+            'CAPTION10' =>'Предоплата',
+        );
+    }
+
+    /**
+     * Возвращает дополнительную информацию по компаниям доставки
+     * @return array
+     */
+    public static function getCompanySubInfo(){
+        // pack забита для тех у кого нет иконки
+        return array(
+            1 => array('name' => 'PickPoint', 'ico' => 'pickpoint'),
+            3 => array('name' => 'Logibox', 'ico' => 'logibox'),
+            4 => array('name' => 'Boxberry', 'ico' => 'boxberry'),
+            6 => array('name' => 'СДЭК забор', 'ico' => 'cdek'),
+            7 => array('name' => 'QIWI Post', 'ico' => 'qiwi'),
+            11 => array('name' => 'Hermes', 'ico' => 'hermes'),
+            13 => array('name' => 'КТС', 'ico' => 'pack'),
+            14 => array('name' => 'Maxima Express', 'ico' => 'pack'),
+            16 => array('name' => 'IMLogistics Пушкинская', 'ico' => 'imlogistics'),
+            17 => array('name' => 'IMLogistics', 'ico' => 'imlogistics'),
+            18 => array('name' => 'Сам Заберу', 'ico' => 'pack'),
+            20 => array('name' => 'DPD Parcel', 'ico' => 'dpd'),
+            21 => array('name' => 'Boxberry Express', 'ico' => 'boxberry'),
+            22 => array('name' => 'IMLogistics Экспресс', 'ico' => 'imlogistics'),
+            23 => array('name' => 'DPD Consumer', 'ico' => 'dpd'),
+            24 => array('name' => 'Сити Курьер', 'ico' => 'pack'),
+            25 => array('name' => 'СДЭК Посылка Самовывоз', 'ico' => 'cdek'),
+            26 => array('name' => 'СДЭК Посылка до двери', 'ico' => 'cdek'),
+            27 => array('name' => 'DPD ECONOMY', 'ico' => 'dpd'),
+            28 => array('name' => 'DPD Express', 'ico' => 'dpd'),
+            29 => array('name' => 'DPD Classic', 'ico' => 'dpd'),
+            30 => array('name' => 'EMS', 'ico' => 'ems'),
+            31 => array('name' => 'Grastin', 'ico' => 'grastin'),
+            33 => array('name' => 'Aplix', 'ico' => 'aplix'),
+            35 => array('name' => 'Aplix DPD Consumer', 'ico' => 'aplix_dpd_black'),
+            36 => array('name' => 'Aplix DPD parcel', 'ico' => 'aplix_dpd_black'),
+            37 => array('name' => 'Aplix IML самовывоз', 'ico' => 'aplix_imlogistics'),
+            38 => array('name' => 'Aplix PickPoint', 'ico' => 'aplix_pickpoint'),
+            39 => array('name' => 'Aplix Qiwi', 'ico' => 'aplix_qiwi'),
+            40 => array('name' => 'Aplix СДЭК', 'ico' => 'aplix_cdek'),
+            41 => array('name' => 'Кит', 'ico' => 'kit'),
+            42 => array('name' => 'Imlogistics', 'ico' => 'imlogistics'),
+            43 => array('name' => 'Imlogistics', 'ico' => 'imlogistics'),
+            44 => array('name' => 'Почта России', 'ico' => 'russianpost'),
+            45 => array('name' => 'Aplix курьерская доставка', 'ico' => 'aplix'),
+            48 => array('name' => 'Aplix IML курьерская доставка', 'ico' => 'aplix_imlogistics'),
+            49 => array('name' => 'IML Забор', 'ico' => 'imlogistics'),
+            50 => array('name' => 'Почта России 1-й класс', 'ico' => 'mail'),
+            51 => array('name' => 'EMS Почта России', 'ico' => 'ems'),
+
+            52 => array('name' => 'ЕКБ-доставка забор', 'ico' => 'pack'),
+            53 => array('name' => 'ЕКБ-доставка курьер', 'ico' => 'pack'),
+            54 => array('name' => 'Почта России 1-й класс', 'ico' => 'mail'),
+            55 => array('name' => 'Почта России 1-й класс', 'ico' => 'mail')
+        );
+    }
 
 }

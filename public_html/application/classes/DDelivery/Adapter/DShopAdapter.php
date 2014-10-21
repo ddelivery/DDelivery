@@ -689,4 +689,11 @@ abstract class DShopAdapter{
     public abstract function getSelfPaymentVariants($order);
 
     public abstract function getCourierPaymentVariants($order);
+
+    /**
+     * Возвращает массив с различными надписями на модуле
+     * @return array
+     */
+    public abstract function  getCaptions();
+
 }
