@@ -1711,7 +1711,7 @@ use DDelivery\Order\DDeliveryOrder;
                 $order->setToPhone($this->shop->getClientPhone());
 
             if(!$order->getToIndex())
-                $order->setToPhone($this->shop->getClientZipCode());
+                $order->toIndex = $this->shop->getClientZipCode();
 
 
             $fieldValue = $order->getToStreet();
