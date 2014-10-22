@@ -1710,6 +1710,10 @@ use DDelivery\Order\DDeliveryOrder;
             if(!$fieldValue)
                 $order->setToPhone($this->shop->getClientPhone());
 
+            if(!$order->getToIndex())
+                $order->setToPhone($this->shop->getClientZipCode());
+
+
             $fieldValue = $order->getToStreet();
             if(!$fieldValue){
                 $address = $this->shop->getClientAddress();

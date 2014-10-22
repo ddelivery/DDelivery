@@ -439,7 +439,16 @@ abstract class DShopAdapter{
      * @return string|null
      */
     public function getClientPhone() {
-        return '79211234567'; //null;
+        return null;
+    }
+
+    /**
+     * Если вы знаете индекс(zip code), то верните его тут
+     * @return string|null
+     */
+    public function getClientZipCode()
+    {
+        return null;
     }
 
     /**
