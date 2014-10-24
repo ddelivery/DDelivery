@@ -396,8 +396,7 @@ use DDelivery\Order\DDeliveryOrder;
             $errors = array();
             $point = $order->getPoint();
 
-            if( $point == null )
-            {
+            if( $point == null ){
                 $errors[] = "Укажите пожалуйста точку";
             }
             if(!strlen( $order->getToName() ))
@@ -532,8 +531,6 @@ use DDelivery\Order\DDeliveryOrder;
             if( $enabled ){
                 if( !empty($city) && !empty($company) ){
                     $paymentPrice = $this->sdk->paymentPriceEnable( $city, $company );
-                    //print_r($paymentPrice);
-                    //return (int)false;
                     return $paymentPrice->success;
                 }else{
                     throw new DDeliveryException('Не хватает параметров для расчета НПП');
@@ -1515,6 +1512,7 @@ use DDelivery\Order\DDeliveryOrder;
                             'orderId' => $this->order->localId,
                             'clientPrice'=>$this->getClientPrice($point, $this->order, $this->order->type),
                             'userInfo' => $this->getDDUserInfo($this->order),
+                            'payment'  => $this->getAvailablePaymentVariants($this->order)
                             );
             $returnArray = $this->shop->onFinishResultReturn( $this->order, $returnArray );
             return json_encode( $returnArray );
