@@ -165,6 +165,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return int[]
      */
     public function filterCompanyPointCourier(){
+        return  array_keys( \DDelivery\DDeliveryUI::getCompanySubInfo() );
         //return array();
         return array	(4,21,29,23,27,28,20,30,31,11,16,22,17,3,14,1,13,18,6,
                          26,25,24,7,35,36,37,39,40,42,43,44,45,46,47,48,49);
@@ -177,7 +178,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return int[]
      */
     public function filterCompanyPointSelf(){
-        //return array();
+        return  array_keys( \DDelivery\DDeliveryUI::getCompanySubInfo() );
         return array	(4,21,29,23,27,28,20,30,31,11,16,22,17,3,14,1,13,18,6,
                          26,25,24,7,35,36,37,39,40,42,43,44,45,46,47,48,49);
         // TODO: Implement filterCompanyPointSelf() method.
@@ -216,7 +217,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return bool
      */
     public function isPayPickup(){
-        return false;
+            return false;
         return true;
         // TODO: Implement isPayPickup() method.
     }
