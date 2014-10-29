@@ -145,7 +145,7 @@ var Header = (function () {
                 .keyup(function () {
                     var title = $(this).val();
                     var input = $(this);
-                    if (title.length >= 2) {
+                    if (title.length >= 1) {
                         $('.delivery-place__drop_i ul.search').html('<img class="loader_search" src="' + staticUrl + 'img/ajax_loader.gif"/>');
                         if(!searchTimeout)
                             clearTimeout(searchTimeout);

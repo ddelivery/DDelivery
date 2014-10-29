@@ -1866,7 +1866,7 @@ use DDelivery\Order\DDeliveryOrder;
                 $comment = 'Самовывоз, ' . $order->cityName . ' ' . $point['address'] .
                     (', ' . $point['delivery_company_name']) .
                     (', ' . $point['name'] . ', ID точки - ' . $point['_id'] ) .
-                    (', ' . (($point['type'] == 1)?'Постомат':'ПВЗ'));
+                    (', ' . (($point['type'] == 1)?'Постамат':'ПВЗ'));
             }else if( $order->type == DDeliverySDK::TYPE_COURIER ){
                 $comment = 'Доставка курьером по адресу ' . $order->getFullAddress() .
                     (', ' . $point['delivery_company_name']) ;
