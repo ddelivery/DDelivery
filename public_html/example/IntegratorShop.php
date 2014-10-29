@@ -69,14 +69,16 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
     public function getDbConfig(){
 
         return array(
-            'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', 'root', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
-            'prefix' => '',
-        );
-        return array(
             'type' => self::DB_SQLITE,
             'dbPath' => $this->getPathByDB(),
             'prefix' => '',
         );
+        
+        return array(
+            'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', 'root', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
+            'prefix' => '',
+        );
+
 
         $connect = mysql_connect('localhost', 'root', '0');
         mysql_select_db('bitrix', $connect);
