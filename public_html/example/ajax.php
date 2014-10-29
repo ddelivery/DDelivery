@@ -11,7 +11,7 @@ use DDelivery\DDeliveryUI;
 // xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 try{
     echo 'xxxx';
-
+xx
     $IntegratorShop = new IntegratorShop();
     $ddeliveryUI = new DDeliveryUI($IntegratorShop);
     // В зависимости от параметров может выводить полноценный html или json
