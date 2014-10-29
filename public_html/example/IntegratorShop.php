@@ -73,7 +73,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
             'dbPath' => $this->getPathByDB(),
             'prefix' => '',
         );
-        
+
         return array(
             'pdo' => new \PDO('mysql:host=localhost;dbname=ddelivery', 'root', 'root', array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")),
             'prefix' => '',
