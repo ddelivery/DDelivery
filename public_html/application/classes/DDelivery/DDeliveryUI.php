@@ -1880,7 +1880,7 @@ use DDelivery\Order\DDeliveryOrder;
          * Получить список заказов по массиву из ID
          *
          * @param $ids
-         * @return array
+         * @return DDeliveryOrder[]
          */
         public function getOrderList($ids){
             $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);

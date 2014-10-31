@@ -23,7 +23,7 @@ include_once("IntegratorShop.php");
 $shopAdapter = new IntegratorShop();
 $DDeliveryUI = new \DDelivery\DDeliveryUI($shopAdapter);
 echo '<pre>';
-print_r( $DDeliveryUI->getOrderList(array(1,2)));
+$order = $DDeliveryUI->getOrderList(array(1,2));
 echo '</pre>';
 
 //print_r( $order->getJsonOrder() );
