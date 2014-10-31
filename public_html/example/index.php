@@ -38,7 +38,6 @@
                         cover.appendChild(div);
                         document.body.appendChild(cover);
                         document.getElementById('ddelivery_container').style.display = 'block';
-
                         document.body.style.overflow = 'hidden';
                     }
 

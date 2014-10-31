@@ -1754,6 +1754,9 @@ use DDelivery\Order\DDeliveryOrder;
             return Utils::getCompanySubInfo();
         }
 
+
+
+
         /**
          *
          * Инициализирует свойства объекта DDeliveryOrder из stdClass полученный из
@@ -1805,8 +1808,7 @@ use DDelivery\Order\DDeliveryOrder;
          * Удалить все заказы
          * @return bool
          */
-        public function deleteAllOrders()
-        {
+        public function deleteAllOrders(){
             $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
             return $orderDB->cleanOrders();
         }
@@ -1818,8 +1820,7 @@ use DDelivery\Order\DDeliveryOrder;
          *
          * @return string
          */
-        public function getDDStatusDescription( $ddStatus )
-        {
+        public function getDDStatusDescription( $ddStatus ){
            $statusProvider = new DDStatusProvider();
            return $statusProvider->getOrderDescription( $ddStatus );
         }
@@ -1875,4 +1876,24 @@ use DDelivery\Order\DDeliveryOrder;
         }
 
 
+        /**
+         * Получить список заказов по массиву из ID
+         *
+         * @param $ids
+         * @return array
+         */
+        public function getOrderList($ids){
+            $orderDB = new DataBase\Order($this->pdo, $this->pdoTablePrefix);
+            $orders = $orderDB->getOrderList($ids);
+            $orderList = array();
+            if( count($orders) ) {
+                foreach( $orders as &$item ){
+                    $productList = unserialize($item->cart);
+                    $currentOrder = new DDeliveryOrder($productList);
+                    $this->_initOrderInfo($currentOrder, $item);
+                    $orderList[] = $currentOrder;
+                }
+            }
+            return $orderList;
+        }
     }
