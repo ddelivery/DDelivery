@@ -287,8 +287,7 @@ class Order {
         $add_field2 = $order->addField2;
         $add_field3 = $order->addField3;
         $cart = $order->getSerializedProducts();
-	    if( $this->isRecordExist($localId) )
-	    {
+	    if( $this->isRecordExist($localId) ){
             $query = "UPDATE {$this->prefix}orders
                       SET payment_variant = :payment_variant,
                           shop_refnum = :shop_refnum, local_status = :local_status,

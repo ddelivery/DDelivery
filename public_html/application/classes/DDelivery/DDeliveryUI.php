@@ -90,8 +90,7 @@ use DDelivery\Order\DDeliveryOrder;
             $this->_initDb($dShopAdapter);
 
             // Формируем объект заказа
-            if(!$skipOrder)
-            {
+            if(!$skipOrder){
                 $productList = $this->shop->getProductsFromCart();
                 $this->order = new DDeliveryOrder( $productList );
                 $this->order->amount = $this->shop->getAmount();
