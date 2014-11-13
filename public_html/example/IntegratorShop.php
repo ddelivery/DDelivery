@@ -293,7 +293,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return string[]
      */
     public function getClientAddress() {
-        return array('Улица','Дом','Корпус','Квартира','5');
+        return array('Улица 1','Дом 2','Корпус 3','Квартира 4','5');
     }
 
     public function getClientEmail(){
@@ -376,6 +376,9 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
         return true;
     }
 
+    public function getClientZipCode(){
+       return 14000;
+    }
 
     /**
      * Возвращает бинарную маску обязательных полей для курьера

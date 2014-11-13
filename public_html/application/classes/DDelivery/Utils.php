@@ -107,7 +107,7 @@ class Utils {
                     50 => array('name' => 'Почта России 1-й класс', 'ico' => 'mail'),
                     51 => array('name' => 'EMS Почта России', 'ico' => 'ems'),
                     52 => array('name' => 'ЕКБ-доставка забор', 'ico' => 'pack'),
-                    53 => array('name' => 'ЕКБ-доставка курьер', 'ico' => 'pack'),
+                    53 => array('name' => 'Грейт Экспресс', 'ico' => 'pack'),
                     54 => array('name' => 'Почта России 1-й класс.', 'ico' => 'mail'),
                     55 => array('name' => 'Почта России.', 'ico' => 'mail'),
                     58 => array('name' => 'FSD - курьерская доставка по Москве', 'ico' => 'pack'),

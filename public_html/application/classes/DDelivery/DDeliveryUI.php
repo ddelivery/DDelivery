@@ -263,7 +263,7 @@ use DDelivery\Order\DDeliveryOrder;
             $this->saveFullOrder($order);
             $this->shop->setCmsOrderStatus($order->shopRefnum, $order->localStatus);
             return array('cms_order_id' => $order->shopRefnum, 'ddStatus' => $order->ddStatus,
-                         'localStatus' => $order->localStatus );
+                         'localStatus' => $order->localStatus, 'ddelivery_id' => $order->ddeliveryID  );
         }
 
         /**
