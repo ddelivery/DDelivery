@@ -425,7 +425,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return array
      */
     public function getCustomCourierCompanies(){
-        return array();
+        //return array();
         return array(
             'custom_company1' => array(
                 'city' => 151184,
@@ -453,7 +453,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return array
      */
     public function getCustomSelfCompanies(){
-        return array();
+        //return array();
         return array(
             'custom_self_company1' => array(
                 'city' => 151184,
@@ -481,7 +481,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      * @return array
      */
     public function getCustomSelfPoints(){
-        return array();
+        //return array();
         return array(
             1000900 => array(
                 '_id' => 1000900,

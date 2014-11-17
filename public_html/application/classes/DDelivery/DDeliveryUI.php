@@ -807,7 +807,7 @@ use DDelivery\Order\DDeliveryOrder;
             if( $pickup ){
                $price = $companyArray['total_price'];
             }else{
-               $price = $companyArray['delivery_price'];
+               $price = $companyArray['total_price'] - $companyArray['pickup_price'];;
             }
             return $price;
         }
@@ -828,7 +828,7 @@ use DDelivery\Order\DDeliveryOrder;
             if( $pickup ){
                 $price = $companyArray['total_price'];
             }else{
-                $price = $companyArray['delivery_price'];
+                $price = $companyArray['total_price'] - $companyArray['pickup_price'];
             }
             // интервалы
             $price = $this->shop->preDisplayPointCalc($price, $order->getAmount());
