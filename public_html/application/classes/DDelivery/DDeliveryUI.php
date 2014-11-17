@@ -991,10 +991,10 @@ use DDelivery\Order\DDeliveryOrder;
             $sortElement = ( ( $pickup )?'total_price':'delivery_price' );
             if( $sortElement == 'delivery_price' ){
                 usort($resultCompanies, function($a, $b){
-                    if ($a['delivery_price'] == $b['delivery_price']) {
+                    if (($a['total_price'] - $a['pickup_price']) == ($b['total_price'] - $b['pickup_price'])) {
                         return 0;
                     }
-                    return ($a['delivery_price'] < $b['delivery_price']) ? -1 : 1;
+                    return ( ($a['total_price'] - $a['pickup_price']) < ($b['total_price'] - $b['pickup_price'])) ? -1 : 1;
                 });
             }else{
                 usort($resultCompanies, function($a, $b){
