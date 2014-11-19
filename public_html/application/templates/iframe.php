@@ -2,7 +2,8 @@
 <html lang="ru-RU">
     <head>
         <meta charset="UTF-8">
-        <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+
         <link rel="stylesheet" href="<?=$styleUrl?>css/screen.css?<?=$version?>"/>
     </head>
     <body>
