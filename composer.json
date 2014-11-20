@@ -3,6 +3,7 @@
     "description": "sdk",
     "minimum-stability": "dev",
     "license": "proprietary",
+    "type": "library",
     "keywords": ["delivery"],
     "homepage": "https://github.com/ddelivery/DDelivery/",
     "authors": [
