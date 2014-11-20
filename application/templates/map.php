@@ -19,7 +19,7 @@
         <p>Я хочу</p>
 
         <div class="delivery-type">
-            <?require(__DIR__.DIRECTORY_SEPARATOR.'typeHelper.php')?>
+            <? require(__DIR__ . DIRECTORY_SEPARATOR . 'typeHelper.php') ?>
         </div>
         <!--delivery-type end-->
 

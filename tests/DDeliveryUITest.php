@@ -1,7 +1,7 @@
 <?php
 // setShopOrderId
 use DDelivery\Order\DDeliveryProduct;
-include_once(__DIR__ .'/../example/IntegratorShop.php');
+include_once(__DIR__ . '/../example/IntegratorShop.php');
 
 
 class DDeliveryUITest extends PHPUnit_Framework_TestCase

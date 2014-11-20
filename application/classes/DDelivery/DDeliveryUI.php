@@ -1638,7 +1638,7 @@ use DDelivery\Order\DDeliveryOrder;
                 $cityList = $this->cityLocator->getCityByDisplay($this->order->city, $this->order->cityName);
 
                 ob_start();
-                include(__DIR__.'/../../templates/typeForm.php');
+                include(__DIR__ . '/../../templates/typeForm.php');
                 $content = ob_get_contents();
                 ob_end_clean();
 
@@ -1662,7 +1662,7 @@ use DDelivery\Order\DDeliveryOrder;
             $headerData = $this->getDataFromHeader();
 
             ob_start();
-            include(__DIR__.'/../../templates/couriers.php');
+            include(__DIR__ . '/../../templates/couriers.php');
             $content = ob_get_contents();
             ob_end_clean();
 
@@ -1737,7 +1737,7 @@ use DDelivery\Order\DDeliveryOrder;
             }
 
             ob_start();
-            include(__DIR__.'/../../templates/contactForm.php');
+            include(__DIR__ . '/../../templates/contactForm.php');
             $content = ob_get_contents();
             ob_end_clean();
             $content = str_replace('<input', '<inp!KasperskyHack!ut', $content);
