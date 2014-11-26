@@ -139,8 +139,11 @@ use DDelivery\Order\DDeliveryOrder;
          * @return mixed
          */
         public function getLocalStatusByDD( $ddStatus ){
-            return $this->shop->getLocalStatusByDD( $ddStatus );
+            $statusArray = $this->shop->getCmsOrderStatusList();
+            return $statusArray[$ddStatus];
         }
+
+
 
         /**
          *

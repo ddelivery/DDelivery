@@ -29,7 +29,7 @@ abstract class DShopAdapter{
      */
     const CACHING_TYPE_INDIVIDUAL = 'individual';
 
-    const SDK_VERSION = '2.1.9';
+    const SDK_VERSION = '2.2';
     /**
      * Имя редактируется
      */
@@ -145,6 +145,14 @@ abstract class DShopAdapter{
                                         DDStatusProvider::ORDER_RETURNED_MI => 'Возвращен в ИМ',
                                         DDStatusProvider::ORDER_WAITING => 'Ожидание',
                                         DDStatusProvider::ORDER_CANCEL => 'Отмена' );
+
+
+    /**
+     * Получить массив с соответствие статусов DDelivery
+     * @return array
+     */
+    public abstract  function getCmsOrderStatusList();
+
 
     /**
      * Настройки базы данных

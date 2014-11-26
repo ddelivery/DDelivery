@@ -487,6 +487,8 @@ class DDeliveryOrder
             $return .= ' корп.'.$this->toHousing;
         if($this->toFlat)
             $return .= ' кв.'.$this->toFlat;
+        if($this->cityName)
+            $return .= ' '.$this->cityName;
 
         return $return;
     }

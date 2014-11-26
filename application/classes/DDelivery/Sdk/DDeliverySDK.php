@@ -129,7 +129,7 @@ class DDeliverySDK {
     public function getOrderStatus( $orderID )
     {
     	$params = array( 'order' => $orderID );
-    	$response = $this->requestProvider->request( 'order_status', $params,'get' );
+    	$response = $this->requestProvider->request( 'order_status', $params, 'get' );
     	
     	if( !count ( $response->response ))
     	{
