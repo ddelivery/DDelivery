@@ -83,7 +83,24 @@ abstract class PluginFilters extends DShopAdapter
                         DDStatusProvider::ORDER_CANCEL => 'Отмена'
            );
     }
+    /**
+     * Получить папку для php шаблона для сдк
+     *
+     * @return string
+     */
+    public function getTemplateScript(){
+        return 'default';
+    }
 
+
+    /**
+     * Получить название шаблона для сдк ( разные цветовые схемы )
+     *
+     * @return string
+     */
+    public function getTemplate(){
+        return 'default';
+    }
     public  function  getErrorMsg( \Exception $e, $extraParams = array() ){
         return $e->getMessage();
     }

@@ -211,13 +211,11 @@ abstract class DShopAdapter{
 
 
     /**
-     * Получить название шаблона для сдк ( разные цветовые схемы )
+     * Получить папку для php шаблона для сдк
      *
      * @return string
      */
-    public function getTemplateScript(){
-        return 'default';
-    }
+    public abstract function getTemplateScript();
 
 
     /**
@@ -225,9 +223,7 @@ abstract class DShopAdapter{
      *
      * @return string
      */
-    public function getTemplate(){
-        return 'default';
-    }
+    public abstract  function getTemplate();
     /**
      * Возвращаем сервер для логгирования ошибок
      */
