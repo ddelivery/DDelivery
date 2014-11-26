@@ -209,6 +209,17 @@ abstract class DShopAdapter{
         return DShopAdapter::CACHING_TYPE_INDIVIDUAL;
     }
 
+
+    /**
+     * Получить название шаблона для сдк ( разные цветовые схемы )
+     *
+     * @return string
+     */
+    public function getTemplateScript(){
+        return 'default';
+    }
+
+
     /**
      * Получить название шаблона для сдк ( разные цветовые схемы )
      *

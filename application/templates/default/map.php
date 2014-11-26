@@ -40,7 +40,7 @@
                     <ul class="search"></ul>
                     <h2 class="pop">Популярные города:</h2>
                     <ul class="pop">
-                        <?include(__DIR__.'/cityHelper.php');?>
+                        <? include(__DIR__ . '/cityHelper.php');?>
                     </ul>
                 </div>
             </div>
@@ -66,7 +66,7 @@
             <h2>Пункты:</h2>
 
             <div class="places">
-                <?require(__DIR__.DIRECTORY_SEPARATOR.'mapCompanyHelper.php');?>
+                <? require(__DIR__ . DIRECTORY_SEPARATOR . 'mapCompanyHelper.php');?>
             </div>
             <!--places end-->
 

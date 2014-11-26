@@ -90,8 +90,7 @@ use DDelivery\Order\DDeliveryOrder;
             $this->_initDb($dShopAdapter);
 
             // Формируем объект заказа
-            if(!$skipOrder)
-            {
+            if(!$skipOrder){
                 $productList = $this->shop->getProductsFromCart();
                 $this->order = new DDeliveryOrder( $productList );
                 $this->order->amount = $this->shop->getAmount();
@@ -1177,13 +1176,14 @@ use DDelivery\Order\DDeliveryOrder;
          */
         public function render($request)
         {
+            $phpTemplate = $this->shop->getTemplateScript();
             if(isset($request['iframe'])) {
                 $staticURL = $this->shop->getStaticPath();
                 $styleUrl = $this->shop->getStaticPath() . 'tems/' . $this->shop->getTemplate() . '/';
                 $scriptURL = $this->shop->getPhpScriptURL();
                 $version = DShopAdapter::SDK_VERSION;
                 $captions = $this->shop->getCaptions();
-                include(__DIR__ . '/../../templates/iframe.php');
+                include(__DIR__ . '/../../templates/' . $phpTemplate . '/iframe.php');
                 return;
             }
 
@@ -1237,7 +1237,7 @@ use DDelivery\Order\DDeliveryOrder;
                             $content = '';
                             if($request['action'] == 'searchCity'){
                                 ob_start();
-                                include(__DIR__ . '/../../templates/cityHelper.php');
+                                include(__DIR__ . '/../../templates/' . $phpTemplate . '/cityHelper.php');
                                 $content = ob_get_contents();
                                 ob_end_clean();
                             }else{ // searchCityMap
@@ -1532,9 +1532,12 @@ use DDelivery\Order\DDeliveryOrder;
          */
 
         protected function renderMap($dataOnly = false){
+
             $cityId = $this->order->city;
             $staticURL = $this->shop->getStaticPath();
             $styleUrl = $this->shop->getStaticPath() . 'tems/' . $this->shop->getTemplate() . '/';
+            $phpTemplate = $this->shop->getTemplateScript();
+
 
             $selfCompanyList = $this->cachedCalculateSelfPrices( $this->order );
             $pointsJs = array();
@@ -1543,7 +1546,7 @@ use DDelivery\Order\DDeliveryOrder;
             }
             if($dataOnly) {
                 ob_start();
-                include(__DIR__ . '/../../templates/mapCompanyHelper.php');
+                include(__DIR__ . '/../../templates/' . $phpTemplate . '/mapCompanyHelper.php');
                 $content = ob_get_contents();
                 ob_end_clean();
                 $dataFromHeader = $this->getDataFromHeader();
@@ -1553,7 +1556,7 @@ use DDelivery\Order\DDeliveryOrder;
                 $cityList = $this->cityLocator->getCityByDisplay($this->order->city, $this->order->cityName);
                 $headerData = $this->getDataFromHeader();
                 ob_start();
-                include(__DIR__ . '/../../templates/map.php');
+                include(__DIR__ . '/../../templates/' . $phpTemplate . '/map.php');
                 $content = ob_get_contents();
                 ob_end_clean();
                 return json_encode(array('html'=>$content, 'js'=>'map', 'points' => $pointsJs, 'orderId' => $this->order->localId, 'type'=>DDeliverySDK::TYPE_SELF));
@@ -1628,6 +1631,8 @@ use DDelivery\Order\DDeliveryOrder;
         protected function renderDeliveryTypeForm( $dataOnly = false ){
             $staticURL = $this->shop->getStaticPath();
             $styleUrl = $this->shop->getStaticPath() . 'tems/' . $this->shop->getTemplate() . '/';
+            $phpTemplate = $this->shop->getTemplateScript();
+
             $cityId = $this->order->city;
 
             $order = $this->order;
@@ -1641,7 +1646,7 @@ use DDelivery\Order\DDeliveryOrder;
                 $cityList = $this->cityLocator->getCityByDisplay($this->order->city, $this->order->cityName);
 
                 ob_start();
-                include(__DIR__ . '/../../templates/typeForm.php');
+                include(__DIR__ . '/../../templates/' . $phpTemplate . '/typeForm.php');
                 $content = ob_get_contents();
                 ob_end_clean();
 
@@ -1660,12 +1665,15 @@ use DDelivery\Order\DDeliveryOrder;
             $companies = $this->getCompanySubInfo();
             $staticURL = $this->shop->getStaticPath();
             $styleUrl = $this->shop->getStaticPath() . 'tems/' . $this->shop->getTemplate() . '/';
+            $phpTemplate = $this->shop->getTemplateScript();
+
+
             $courierCompanyList = $this->cachedCalculateCourierPrices( $this->order );
             // Ресетаем ключи.
             $headerData = $this->getDataFromHeader();
 
             ob_start();
-            include(__DIR__ . '/../../templates/couriers.php');
+            include(__DIR__ . '/../../templates/' . $phpTemplate . '/couriers.php');
             $content = ob_get_contents();
             ob_end_clean();
 
@@ -1677,6 +1685,7 @@ use DDelivery\Order\DDeliveryOrder;
          * @return string
          */
         private function renderContactForm(){
+            $phpTemplate = $this->shop->getTemplateScript();
             $point = $this->getOrder()->getPoint();
             if(!$point){
                 return '';
@@ -1740,7 +1749,7 @@ use DDelivery\Order\DDeliveryOrder;
             }
 
             ob_start();
-            include(__DIR__ . '/../../templates/contactForm.php');
+            include(__DIR__ . '/../../templates/' . $phpTemplate . '/contactForm.php');
             $content = ob_get_contents();
             ob_end_clean();
             $content = str_replace('<input', '<inp!KasperskyHack!ut', $content);

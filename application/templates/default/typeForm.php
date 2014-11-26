@@ -23,7 +23,7 @@
                     <ul class="search"></ul>
                     <h2 class="pop">Популярные города:</h2>
                     <ul class="pop">
-                        <?include(__DIR__.'/cityHelper.php');?>
+                        <? include(__DIR__ . '/cityHelper.php');?>
                     </ul>
                 </div>
             </div>
