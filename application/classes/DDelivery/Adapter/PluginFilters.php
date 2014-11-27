@@ -89,7 +89,7 @@ abstract class PluginFilters extends DShopAdapter
      * @return string
      */
     public function getTemplateScript(){
-        return 'default';
+        return __DIR__ . '/../../../templates/default/';
     }
 
 

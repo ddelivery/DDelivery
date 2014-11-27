@@ -1183,7 +1183,7 @@ use DDelivery\Order\DDeliveryOrder;
                 $scriptURL = $this->shop->getPhpScriptURL();
                 $version = DShopAdapter::SDK_VERSION;
                 $captions = $this->shop->getCaptions();
-                include(__DIR__ . '/../../templates/' . $phpTemplate . '/iframe.php');
+                include($phpTemplate .'iframe.php');
                 return;
             }
 
@@ -1237,7 +1237,7 @@ use DDelivery\Order\DDeliveryOrder;
                             $content = '';
                             if($request['action'] == 'searchCity'){
                                 ob_start();
-                                include(__DIR__ . '/../../templates/' . $phpTemplate . '/cityHelper.php');
+                                include( $phpTemplate . 'cityHelper.php');
                                 $content = ob_get_contents();
                                 ob_end_clean();
                             }else{ // searchCityMap
@@ -1546,7 +1546,7 @@ use DDelivery\Order\DDeliveryOrder;
             }
             if($dataOnly) {
                 ob_start();
-                include(__DIR__ . '/../../templates/' . $phpTemplate . '/mapCompanyHelper.php');
+                include( $phpTemplate . 'mapCompanyHelper.php' );
                 $content = ob_get_contents();
                 ob_end_clean();
                 $dataFromHeader = $this->getDataFromHeader();
@@ -1556,7 +1556,7 @@ use DDelivery\Order\DDeliveryOrder;
                 $cityList = $this->cityLocator->getCityByDisplay($this->order->city, $this->order->cityName);
                 $headerData = $this->getDataFromHeader();
                 ob_start();
-                include(__DIR__ . '/../../templates/' . $phpTemplate . '/map.php');
+                include( $phpTemplate . 'map.php');
                 $content = ob_get_contents();
                 ob_end_clean();
                 return json_encode(array('html'=>$content, 'js'=>'map', 'points' => $pointsJs, 'orderId' => $this->order->localId, 'type'=>DDeliverySDK::TYPE_SELF));
@@ -1646,7 +1646,7 @@ use DDelivery\Order\DDeliveryOrder;
                 $cityList = $this->cityLocator->getCityByDisplay($this->order->city, $this->order->cityName);
 
                 ob_start();
-                include(__DIR__ . '/../../templates/' . $phpTemplate . '/typeForm.php');
+                include($phpTemplate . 'typeForm.php');
                 $content = ob_get_contents();
                 ob_end_clean();
 
@@ -1673,7 +1673,7 @@ use DDelivery\Order\DDeliveryOrder;
             $headerData = $this->getDataFromHeader();
 
             ob_start();
-            include(__DIR__ . '/../../templates/' . $phpTemplate . '/couriers.php');
+            include($phpTemplate . 'couriers.php');
             $content = ob_get_contents();
             ob_end_clean();
 
@@ -1749,7 +1749,7 @@ use DDelivery\Order\DDeliveryOrder;
             }
 
             ob_start();
-            include(__DIR__ . '/../../templates/' . $phpTemplate . '/contactForm.php');
+            include($phpTemplate . 'contactForm.php');
             $content = ob_get_contents();
             ob_end_clean();
             $content = str_replace('<input', '<inp!KasperskyHack!ut', $content);
