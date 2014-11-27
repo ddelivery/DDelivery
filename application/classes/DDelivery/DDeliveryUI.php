@@ -1484,7 +1484,6 @@ use DDelivery\Order\DDeliveryOrder;
                         $dd_width = $request['ddcalc_width'];
                         $dd_height = $request['ddcalc_height'];
                         $dd_length = $request['ddcalc_length'];
-
                         $pickup = $this->sdk->calculatorPickupForCity( $dd_to, $dd_width, $dd_height, $dd_length, $dd_weight, $dd_payment );
                         $courier = $this->sdk->calculatorCourier( $dd_to, $dd_width, $dd_height, $dd_length, $dd_weight, $dd_payment );
                         echo json_encode(
