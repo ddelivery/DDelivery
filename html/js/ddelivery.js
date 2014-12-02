@@ -19,7 +19,7 @@ var DDelivery = {
         object.style.height = '650px';
         object.innerHTML = '';
         object.appendChild(iframe);
-        iframe.contentWindow.params = params;
+
 
         if(typeof(callbacks)!='object'){
             callbacks = false;
@@ -47,6 +47,9 @@ var DDelivery = {
         } else { //код для IE
             window.attachEvent("onmessage", message);
         }
+
+        iframe.contentWindow.params = params;
+
     }
 };
 

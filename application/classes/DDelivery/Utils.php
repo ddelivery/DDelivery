@@ -115,4 +115,12 @@ class Utils {
         );
     }
 
+    /**
+     * Возвращает ID почтових компаний доставки
+     * @return array
+     */
+    public static function getPostCompanies(){
+        return array(44,50,54,55,51,61);
+    }
+
 } 
