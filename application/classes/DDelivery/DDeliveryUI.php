@@ -1465,9 +1465,11 @@ use DDelivery\Order\DDeliveryOrder;
                             $resultCity = array();
                             if( count( $cityList ) ){
                                 foreach($cityList as $key => $city){
-                                    $resultCity[$key]['label'] = Utils::firstWordLiterUppercase($city['name']);
-                                    if($cityList[$key]['region'] != $resultCity[$key]['label']) {
-                                        $resultCity[$key]['label'] .= ', '.$cityList[$key]['region'].' обл.';
+                                    $resultCity[$key]['label'] = $city['type'] . '. ' . Utils::firstWordLiterUppercase($city['name']);
+                                    $resultCity[$key]['name'] = $city['type'] . '. ' . Utils::firstWordLiterUppercase($city['name']);
+
+                                    if( !strpos($cityList[$key]['region'], $cityList[$key]['name']) ) {
+                                        $resultCity[$key]['label'] .= ', '.$cityList[$key]['region'];
                                     }
                                     $resultCity[$key]['id'] = $city['_id'];
                                 }
