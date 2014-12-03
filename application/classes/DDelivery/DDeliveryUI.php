@@ -1452,7 +1452,7 @@ use DDelivery\Order\DDeliveryOrder;
                     case 'getCityIp':
                         $cityList = $this->sdk->getCityByIp( $_SERVER['REMOTE_ADDR'] );
                         if( count($cityList->response)){
-                            $cityList->response['city'] = Utils::firstWordLiterUppercase( $cityList->response['city'] );
+                            $cityList->response['city'] = $cityList->response['type'] . ' ' . Utils::firstWordLiterUppercase( $cityList->response['city'] );
                             echo json_encode( $cityList->response );
                         }else{
                             echo json_encode(array());
