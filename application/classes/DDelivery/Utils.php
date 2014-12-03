@@ -116,7 +116,7 @@ class Utils {
     }
 
     /**
-     * Возвращает ID почтових компаний доставки
+     * Возвращает ID почтових компаний доставкиc
      * @return array
      */
     public static function getPostCompanies(){
