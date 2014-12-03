@@ -1,7 +1,6 @@
 {
     "name": "ddelivery/sdk",
     "description": "sdk",
-    "minimum-stability": "dev",
     "license": "proprietary",
     "type": "library",
     "keywords": ["delivery"],
