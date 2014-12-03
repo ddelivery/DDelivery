@@ -1466,7 +1466,7 @@ use DDelivery\Order\DDeliveryOrder;
                             if( count( $cityList ) ){
                                 foreach($cityList as $key => $city){
                                     $resultCity[$key]['label'] = Utils::firstWordLiterUppercase($city['name']);
-                                    if($cityList[$key]['region'] != $cityList[$key]['label']) {
+                                    if($cityList[$key]['region'] != $resultCity[$key]['label']) {
                                         $resultCity[$key]['label'] .= ', '.$cityList[$key]['region'].' обл.';
                                     }
                                     $resultCity[$key]['id'] = $city['_id'];
