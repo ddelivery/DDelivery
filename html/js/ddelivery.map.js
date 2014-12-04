@@ -56,7 +56,7 @@ Map = (function () {
                         th.render();
                         th.event();
                     });
-                alert($('.delivery-place__title input').attr('title'));
+
             });
 
             // Инпут поиска
