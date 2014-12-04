@@ -56,6 +56,7 @@ Map = (function () {
                         th.render();
                         th.event();
                     });
+                alert($('.delivery-place__title input').attr('title'));
             });
 
             // Инпут поиска
@@ -72,6 +73,7 @@ Map = (function () {
             // Область видимости геообъекта.
             var bounds = renderGeoObject.properties.get('boundedBy');
             // Получаем где отрисовать карту
+
             var centerAndZoom = ymaps.util.bounds.getCenterAndZoom(bounds, [mapObject.width(), mapObject.height()]);
 
             yamap = new ymaps.Map(mapObject[0], {
