@@ -1468,7 +1468,7 @@ use DDelivery\Order\DDeliveryOrder;
                                     $resultCity[$key]['label'] = $city['type'] . '. ' . Utils::firstWordLiterUppercase($city['name']);
                                     $resultCity[$key]['name'] = $city['type'] . '. ' . Utils::firstWordLiterUppercase($city['name']);
 
-                                    if( !strpos($cityList[$key]['region'], $cityList[$key]['name']) ) {
+                                    if( strpos($cityList[$key]['region'], $cityList[$key]['name']) === false ) {
                                         $resultCity[$key]['label'] .= ', '.$cityList[$key]['region'];
                                     }
                                     $resultCity[$key]['id'] = $city['_id'];
