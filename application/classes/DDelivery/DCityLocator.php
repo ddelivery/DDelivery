@@ -96,7 +96,7 @@ class DCityLocator{
      * @return $cityData
      */
     public function getCityNameByDisplay( &$cityData ){
-        print_r($cityData);
+        //print_r($cityData);
         $cityData['name'] = Utils::firstWordLiterUppercase($cityData['name']);
         //Собирает строчку с названием города для отображения
         $displayCityName = $cityData['type'].'. '.$cityData['name'];
