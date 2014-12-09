@@ -10,9 +10,11 @@ include_once("IntegratorShop.php");
 use DDelivery\DDeliveryUI;
 // xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 try{
-    
+
     $IntegratorShop = new IntegratorShop();
     $ddeliveryUI = new DDeliveryUI($IntegratorShop);
+    // Из админки можно подцепить заказ таким образом
+    //$ddeliveryUI->setOrder($ddeliveryUI->initOrder(5));
     // В зависимости от параметров может выводить полноценный html или json
     $ddeliveryUI->render(isset($_REQUEST) ? $_REQUEST : array());
 }catch ( \DDelivery\DDeliveryException $e ){

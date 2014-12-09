@@ -11,6 +11,7 @@ var DDeliveryIframe = (function () {
         componentUrl: null,
         staticUrl: null,
         orderId: null,
+        order: {},
         init: function (_componentUrl, _staticUrl) {
             if(!window.parent || window.parent == window) {
                 //document.location.href='http://www.ddelivery.ru/';
@@ -21,14 +22,18 @@ var DDeliveryIframe = (function () {
             // Да, нужно его подрубить тут
             Header.init();
             this.ajaxPage({});
-
             $('#ddelivery_loader .load_error a').click(repeatLastQuery);
+
         },
         ajaxPage: function (data) {
             lastData = data;
             var th = this;
-            if (this.orderId)
-                data.order_id = this.orderId;
+            for(var key in th.order) {
+                if(typeof(data[key]) == 'undefined') {
+                    data[key] = th.order[key];
+                }
+            }
+
             $('#ddelivery').hide();
             $('#ddelivery_loader').show();
 
@@ -40,8 +45,8 @@ var DDeliveryIframe = (function () {
                 dataHtml.html = dataHtml.html.replace(/!KasperskyHack!/g,'');
                 $('#ddelivery').html(dataHtml.html).show();
                 //$('#ddelivery').html(dataHtml.html.replace(/!kasperskyhack!/g, '')).show();
-                if (typeof(dataHtml.orderId) != 'undefined' && dataHtml.orderId) {
-                    th.orderId = dataHtml.orderId;
+                if (typeof(dataHtml.order) != 'undefined' && dataHtml.order) {
+                    th.order = dataHtml.order;
                 }
 
                 $(window).trigger('ajaxPageRender', {params: data, result: dataHtml});
@@ -57,9 +62,15 @@ var DDeliveryIframe = (function () {
             $(window).trigger('ajaxPageRequest', {params: data});
         },
         ajaxData: function (data, callBack) {
-            if (this.orderId)
-                data.order_id = this.orderId;
+            var th = this;
+            for(var key in th.order) {
+                if(typeof(data[key]) == 'undefined') {
+                    data[key] = th.order[key];
+                }
+            }
             $.post(componentUrl, data, function(result){
+                if (result.order)
+                    th.order = result.order;
                 $(window).trigger('ajaxDataResult', {params: data, result: result});
                 callBack(result);
             }, 'json');

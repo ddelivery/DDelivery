@@ -38,7 +38,7 @@ var Courier = (function () {
             });
 
             $(window).on('ddeliveryCityPlace', function (e, city) {
-                DDeliveryIframe.ajaxPage({action:'courier', city_id: city.id, city_alias:city.title });
+                DDeliveryIframe.ajaxPage({action:'courier', city: city.id, cityName:city.title });
             });
 
             $('.map-popup__main__delivery__next a').click(function () {
@@ -50,7 +50,7 @@ var Courier = (function () {
                     }
 
                     DDeliveryIframe.ajaxPage({
-                        point: radio,
+                        pointID: radio,
                         action: 'contactForm',
                         type: 2
                     });

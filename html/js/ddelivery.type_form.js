@@ -58,8 +58,9 @@ var TypeForm = (function () {
                 if (radio) {
                     DDeliveryIframe.ajaxPage({
                         type: radio,
-                        city_id: $('input[name=ddelivery_city]').val(),
-                        city_alias: cityTitle
+                        city: $('input[name=ddelivery_city]').val(),
+                        cityName: cityTitle,
+                        pointID: 0
                     });
                 }
             });
@@ -69,7 +70,7 @@ var TypeForm = (function () {
                 $('.col4 span', table).css('visibility', 'hidden');
                 $('.col5 span', table).css('visibility', 'hidden');
                 $('.col4 img', table).show();
-                DDeliveryIframe.ajaxData({action: 'typeFormDataOnly', city_id: data.id, city_alias: data.title}, function (data) {
+                DDeliveryIframe.ajaxData({action: 'typeFormDataOnly', city: data.id, cityName: data.title, type: 0}, function (data) {
                     $('.col4 span', table).css('visibility', 'inherit');
                     $('.col5 span', table).css('visibility', 'inherit');
                     $('.col4 img', table).hide();
