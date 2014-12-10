@@ -187,12 +187,7 @@ class DDeliveryOrder
     public $cityName = null;
 
     /**
-     * @var DDeliveryOrderCache - кеш в контексте заказа
-     */
-    public $orderCache;
-
-    /**
-     * @var DDeliveryOrderCache - кеш в контексте заказа
+     * @var int id точки
      */
     public $pointID;
 
@@ -229,24 +224,6 @@ class DDeliveryOrder
         
         // Получаем параметры для товаров в заказе
         $this->getProductParams();
-        $this->orderCache = new DDeliveryOrderCache();
-    }
-
-    public function getCacheValue( $field, $sig ){
-        if( ($this->orderCache->sig == $sig) && ( $this->orderCache->$field != null ) ){
-            return $this->orderCache->$field;
-        }
-        return false;
-    }
-
-    public function setCacheValue( $field, $sig, $value ){
-        if( $this->orderCache->sig == $sig ){
-            $this->orderCache->$field = $value;
-        }else{
-            $this->orderCache = new DDeliveryOrderCache();
-            $this->orderCache->sig = $sig;
-            $this->orderCache->$field = $value;
-        }
     }
 
     /**

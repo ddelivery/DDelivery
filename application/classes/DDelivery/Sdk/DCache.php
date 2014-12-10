@@ -61,31 +61,6 @@ class DCache
         $this->cache = $cache;
     }
 
-    public function get($cityID, $filter_company = ''){
-        $cityID = (int) $cityID;
-        $data = $this->cache->getCacheDataByCityID($cityID);
-
-        if( count( $data ) ){
-            $datetime1 = new \DateTime();
-            $datetime2 = new \DateTime( $data[0]->expired );
-
-            if( $datetime1 > $datetime2 || ( (strlen($filter_company) > 0) && ($filter_company!= $data[0]->filter_company))){
-                $this->cache->deleteItem($cityID);
-                $result = array();
-            }else{
-                $result = unserialize( $data[0]->data_container );
-            }
-        }else{
-            $result = array();
-        }
-        return $result;
-    }
-
-    public function set($cityID, $content, $filter_company){
-        $cityID = (int) $cityID;
-        $this->cache->setCacheData( $cityID, serialize($content), $this->expired, $filter_company );
-    }
-
     /**
      * Очистить БД с кэшем
      */
@@ -145,9 +120,9 @@ class DCache
     public function getCache( $sig )
     {
         $cache = $this->getCacheObject();
-        if( $data_container = $cache->getCacheRec($sig) )
+        if( $dataContainer = $cache->getCacheRec($sig) )
         {
-            return unserialize($data_container);
+            return unserialize($dataContainer);
         }
         else
         {
@@ -163,13 +138,13 @@ class DCache
      * @param int $expired время жизни кеша в минтуах
      * @return bool
      */
-    public function setCache( $sig, $data, $expired )
+    public function setCache( $sig, $data, $expired = null )
     {
         $cache = $this->getCacheObject();
         $data_container = serialize( $data );
         if(strlen($data_container) > 65000)
             return false;
-        $id = $cache->save($sig, $data_container, $expired);
+        $id = $cache->save($sig, $data_container, $expired ? $expired : $this->expired);
         return $id;
     }
 

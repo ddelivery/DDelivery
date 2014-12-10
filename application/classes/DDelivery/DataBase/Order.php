@@ -85,7 +85,6 @@ class Order {
                             `ddeliveryorder_id` int(11) DEFAULT NULL,
                             `delivery_company` int(11) DEFAULT NULL,
                             `order_info` text DEFAULT NULL,
-                            `cache` text DEFAULT NULL,
                             `point` text DEFAULT NULL,
                             `add_field1` varchar(255) DEFAULT NULL,
                             `add_field2` varchar(255) DEFAULT NULL,
@@ -108,7 +107,6 @@ class Order {
                             ddeliveryorder_id INTEGER,
                             delivery_company INTEGER,
                             order_info TEXT,
-                            cache TEXT,
                             point TEXT  DEFAULT NULL,
                             add_field1 TEXT,
                             add_field2 TEXT,
@@ -280,7 +278,6 @@ class Order {
                                 'toEmail' => $order->toEmail,
                                 'toIndex' => $order->toIndex
                           ));
-        $cache = serialize( $order->orderCache );
         $point = json_encode( $order->getPoint() );
 
         $add_field1 = $order->addField1;
@@ -295,7 +292,7 @@ class Order {
                           dd_status = :dd_status, type = :type, to_city =:to_city,
                           point_id = :point_id, date = :date,
                           ddeliveryorder_id = :ddeliveryorder_id, delivery_company = :delivery_company,
-                          order_info = :order_info, cache = :cache,
+                          order_info = :order_info,
                           point = :point, add_field1 = :add_field1,
                           add_field2 = :add_field2, add_field3 = :add_field3, cart = :cart
 			          WHERE id=:id";
@@ -307,11 +304,11 @@ class Order {
             $query = "INSERT INTO {$this->prefix}orders(
                             payment_variant, shop_refnum, local_status, dd_status, type,
                             to_city, point_id, date, ddeliveryorder_id, delivery_company, order_info,
-                            cache, point, add_field1, add_field2, add_field3, cart
+                            point, add_field1, add_field2, add_field3, cart
                           ) VALUES(
 	                        :payment_variant, :shop_refnum, :local_status, :dd_status, :type,
                             :to_city, :point_id, :date, :ddeliveryorder_id, :delivery_company, :order_info,
-                            :cache, :point, :add_field1, :add_field2, :add_field3, :cart
+                            :point, :add_field1, :add_field2, :add_field3, :cart
                           )";
 
 	    	$stmt = $this->pdo->prepare($query);
@@ -330,7 +327,6 @@ class Order {
         $stmt->bindParam( ':ddeliveryorder_id', $ddeliveryID );
         $stmt->bindParam( ':delivery_company', $delivery_company );
         $stmt->bindParam( ':order_info', $order_info );
-        $stmt->bindParam( ':cache', $cache );
         $stmt->bindParam( ':point', $point );
         $stmt->bindParam( ':add_field1', $add_field1 );
         $stmt->bindParam( ':add_field2', $add_field2 );

@@ -49,16 +49,16 @@ class Cache {
     {
         if($this->pdoType == DShopAdapter::DB_MYSQL) {
             $query = 'CREATE TABLE `'.$this->prefix.'cache` (
-                      `id`  int NOT NULL,
+                      `sig` varchar(32) NOT NULL,
                       `data_container`  MEDIUMTEXT NULL ,
                       `expired`  datetime NULL,
                       `filter_company` TEXT NULL,
-                      PRIMARY KEY (`id`),
-                      INDEX `dd_cache` (`id`)
+                      PRIMARY KEY (`sig`),
+                      INDEX `dd_cache` (`sig`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8';
         }else{
             $query = 'CREATE TABLE `'.$this->prefix.'cache` (
-                      id INTEGER PRIMARY KEY,
+                      "sig"  TEXT(32) PRIMARY KEY,
                       data_container TEXT,
                       expired  TEXT,
                       filter_company TEXT
@@ -73,7 +73,7 @@ class Cache {
     public function getCacheDataByCityID( $cityID ){
         $query = 'SELECT data_container, expired, filter_company
                   FROM '.$this->prefix.'cache
-                  WHERE id = :sig';
+                  WHERE sig = :sig';
         $sth = $this->pdo->prepare( $query );
         $sth->bindParam( ':sig', $cityID );
         $sth->execute();
@@ -84,10 +84,10 @@ class Cache {
     public function setCacheData( $cityID, $data, $expired, $filter_company ){
 
         if($this->pdoType == DShopAdapter::DB_SQLITE) {
-            $query = 'INSERT INTO '.$this->prefix.'cache (id, data_container, expired, filter_company) VALUES
+            $query = 'INSERT INTO '.$this->prefix.'cache (sig, data_container, expired, filter_company) VALUES
                           (:sig, :data_container, datetime("now", "+' . $expired . ' minutes"), :filter_company)';
         }elseif($this->pdoType == DShopAdapter::DB_MYSQL) {
-            $query = 'INSERT INTO '.$this->prefix.'cache (id, data_container, expired, filter_company) VALUES
+            $query = 'INSERT INTO '.$this->prefix.'cache (sig, data_container, expired, filter_company) VALUES
                           (:sig, :data_container, ( NOW() + INTERVAL ' . $expired . ' MINUTE ), :filter_company )';
         }
         $sth = $this->pdo->prepare( $query );
@@ -99,7 +99,7 @@ class Cache {
     }
 
     public function deleteItem( $cityID ){
-        $query = 'DELETE FROM '.$this->prefix.'cache WHERE id=:sig';
+        $query = 'DELETE FROM '.$this->prefix.'cache WHERE sig=:sig';
         $sth = $this->pdo->prepare( $query );
         $sth->bindParam( ':sig', $cityID );
         if( $sth->execute() ){
@@ -193,19 +193,6 @@ class Cache {
     }
 
     /**
-     * Получить все записи кэша
-     * @return array
-     */
-    public function getAll()
-    {
-        $query = 'SELECT * FROM '.$this->prefix.'cache';
-        $sth = $this->pdo->prepare( $query );
-        $sth->execute();
-        $result = $sth->fetchAll(PDO::FETCH_OBJ);
-        return $result;
-    }
-
-    /**
      * Сохранить данные в кэш
      *
      * @param string $sig ключ
@@ -217,7 +204,6 @@ class Cache {
     public function save( $sig, $data_container, $expired )
     {
         $expired = (int)$expired;
-        $this->pdo->beginTransaction();
 
         if( $this->isRecordExist( $sig ) )
         {
@@ -238,20 +224,19 @@ class Cache {
         else
         {
             if($this->pdoType == DShopAdapter::DB_SQLITE) {
-                $query = 'INSERT INTO cache (sig, data_container, expired) VALUES
-                          (:sig, :data_container, datetime("now", "+' . $expired . ' minutes"))';
+                $query = 'INSERT INTO '.$this->prefix.'cache (sig, data_container, expired) VALUES
+                                          (:sig, :data_container, datetime("now", "+' . $expired . ' minutes"))';
             }elseif($this->pdoType == DShopAdapter::DB_MYSQL) {
-                $query = 'INSERT INTO cache (sig, data_container, expired) VALUES
-                          (:sig, :data_container, expired = NOW() + INTERVAL ' . $expired . ' MINUTE)';
+                $query = 'INSERT INTO '.$this->prefix.'cache (sig, data_container, expired) VALUES
+                          (:sig, :data_container, NOW() + INTERVAL ' . $expired . ' MINUTE)';
             }
             $sth = $this->pdo->prepare( $query );
         }
-
         $sth->bindParam( ':sig', $sig );
         $sth->bindParam( ':data_container', $data_container );
 
         $result = $sth->execute();
-        $this->pdo->commit();
+
         return $result;
     }
 
@@ -262,9 +247,9 @@ class Cache {
     public function removeExpired()
     {
         if($this->pdoType == DShopAdapter::DB_SQLITE) {
-            $query = 'DELETE FROM cache WHERE expired < datetime("now")';
+            $query = 'DELETE FROM '.$this->prefix.'cache WHERE expired < datetime("now")';
         }elseif($this->pdoType == DShopAdapter::DB_MYSQL) {
-            $query = 'DELETE FROM cache WHERE expired < NOW()';
+            $query = 'DELETE FROM '.$this->prefix.'cache WHERE expired < NOW()';
         }
         $sth = $this->pdo->prepare( $query );
         $sth->execute();
@@ -280,10 +265,10 @@ class Cache {
     {
         if($this->pdoType == DShopAdapter::DB_SQLITE) {
             $query = 'SELECT expired,  datetime("now") AS expired2  FROM
-                  cache WHERE expired < datetime("now")';
+                  '.$this->prefix.'cache WHERE expired < datetime("now")';
         }elseif($this->pdoType == DShopAdapter::DB_MYSQL) {
             $query = 'SELECT expired,  NOW() AS expired2
-                FROM cache
+                FROM '.$this->prefix.'cache
                 WHERE expired < NOW()';
         }
         $sth = $this->pdo->prepare( $query );
@@ -305,7 +290,7 @@ class Cache {
      */
     public function remove( $sig )
     {
-        $query = 'DELETE FROM cache WHERE sig = ":sig"';
+        $query = 'DELETE FROM '.$this->prefix.'cache WHERE sig = ":sig"';
         $sth = $this->pdo->prepare( $query );
         $sth->bindParam( ':sig', $sig );
         if( $sth->execute() )
