@@ -38,7 +38,7 @@ input[type="text"], textarea { -moz-border-radius: 0; -webkit-border-radius: 0; 
 .widget-wrap.theme-violet { border-color: #ddd; }
 
 .widget-wrap__title { padding: 15px 10px 10px 10px; }
-.widget-wrap__title .title-text { font-size: 13px; color: #000; line-height: 20px; }
+.widget-wrap__title .title-text {font-size: 15px; color: #F9F3E9; line-height: 20px; }
 .theme-violet .widget-wrap__title { background: url(../img/violet-pattern.png) repeat 0 0 transparent; color: #fff; margin-bottom: 15px; }
 
 .widget-delivery-type .type__item { padding: 5px 0 10px 10px; display: block; }

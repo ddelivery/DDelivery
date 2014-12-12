@@ -117,6 +117,7 @@ var DDeliveryWidget = (function(w,doc) {
                 wrapperIframe = doc.createElement('div');
                 wrapperIframe.style.display = 'block';
                 wrapperIframe.style.position = 'relative';
+                wrapperIframe.style.zIndex = '10000';
                 wrapperIframe.appendChild(iframeDiv);
 
                 triangle = doc.createElement('div');
