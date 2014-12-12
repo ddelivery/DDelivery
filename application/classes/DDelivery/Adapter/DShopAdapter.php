@@ -720,4 +720,12 @@ abstract class DShopAdapter{
      */
     public abstract function  getCaptions();
 
+    /**
+     * Возвращает массив с продуктом заданним определенним условием,
+     * если би он лежал в корзине (Исользуется в виджете когда ми расчитиваем для id продукта
+     * стоимость доставки)
+     *
+     * @return mixed
+     */
+    public abstract function getSingleProductInCart();
 }

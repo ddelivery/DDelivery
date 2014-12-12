@@ -10,6 +10,7 @@ namespace DDelivery\Adapter;
 
 use DDelivery\Adapter\DShopAdapter;
 use DDelivery\DDeliveryException;
+use DDelivery\Order\DDeliveryProduct;
 use DDelivery\Order\DDeliveryOrder;
 
 
@@ -580,6 +581,30 @@ abstract class PluginFilters extends DShopAdapter
             54 => array('name' => 'Почта России 1-й класс', 'ico' => 'mail'),
             55 => array('name' => 'Почта России 1-й класс', 'ico' => 'mail')
         );
+    }
+
+    /**
+     * Возвращает массив с продуктом заданним определенним условием,
+     * если би он лежал в корзине (Исользуется в виджете когда ми расчитиваем для id продукта
+     * стоимость доставки)
+     *
+     * @return mixed
+     */
+    public function getSingleProductInCart(){
+        $products = array();
+        $products[] = new DDeliveryProduct(
+            1,	//	int $id id товара в системе и-нет магазина
+            10,	//	float $width длинна
+            10,	//	float $height высота
+            10,	//	float $length ширина
+            0.5,	//	float $weight вес кг
+            1000,	//	float $price стоимостьв рублях
+            1,	//	int $quantity количество товара
+            'articule 222',
+            'Веселый клоун'	//	string $name Название вещи
+        );
+        //$products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'articule another', 'Грустный клоун');
+        return $products;
     }
 
 }

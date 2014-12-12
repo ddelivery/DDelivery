@@ -1,0 +1,95 @@
+@import "base";
+@import "compass";
+
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, em, img, strong, sub, sup, b, u, i, dl, dt, dd, ol, ul, li, fieldset, form, label, table, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	vertical-align: baseline;
+	background: transparent;
+}
+
+a {
+	margin: 0;
+	padding: 0;
+	vertical-align: baseline;
+	background: transparent;
+	text-decoration: none;
+	color: #666;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+td, td img {
+	vertical-align: top;
+}
+
+input, select, button, textarea {
+	margin: 0;
+	font-size: 100%;
+	color: #666;
+	font-family: "RobotoRegular", arial, sans-serif;
+}
+
+input, textarea, button {
+	-webkit-appearance: none;
+}
+
+input[type="checkbox"] {
+	vertical-align: bottom;
+}
+
+input[type="radio"] {
+	vertical-align: text-bottom;
+}
+
+sub {
+	vertical-align: sub;
+	font-size: smaller;
+}
+
+sup {
+	vertical-align: super;
+	font-size: smaller;
+}
+
+/* --------------- /reset.css --------------- */
+.clearfix:before, .clearfix:after {
+	content: "\0020";
+	display: block;
+	height: 0;
+	visibility: hidden;
+}
+
+.clearfix:after {
+	clear: both;
+}
+
+.clearfix {
+	zoom: 1;
+}
+
+body {
+	position: relative;
+	color: #000;
+	text-align: left;
+	font: 62.5%/1.2em arial, sans-serif;
+	background: #fff;
+}
+
+label, input[type="button"], input[type="submit"], button {
+	cursor: pointer;
+}
+
+ul {
+	list-style: none;
+}
+
+input[type="text"], textarea {
+	@include border-radius(0);
+	-webkit-appearance: none;
+}

@@ -1169,13 +1169,27 @@ use DDelivery\Order\DDeliveryOrder;
             }
         }
 
+
         /**
          * Вызывается для рендера текущей странички
          * @param array $request
          * @throws DDeliveryException
          */
-        public function render($request)
-        {
+        public function render($request){
+            if( isset($request['dd_widget']) ){
+                $this->renderWidget($request);
+                return;
+            }
+
+            if( isset($request['dd_plugin']) ){
+                $this->renderPlugin($request);
+                return;
+            }
+
+            $this->renderModule($request);
+        }
+
+        public function renderModule($request){
             $phpTemplate = $this->shop->getTemplateScript();
             if(isset($request['iframe'])) {
                 $staticURL = $this->shop->getStaticPath();
@@ -1184,11 +1198,6 @@ use DDelivery\Order\DDeliveryOrder;
                 $version = DShopAdapter::SDK_VERSION;
                 $captions = $this->shop->getCaptions();
                 include($phpTemplate .'iframe.php');
-                return;
-            }
-
-            if( isset($request['dd_plugin']) ){
-                $this->renderPlugin($request);
                 return;
             }
 
@@ -1908,5 +1917,135 @@ use DDelivery\Order\DDeliveryOrder;
                 }
             }
             return $orderList;
+        }
+
+
+        public function renderWidget($request){
+            if(isset($request['action'])) {
+                $result = array();
+                if ($request['action'] == 'demo_stand') {
+                    $products = $this->shop->getDemoCardData();
+                    $order = new DDeliveryOrder($products);
+
+                    if (isset($request['city'])) {
+                        $order->city = $request['city'];
+                    } else {
+                        $city = $this->cityLocator->getCity();
+                        $order->city = $city['_id'];
+                    }
+                    $courierList = $this->calculateCourierPrices($order);
+                    $courier = $this->getTopCourier($courierList);
+                    $post = $this->getTopPost($courierList);
+                    $self = $this->calculateSelfPrices($order);
+                    if( isset($self[0]) ){
+                        $self = $self[0];
+                    }else{
+                        $self = null;
+                    }
+                    $companies = \DDelivery\Utils::getCompanySubInfo();
+                    $url = $this->shop->getStaticPath();
+                    ob_start();
+                    include(__DIR__ . '/../../templates/widget/widget.php');
+                    $content = ob_get_contents();
+                    ob_end_clean();
+                    $result =  array( 'action' => $request['action'],
+                        'data' => array( 'html' => $content)
+                    );
+                }elseif($request['action'] == 'change_city'){
+                    $topCity = $this->cityLocator->getTopCityList();
+                    $url = $this->shop->getStaticPath();
+                    ob_start();
+                    include(__DIR__ . '/../../templates/widget/changecity.php');
+                    $content = ob_get_contents();
+                    ob_end_clean();
+                    $result = array( 'action' => $request['action'],
+                        'data' => array( 'html' => $content)
+                    );
+                }elseif($request['action'] == 'by_name'){
+                    if( isset($request['name']) && !empty($request['name']) ){
+                        $topCity = $this->cityLocator->getAutoCompleteCity( $request['name'] );
+                        ob_start();
+                        include(__DIR__ . '/../../templates/widget/byname.php');
+                        $content = ob_get_contents();
+                        ob_end_clean();
+                        $result = array( 'action' => $request['action'],
+                            'data' => array( 'html' => $content)
+                        );
+                    }
+                }elseif($request['action'] == 'target_product'){
+                    $products = $this->shop->getSingleProductInCart();
+                    $order = new DDeliveryOrder($products);
+                    if (isset($request['city'])) {
+                        $order->city = $request['city'];
+                    } else {
+                        $city = $this->cityLocator->getCity();
+                        $order->city = $city['_id'];
+                    }
+                    $courierList = $this->calculateCourierPrices($order);
+                    $courier = $this->getTopCourier($courierList);
+                    $post = $this->getTopPost($courierList);
+                    $self = $this->calculateSelfPrices($order);
+                    $companies = \DDelivery\Utils::getCompanySubInfo();
+                    $url = $this->shop->getStaticPath();
+                    $staticURL = $this->shop->getStaticPath();
+                    ob_start();
+                    include(__DIR__ . '/../../templates/widget/productwidget.php');
+                    $content = ob_get_contents();
+                    ob_end_clean();
+                    $result = array( 'action' => $request['action'],
+                        'data' => array( 'html' => $content)
+                    );
+                }elseif($request['action'] == 'get_city'){
+                    $city = $this->cityLocator->getCity();
+                    $result = array( 'action' => $request['action'],
+                        'data' => array( 'json' => $city)
+                    );
+                }else{
+                    $url = $this->shop->getStaticPath();
+                    ob_start();
+                    include(__DIR__ . '/../../templates/widget/default.php');
+                    $content = ob_get_contents();
+                    ob_end_clean();
+                    $result = array( 'action' => 'default_callback',
+                        'data' => array( 'html' => $content)
+                    );
+                }
+                echo json_encode($result);
+                return;
+            }elseif(isset($request['start_action'])){
+                $staticURL = $this->shop->getStaticPath() . 'widget/';
+                $scriptURL = $this->shop->getPhpScriptURL();
+                $actionStart = $request['start_action'];
+                include( __DIR__ . '/../../templates/widget/iframe.php');
+                return;
+            }
+        }
+
+        public function getTopPost(&$companyList){
+            $post = \DDelivery\Utils::getPostCompanies();
+            $company = null;
+            if( count($companyList) > 0 ){
+                for($i = 0; $i < count( $companyList); $i++){
+                    if( in_array($companyList[$i]['delivery_company'], $post) ){
+                        $company = $companyList[$i];
+
+                        break;
+                    }
+                }
+            }
+            return $company;
+        }
+        public function getTopCourier(&$companyList){
+            $post = \DDelivery\Utils::getPostCompanies();
+            $company = null;
+            if( count($companyList) > 0 ){
+                for($i = 0; $i < count( $companyList); $i++){
+                    if( !in_array($companyList[$i]['delivery_company'], $post) ){
+                        $company = $companyList[$i];
+                        break;
+                    }
+                }
+            }
+            return $company;
         }
     }

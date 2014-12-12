@@ -1,0 +1,254 @@
+@import "base";
+
+.widget-wrap{
+	border:1px solid #e8d2ab;
+	padding-bottom: 10px;
+	@include border-radius(3px);
+	background: #f9f3e9 url('../img/bott-border.png') repeat-x 0 100%;
+	&.theme-white{
+		background-color: #fff;
+	}
+	&.theme-violet{
+		border-color:#ddd;
+	}
+}
+
+.widget-wrap__title{
+	padding: 15px 10px 10px 10px;
+	.title-text{
+		font-size: 13px;
+		color: #000;
+		line-height: 20px;
+	}
+	.theme-violet &{
+		background: url(../img/violet-pattern.png) repeat 0 0 transparent;
+		color: #fff;
+		margin-bottom: 15px;
+	}
+}
+
+.widget-delivery-type{
+
+	.type__item{
+		padding:5px 0 10px 10px;
+		display: block;
+		&:hover{
+			background: url(../img/line-pattern.png)repeat 0 0;
+		}
+
+		&:hover .img{
+			border:2px solid #7c3072;
+		}
+
+		.type__item-title{
+			font-size: 16px;
+			color: #67245b;
+			line-height: 16px;
+			padding-bottom: 10px;
+		}
+		.type__item-img{
+			float:left;
+			border:2px solid #e3e3e2;
+			@include transition(0.4s ease 0s);
+		}
+		.type__item-text{
+			padding-left: 112px;
+
+			p{
+				font-size: 16px;
+				color: #6f6f6f;
+				height: 30px;
+				line-height: 30px;
+				padding-left: 5px;
+				display: block;
+
+				&:first-child{
+					background: #fff;
+					.widget-wrap &{
+						display: inline-block;
+						padding-right:25px;
+					}
+				}
+				.icon-rub{
+					margin-left: 5px;
+				}
+				strong{
+					font-weight: normal;
+					font-size: 24px;
+					color: #88417b;
+					font-family: "PT sans", sans-serif;
+				}
+			}
+		}
+	}
+}
+.choose-city{
+	.widget-drop_i{
+		padding-top:10px;
+		padding-bottom:6px;
+	}
+	.item{
+		.text {
+			p {
+				&:first-child {
+					background: #f9f3e9;
+				}
+			}
+		}
+	}
+}
+
+.icon-rub{
+	display: inline-block;
+	@include sized-sprite($icons, rub);
+}
+
+.widget-drop__choose{
+	padding: 15px 8px 8px 8px;
+
+}
+
+.widget-drop__choose_i{
+	position: relative;
+	@include box-shadow(0 0 8px 0 rgba(0,0,0, .5));
+	background: #fff url('../img/bott-border.png') repeat-x 0 100%;
+	&:after{
+		position: absolute;
+		content:"";
+		display: block;
+		left:30px;
+		top:-7px;
+		@include sized-sprite($icons, corner);
+		.theme-violet &{
+			@include sized-sprite($icons, corner-violet);
+		}
+	}
+	.widget-drop__close{
+		@include sized-sprite($icons, close);
+		position: absolute;
+		cursor:pointer;
+		right:10px;
+		top:10px;
+		z-index: 10;
+		.theme-violet &{
+			@include sized-sprite($icons, close-white);
+		}
+	}
+}
+
+.widget-drop__select-city{
+	padding: 25px;
+	a{
+		display: inline-block;
+		font-size: 16px;
+		color: #796876;
+		line-height: 18px;
+		text-decoration: underline;
+		@include transition-property(color);
+		@include transition-duration(.4s);
+		@include transition-timing-function(ease);
+		&:first-child{
+			margin-right: 20px;
+		}
+		&:hover{
+			color: #67245b;
+		}
+	}
+}
+
+.widget-drop__city{
+	background: url(../img/violet-pattern.png) repeat 0 0 transparent;
+	padding: 25px 15px 20px 15px;
+	position: relative;
+	p{
+		font-size: 16px;
+		color: #fff;
+		line-height: 18px;
+		padding-bottom: 10px;
+	}
+	.widget-drop__form{
+		position: relative;
+		input[type="text"]{
+			display: block;
+			width: 100%;
+			@include box-sizing(border-box);
+			height: 36px;
+			line-height: 36px;
+			padding: 0 30px 0 5px;
+			border:0;
+			@include border-radius(3px);
+			@include box-shadow(2px 2px 2px 0 rgba(0,0,0, .5));
+		}
+		input[type="submit"]{
+			@include sized-sprite($icons, search);
+			border:0;
+			padding:0;
+			position: absolute;
+			z-index: 2;
+			right:7px;
+			top:10px;
+		}
+	}
+
+}
+.city-drop__choose{
+	padding-bottom: 6px;
+	background: #ffffff url('../img/bott-border.png') repeat-x 0 100%;
+	overflow:hidden;
+	height:315px;
+	.choose-list{
+		list-style-type: none;
+		li{
+			.choose-list__item{
+				display: block;
+				background:#ffffff;
+				font-size:16px;
+				line-height:18px;
+				font-family: "PT sans", sans-serif;
+				padding:6px 10px 6px 12px;
+				font-weight:normal;
+				@include transition(0.4s ease 0s);
+				strong{
+					color:#525252;
+					font-weight:normal;
+					display: block;
+				}
+				em{
+					color:#6a6a6a;
+					display: block;
+				}
+				&:hover{
+					background:#e8d2ab;
+				}
+				&:hover strong{
+					color:#511b4a;
+				}
+				&:hover em{
+					color:#511b4a;
+				}
+			}
+		}
+	}
+}
+.choose__other-city{
+	text-decoration:underline;
+	height:48px;
+	line-height:48px;
+	display: block;
+	text-align: center;
+	color:#67245b;
+	font-family: "PT sans", sans-serif;
+	font-size:16px;
+	&:hover{
+		text-decoration: none;
+	}
+}
+.widget__city-name{
+	font-size:16px;
+	border-bottom:1px dashed #000000;
+	color:#000000;
+	line-height:16px;
+	display: inline-block;
+	margin-left:15px;
+	padding-top:10px;
+}
