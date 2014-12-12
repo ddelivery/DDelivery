@@ -116,7 +116,6 @@ var WidgetServer = (function(){
         get_city:function(data){
             setCookie('city_id', data.json._id, 100);
             setCookie('city_name', decodeURI(data.json.display_name), 100);
-            alert(data.json.display_name);
             WidgetServer.ajaxData({action:actionStart, dd_widget:1, city:getCookie('city_id')});
             if( actionStart != 'target_product' ){
                 WidgetServer.postMessage('geo', {cityId:getCookie('city_id'), name:getCookie('city_name')});
