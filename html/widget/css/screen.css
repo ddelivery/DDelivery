@@ -46,6 +46,8 @@ input[type="text"], textarea { -moz-border-radius: 0; -webkit-border-radius: 0; 
 .widget-delivery-type .type__item:hover .img { border: 2px solid #7c3072; }
 .widget-delivery-type .type__item .type__item-title { font-size: 16px; color: #67245b; line-height: 16px; padding-bottom: 10px; }
 .widget-delivery-type .type__item .type__item-img { float: left; border: 2px solid #e3e3e2; -moz-transition: ease 0.4s 0s; -o-transition: ease 0.4s 0s; -webkit-transition: ease 0.4s; -webkit-transition-delay: 0s; transition: ease 0.4s 0s; }
+.widget-drop__choose .type__item .type__item-img{ border: 2px solid #e3e3e2;}
+
 .widget-delivery-type .type__item .type__item-text { padding-left: 112px; }
 .widget-delivery-type .type__item .type__item-text p { font-size: 16px; color: #6f6f6f; height: 30px; line-height: 30px; padding-left: 5px; display: block; }
 .widget-delivery-type .type__item .type__item-text p:first-child { background: #fff; }

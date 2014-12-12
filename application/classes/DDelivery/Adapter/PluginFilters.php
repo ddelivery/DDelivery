@@ -591,6 +591,7 @@ abstract class PluginFilters extends DShopAdapter
      * @return mixed
      */
     public function getSingleProductInCart(){
+        return $this->getDemoCardData();
         $products = array();
         $products[] = new DDeliveryProduct(
             1,	//	int $id id товара в системе и-нет магазина

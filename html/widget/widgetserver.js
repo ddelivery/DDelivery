@@ -59,8 +59,9 @@ var WidgetServer = (function(){
 
                 setCookie('city_id', city, 100);
                 setCookie('city_name', encodeURI($(this).find('strong').text()), 100);
-
+                WidgetServer.postMessage('product_widget', {});
                 WidgetServer.postMessage('geo', {cityId:getCookie('city_id'), name:getCookie('city_name')});
+
                 WidgetServer.ajaxData({action:'demo_stand', dd_widget:1, city:city});
             });
             var searchTimeout = 0;
@@ -91,6 +92,11 @@ var WidgetServer = (function(){
                 $('.dd_loader').css('display', 'block');
                 $('.choose-list').empty();
                 var city = $(this).attr('data');
+
+                setCookie('city_id', city, 100);
+                setCookie('city_name', encodeURI($(this).find('strong').text()), 100);
+
+                WidgetServer.postMessage('product_widget', {});
                 WidgetServer.ajaxData({action:'demo_stand', dd_widget:1, city:city});
             });
         },

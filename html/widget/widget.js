@@ -15,6 +15,7 @@ var DDeliveryWidget = (function(w,doc) {
 
     var wrapperIframe, triangle;
     var staticUrl = w.__ddWdgtStatic;
+    var product_iframe;
 
 
     function setCookie(cname, cvalue, exdays) {
@@ -70,10 +71,16 @@ var DDeliveryWidget = (function(w,doc) {
             //iframe.style.height = '0px';
         },
         geo:function(data, iframe){
-            console.log('client side');
-            console.log( data);
+            //console.log('client side');
+            //console.log( data);
             cityNameContainer.innerHTML = decodeURI(data.name);
-        }
+        },
+        product_widget:function(data, iframe){
+            if( ddelivery_widget_product ){
+                //product_iframe.style.height = '0px';
+                product_iframe.src = componentUrl + '&start_action=target_product' + '&product=' + productId;
+            }
+    }
     }
 
     function addEvent(elem, type, handler){
@@ -163,7 +170,7 @@ var DDeliveryWidget = (function(w,doc) {
 
             if( doc.getElementById('ddelivery_widget_product') ){
                 ddelivery_widget_product = doc.getElementById('ddelivery_widget_product');
-                var product_iframe = doc.createElement('iframe');
+                product_iframe = doc.createElement('iframe');
                 if( ddelivery_widget_product.style.width !='' ){
                     product_iframe.style.width = ddelivery_widget_product.style.width;
                 }

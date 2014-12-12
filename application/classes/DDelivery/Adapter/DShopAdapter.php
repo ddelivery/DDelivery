@@ -377,7 +377,7 @@ abstract class DShopAdapter{
             'articule 222',
             'Веселый клоун'	//	string $name Название вещи
         );
-        $products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'articule another', 'Грустный клоун');
+        //$products[] = new DDeliveryProduct(2, 10, 13, 15, 0.3, 1500, 2, 'articule another', 'Грустный клоун');
         return $products;
     }
     /**
