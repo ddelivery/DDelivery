@@ -102,6 +102,7 @@ class Utils {
                     44 => array('name' => 'Почта России', 'ico' => 'russianpost'),
                     45 => array('name' => 'Aplix курьерская доставка', 'ico' => 'aplix'),
                     46 => array('name' => 'Lenod', 'ico' => 'pack'),
+                    47 => array('name' => 'Телепост', 'ico' => 'pack'),
                     48 => array('name' => 'Aplix IML курьерская доставка', 'ico' => 'aplix_imlogistics'),
                     49 => array('name' => 'IML Забор', 'ico' => 'imlogistics'),
                     50 => array('name' => 'Почта России 1-й класс', 'ico' => 'mail'),
