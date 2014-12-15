@@ -1200,7 +1200,6 @@ use DDelivery\Order\DDeliveryOrder;
                 include($phpTemplate .'iframe.php');
                 return;
             }
-
             if(!empty($request['order_id'])) {
                 $order =  $this->initOrder( $request['order_id'] );
                 $this->order = $order;
