@@ -48,7 +48,7 @@ class Cache {
     public function createTable()
     {
         if($this->pdoType == DShopAdapter::DB_MYSQL) {
-            $query = 'CREATE TABLE `'.$this->prefix.'cache` (
+            $query = 'CREATE TABLE IF NOT EXISTS `'.$this->prefix.'cache` (
                       `sig` varchar(32) NOT NULL,
                       `data_container`  MEDIUMTEXT NULL ,
                       `expired`  datetime NULL,

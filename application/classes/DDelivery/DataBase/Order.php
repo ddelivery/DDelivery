@@ -72,7 +72,7 @@ class Order {
 	 */
     public function createTable(){
         if($this->pdoType == DShopAdapter::DB_MYSQL) {
-            $query = "CREATE TABLE `{$this->prefix}orders` (
+            $query = "CREATE TABLE IF NOT EXISTS `{$this->prefix}orders` (
                             `id` int(11) NOT NULL AUTO_INCREMENT,
                             `payment_variant` varchar(255) DEFAULT NULL,
                             `shop_refnum` varchar(255) DEFAULT NULL,
