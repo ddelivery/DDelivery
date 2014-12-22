@@ -1960,7 +1960,30 @@ use DDelivery\Order\DDeliveryOrder;
                     $result = array( 'action' => $request['action'],
                         'data' => array( 'html' => $content)
                     );
-                }elseif($request['action'] == 'by_name'){
+                }elseif($request['action'] == 'get_tracking'){
+                    $get_tracking = (int)$request['tracking_val'];
+                    if( $get_tracking ){
+                        $orderStatus = $this->sdk->getOrderStatus($get_tracking);
+
+                        $url = $this->shop->getStaticPath();
+                        if( isset($orderStatus->success) && ($orderStatus->success == 1) ){
+                            $statusDecr = $orderStatus->response['status_description'];
+                            $statusMessage = $orderStatus->response['status_message'];
+
+                        }else{
+                            $statusDecr = 'Заказ не найден';
+                            $statusMessage = '';
+                        }
+                        ob_start();
+                        include(__DIR__ . '/../../templates/widget/get_tracking.php');
+                        $content = ob_get_contents();
+                        ob_end_clean();
+                        $result = array( 'action' => $request['action'],
+                            'data' => array( 'html' => $content)
+                        );
+                    }
+                }
+                elseif($request['action'] == 'by_name'){
                     if( isset($request['name']) && !empty($request['name']) ){
                         $topCity = $this->cityLocator->getAutoCompleteCity( $request['name'] );
                         ob_start();
@@ -1998,6 +2021,15 @@ use DDelivery\Order\DDeliveryOrder;
                     $city = $this->cityLocator->getCity();
                     $result = array( 'action' => $request['action'],
                         'data' => array( 'json' => $city)
+                    );
+                }elseif($request['action'] == 'tracking'){
+                    $url = $this->shop->getStaticPath();
+                    ob_start();
+                    include(__DIR__ . '/../../templates/widget/tracking.php');
+                    $content = ob_get_contents();
+                    ob_end_clean();
+                    $result = array( 'action' => $request['action'],
+                        'data' => array( 'html' => $content)
                     );
                 }else{
                     $url = $this->shop->getStaticPath();
@@ -2046,5 +2078,32 @@ use DDelivery\Order\DDeliveryOrder;
                 }
             }
             return $company;
+        }
+
+
+        /**
+         *
+         * Получить строку с описанием  точки доставки
+         *
+         * @param DDeliveryOrder $order
+         * @param String $delimiter
+         *
+         * @return String
+         */
+        public function getPointDisplayString( $order, $delimiter = ', ' ){
+            $point = $order->getPoint();
+            $return = 'Точка не указана';
+            if( $point ){
+                if( $order->type == DDeliverySDK::TYPE_SELF ){
+                    $return = 'Компания доставки: ' . $point['delivery_company_name']
+                        . $delimiter . 'Название: ' . $point['name']
+                        . $delimiter . 'Адрес: ' . $point['address'];
+
+                }elseif($order->type == DDeliverySDK::TYPE_COURIER){
+                    $return = 'Компания доставки:' . $point['delivery_company_name']
+                        . $delimiter . $order->getFullAddress();;
+                }
+            }
+            return $return;
         }
     }

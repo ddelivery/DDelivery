@@ -7,22 +7,7 @@ var WidgetServer = (function(){
                                             color:arrow_color}
         );
     }
-    function setCookie(cname, cvalue, exdays) {
-        var d = new Date();
-        d.setTime(d.getTime() + (exdays*24*60*60*1000));
-        var expires = "expires="+d.toUTCString();
-        document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/";
-    }
-    function getCookie(cname) {
-        var name = cname + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0; i<ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1);
-            if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
-        }
-        return "";
-    }
+
     var callBacks = {
         demo_stand:function(data){
             $('#content').html(data.html);
@@ -57,10 +42,13 @@ var WidgetServer = (function(){
                 $('.choose-list').empty();
                 var city = $(this).attr('data');
 
-                setCookie('city_id', city, 100);
-                setCookie('city_name', encodeURI($(this).find('strong').text()), 100);
+
+                //setCookie('city_name',$(this).find('strong').text(), 100);
+                $.cookie('city_id', city, { expires: 100 });
+                $.cookie('city_name', $(this).find('strong').text(), { expires: 100 });
                 WidgetServer.postMessage('product_widget', {});
-                WidgetServer.postMessage('geo', {cityId:getCookie('city_id'), name:getCookie('city_name')});
+                WidgetServer.postMessage('geo', {cityId:$.cookie('city_id'), name:$.cookie('city_name')});
+
 
                 WidgetServer.ajaxData({action:'demo_stand', dd_widget:1, city:city});
             });
@@ -85,6 +73,32 @@ var WidgetServer = (function(){
             });
             resizeDiv('red');
         },
+        get_tracking:function(data){
+
+            $('#content').html(data.html);
+            $('.widget-drop__close').on('click', function(){
+                WidgetServer.postMessage('close', {});
+            });
+            $('#dd_tracking_other').on('click', function(){
+                WidgetServer.ajaxData({action:'tracking', dd_widget:1});
+            });
+            resizeDiv('white');
+        },
+        tracking:function(data){
+            $('#content').html(data.html);
+            $('#dd_tracking_yes').on('click', function(){
+                var tracking_val =  $('#tracking_val').val();
+                if( tracking_val.length > 0 ){
+                    $('.dd_loader').css('display', 'block');
+                    $('.tracking_content').empty();
+                    WidgetServer.ajaxData({action:'get_tracking', dd_widget:1, tracking_val:tracking_val});
+                }
+            });
+            $('.widget-drop__close').on('click', function(){
+                WidgetServer.postMessage('close', {});
+            });
+            resizeDiv('white');
+        },
         by_name:function(data){
             $('.dd_loader').css('display', 'none');
             $('.choose-list').html(data.html);
@@ -93,8 +107,8 @@ var WidgetServer = (function(){
                 $('.choose-list').empty();
                 var city = $(this).attr('data');
 
-                setCookie('city_id', city, 100);
-                setCookie('city_name', encodeURI($(this).find('strong').text()), 100);
+                $.cookie('city_id', city, { expires: 100 });
+                $.cookie('city_name', $(this).find('strong').text(), { expires: 100 });
 
                 WidgetServer.postMessage('product_widget', {});
                 WidgetServer.ajaxData({action:'demo_stand', dd_widget:1, city:city});
@@ -120,11 +134,14 @@ var WidgetServer = (function(){
             resizeDiv('');
         },
         get_city:function(data){
-            setCookie('city_id', data.json._id, 100);
-            setCookie('city_name', decodeURI(data.json.display_name), 100);
-            WidgetServer.ajaxData({action:actionStart, dd_widget:1, city:getCookie('city_id')});
+
+            $.cookie('city_id', data.json._id, { expires: 100, path: '/' });
+            $.cookie('city_name', data.json.display_name, { expires: 100, path: '/' });
+
+            WidgetServer.ajaxData({action:actionStart, dd_widget:1, city:$.cookie('city_id')});
+
             if( actionStart != 'target_product' ){
-                WidgetServer.postMessage('geo', {cityId:getCookie('city_id'), name:getCookie('city_name')});
+                WidgetServer.postMessage('geo', {cityId: $.cookie('city_id'), name:$.cookie('city_name')});
             }
         }
     }
@@ -133,19 +150,29 @@ var WidgetServer = (function(){
             ajaxUrl = url;
             actionStart = action_start;
             if( actionStart == 'geo' ){
-                WidgetServer.postMessage('geo', {cityId:getCookie('city_id'), name:getCookie('city_name')});
+
+                if( typeof ($.cookie('city_id')) == 'undefined' ){
+
+                    this.ajaxData({action:'get_city'});
+                }else {
+
+                    WidgetServer.postMessage('geo', {cityId: $.cookie('city_id'), name: $.cookie('city_name')});
+                }
             }else{
-                if( getCookie('city_id') == '' ){
+
+                if( typeof ($.cookie('city_id')) == 'undefined' ){
                     this.ajaxData({action:'get_city'});
                 }else{
-                    this.ajaxData({action:actionStart, dd_widget:1, city:getCookie('city_id')});
+                    this.ajaxData({action:actionStart, dd_widget:1, city:$.cookie('city_id')});
                     if( actionStart != 'target_product' ){
-                        WidgetServer.postMessage('geo', {cityId:getCookie('city_id'), name:getCookie('city_name')});
+                        WidgetServer.postMessage('geo', {cityId:$.cookie('city_id'), name:$.cookie('city_name')});
+
                     }
                 }
             }
         },
         postMessage: function(action, data) {
+
             // Отправляем сообщение родительскому окну
             var dataJSON = {action:action, data: data};
             window.parent.postMessage(dataJSON, '*');

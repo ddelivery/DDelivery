@@ -95,6 +95,30 @@ input[type="text"], textarea { -moz-border-radius: 0; -webkit-border-radius: 0; 
 .choose__other-city:hover { text-decoration: none; }
 
 .widget__city-name { font-size: 16px; border-bottom: 1px dashed #000000; color: #000000; line-height: 16px; display: inline-block; margin-left: 15px; padding-top: 10px; }
-#edit_city{
+#edit_city, #tracking_val{
     font-size: 16px;
+}
+
+.widget-drop__select-city p{
+    font-size: 16px;
+    line-height: 18px;
+}
+
+
+.widget-drop__select-city input[type="text"] {
+    display: block;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 5px 0 5px;
+    border: 1px solid #000000 ;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.5);
 }
