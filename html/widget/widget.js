@@ -169,7 +169,7 @@ var DDeliveryWidget = (function(w,doc) {
         cityNameContainer.style.display = 'inline-block';
         cityNameContainer.style.marginLeft = '15px';
         cityNameContainer.style.paddingTop = '10px';
-        cityNameContainer.innerHTML = 'Трекинг';
+        //cityNameContainer.innerHTML = 'Трекинг';
         //cityNameContainer.style.position = 'absolute';
         //cityNameContainer.style.left = '0px';
         //cityNameContainer.style.top = '0px';
@@ -225,6 +225,7 @@ var DDeliveryWidget = (function(w,doc) {
                 ddelivery_traking = doc.getElementById('ddelivery_traking');
                 ddelivery_traking_iframe = doc.createElement('iframe');
                 ddelivery_traking.appendChild( wrapIframe(ddelivery_traking_iframe, '&start_action=tracking'));
+                ddelivery_traking.getElementsByClassName('dd_caption_container')[0].innerHTML = 'Трекинг';
                 enableIframeListener(ddelivery_traking_iframe, callbacksCityWidget);
             }
             if( doc.getElementById('ddelivery_widget') ) {
@@ -250,7 +251,7 @@ var DDeliveryWidget = (function(w,doc) {
                 if( ddelivery_widget_product.style.width !='' ){
                     product_iframe.style.width = ddelivery_widget_product.style.width;
                 }else{
-                    product_iframe.style.width = '120px';
+                    product_iframe.style.width = '250px';
                 }
                 product_iframe.style.height = '0px';
                 product_iframe.style.overflow = 'hidden';

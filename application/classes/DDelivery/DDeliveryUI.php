@@ -1974,14 +1974,17 @@ use DDelivery\Order\DDeliveryOrder;
                             $statusDecr = 'Заказ не найден';
                             $statusMessage = '';
                         }
-                        ob_start();
-                        include(__DIR__ . '/../../templates/widget/get_tracking.php');
-                        $content = ob_get_contents();
-                        ob_end_clean();
-                        $result = array( 'action' => $request['action'],
-                            'data' => array( 'html' => $content)
-                        );
+                    }else{
+                        $statusDecr = 'Заказ не найден';
+                        $statusMessage = '';
                     }
+                    ob_start();
+                    include(__DIR__ . '/../../templates/widget/get_tracking.php');
+                    $content = ob_get_contents();
+                    ob_end_clean();
+                    $result = array( 'action' => $request['action'],
+                        'data' => array( 'html' => $content)
+                    );
                 }
                 elseif($request['action'] == 'by_name'){
                     if( isset($request['name']) && !empty($request['name']) ){

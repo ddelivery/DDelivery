@@ -9,7 +9,7 @@
     (function(w, doc){
         if (!w.__ddWdgt ) {
             w.__ddWdgt = true;
-            w.__ddWdgtStatic = '/ddelivery/html/widget/';
+            w.__ddWdgtStatic = '/sdk/html/widget/';
             w.__ddWdgtEnterPoint = 'ajax.php';
             w.__ddWdgtProductId = encodeURI( w.location.href );  // для идентификации продукта, это для виджета из карточки товара
             var d = doc, s = d.createElement('script'), g = 'getElementsByTagName';
