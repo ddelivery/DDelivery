@@ -262,15 +262,3 @@ var DDeliveryWidget = (function(w,doc) {
 })(window,document);
 DDeliveryWidget.init();
 
-(function () {
-    function CustomEvent ( event, params ) {
-        params = params || { detail: undefined };
-        var evt = document.createEvent( 'CustomEvent' );
-        evt.initCustomEvent( event, params.detail );
-        return evt;
-    }
-
-    CustomEvent.prototype = window.Event.prototype;
-
-    window.CustomEvent = CustomEvent;
-})();
