@@ -169,22 +169,16 @@ var DDeliveryWidget = (function(w,doc) {
         cityNameContainer.style.display = 'inline-block';
         cityNameContainer.style.marginLeft = '15px';
         cityNameContainer.style.paddingTop = '10px';
-        //cityNameContainer.innerHTML = 'Трекинг';
-        //cityNameContainer.style.position = 'absolute';
-        //cityNameContainer.style.left = '0px';
-        //cityNameContainer.style.top = '0px';
 
         iContainer.appendChild(iframe);
         iframeWrapper.appendChild(triangle);
         iframeWrapper.appendChild(iContainer);
         content.appendChild(cityNameContainer);
         content.appendChild(iframeWrapper);
-        //parentBlock.appendChild(content);
 
         addEvent(cityNameContainer,'click',function(){
             iframeWrapper.style.display = 'block';
             if( iframe.style.height == '0px' ){
-                //iframe.style.height == '1000px';
                 iframe.src = componentUrl + clickUrl;;
             }
         });
@@ -201,8 +195,6 @@ var DDeliveryWidget = (function(w,doc) {
                         triangle.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -72px no-repeat';
                     }
                 }
-            //e.detail.parentNode.parentNode.style.display = 'none';
-            //console.log(e.detail); // Prints "Example of an event"
         });
 
         addEvent(doc.getElementsByTagName('body')[0], 'click', function(event){
@@ -269,3 +261,16 @@ var DDeliveryWidget = (function(w,doc) {
 
 })(window,document);
 DDeliveryWidget.init();
+
+(function () {
+    function CustomEvent ( event, params ) {
+        params = params || { detail: undefined };
+        var evt = document.createEvent( 'CustomEvent' );
+        evt.initCustomEvent( event, params.detail );
+        return evt;
+    }
+
+    CustomEvent.prototype = window.Event.prototype;
+
+    window.CustomEvent = CustomEvent;
+})();
