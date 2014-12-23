@@ -105,6 +105,7 @@ var DDeliveryWidget = (function(w,doc) {
         iframeWrapper.className = 'dd_wrapper';
         iframeWrapper.style.position = 'relative';
         iframeWrapper.style.display = 'none';
+        iframeWrapper.style.zIndex = '30000';
 
         var iContainer = doc.createElement('div');
         iContainer.style.mozBoxShadow = '0 0 8px 0 rgba(0, 0, 0, 0.5)';
