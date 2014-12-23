@@ -42,10 +42,7 @@ var DDeliveryWidget = (function(w,doc) {
             if(iframe.contentWindow != event.source) {
                 return;
             }
-            //console.log(event.data);
             var data = event.data;
-           // eval('data = '+event.data);
-            //var result;
             if (typeof(callbacks[data.action]) == 'function') {
                 result = callbacks[data.action](data.data, iframe);
             }
@@ -60,48 +57,23 @@ var DDeliveryWidget = (function(w,doc) {
 
     var callbacksCityWidget = {
         resize:function(data,iframe){
+
             iframe.style.height = data.size;
-            var event = new CustomEvent("dd-color-triangle", { "detail": data.color });
-            // Dispatch/Trigger/Fire the event
-            iframe.dispatchEvent(event);
-            /*
-            if( ddelivery_widget_iframe == iframe ){
-                if( data.color != '' ){
-                    if( data.color == 'red'){
-                        triangle.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -60px no-repeat';
-                    }else if(data.color == 'white'){
-                        triangle.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -72px no-repeat';
-                    }
-                }
-            }
-            */
-            /*
-            if( ddelivery_traking_iframe == iframe ){
-                if( data.color != '' ){
-                    if( data.color == 'red'){
-                        triangle2.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -60px no-repeat';
-                    }else if(data.color == 'white'){
-                        triangle2.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -72px no-repeat';
-                    }
-                }
-            }
-            */
+            var evt = document.createEvent("Event");
+            evt.initEvent("dd-color-triangle", true, false);
+            evt.detail = data.color;
+            iframe.dispatchEvent(evt);
+
         },
         close:function(data, iframe){
-            var event = new CustomEvent("dd-close-iframe", { "detail": iframe });
-            // Dispatch/Trigger/Fire the event
-            iframe.dispatchEvent(event);
-            /*
-            if( ddelivery_widget_iframe == iframe ){
-                wrapperIframe.style.display = 'none';
-            }
-            if( ddelivery_traking_iframe == iframe ){
-                wrapperIframe2.style.display = 'none';
-            }
-            */
-            //iframe.style.height = '0px';
+
+            var evt = document.createEvent("Event");
+            evt.initEvent("dd-close-iframe", true, false);
+            evt.detail = iframe;
+            iframe.dispatchEvent(evt);
         },
         geo:function(data, iframe){
+
             //console.log( iframe.parentNode.parentNode.parentNode.parentNode );
             if( ddelivery_widget ){
                 ddelivery_widget.getElementsByClassName('dd_caption_container')[0].innerHTML = decodeURI(data.name);
@@ -157,7 +129,6 @@ var DDeliveryWidget = (function(w,doc) {
         triangle.style.width = '16px';
         triangle.style.height = '7px';
         triangle.style.zIndex = '9000';
-        //triangle.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -60px no-repeat';
         triangle.style.top = '0px';
         triangle.style.left = '20px';
 
@@ -175,19 +146,29 @@ var DDeliveryWidget = (function(w,doc) {
         iframeWrapper.appendChild(iContainer);
         content.appendChild(cityNameContainer);
         content.appendChild(iframeWrapper);
+        ddelivery_traking.appendChild(content);
+        cityNameContainer.onclick = function(){
 
-        addEvent(cityNameContainer,'click',function(){
             iframeWrapper.style.display = 'block';
             if( iframe.style.height == '0px' ){
                 iframe.src = componentUrl + clickUrl;;
             }
+        }
+        addEvent(cityNameContainer,'click',function(){
+
+            iframeWrapper.style.display = 'block';
+            if( iframe.style.height == '0px' ){
+                iframe.src = componentUrl + clickUrl;
+            }
         });
 
         addEvent( iframe, "dd-close-iframe", function(e) {
+            //console.log(e.detail);
             e.detail.parentNode.parentNode.style.display = 'none';
             //console.log(e.detail); // Prints "Example of an event"
         });
         addEvent( iframe, "dd-color-triangle", function(e) {
+
                 if( e.detail != '' ){
                     if( e.detail == 'red'){
                         triangle.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -60px no-repeat';
@@ -216,9 +197,11 @@ var DDeliveryWidget = (function(w,doc) {
             if( doc.getElementById('ddelivery_traking') ) {
                 ddelivery_traking = doc.getElementById('ddelivery_traking');
                 ddelivery_traking_iframe = doc.createElement('iframe');
-                ddelivery_traking.appendChild( wrapIframe(ddelivery_traking_iframe, '&start_action=tracking'));
+                //ddelivery_traking.appendChild( wrapIframe(ddelivery_traking_iframe, '&start_action=tracking'));
+                wrapIframe(ddelivery_traking_iframe, '&start_action=tracking')
                 ddelivery_traking.getElementsByClassName('dd_caption_container')[0].innerHTML = 'Трекинг';
                 enableIframeListener(ddelivery_traking_iframe, callbacksCityWidget);
+
             }
             if( doc.getElementById('ddelivery_widget') ) {
                 ddelivery_widget = doc.getElementById('ddelivery_widget');
@@ -232,6 +215,7 @@ var DDeliveryWidget = (function(w,doc) {
                 }else{
                     ddelivery_widget_iframe.src = componentUrl + '&start_action=geo';
                 }
+
                 setCookie('dd_last_wisit', dateHash ,100);
                 enableIframeListener(ddelivery_widget_iframe, callbacksCityWidget);
             }
