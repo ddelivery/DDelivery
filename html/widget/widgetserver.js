@@ -2,8 +2,11 @@ var WidgetServer = (function(){
     var ajaxUrl;
     var actionStart;
 
-    function resizeDiv(arrow_color){
-        WidgetServer.postMessage('resize', {size:$('body').height() + 'px',
+    function resizeDiv(arrow_color, size){
+        if(!size){
+            size = $('body').height()
+        }
+        WidgetServer.postMessage('resize', {size:size + 'px',
                                             color:arrow_color}
         );
     }
@@ -127,7 +130,7 @@ var WidgetServer = (function(){
                 $('.dd_loader').css('display','block');
                 WidgetServer.ajaxData({action:'change_city', dd_widget:1});
             });
-            resizeDiv('white');
+            resizeDiv('white', '68');
         },
         target_product:function(data){
             $('#content').html(data.html);

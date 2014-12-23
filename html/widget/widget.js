@@ -113,7 +113,7 @@ var DDeliveryWidget = (function(w,doc) {
         iContainer.style.position = 'absolute';
         iContainer.style.top = '7px';
 
-        iframe.style.width = '250px';
+        iframe.style.width = '400px';
         iframe.style.height = '0px';
         iframe.style.overflow = 'hidden';
         iframe.scrolling = 'no';
