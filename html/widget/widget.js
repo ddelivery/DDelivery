@@ -196,7 +196,11 @@ var DDeliveryWidget = (function(w,doc) {
                 ddelivery_traking = doc.getElementById('ddelivery_traking');
                 ddelivery_traking_iframe = doc.createElement('iframe');
                 ddelivery_traking.appendChild( wrapIframe(ddelivery_traking_iframe, '&start_action=tracking'));
-                ddelivery_traking.getElementsByClassName('dd_caption_container')[0].innerHTML = ddelivery_traking.getAttribute('data');
+                if((ddelivery_traking.getAttribute('data'))){
+                    ddelivery_traking.getElementsByClassName('dd_caption_container')[0].innerHTML = ddelivery_traking.getAttribute('data');
+                }else{
+                    ddelivery_traking.getElementsByClassName('dd_caption_container')[0].innerHTML = "Трекинг";
+                }
                 enableIframeListener(ddelivery_traking_iframe, callbacksCityWidget);
             }
             if( doc.getElementById('ddelivery_widget') ) {
