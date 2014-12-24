@@ -1961,18 +1961,24 @@ use DDelivery\Order\DDeliveryOrder;
                         'data' => array( 'html' => $content)
                     );
                 }elseif($request['action'] == 'get_tracking'){
-                    $get_tracking = (int)$request['tracking_val'];
-                    if( $get_tracking ){
-                        $orderStatus = $this->sdk->getOrderStatus($get_tracking);
-
-                        $url = $this->shop->getStaticPath();
+                    $url = $this->shop->getStaticPath();
+                    if( isset( $request['tracking_val'] ) && !empty($request['tracking_val']) ){
+                        $orderStatus = $this->sdk->getOrderStatus($request['tracking_val']);
                         if( isset($orderStatus->success) && ($orderStatus->success == 1) ){
                             $statusDecr = $orderStatus->response['status_description'];
                             $statusMessage = $orderStatus->response['status_message'];
-
                         }else{
-                            $statusDecr = 'Заказ не найден';
-                            $statusMessage = '';
+                            $order = $this->getOrderByCmsID($request['tracking_val']);
+                            if( $order->ddeliveryID > 0 ){
+                                $orderStatus = $this->sdk->getOrderStatus($order->ddeliveryID);
+                                if( isset($orderStatus->success) && ($orderStatus->success == 1) ){
+                                    $statusDecr = $orderStatus->response['status_description'];
+                                    $statusMessage = $orderStatus->response['status_message'];
+                                }else{
+                                    $statusDecr = 'Заказ не найден';
+                                    $statusMessage = '';
+                                }
+                            }
                         }
                     }else{
                         $statusDecr = 'Заказ не найден';

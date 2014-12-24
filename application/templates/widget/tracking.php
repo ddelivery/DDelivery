@@ -13,7 +13,6 @@
                 <div style="margin-top: 10px;">
                     <input id="tracking_val" type="text" value="">
                 </div>
-
                 <div style="margin: 10px -10px 0 0;text-align: right">
                     <a id="dd_tracking_yes" href="javascript:void(0);">Ок</a>
                 </div>

@@ -85,6 +85,9 @@ var WidgetServer = (function(){
             $('#dd_tracking_other').on('click', function(){
                 WidgetServer.ajaxData({action:'tracking', dd_widget:1});
             });
+
+
+
             resizeDiv('white');
         },
         tracking:function(data){
@@ -99,6 +102,16 @@ var WidgetServer = (function(){
             });
             $('.widget-drop__close').on('click', function(){
                 WidgetServer.postMessage('close', {});
+            });
+            $('#tracking_val').keypress(function(e){
+                if(e.keyCode==13){
+                    var tracking_val =  $('#tracking_val').val();
+                    if( tracking_val.length > 0 ) {
+                        $('.dd_loader').css('display', 'block');
+                        $('.tracking_content').empty();
+                        WidgetServer.ajaxData({action: 'get_tracking', dd_widget: 1, tracking_val: tracking_val});
+                    }
+                }
             });
             resizeDiv('white');
         },

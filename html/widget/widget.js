@@ -141,20 +141,17 @@ var DDeliveryWidget = (function(w,doc) {
         cityNameContainer.style.display = 'inline-block';
         cityNameContainer.style.marginLeft = '15px';
         cityNameContainer.style.paddingTop = '10px';
+        cityNameContainer.onmouseover = function(){
+            cityNameContainer.style.cursor = 'pointer';
+        }
 
         iContainer.appendChild(iframe);
         iframeWrapper.appendChild(triangle);
         iframeWrapper.appendChild(iContainer);
         content.appendChild(cityNameContainer);
         content.appendChild(iframeWrapper);
-        ddelivery_traking.appendChild(content);
-        cityNameContainer.onclick = function(){
 
-            iframeWrapper.style.display = 'block';
-            if( iframe.style.height == '0px' ){
-                iframe.src = componentUrl + clickUrl;;
-            }
-        }
+
         addEvent(cityNameContainer,'click',function(){
 
             iframeWrapper.style.display = 'block';
@@ -198,11 +195,9 @@ var DDeliveryWidget = (function(w,doc) {
             if( doc.getElementById('ddelivery_traking') ) {
                 ddelivery_traking = doc.getElementById('ddelivery_traking');
                 ddelivery_traking_iframe = doc.createElement('iframe');
-                //ddelivery_traking.appendChild( wrapIframe(ddelivery_traking_iframe, '&start_action=tracking'));
-                wrapIframe(ddelivery_traking_iframe, '&start_action=tracking')
-                ddelivery_traking.getElementsByClassName('dd_caption_container')[0].innerHTML = 'Трекинг';
+                ddelivery_traking.appendChild( wrapIframe(ddelivery_traking_iframe, '&start_action=tracking'));
+                ddelivery_traking.getElementsByClassName('dd_caption_container')[0].innerHTML = ddelivery_traking.getAttribute('data');
                 enableIframeListener(ddelivery_traking_iframe, callbacksCityWidget);
-
             }
             if( doc.getElementById('ddelivery_widget') ) {
                 ddelivery_widget = doc.getElementById('ddelivery_widget');
@@ -216,7 +211,6 @@ var DDeliveryWidget = (function(w,doc) {
                 }else{
                     ddelivery_widget_iframe.src = componentUrl + '&start_action=geo';
                 }
-
                 setCookie('dd_last_wisit', dateHash ,100);
                 enableIframeListener(ddelivery_widget_iframe, callbacksCityWidget);
             }

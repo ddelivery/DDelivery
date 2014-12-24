@@ -1,9 +1,12 @@
-<htm>
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
 <body style="background-color: red">
 
-<div id="ddelivery_traking"></div>
+<div id="ddelivery_traking" data=Трекинг></div>
 <div id="ddelivery_widget"></div>
-<div style="margin-top: 400px;" id="ddelivery_widget_product"></div>
+<div style="margin-top: 400px;" id="ddelivery_widget_product" data="37"></div>
 
 <script type="text/javascript">
     (function(w, doc){
@@ -21,4 +24,4 @@
     } )(window,document);
 </script>
 </body>
-</htm>
+</html>
