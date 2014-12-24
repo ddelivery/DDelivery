@@ -1978,6 +1978,9 @@ use DDelivery\Order\DDeliveryOrder;
                                     $statusDecr = 'Заказ не найден';
                                     $statusMessage = '';
                                 }
+                            }else{
+                                $statusDecr = 'Заказ не найден';
+                                $statusMessage = '';
                             }
                         }
                     }else{
