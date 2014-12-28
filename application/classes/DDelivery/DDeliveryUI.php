@@ -1920,6 +1920,7 @@ use DDelivery\Order\DDeliveryOrder;
 
 
         public function renderWidget($request){
+            header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
             if(isset($request['action'])) {
                 $result = array();
                 if ($request['action'] == 'demo_stand') {

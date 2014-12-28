@@ -73,8 +73,7 @@ var DDeliveryWidget = (function(w,doc) {
             iframe.dispatchEvent(evt);
         },
         geo:function(data, iframe){
-
-            //console.log( iframe.parentNode.parentNode.parentNode.parentNode );
+            //console.log( ifr  ame.parentNode.parentNode.parentNode.parentNode );
             if( ddelivery_widget ){
                 ddelivery_widget.getElementsByClassName('dd_caption_container')[0].innerHTML = decodeURI(data.name);
             }
@@ -85,7 +84,7 @@ var DDeliveryWidget = (function(w,doc) {
             if( ddelivery_widget_product ){
                 product_iframe.src = componentUrl + '&start_action=target_product' + '&product=' + productId;
             }
-    }
+        }
     }
 
     function addEvent(elem, type, handler){
@@ -113,6 +112,8 @@ var DDeliveryWidget = (function(w,doc) {
         iContainer.style.boxShadow = '0 0 8px 0 rgba(0, 0, 0, 0.5)';
         iContainer.style.position = 'absolute';
         iContainer.style.top = '7px';
+        iContainer.className = 'dd_fade';
+        iContainer.style.display = 'none';
 
         iframe.style.width = '400px';
         iframe.style.height = '0px';
@@ -154,10 +155,12 @@ var DDeliveryWidget = (function(w,doc) {
 
         addEvent(cityNameContainer,'click',function(){
 
+            iContainer.style.display = 'block';
             iframeWrapper.style.display = 'block';
             if( iframe.style.height == '0px' ){
                 iframe.src = componentUrl + clickUrl;
             }
+
         });
 
         addEvent( iframe, "dd-close-iframe", function(e) {
@@ -166,14 +169,15 @@ var DDeliveryWidget = (function(w,doc) {
             //console.log(e.detail); // Prints "Example of an event"
         });
         addEvent( iframe, "dd-color-triangle", function(e) {
-
-                if( e.detail != '' ){
-                    if( e.detail == 'red'){
-                        triangle.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -60px no-repeat';
-                    }else if(e.detail == 'white'){
-                        triangle.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -72px no-repeat';
-                    }
+            iframeWrapper.style.display = 'none';
+            setTimeout(function () {iframeWrapper.style.display = 'block';}, 5);
+            if( e.detail != '' ){
+                if( e.detail == 'red'){
+                    triangle.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -60px no-repeat';
+                }else if(e.detail == 'white'){
+                    triangle.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -72px no-repeat';
                 }
+            }
         });
 
         addEvent(doc.getElementsByTagName('body')[0], 'click', function(event){

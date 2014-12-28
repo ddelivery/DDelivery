@@ -7,8 +7,26 @@ var WidgetServer = (function(){
             size = $('body').height()
         }
         WidgetServer.postMessage('resize', {size:size + 'px',
-                                            color:arrow_color}
+                color:arrow_color}
         );
+    }
+
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+d.toUTCString();
+
+        document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/";
+    }
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1);
+            if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+        }
+        return "";
     }
 
     var callBacks = {
@@ -44,15 +62,11 @@ var WidgetServer = (function(){
                 $('.dd_loader').css('display', 'block');
                 $('.choose-list').empty();
                 var city = $(this).attr('data');
-
-
-                //setCookie('city_name',$(this).find('strong').text(), 100);
-                $.cookie('city_id', city, { expires: 100 });
-                $.cookie('city_name', $(this).find('strong').text(), { expires: 100 });
+                setCookie('dd_city_id', city, 100);
+                setCookie('dd_city_name', $(this).find('strong').text(),100);
+                $('#edit_city').val($(this).find('strong').text());
                 WidgetServer.postMessage('product_widget', {});
-                WidgetServer.postMessage('geo', {cityId:$.cookie('city_id'), name:$.cookie('city_name')});
-
-
+                WidgetServer.postMessage('geo', {cityId:city, name:$(this).find('strong').text()});
                 WidgetServer.ajaxData({action:'demo_stand', dd_widget:1, city:city});
             });
             var searchTimeout = 0;
@@ -122,11 +136,11 @@ var WidgetServer = (function(){
                 $('.dd_loader').css('display', 'block');
                 $('.choose-list').empty();
                 var city = $(this).attr('data');
-
-                $.cookie('city_id', city, { expires: 100 });
-                $.cookie('city_name', $(this).find('strong').text(), { expires: 100 });
-
-                WidgetServer.postMessage('product_widget', {});
+                $('#edit_city').val($(this).find('strong').text());
+                setCookie('dd_city_id', city, 100);
+                setCookie('dd_city_name', $(this).find('strong').text(), 100);
+                WidgetServer.postMessage('product_widget',{} );
+                WidgetServer.postMessage('geo', {cityId:city, name:$(this).find('strong').text()});
                 WidgetServer.ajaxData({action:'demo_stand', dd_widget:1, city:city});
             });
         },
@@ -151,13 +165,13 @@ var WidgetServer = (function(){
         },
         get_city:function(data){
 
-            $.cookie('city_id', data.json._id, { expires: 100, path: '/' });
-            $.cookie('city_name', data.json.display_name, { expires: 100, path: '/' });
+            setCookie('dd_city_id', data.json._id, 100);
+            setCookie('dd_city_name', data.json.display_name, 100);
 
-            WidgetServer.ajaxData({action:actionStart, dd_widget:1, city:$.cookie('city_id')});
+            WidgetServer.ajaxData({action:actionStart, dd_widget:1, city:data.json._id});
 
             if( actionStart != 'target_product' ){
-                WidgetServer.postMessage('geo', {cityId: $.cookie('city_id'), name:$.cookie('city_name')});
+                WidgetServer.postMessage('geo', {cityId: data.json._id, name:data.json.display_name});
             }
         }
     }
@@ -165,24 +179,22 @@ var WidgetServer = (function(){
         init:function(url, action_start){
             ajaxUrl = url;
             actionStart = action_start;
+
             if( actionStart == 'geo' ){
-
-                if( typeof ($.cookie('city_id')) == 'undefined' ){
-
+                if( getCookie('dd_city_id') == '' ){
                     this.ajaxData({action:'get_city'});
                 }else {
 
-                    WidgetServer.postMessage('geo', {cityId: $.cookie('city_id'), name: $.cookie('city_name')});
+                    WidgetServer.postMessage('geo', {cityId: getCookie('dd_city_id'), name: getCookie('dd_city_name')});
                 }
             }else{
 
-                if( typeof ($.cookie('city_id')) == 'undefined' ){
+                if( getCookie('dd_city_id') == '' ){
                     this.ajaxData({action:'get_city'});
                 }else{
-                    this.ajaxData({action:actionStart, dd_widget:1, city:$.cookie('city_id')});
+                    this.ajaxData({action:actionStart, dd_widget:1, city:getCookie('dd_city_id')});
                     if( actionStart != 'target_product' ){
-                        WidgetServer.postMessage('geo', {cityId:$.cookie('city_id'), name:$.cookie('city_name')});
-
+                        WidgetServer.postMessage('geo', {cityId:getCookie('dd_city_id'), name:getCookie('dd_city_name')});
                     }
                 }
             }
