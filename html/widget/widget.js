@@ -170,7 +170,8 @@ var DDeliveryWidget = (function(w,doc) {
         });
         addEvent( iframe, "dd-color-triangle", function(e) {
             iframeWrapper.style.display = 'none';
-            setTimeout(function () {iframeWrapper.style.display = 'block';}, 5);
+            setTimeout(function () {iframeWrapper.style.display = 'block'; iContainer.style.display = 'block';}, 5);
+
             if( e.detail != '' ){
                 if( e.detail == 'red'){
                     triangle.style.background = 'url("' + staticUrl + 'img/icons-sb02245f0c0.png")  0 -60px no-repeat';
