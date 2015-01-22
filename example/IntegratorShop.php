@@ -132,6 +132,7 @@ class IntegratorShop extends \DDelivery\Adapter\PluginFilters{
      */
     public function getPhpScriptURL(){
         // Тоесть до этого файла
+        unset($_GET['iframe']);
         return 'ajax.php?' . http_build_query( $_GET ) ;
     }
 
