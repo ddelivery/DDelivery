@@ -577,9 +577,13 @@ abstract class PluginFilters extends DShopAdapter
             51 => array('name' => 'EMS Почта России', 'ico' => 'ems'),
 
             52 => array('name' => 'ЕКБ-доставка забор', 'ico' => 'pack'),
-            53 => array('name' => 'ЕКБ-доставка курьер', 'ico' => 'pack'),
-            54 => array('name' => 'Почта России 1-й класс', 'ico' => 'mail'),
-            55 => array('name' => 'Почта России 1-й класс', 'ico' => 'mail')
+            53 => array('name' => 'Грейт Экспресс', 'ico' => 'pack'),
+            54 => array('name' => 'Почта России 1-й класс.', 'ico' => 'mail'),
+            55 => array('name' => 'Почта России.', 'ico' => 'mail'),
+            58 => array('name' => 'FSD - курьерская доставка по Москве', 'ico' => 'pack'),
+            61 => array('name' => 'EMS Почта России', 'ico' => 'ems'),
+            63 => array('name' => 'FSD экспресс', 'ico' => 'pack'),
+            66 => array('name' => 'SmartCourier', 'ico' => 'pack'),
         );
     }
 
