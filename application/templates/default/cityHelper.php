@@ -4,7 +4,7 @@
            <?if($cityId == $cityData['_id']):?>class="active"<?endif;?>>
             <strong><?=$cityData['type'].'. '.$cityData['name']?></strong>
             <?if($cityData['name'] != $cityData['region']):?>
-                <?=$cityData['region']?> обл.
+                <?=$cityData['region']?>
             <?endif;?>
         </a>
     </li>
